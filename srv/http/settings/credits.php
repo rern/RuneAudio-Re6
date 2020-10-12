@@ -1,37 +1,4 @@
 <?php
-$list05 = [
-	  'Gearhead' => [ 'https://github.com/gearhead', 'RuneOS - Full kernel and package upgrade, kernel patch for alsa 384kHz audio support and Chromium local browser' ]
-	, 'janui'    => [ 'https://github.com/janui', 'RuneUI - Shairport sync with metadata, random play and autostart rework, Samba optimisation and 101 bugfixes' ]
-];
-$list04 = [
-	 'Frank Friedmann' => [ 'https://github.com/hondagx35', 'AP, Local Browser, Lyrics, many upgrades, bugfixes and other improvements', 'hondagx35' ]
-];
-$list0103 = [
-	  'Andrea Coiutti'        => [ 'http://www.runeaudio.com/team/', 'RuneUI frontend design - frontend HTML/JS/CSS coding', 'ACX' ]
-	, 'Simone De Gregori'     => [ 'http://www.runeaudio.com/team/', 'RuneUI PHP backend coding - frontend JS coding - RuneOS distro build &amp; optimization', 'Orion' ]
-	, 'Carmelo San Giovanni'  => [ 'http://www.runeaudio.com/team/', 'RuneOS distro build &amp; Kernel optimization', 'Um3ggh1U' ]
-	, 'Cristian Pascottini'   => [ 'https://github.com/cristianp6', 'RuneUI Javascript optimizations' ]
-	, 'Valerio Battaglia'     => [ 'https://github.com/vabatta', 'RuneUI Javascript optimizations' ]
-	, 'Frank Friedmann'       => [ 'https://github.com/hondagx35', 'RuneUI/RuneOS PHP backend code debug, refactoring of network management, RuneOS porting for Cubietruck', 'hondagx35' ]
-	, 'Kevin Welsh'           => [ 'https://github.com/kdubious', 'RuneUI/RuneOS Frontend & backend development', 'kdubious' ] 
-	, 'Andrea Rizzato'        => [ 'https://github.com/GitAndrer', 'RuneUI/RuneOS PHP backend code debug, integration of Wolfson Audio Card', 'AandreR' ]
-	, 'Saman'                 => [ 'http://www.runeaudio.com/forum/member275.html', 'RuneOS RT Linux kernel for Wolfson Audio Card (RaspberryPi)' ]
-	, 'Daniele Scasciafratte' => [ 'https://github.com/Mte90', 'RuneUI Firefox integration', 'Mte90' ]
-	, 'Francesco Casarsa'     => [ 'https://github.com/fcasarsa', 'Shairport patch', 'CAS' ]
-];
-$list05html = '';
-foreach( $list05 as $name => $value ) {
-	$list05html.= '<a href="'.$value[ 0 ].'" target="_blank">'.$name.'</a><br>'.$value[ 1 ].'<br>';
-}
-$list04html = '';
-foreach( $list04 as $name => $value ) {
-	$list04html.= '<a href="'.$value[ 0 ].'" target="_blank">'.$name.' <gr>(aka '.$value[ 2 ].')</gr><br></a>'.$value[ 1 ].'<br>';
-}
-$list0103html = '';
-foreach( $list0103 as $name => $value ) {
-	$aka = isset( $value[ 2 ] ) ? ' <gr>(aka '.$value[ 2 ].')</gr>' : '';
-	$list0103html.= '<a href="'.$value[ 0 ].'" target="_blank">'.$name.$aka.'</a><br>'.$value[ 1 ].'<br>';
-}
 $listruneui = [
 	  'HTML5-Color-Picker'  => 'https://github.com/NC22/HTML5-Color-Picker'
 	, 'jQuery'              => 'https://jquery.com/'
@@ -59,6 +26,7 @@ $listruneos = [
 	, 'dosfstools'               => 'https://github.com/dosfstools/dosfstools'
 	, 'FFmpeg'                   => 'http://ffmpeg.org'
 	, 'GCC'                      => 'http://gcc.gnu.org'
+	, 'Gifsicle'                 => 'https://www.lcdf.org/gifsicle/'
 	, 'hfsprogs'                 => 'https://aur.archlinux.org/packages/hfsprogs'
 	, 'hostapd'                  => 'https://w1.fi/hostapd'
 	, 'ifplugd'                  => 'http://0pointer.de/lennart/projects/ifplugd'
@@ -97,43 +65,6 @@ foreach( $listruneos as $name => $link ) {
 <span class="help-block hide">
 	System-wide improvement with features based on <a href="https://www.runeaudio.com/forum/runeui-enhancement-t4207.html">RuneUI Enhancement</a><br>
 </span>
-<div>
-	<heading>Version 0.1 - 0.5<?=$help?></heading>
-	<span class="help-block hide">
-		<heading class="noline">Version 0.5</heading>
-		<?=$list05html?>
-		<heading class="noline">Version 0.4</heading>
-		<?=$list04html?>
-		<heading class="noline">Version 0.1 - 0.3</heading>
-		<?=$list0103html?>
-	</span>
-</div>
-<div>
-	<heading>Support us<?=$help?></heading>
-	<span class="help-block hide">
-		<form id="form-paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-			<input type="hidden" name="cmd" value="_s-xclick">
-			<input type="hidden" name="hosted_button_id" value="AZ5L5M5PGHJNJ">
-			<input type="image" src="/assets/img/donate.png" name="submit" style="height: 55px">
-		</form>
-	</span>
-</div>
-<div>
-	<heading>License &amp; Copyright<?=$help?></heading>
-	<span class="help-block hide">
-		<gr>This Program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation either version 3, 
-		or (at your option) any later version. This Program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-		See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with RuneAudio; see the file COPYING. 
-		If not, see <a href="http://www.gnu.org/licenses/gpl-3.0.txt" target="_blank" rel="nofollow">http://www.gnu.org/licenses/gpl-3.0.txt</a></gr><br>
-		<br>
-		Copyright (C) 2013-2014 RuneAudio Team
-		<br><gr>Andrea Coiutti &amp; Simone De Gregori &amp; Carmelo San Giovanni</gr><br>
-		RuneUI
-		<br><gr>copyright (C) 2013-2014 – Andrea Coiutti (aka ACX) &amp; Simone De Gregori (aka Orion)</gr><br>
-		RuneOS
-		<br><gr>copyright (C) 2013-2014 – Simone De Gregori (aka Orion) &amp; Carmelo San Giovanni (aka Um3ggh1U)</gr>
-	</span>
-</div>
 <div>
 	<heading>RuneUI<?=$help?></heading>
 	<span class="help-block hide">
