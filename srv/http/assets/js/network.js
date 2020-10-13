@@ -8,29 +8,16 @@ function btRender( data ) {
 				+'<a class="liname wh">'+ list.name +'</a>';
 				+'</li>';
 	} );
-	$( '#listbt' ).html( html ).promise().done( function() {
-		$( '#scanning-bt' ).addClass( 'hide' );
-	} );
+	$( '#listbt' ).html( html );
 }
 function btScan() {
-	clearTimeout( intervalscan );
-	$( '#scanning-bt' ).removeClass( 'hide' );
-	bash( '/srv/http/bash/network-scanbt.sh scan', function( data ) {
-		btRender( data );
-		intervalscan = setTimeout( btScan, 12000 );
-	}, 'json' );
-}
-function btStatus() {
-	$( '#divinterface, #divwebui, #divaccesspoint' ).addClass( 'hide' );
-	$( '#divbluetooth' ).removeClass( 'hide' );
 	bash( '/srv/http/bash/network-scanbt.sh', function( data ) {
 		if ( data.length ) btRender( data );
-		btScan();
+		intervalscan = setTimeout( btScan, 12000 );
 	}, 'json' );
 }
 function connect( data ) { // [ ssid, dhcp, wpa, password, hidden, ip, gw ]
 	clearTimeout( intervalscan );
-	$( '#scanning-wifi' ).removeClass( 'hide' );
 	var ssid = data [ 0 ];
 	var ip = data[ 5 ];
 	if ( ip ) {
@@ -293,8 +280,6 @@ function renderQR() {
 	$( '#boxqr' ).removeClass( 'hide' );
 }
 function wlanScan() {
-	clearTimeout( intervalscan );
-	$( '#scanning-wifi' ).removeClass( 'hide' );
 	bash( '/srv/http/bash/network-scanwlan.sh '+ G.wlcurrent, function( list ) {
 		var good = -60;
 		var fair = -67;
@@ -319,9 +304,7 @@ function wlanScan() {
 		} else {
 			html += '<li><i class="fa fa-lock"></i><gr>(no accesspoints found)</gr></li>';
 		}
-		$( '#listwifi' ).html( html +'</li>' ).promise().done( function() {
-			$( '#scanning-wifi' ).addClass( 'hide' );
-		} );
+		$( '#listwifi' ).html( html +'</li>' );
 		intervalscan = setTimeout( wlanScan, 12000 );
 	}, 'json' );
 }
@@ -335,7 +318,7 @@ refreshData = function() {
 	if ( !$( '#divwifi' ).hasClass( 'hide' ) ) {
 		wlanStatus();
 	} else if ( !$( '#divbluetooth' ).hasClass( 'hide' ) ) {
-		btStatus();
+		btScan();
 	} else {
 		nicsStatus();
 	}
@@ -351,7 +334,6 @@ $( '.back' ).click( function() {
 	$( '#divwifi, #divbluetooth' ).addClass( 'hide' );
 	$( '#listwifi, #listbt' ).empty();
 	nicsStatus();
-	if ( 'bluetooth' in G ) bash( 'killall bluetoothctl' );
 } );
 $( '#listinterfaces' ).on( 'click', 'li', function() {
 	var $this = $( this );
@@ -369,7 +351,9 @@ $( '#listinterfaces' ).on( 'click', 'li', function() {
 				wlanStatus();
 			}
 		} else {
-			btStatus();
+			$( '#divinterface, #divwebui, #divaccesspoint' ).addClass( 'hide' );
+			$( '#divbluetooth' ).removeClass( 'hide' );
+			btScan();
 		}
 	} else {
 		if ( !$this.find( 'grn' ).length ) return
@@ -477,7 +461,7 @@ $( '#listbt' ).on( 'click', 'li', function( e ) {
 		notify( 'Bluetooth', 'Disconnect ...', 'bluetooth' );
 		bash( [ 'btdisconnect', mac ], function( data ) {
 			bannerHide();
-			btStatus();
+			btScan();
 		} );
 	} else {
 		notify( 'Bluetooth', 'Pair ...', 'bluetooth' );
