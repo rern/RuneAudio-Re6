@@ -25,7 +25,7 @@ function getReset( callback ) {
 		, exec : 'cat '+ filereboot
 	}, function( lines ) {
 		G.reboot = lines || [];
-		callback();
+		if ( callback ) callback();
 	}, 'json' );
 }
 function resetLocal( ms ) {

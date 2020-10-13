@@ -130,6 +130,60 @@ $( '#button-settings, #badge' ).click( function() {
 	}
 	$( '.contextmenu' ).addClass( 'hide' );
 } );
+$( '.settings' ).click( function() {
+	location.href = 'index-settings.php?p='+ this.id;
+} );
+$( '#snapclient' ).click( function() {
+	bash( '/srv/http/bash/snapcast.sh '+ ( G.status.snapclient ? 'stop' : 'start' ), function( data ) {
+		bannerHide();
+		if ( data != -1 ) {
+			getPlaybackStatus();
+			displayTopBottom();
+		} else {
+			info( {
+				  icon    : 'snapcast'
+				, title   : 'Snapcast'
+				, message : 'Snapcast server not available'
+			} );
+		}
+	} );
+	banner( 'Snapcast - Sync Streaming Client', ( G.status.snapclient ? 'Stop ...' : 'Start ...' ), 'snapcast blink', -1 );
+} );
+$( '#update' ).click( infoUpdate );
+$( '#power' ).click( function() {
+	info( {
+		  icon        : 'power'
+		, title       : 'Power'
+		, buttonlabel : '<i class="fa fa-reboot"></i>Reboot'
+		, buttoncolor : '#de810e'
+		, button      : function() {
+			bash( [ 'power', 'reboot' ] );
+		}
+		, oklabel     : '<i class="fa fa-power"></i>Off'
+		, okcolor     : '#bb2828'
+		, ok          : function() {
+			bash( [ 'power', 'off' ] );
+		}
+		, buttonwidth : 1
+	} );
+} );
+$( '#screenoff' ).click( function( e ) {
+	$.post( cmdphp, { cmd: 'screenoff' } );
+} );
+$( '#gpio' ).click( function( e ) {
+	bash( [ 'gpio', !G.status.gpioon ] );
+} );
+$( '#gpiosetting' ).click( function( e ) {
+	location.href = 'gpiosettings.php';
+} );
+$( '#logout' ).click( function( e ) {
+	$.post( cmdphp, { cmd: 'logout' }, function() {
+		location.reload();
+	} );
+} );
+$( '.pkg' ).click( function( e ) {
+	menuPackage( $( this ), $( e.target ) );
+} );
 var chklibrary = {
 	  sd             : '_<i class="fa fa-microsd"></i>SD'
 	, usb            : '<i class="fa fa-usbdrive"></i>USB'
@@ -155,8 +209,8 @@ var chklibrary2 = {
 	, hidecover      : 'Hide'
 	, fixedcover     : 'Fix <gr>on large screen</gr>'
 }
-$( '#displaylibrary' ).click( function( e ) {
-	var options = $( e.target ).hasClass( 'submenu' );
+$( '#displaylibrary, #displaylibrary2' ).click( function() {
+	var options = this.id === 'displaylibrary2';
 	var checklist = !options ? chklibrary : chklibrary2;
 	displayGet( function( data ) {
 		G.display = data;
@@ -235,31 +289,7 @@ var chkplayback = {
 	, volume       : 'Volume'
 	, buttons      : '_Buttons'
 }
-$( '#displayplayback' ).click( function( e ) {
-	if ( $( e.target ).hasClass( 'submenu' ) || e.target.id === 'iconrainbow' ) {
-		if ( $( '#mode-album grl' ).text() == 0 ) {
-			info( {
-				  icon    : 'info-circle'
-				, title   : 'Color Editor'
-				, message : 'Need at least 1 album in Library.'
-			} );
-		} else {
-			G.color = 1;
-			if ( !G.library ) $( '#tab-library' ).click();
-			if ( $( '.licover' ).length ) {
-				colorSet();
-			} else if ( G.mode !== 'album' ) {
-				$( '#mode-album' ).click();
-			} else if ( $( '#lib-list .coverart' ).length ) {
-				G.color = 2;
-				$( '#lib-list .coverart:eq( 0 )' ).tap();
-			} else {
-				colorSet();
-			}
-		}
-		return
-	}
-	
+$( '#displayplayback' ).click( function() {
 	if ( 'coverTL' in G ) $( '#coverTL' ).tap();
 	displayGet( function( data ) {
 		G.display = data;
@@ -344,65 +374,27 @@ $( '#displayplayback' ).click( function( e ) {
 		} );
 	} );
 } );
-$( '.settings' ).click( function( e ) {
-	var id = e.target.id || e.currentTarget.id;
-	if ( id === 'snapclient' ) {
-		bash( '/srv/http/bash/snapcast.sh '+ ( G.status.snapclient ? 'stop' : 'start' ), function( data ) {
-			bannerHide();
-			if ( data != -1 ) {
-				getPlaybackStatus();
-				displayTopBottom();
-			} else {
-				info( {
-					  icon    : 'snapcast'
-					, title   : 'Snapcast'
-					, message : 'Snapcast server not available'
-				} );
-			}
+$( '#displaycolor' ).click( function() {
+	if ( $( '#mode-album grl' ).text() == 0 ) {
+		info( {
+			  icon    : 'info-circle'
+			, title   : 'Color Editor'
+			, message : 'Need at least 1 album in Library.'
 		} );
-		banner( 'Snapcast - Sync Streaming Client', ( G.status.snapclient ? 'Stop ...' : 'Start ...' ), 'snapcast blink', -1 );
-	} else if ( id !== 'update' ) {
-		location.href = 'index-settings.php?p='+ id;
 	} else {
-		infoUpdate();
-	}
-} );
-$( '#power' ).click( function( e ) {
-	if ( $( e.target ).hasClass( 'submenu' ) ) {
-		$.post( cmdphp, { cmd: 'screenoff' } );
-		return
-	}
-	
-	info( {
-		  icon        : 'power'
-		, title       : 'Power'
-		, buttonlabel : '<i class="fa fa-reboot"></i>Reboot'
-		, buttoncolor : '#de810e'
-		, button      : function() {
-			bash( [ 'power', 'reboot' ] );
+		G.color = 1;
+		if ( !G.library ) $( '#tab-library' ).click();
+		if ( $( '.licover' ).length ) {
+			colorSet();
+		} else if ( G.mode !== 'album' ) {
+			$( '#mode-album' ).click();
+		} else if ( $( '#lib-list .coverart' ).length ) {
+			G.color = 2;
+			$( '#lib-list .coverart:eq( 0 )' ).tap();
+		} else {
+			colorSet();
 		}
-		, oklabel     : '<i class="fa fa-power"></i>Off'
-		, okcolor     : '#bb2828'
-		, ok          : function() {
-			bash( [ 'power', 'off' ] );
-		}
-		, buttonwidth : 1
-	} );
-} );
-$( '#gpio' ).click( function( e ) {
-	if ( $( e.target ).hasClass( 'submenu' ) ) {
-		location.href = 'gpiosettings.php';
-	} else {
-		bash( [ 'gpio', !G.status.gpioon ] );
 	}
-} );
-$( '#logout' ).click( function( e ) {
-	$.post( cmdphp, { cmd: 'logout' }, function() {
-		location.reload();
-	} );
-} );
-$( '.pkg' ).click( function( e ) {
-	menuPackage( $( this ), $( e.target ) );
 } );
 $( '#colorok' ).click( function() {
 	G.color = 0;
@@ -449,12 +441,7 @@ $( '#colorcancel' ).click( function() {
 $( '#colorpicker' ).click( function( e ) {
 	if ( e.target.id === 'colorpicker' ) $( '#colorcancel' ).click();
 } );
-$( '#addons' ).click( function ( e ) {
-	if ( $( e.target ).hasClass( 'submenu' ) ) {
-		location.href = '/settings/guide.php'
-		return
-	}
-	
+$( '#addons' ).click( function () {
 	bash( [ 'addonslist' ], function( std ) {
 		if ( std == -1 ) {
 			info( {
@@ -470,6 +457,9 @@ $( '#addons' ).click( function ( e ) {
 		}
 	} );
 	loader( 'show' );
+} );
+$( '#guide' ).click( function () {
+	location.href = '/settings/guide.php'
 } );
 $( '#tab-library, #button-library' ).click( function() {
 	$( '.menu' ).addClass( 'hide' );

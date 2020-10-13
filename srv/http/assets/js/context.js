@@ -486,14 +486,8 @@ function webRadioNew( name, url ) {
 	} );
 }
 //----------------------------------------------------------------------------------------------
-$( '.contextmenu a' ).click( function( e ) {
-	var submenu = $( e.target ).hasClass( 'submenu' );
-	if ( submenu ) {
-		var $this = $( e.target );
-	} else {
-		var $this = $( this );
-	}
-	var cmd = $this.data( 'cmd' );
+$( '.contextmenu a, .contextmenu i' ).click( function( e ) {
+	var cmd = $( this ).data( 'cmd' );
 	$( '.menu' ).addClass( 'hide' );
 	$( 'li.updn' ).removeClass( 'updn' );
 	// playback //////////////////////////////////////////////////////////////

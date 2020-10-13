@@ -166,13 +166,12 @@ foreach( [ 'album', 'albumartist', 'artist', 'composer', 'genre', 'date' ] as $m
 }
 
 $menu.= '</div>';
-$snapclient = file_exists( $dirsystem.'snapclient' );
 $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 ?>
 <div id="loader" class="splash"><svg viewBox="0 0 480.2 144.2"><?=$logo?></svg></div>
 <div id="bar-top" class="hide">
 	<a id="logo" href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank">
-		<svg class="logo" viewBox="0 0 480.2 144.2"><?=$logo ?></svg>
+		<svg class="logo" viewBox="0 0 480.2 144.2"><?=$logo?></svg>
 	</a>
 	<i id="button-settings" class="fa fa-gear"></i><?=( $addonsupdate ? '<span id="badge"></span>' : '' )?>
 	<div id="playback-controls">
@@ -185,38 +184,50 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 </div>
 <div id="settings" class="menu hide">
 	<span class="menushadow"></span>
-	<a id="mpd" class="settings sub"><i class="fa fa-mpd"></i>MPD</a><i id="update" class="fa fa-refresh-library submenu"></i>
+	<a id="mpd" class="settings sub"><i class="fa fa-mpd"></i>MPD</a>
+		<i id="update" class="fa fa-refresh-library submenu"></i>
 	<a id="network" class="settings"><i class="fa fa-network"></i>Network</a>
-	<a id="sources" class="settings"><i class="fa fa-folder-cascade"></i>Sources<?=( $snapclient ? '<i id="snapclient" class="fa fa-snapcast submenu"></i>' : '' )?></a>
-	<a id="system" class="settings sub"><i class="fa fa-sliders"></i>System</a><i id="credits" class="fa fa-rune submenu"></i>
-		<?php if ( $login ) { ?>
+<?php if ( file_exists( $dirsystem.'snapclient' ) ) { ?>
+	<a id="sources" class="settings sub"><i class="fa fa-folder-cascade"></i>Sources</a>
+		<i id="snapclient" class="fa fa-snapcast submenu"></i>
+<?php } else { ?>
+	<a id="sources" class="settings"><i class="fa fa-folder-cascade"></i>Sources</a>
+<?php } ?>
+	<a id="system" class="settings sub"><i class="fa fa-sliders"></i>System</a>
+		<i id="credits" class="fa fa-rune settings submenu"></i>
+<?php if ( $login ) { ?>
 	<a id="logout"><i class="fa fa-lock"></i>Logout</a>
-		<?php }
-			  if ( in_array( $_SERVER[ 'REMOTE_ADDR' ], [ '127.0.0.1', '::1' ] ) ) { ?>
-	<a id="power" class="sub"><i class="fa fa-power"></i>Power</a><i class="fa fa-screenoff submenu"></i>
-		<?php } else { ?>
+<?php }
+	  if ( in_array( $_SERVER[ 'REMOTE_ADDR' ], [ '127.0.0.1', '::1' ] ) ) { ?>
+	<a id="power" class="sub"><i class="fa fa-power"></i>Power</a>
+		<i id="screenoff" class="fa fa-screenoff submenu"></i>
+<?php } else { ?>
 	<a id="power"><i class="fa fa-power"></i>Power</a>
-		<?php }
-			  if ( file_exists( $dirsystem.'gpio' ) ) { ?>
-	<a id="gpio" class="sub"><i class="fa fa-gpio"></i>GPIO</a><i class="fa fa-gear submenu"></i>
-		<?php }
-			  if ( file_exists( '/srv/http/aria2' ) ) {
-					$ariaenable = exec( '/usr/bin/systemctl is-enabled aria2 &> /dev/null && echo true || echo false' );
-					$ariaactive = exec( '/usr/bin/systemctl is-active aria2 &> /dev/null && echo true || echo false' ); ?>
+<?php }
+	  if ( file_exists( $dirsystem.'gpio' ) ) { ?>
+	<a id="gpio" class="sub"><i class="fa fa-gpio"></i>GPIO</a>
+		<i id="gpiosetting" class="fa fa-gear submenu"></i>
+<?php }
+	  if ( file_exists( '/srv/http/aria2' ) ) {
+		$ariaenable = exec( '/usr/bin/systemctl is-enabled aria2 &> /dev/null && echo true || echo false' );
+		$ariaactive = exec( '/usr/bin/systemctl is-active aria2 &> /dev/null && echo true || echo false' )
+?>
 	<a id="aria2" class="pkg sub" data-enabled="<?=$ariaenable?>" data-active="<?=$ariaactive?>">
-		<img src="/assets/img/addons/thumbaria.<?=$time?>.png" class="iconimg<?=( $ariaactive === 'true' ? ' on' : '' )?>">Aria2</a>
-		<i class="fa fa-gear submenu imgicon"></i>
-		<?php }
-			  if ( file_exists( '/usr/bin/transmission-cli' ) ) {
-					$tranenable = exec( '/usr/bin/systemctl is-enabled transmission &> /dev/null && echo true || echo false' );
-					$tranactive = exec( '/usr/bin/systemctl is-active transmission &> /dev/null && echo true || echo false' ); ?>
+		<img src="/assets/img/addons/thumbaria.<?=$time?>.png" class="iconimg<?=( $ariaactive === 'true' ? ' on' : '' )?>">Aria2</a><i class="fa fa-gear submenu imgicon"></i>
+<?php }
+	  if ( file_exists( '/usr/bin/transmission-cli' ) ) {
+		$tranenable = exec( '/usr/bin/systemctl is-enabled transmission &> /dev/null && echo true || echo false' );
+		$tranactive = exec( '/usr/bin/systemctl is-active transmission &> /dev/null && echo true || echo false' );
+?>
 	<a id="transmission" class="pkg sub" data-enabled="<?=$tranenable?>" data-active="<?=$tranactive?>">
-		<img src="/assets/img/addons/thumbtran.<?=$time?>.png" class="iconimg<?=( $tranactive === 'true' ? ' on' : '' )?>">Transmission</a>
-		<i class="fa fa-gear submenu imgicon"></i>
-		<?php } ?>
-	<a id="displaylibrary" class="sub"><i class="fa fa-library"></i>Library</a><i id="displaylibrary2" class="fa fa-gear submenu"></i>
-	<a id="displayplayback" class="sub"><i class="fa fa-play-circle"></i>Playback</a><i class="submenu"><canvas id="iconrainbow"></i>
-	<a id="addons" class="sub"><i class="fa fa-addons"></i><?=( $addonsupdate ? '<span id="badgeaddons">'.$addonsupdate.'</span>' : '' )?>Addons</a><i class="fa fa-question-circle submenu"></i>
+		<img src="/assets/img/addons/thumbtran.<?=$time?>.png" class="iconimg<?=( $tranactive === 'true' ? ' on' : '' )?>">Transmission</a><i class="fa fa-gear submenu imgicon"></i>
+<?php } ?>
+	<a id="displaylibrary" class="sub"><i class="fa fa-library"></i>Library</a>
+		<i id="displaylibrary2" class="fa fa-gear submenu"></i>
+	<a id="displayplayback" class="sub"><i class="fa fa-play-circle"></i>Playback</a>
+		<i id="displaycolor" class="submenu"><canvas id="iconrainbow"></i>
+	<a id="addons" class="sub"><i class="fa fa-addons"></i><?=( $addonsupdate ? '<span id="badgeaddons">'.$addonsupdate.'</span>' : '' )?>Addons</a>
+		<i id="guide" class="fa fa-question-circle submenu"></i>
 </div>
 
 <div id="page-playback" class="page">
@@ -427,11 +438,6 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	<textarea id="lyricstextarea" class="lyricstext"></textarea>
 	<div id="lyricsfade"></div>
 </div>
-	<?php if ( $localhost ) { ?>
-<input class="input hide">
-<div id="keyboard" class="hide"><div class="simple-keyboard"></div></div>
-	<?php } ?>
-
 <div id="swipebar" class="transparent">
 	<i id="swipeL" class="fa fa-left fa-2x"></i>
 	<i class="fa fa-reload fa-2x"></i><i class="fa fa-swipe fa-2x"></i><i class="fa fa-gear fa-2x"></i>
@@ -442,3 +448,8 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	<i id="tab-playback" class="active fa fa-play-circle"></i>
 	<i id="tab-playlist" class="fa fa-list-ul"></i>
 </div>
+
+<?php if ( $localhost ) { ?>
+<input class="input hide">
+<div id="keyboard" class="hide"><div class="simple-keyboard"></div></div>
+<?php } ?>
