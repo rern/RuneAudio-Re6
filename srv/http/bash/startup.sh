@@ -31,7 +31,10 @@ if [[ -e /boot/wifi ]]; then
 	systemctl enable netctl-auto@wlan0
 fi
 
-/boot/x.sh &> /dev/null
+if [[ -e /boot/x.sh ]]; then
+	init=1
+	/boot/x.sh
+fi
 
 [[ -e $dirsystem/onboard-wlan ]] && ifconfig wlan0 up || rmmod brcmfmac
 
@@ -79,6 +82,14 @@ elif [[ -e $dirsystem/autoplay ]]; then
 	mpc play
 fi
 
+if [[ -n $init ]]; then # fix: failed initial run
+	systemctl enable --now bluetooth bluealsa
+	sed -i 's/^#//' /etc/systemd/system/bluetooth.service.d/override.conf
+	systemctl daemon-reload
+	systemctl restart bluetooth bluealsa
+	systemctl disable --now bluetooth bluealsa
+fi
+
 for (( i=0; i <= 20; i++ )); do
 	wlan0up=$( ip a show wlan0 &> /dev/null )
 	[[ -n $wlan0up ]] && break
@@ -91,11 +102,6 @@ if [[ -e $dirsystem/accesspoint && -n $wlan0up ]]; then
 fi
 
 /srv/http/bash/cmd.sh addonsupdate
-
-if lsmod | grep -q btusb; then
-	modprobe btusb
-	systemctl start bluetooth
-fi
 
 wlans=$( ip a | awk '/wlan.:/ {print $2}' | tr -d ':' )
 [[ -z "$wlans" ]] && exit
