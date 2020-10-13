@@ -1,21 +1,4 @@
 <?php
-$listruneui = [
-	  'HTML5-Color-Picker'  => 'https://github.com/NC22/HTML5-Color-Picker'
-	, 'jQuery'              => 'https://jquery.com/'
-	, 'jQuery Mobile'       => 'https://jquerymobile.com/'
-	, 'jQuery Selectric'    => 'https://github.com/lcdsantos/jQuery-Selectric'
-	, 'Lato-Fonts'          => 'http://www.latofonts.com/lato-free-fonts'
-	, 'LazyLoad'            => 'https://github.com/verlok/lazyload'
-	, 'pica'                => 'https://github.com/nodeca/pica'
-	, 'QR Code generator'   => 'https://github.com/datalog/qrcode-svg'
-	, 'roundSlider'         => 'https://github.com/soundar24/roundSlider'
-	, 'simple-keyboard'     => 'https://github.com/hodgef/simple-keyboard/'
-	, 'Sortable'            => 'https://github.com/SortableJS/Sortable'
-];
-$runeuihtml = '';
-foreach( $listruneui as $name => $link ) {
-	$runeuihtml.= '<a href="'.$link.'">'.$name.'</a><br>';
-}
 $listruneos = [
 	  'Avahi'                    => 'https://www.avahi.org/'
 	, 'BlueZ'                    => 'http://www.bluez.org'
@@ -25,7 +8,6 @@ $listruneos = [
 	, 'Dnsmasq'                  => 'http://www.thekelleys.org.uk/dnsmasq/doc.html'
 	, 'dosfstools'               => 'https://github.com/dosfstools/dosfstools'
 	, 'FFmpeg'                   => 'http://ffmpeg.org'
-	, 'GCC'                      => 'http://gcc.gnu.org'
 	, 'Gifsicle'                 => 'https://www.lcdf.org/gifsicle/'
 	, 'hfsprogs'                 => 'https://aur.archlinux.org/packages/hfsprogs'
 	, 'hostapd'                  => 'https://w1.fi/hostapd'
@@ -59,23 +41,40 @@ $runeoshtml = '';
 foreach( $listruneos as $name => $link ) {
 	$runeoshtml.= '<a href="'.$link.'">'.$name.'</a><br>';
 }
+$listruneui = [
+	  'HTML5-Color-Picker'  => 'https://github.com/NC22/HTML5-Color-Picker'
+	, 'jQuery'              => 'https://jquery.com/'
+	, 'jQuery Mobile'       => 'https://jquerymobile.com/'
+	, 'jQuery Selectric'    => 'https://github.com/lcdsantos/jQuery-Selectric'
+	, 'Lato-Fonts'          => 'http://www.latofonts.com/lato-free-fonts'
+	, 'LazyLoad'            => 'https://github.com/verlok/lazyload'
+	, 'pica'                => 'https://github.com/nodeca/pica'
+	, 'QR Code generator'   => 'https://github.com/datalog/qrcode-svg'
+	, 'roundSlider'         => 'https://github.com/soundar24/roundSlider'
+	, 'simple-keyboard'     => 'https://github.com/hodgef/simple-keyboard/'
+	, 'Sortable'            => 'https://github.com/SortableJS/Sortable'
+];
+$runeuihtml = '';
+foreach( $listruneui as $name => $link ) {
+	$runeuihtml.= '<a href="'.$link.'">'.$name.'</a><br>';
+}
 ?>
 <heading>RuneAudio<i class="fa fa-addons gr"></i><?=( file_get_contents( '/srv/http/data/system/version' ) )?></heading>
-<a href="https://github.com/rern/">r e r n</a><br>
+by&emsp;<a href="https://github.com/rern/">r e r n</a><br>
 <span class="help-block hide">
 	System-wide improvement with features based on <a href="https://www.runeaudio.com/forum/runeui-enhancement-t4207.html">RuneUI Enhancement</a><br>
 </span>
-<div>
-	<heading>RuneUI<?=$help?></heading>
-	<span class="help-block hide">
-		<?=$runeuihtml?>
-	</span>
-</div>
 <div>
 	<heading>RuneOS<?=$help?></heading>
 	<span class="help-block hide">
 		<a href="https://www.archlinuxarm.org" style="font-size: 20px;">ArchLinuxArm</a> + default pakages<br>
 		<?=$runeoshtml?>
+	</span>
+</div>
+<div>
+	<heading>RuneUI<?=$help?></heading>
+	<span class="help-block hide">
+		<?=$runeuihtml?>
 	</span>
 </div>
 <div>
