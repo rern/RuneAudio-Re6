@@ -73,9 +73,8 @@ $( document ).keydown( function( e ) {
 				var $liactive = $( '#pl-savedlist li.active' );
 			}
 		}
-		var $menu = $contextmenu.find( 'a.active' );
-		var $menuactive = $menu.length ? $menu : $contextmenu.find( '.submenu.active' ).parent();
-		var $menufirst = $contextmenu.find( 'a:not( .hide )' ).first();
+		var $menuactive = $contextmenu.find( 'a.active' );
+		var $menufirst = $contextmenu.find( 'a:not( .hide ):eq( 0 )' );
 		var $menulast = $contextmenu.find( 'a:not( .hide )' ).last();
 		if ( key === 'ArrowLeft' ) {
 			if ( $( '.submenu.active' ).length ) {
@@ -96,12 +95,16 @@ $( document ).keydown( function( e ) {
 			}
 		} else if ( key === 'ArrowUp' || key === 'ArrowDown' ) {
 			if ( $( '.submenu.active' ).length ) {
+				$menuactive = $( '.submenu.active' );
 				if ( key === 'ArrowDown' ) {
-					$( '.submenu.active' ).nextAll( 'a:not( .hide ):eq( 0 )' ).addClass( 'active' );
+					$next = $menuactive.nextAll( 'a:not( .hide ):eq( 0 )' );
+					if ( !$next.length ) $next = $menuactive.prevAll( 'a:not( .hide )' ).last();
 				} else {
-					$( '.submenu.active' ).prevAll( 'a:not( .hide ):eq( 1 )' ).addClass( 'active' );
+					$next = $menuactive.prevAll( 'a:not( .hide ):eq( 1 )' );
+					if ( !$next.length ) $next = $menuactive.nextAll( 'a:not( .hide )' ).last();
 				}
-				$( '.submenu.active' ).removeClass( 'active' );
+				$next.addClass( 'active' );
+				$menuactive.removeClass( 'active' );
 				return
 			}
 			
@@ -114,21 +117,18 @@ $( document ).keydown( function( e ) {
 					if ( $menuactive.is( $menulast ) ) {
 						$menufirst.addClass( 'active' );
 					} else {
-						$menuactive.nextAll( 'a:not( .hide )' ).first().addClass( 'active' );
+						$menuactive.nextAll( 'a:not( .hide ):eq( 0 )' ).addClass( 'active' );
 					}
 				} else {
 					if ( $menuactive.is( $menufirst ) ) {
 						$menulast.addClass( 'active' );
 					} else {
-						$menuactive.prevAll( 'a:not( .hide )' ).first().addClass( 'active' );
+						$menuactive.prevAll( 'a:not( .hide ):eq( 0 )' ).addClass( 'active' );
 					}
 				}
 			}
-		} else if ( key === 'Enter' ) {
-			if ( $( '.menu:not(.hide)' ).length ) { // context menu
-				$contextmenu.find( 'a.active' ).click();
-				$contextmenu.find( '.submenu.active' ).click();
-			}
+		} else if ( key === 'Enter' ) { // context menu
+			if ( $( '.menu:not(.hide)' ).length ) $contextmenu.find( '.active' ).click();
 		}
 		return
 	}
@@ -165,16 +165,15 @@ $( document ).keydown( function( e ) {
 				if ( !$div.length ) $div = $( '.lib-mode:not( .hide ):eq( 0 )' );
 				$div.addClass( 'updn' );
 			} else if ( key === 'Enter' ) {
-				$( '.lib-mode.updn .mode' ).tap();
+				$( '.lib-mode.updn .mode' ).click();
 			}
 			return
 		}
 		
-		// back button //////////////////////////////////
-		if ( key === 'ArrowLeft' ) {
+		if ( key === 'ArrowLeft' ) { // back button
 			$( '#button-lib-back' ).click();
 			return
-		} else if ( key === 'ArrowRight' ) {
+		} else if ( key === 'ArrowRight' ) { // show context menu
 			$( '#lib-list li.active .lib-icon' ).tap();
 			return
 		}
