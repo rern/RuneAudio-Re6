@@ -4,7 +4,9 @@
 	<ul id="listinterfaces" class="entries"></ul>
 	<span class="help-block hide">
 		<wh>LAN</wh>: Use wired LAN if possible for better performance.
-		<br><br></span>
+	<?php if ( file_exists( '/usr/bin/bluetoothctl' ) ) { ?>
+		<br><wh>Bluetooth</wh>: Scan for devices while listening will make audio choppy.
+	<?php } ?>		<br><br></span>
 
 	<div id="divwebui" class="hide">
 		<div class="col-l">Web UI</div>
