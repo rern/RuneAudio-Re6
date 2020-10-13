@@ -8,7 +8,7 @@
 	<?php if ( file_exists( '/usr/bin/bluetoothctl' ) ) { ?>
 		<br><wh>Bluetooth</wh>:
 		<br>- Paired devices reconnect automatically when power on.
-		<br>- Scan for devices while listening makes audio choppy.
+		<br>- Scan for devices while listening makes Bluetooth audio choppy.
 	<?php } ?>		<br><br></span>
 
 	<div id="divwebui" class="hide">
