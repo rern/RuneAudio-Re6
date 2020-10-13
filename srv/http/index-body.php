@@ -30,7 +30,6 @@ $( '#pwd' ).keypress( function( e ) {
 $dirdata = '/srv/http/data/';
 $dirsystem = '/srv/http/data/system/';
 $color = file_exists( $dirsystem.'color' );
-$submenupower = in_array( $_SERVER[ 'REMOTE_ADDR' ], [ '127.0.0.1', '::1' ] ) ? '<i class="fa fa-screenoff submenu"></i>' : '';
 // counts
 $counts = file_get_contents( $dirdata.'mpd/counts' );
 $counts = json_decode( $counts );
@@ -87,15 +86,15 @@ function menuli( $command, $icon, $label, $type = '' ) {
 	$iconclass = [ 'refresh-library', 'tag', 'minus-circle', 'lastfm' ];
 	$class = in_array( $icon, $iconclass ) ? ' class="'.$icon.'"' : '';
 	$submenu = in_array( $label, [ 'Add', 'Random', 'Replace', 'Add similar' ] ) ? '<i class="fa fa-play-plus submenu"></i>' : '';
-	return '<a data-cmd="'.$command.'"'.$class.'><i class="fa fa-'.$icon.'"></i>'.$label.$submenu.'</a>';
+	return '<a data-cmd="'.$command.'"'.$class.'><i class="fa fa-'.$icon.'"></i>'.$label.'</a>'.$submenu;
 }
 function menudiv( $id, $html ) {
 	return '<div id="menu-'.$id.'" class="menu contextmenu hide">'.$html.'</div>';
 }
 function menucommon( $add, $replace ) {
 	$htmlcommon = '<span class="menushadow"></span>';
-	$htmlcommon.= '<a data-cmd="'.$add.'"><i class="fa fa-plus-o"></i>Add<i class="fa fa-play-plus submenu" data-cmd="'.$add.'play"></i></a>';
-	$htmlcommon.= '<a data-cmd="'.$replace.'" class="replace"><i class="fa fa-replace"></i>Replace<i class="fa fa-play-replace submenu" data-cmd="'.$replace.'play"></i></a>';
+	$htmlcommon.= '<a data-cmd="'.$add.'" class="sub"><i class="fa fa-plus-o"></i>Add</a><i class="fa fa-play-plus submenu" data-cmd="'.$add.'play"></i>';
+	$htmlcommon.= '<a data-cmd="'.$replace.'" class="replace sub"><i class="fa fa-replace"></i>Replace</a><i class="fa fa-play-replace submenu" data-cmd="'.$replace.'play"></i>';
 	return $htmlcommon;
 }
 
@@ -186,36 +185,38 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 </div>
 <div id="settings" class="menu hide">
 	<span class="menushadow"></span>
-	<a id="mpd" class="settings"><i class="fa fa-mpd"></i>MPD<i id="update" class="fa fa-refresh-library submenu"></i></a>
+	<a id="mpd" class="settings sub"><i class="fa fa-mpd"></i>MPD</a><i id="update" class="fa fa-refresh-library submenu"></i>
 	<a id="network" class="settings"><i class="fa fa-network"></i>Network</a>
 	<a id="sources" class="settings"><i class="fa fa-folder-cascade"></i>Sources<?=( $snapclient ? '<i id="snapclient" class="fa fa-snapcast submenu"></i>' : '' )?></a>
-	<a id="system" class="settings"><i class="fa fa-sliders"></i>System<i id="credits" class="fa fa-rune submenu"></i></a>
+	<a id="system" class="settings sub"><i class="fa fa-sliders"></i>System</a><i id="credits" class="fa fa-rune submenu"></i>
 		<?php if ( $login ) { ?>
 	<a id="logout"><i class="fa fa-lock"></i>Logout</a>
-		<?php } ?>
-	<a id="power"><i class="fa fa-power"></i>Power<?=$submenupower ?></a>
-		<?php if ( file_exists( $dirsystem.'gpio' ) ) { ?>
-	<a id="gpio"><i class="fa fa-gpio"></i>GPIO<i class="fa fa-gear submenu"></i></a>
+		<?php }
+			  if ( in_array( $_SERVER[ 'REMOTE_ADDR' ], [ '127.0.0.1', '::1' ] ) ) { ?>
+	<a id="power" class="sub"><i class="fa fa-power"></i>Power</a><i class="fa fa-screenoff submenu"></i>
+		<?php } else { ?>
+	<a id="power"><i class="fa fa-power"></i>Power</a>
+		<?php }
+			  if ( file_exists( $dirsystem.'gpio' ) ) { ?>
+	<a id="gpio" class="sub"><i class="fa fa-gpio"></i>GPIO</a><i class="fa fa-gear submenu"></i>
 		<?php }
 			  if ( file_exists( '/srv/http/aria2' ) ) {
 					$ariaenable = exec( '/usr/bin/systemctl is-enabled aria2 &> /dev/null && echo true || echo false' );
 					$ariaactive = exec( '/usr/bin/systemctl is-active aria2 &> /dev/null && echo true || echo false' ); ?>
-	<a id="aria2" class="pkg" data-enabled="<?=$ariaenable?>" data-active="<?=$ariaactive?>">
-		<img src="/assets/img/addons/thumbaria.<?=$time?>.png" class="iconimg<?=( $ariaactive === 'true' ? ' on' : '' )?>">Aria2
+	<a id="aria2" class="pkg sub" data-enabled="<?=$ariaenable?>" data-active="<?=$ariaactive?>">
+		<img src="/assets/img/addons/thumbaria.<?=$time?>.png" class="iconimg<?=( $ariaactive === 'true' ? ' on' : '' )?>">Aria2</a>
 		<i class="fa fa-gear submenu imgicon"></i>
-	</a>
 		<?php }
 			  if ( file_exists( '/usr/bin/transmission-cli' ) ) {
 					$tranenable = exec( '/usr/bin/systemctl is-enabled transmission &> /dev/null && echo true || echo false' );
 					$tranactive = exec( '/usr/bin/systemctl is-active transmission &> /dev/null && echo true || echo false' ); ?>
-	<a id="transmission" class="pkg" data-enabled="<?=$tranenable?>" data-active="<?=$tranactive?>">
-		<img src="/assets/img/addons/thumbtran.<?=$time?>.png" class="iconimg<?=( $tranactive === 'true' ? ' on' : '' )?>">Transmission
+	<a id="transmission" class="pkg sub" data-enabled="<?=$tranenable?>" data-active="<?=$tranactive?>">
+		<img src="/assets/img/addons/thumbtran.<?=$time?>.png" class="iconimg<?=( $tranactive === 'true' ? ' on' : '' )?>">Transmission</a>
 		<i class="fa fa-gear submenu imgicon"></i>
-	</a>
 		<?php } ?>
-	<a id="displaylibrary"><i class="fa fa-library"></i>Library<i id="displaylibrary2" class="fa fa-gear submenu"></i></a>
-	<a id="displayplayback"><i class="fa fa-play-circle"></i>Playback<i class="submenu"><canvas id="iconrainbow"></i></a>
-	<a id="addons"><i class="fa fa-addons"></i><?=( $addonsupdate ? '<span id="badgeaddons">'.$addonsupdate.'</span>' : '' )?>Addons<i class="fa fa-question-circle submenu"></i></a>
+	<a id="displaylibrary" class="sub"><i class="fa fa-library"></i>Library</a><i id="displaylibrary2" class="fa fa-gear submenu"></i>
+	<a id="displayplayback" class="sub"><i class="fa fa-play-circle"></i>Playback</a><i class="submenu"><canvas id="iconrainbow"></i>
+	<a id="addons" class="sub"><i class="fa fa-addons"></i><?=( $addonsupdate ? '<span id="badgeaddons">'.$addonsupdate.'</span>' : '' )?>Addons</a><i class="fa fa-question-circle submenu"></i>
 </div>
 
 <div id="page-playback" class="page">

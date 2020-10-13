@@ -408,17 +408,18 @@ svg path.st1 {
 .menushadow {
 	width: 190px;
 }
+.menu .sub {
+	width: 150px;
+}
 .menu a {
-	display: block;
+	display: inline-block;
+	width: 100%;
 	margin: 0;
 	font-size: 16px;
 	line-height: 40px;
 	color: var( --cg75 );
 	background: var( --cg );
 	border-top: 1px solid var( --cga ) !important;
-}
-.menu a:nth-of-type( 1 ) {
-	border-top: none;
 }
 .menu i {
 	width: 40px;
@@ -434,7 +435,9 @@ svg path.st1 {
 }
 .submenu {
 	float: right;
+	height: 42px;
 	background: var( --cg );
+	border-top: 1px solid var( --cga );
 	border-left: 1px solid var( --cga );
 }
 .menushadow {
@@ -458,7 +461,7 @@ svg path.st1 {
 	width: 100%;
 	height: 40px;
 	background: var( --cg );
-	z-index: 102;
+	z-index: 105;
 }
 #bar-bottom,
 #swipeL,
@@ -562,6 +565,9 @@ svg path.st1 {
 #settings,
 #settings .menushadow {
 	width: 180px;
+}
+#settings .sub {
+	width: 140px;
 }
 .iconimg {
 	margin: 0 7px;

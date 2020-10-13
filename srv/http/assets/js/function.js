@@ -116,7 +116,7 @@ function contextmenuLibrary( $li, $target ) {
 		return
 	}
 	
-	$( '.replace' ).toggleClass( 'hide', !G.status.playlistlength );
+	$( '.replace' ).next().addBack().toggleClass( 'hide', !G.status.playlistlength );
 	$( '.refresh-library' ).toggleClass( 'hide', !( 'updating_db' in G.status ) );
 	$( '.tag' ).addClass( 'hide' );
 	if ( $( '.licover' ).length ) $( '.tag' ).removeClass( 'hide' );

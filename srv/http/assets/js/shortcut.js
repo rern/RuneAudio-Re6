@@ -79,22 +79,32 @@ $( document ).keydown( function( e ) {
 		var $menulast = $contextmenu.find( 'a:not( .hide )' ).last();
 		if ( key === 'ArrowLeft' ) {
 			if ( $( '.submenu.active' ).length ) {
-				$menuactive.addClass( 'active' );
+				$( '.submenu.active' )
+					.removeClass( 'active' )
+					.prev().addClass( 'active' );
+			} else {
+				$( '.menu' ).addClass( 'hide' )
+				$menuactive.removeClass( 'active' );
 				$( '.submenu' ).removeClass( 'active' );
+				if ( G.playlist ) $( '#pl-list li' ).removeClass( 'lifocus' );
+			}
+		} else if ( key === 'ArrowRight' ) {
+			var $next = $menuactive.next();
+			if ( $next.hasClass( 'submenu' ) ) {
+				$menuactive.removeClass( 'active' );
+				$next.addClass( 'active' );
+			}
+		} else if ( key === 'ArrowUp' || key === 'ArrowDown' ) {
+			if ( $( '.submenu.active' ).length ) {
+				if ( key === 'ArrowDown' ) {
+					$( '.submenu.active' ).nextAll( 'a:not( .hide ):eq( 0 )' ).addClass( 'active' );
+				} else {
+					$( '.submenu.active' ).prevAll( 'a:not( .hide ):eq( 1 )' ).addClass( 'active' );
+				}
+				$( '.submenu.active' ).removeClass( 'active' );
 				return
 			}
 			
-			$( '.menu' ).addClass( 'hide' )
-			$menuactive.removeClass( 'active' );
-			$( '.submenu' ).removeClass( 'active' );
-			if ( G.playlist ) $( '#pl-list li' ).removeClass( 'lifocus' );
-		} else if ( key === 'ArrowRight' ) {
-			var $submenu = $menuactive.find( '.submenu' );
-			if ( $submenu.length ) {
-				$menuactive.removeClass( 'active' );
-				$submenu.addClass( 'active' );
-			}
-		} else if ( key === 'ArrowUp' || key === 'ArrowDown' ) {
 			if ( !$menuactive.length ) {
 				$menufirst.addClass( 'active' );
 			} else {
@@ -104,13 +114,13 @@ $( document ).keydown( function( e ) {
 					if ( $menuactive.is( $menulast ) ) {
 						$menufirst.addClass( 'active' );
 					} else {
-						$menuactive.nextAll( 'a' ).not( '.hide' ).first().addClass( 'active' );
+						$menuactive.nextAll( 'a:not( .hide )' ).first().addClass( 'active' );
 					}
 				} else {
 					if ( $menuactive.is( $menufirst ) ) {
 						$menulast.addClass( 'active' );
 					} else {
-						$menuactive.prevAll( 'a' ).not( '.hide' ).first().addClass( 'active' );
+						$menuactive.prevAll( 'a:not( .hide )' ).first().addClass( 'active' );
 					}
 				}
 			}
@@ -145,14 +155,14 @@ $( document ).keydown( function( e ) {
 			}
 			
 			if ( key === 'ArrowLeft' ) {
-				var $div = $( '.lib-mode.updn' ).prevAll( ':not( .hide )' ).first();
+				var $div = $( '.lib-mode.updn' ).prevAll( ':not( .hide ):eq( 0 )' );
 				$( '.lib-mode' ).removeClass( 'updn' );
 				if ( !$div.length ) $div = $( '.lib-mode:not( .hide )' ).last();
 				$div.addClass( 'updn' );
 			} else if ( key === 'ArrowRight' ) {
-				var $div = $( '.lib-mode.updn' ).nextAll( ':not( .hide )' ).first().addClass( 'updn' );
+				var $div = $( '.lib-mode.updn' ).nextAll( ':not( .hide ):eq( 0 )' );
 				$( '.lib-mode' ).removeClass( 'updn' );
-				if ( !$div.length ) $div = $( '.lib-mode:not( .hide )' ).first();
+				if ( !$div.length ) $div = $( '.lib-mode:not( .hide ):eq( 0 )' );
 				$div.addClass( 'updn' );
 			} else if ( key === 'Enter' ) {
 				$( '.lib-mode.updn .mode' ).tap();
