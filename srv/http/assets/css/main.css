@@ -434,8 +434,6 @@ svg path.st1 {
 }
 .submenu {
 	float: right;
-	width: 41px;
-	height: 41px;
 	background: var( --cg );
 	border-left: 1px solid var( --cga );
 }
