@@ -1134,25 +1134,24 @@ $( '#lib-mode-list' ).contextmenu( function( e ) { // disable default image cont
 	e.preventDefault();
 } );
 $( '.mode' ).click( function() {
+	G.mode = $( this ).data( 'mode' );
 	$( '#lib-search-close' ).click();
-	if ( !$( this ).find( 'grl' ).text() && G.status.updating_db ) {
+	if ( !G.status.counts[ G.mode ] && G.status.updating_db ) {
 		infoUpdate();
 		return
 	}
 	
-	G.mode = $( this ).data( 'mode' );
 	G.modescrolltop = $( window ).scrollTop();
 	if ( G.mode === 'bookmark' ) return
 	
-	if ( ( G.mode === 'usb' || G.mode === 'nas' ) && !$( this ).find( 'grl' ).text() ) {
-		loader( 'show' );
-		location.href = 'index-settings.php?p=sources';
-		return
-	} else if ( G.mode === 'webradio' ) {
-		if ( !$( '#mode-webradio grl' ).text() ) {
+	if ( [ 'nas', 'usb', 'webradio' ].indexOf( G.mode ) && !G.status.counts[ G.mode ] ) {
+		if ( G.mode === 'webradio' ) {
 			webRadioNew();
-			return
+		} else {
+			loader( 'show' );
+			location.href = 'index-settings.php?p=sources';
 		}
+		return
 	}
 
 	var path = G.mode.toUpperCase();
