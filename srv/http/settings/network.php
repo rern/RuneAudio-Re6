@@ -3,11 +3,12 @@
 	<heading class="noline">Interfaces<i id="refreshing" class="fa fa-wifi-3 blink hide"></i><?=$help?></heading>
 	<ul id="listinterfaces" class="entries"></ul>
 	<span class="help-block hide">
-		<wh>LAN</wh>: Use wired LAN if possible for better performance.
+		<wh>LAN</wh>:
+		<br>- Use wired LAN if possible for better performance.
 	<?php if ( file_exists( '/usr/bin/bluetoothctl' ) ) { ?>
 		<br><wh>Bluetooth</wh>:
 		<br>- Paired devices reconnect automatically when power on.
-		<br>- Scan for devices while listening will make audio choppy.
+		<br>- Scan for devices while listening makes audio choppy.
 	<?php } ?>		<br><br></span>
 
 	<div id="divwebui" class="hide">
