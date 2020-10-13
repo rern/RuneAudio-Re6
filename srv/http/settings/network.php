@@ -5,7 +5,9 @@
 	<span class="help-block hide">
 		<wh>LAN</wh>: Use wired LAN if possible for better performance.
 	<?php if ( file_exists( '/usr/bin/bluetoothctl' ) ) { ?>
-		<br><wh>Bluetooth</wh>: Scan for devices while listening will make audio choppy.
+		<br><wh>Bluetooth</wh>:
+		<br>- Paired devices reconnect automatically when power on.
+		<br>- Scan for devices while listening will make audio choppy.
 	<?php } ?>		<br><br></span>
 
 	<div id="divwebui" class="hide">
