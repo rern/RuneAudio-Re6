@@ -228,7 +228,7 @@ function htmlPlaylist( $lists, $plname = '' ) {
 			$html.= '<li class="file" '.$datatrack.'>'
 						.$icon
 						.'<a class="lipath">'.$file.'</a>'
-						.'<span class="li1"><a class="name">'.$title.'</a>'
+						.'<span class="li1"><a class="liname">'.$title.'</a>'
 						.'<span class="duration"><a class="elapsed"></a>'
 						.'<a class="time" data-time="'.$sec.'">'.$list->Time.'</a></span>'
 						.'</span>'
@@ -249,7 +249,7 @@ function htmlPlaylist( $lists, $plname = '' ) {
 			}
 			if ( $ext ) {
 				$thumbsrc = '/data/webradiosimg/'.rawurlencode( $urlname ).'-thumb.'.$time.$ext;
-				$icon = '<img class="lazy iconthumb pl-icon" data-src="'.$thumbsrc.'" data-target="#menu-filesavedpl">';
+				$icon = '<img class="lazy webradio iconthumb pl-icon" data-src="'.$thumbsrc.'" data-target="#menu-filesavedpl">';
 			} else {
 				$icon = '<i class="fa fa-webradio pl-icon" data-target="#menu-filesavedpl"></i>';
 			}

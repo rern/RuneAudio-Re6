@@ -1837,12 +1837,12 @@ $( '#pl-list' ).on( 'click', 'li', function( e ) {
 $( '#pl-list' ).on( 'click', '.pl-icon', function( e ) {
 	var $this = $( this );
 	var $thisli = $this.parent();
-	var radio = $this.hasClass( 'fa-webradio' );
+	var radio = $this.hasClass( 'fa-webradio' ) || $this.hasClass( 'webradio' );
 	G.list = {};
 	G.list.li = $thisli;
-	G.list.path = $thisli.find( '.lipath' ).text().trim();
-	G.list.artist = $thisli.find( '.artist' ).text().trim();
-	G.list.name = $thisli.find( radio ? '.radioname' : '.name' ).html().trim();
+	G.list.path = $thisli.find( '.lipath' ).text();
+	G.list.artist = $thisli.find( '.artist' ).text();
+	G.list.name = $thisli.find( '.liname' ).text();
 	G.list.index = $thisli.index();
 	var menutop = ( $thisli.position().top + 48 ) +'px';
 	var $menu = $( '#menu-plaction' );
@@ -1867,7 +1867,7 @@ $( '#pl-list' ).on( 'click', '.pl-icon', function( e ) {
 	}
 	$contextlist.eq( 5 ).toggleClass( 'hide', radio );
 	$contextlist.eq( 6 ).toggleClass( 'hide', radio );
-//	$contextlist.eq( 7 ).toggleClass( 'hide', G.list.name !== '' );
+	$( '#menu-plaction .submenu' ).toggleClass( 'hide', radio );
 	var contextnum = $menu.find( 'a:not(.hide)' ).length;
 	var menuH = $menu.height();
 	$menu
