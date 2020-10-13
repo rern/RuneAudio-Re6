@@ -15,7 +15,7 @@ function btRender( data ) {
 function btScan() {
 	clearTimeout( intervalscan );
 	$( '#scanning-bt' ).removeClass( 'hide' );
-	bash( '/srv/http/bash/network-btscan.sh scan', function( data ) {
+	bash( '/srv/http/bash/network-scanbt.sh scan', function( data ) {
 		btRender( data );
 		intervalscan = setTimeout( btScan, 12000 );
 	}, 'json' );
@@ -23,7 +23,7 @@ function btScan() {
 function btStatus() {
 	$( '#divinterface, #divwebui, #divaccesspoint' ).addClass( 'hide' );
 	$( '#divbluetooth' ).removeClass( 'hide' );
-	bash( '/srv/http/bash/network-btscan.sh', function( data ) {
+	bash( '/srv/http/bash/network-scanbt.sh', function( data ) {
 		if ( data.length ) btRender( data );
 		btScan();
 	}, 'json' );
@@ -295,7 +295,7 @@ function renderQR() {
 function wlanScan() {
 	clearTimeout( intervalscan );
 	$( '#scanning-wifi' ).removeClass( 'hide' );
-	bash( '/srv/http/bash/network-wlanscan.sh '+ G.wlcurrent, function( list ) {
+	bash( '/srv/http/bash/network-scanwlan.sh '+ G.wlcurrent, function( list ) {
 		var good = -60;
 		var fair = -67;
 		var html = '';
