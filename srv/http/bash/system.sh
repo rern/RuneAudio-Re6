@@ -35,7 +35,6 @@ autoplay )
 bluetooth )
 	if [[ ${args[1]} == true ]]; then
 		sed -i '$ a\dtparam=krnbt=on' /boot/config.txt
-		systemctl daemon-reload
 		systemctl enable bluetooth bluealsa
 		echo "${args[2]}" > $filereboot
 		touch $dirsystem/onboard-bluetooth
