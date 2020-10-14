@@ -35,7 +35,6 @@ autoplay )
 bluetooth )
 	if [[ ${args[1]} == true ]]; then
 		sed -i '$ a\dtparam=krnbt=on' /boot/config.txt
-		sed -i 's/^#//' /etc/systemd/system/bluetooth.service.d/override.conf # remove later to fix 1st start failed
 		systemctl daemon-reload
 		systemctl enable bluetooth bluealsa
 		echo "${args[2]}" > $filereboot
