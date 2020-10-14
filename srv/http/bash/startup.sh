@@ -82,8 +82,7 @@ elif [[ -e $dirsystem/autoplay ]]; then
 	mpc play
 fi
 
-if [[ -n $init ]]; then # fix: failed initial run
-	systemctl enable --now bluetooth bluealsa
+if [[ -n $init ]]; then # fix: failed 1st run with 'discovery yes'
 	sed -i 's/^#//' /etc/systemd/system/bluetooth.service.d/override.conf
 	systemctl daemon-reload
 	systemctl restart bluetooth bluealsa
