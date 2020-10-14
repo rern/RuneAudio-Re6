@@ -28,7 +28,7 @@ date=( $( date +'%T %F' ) )
 startup=( $( systemd-analyze | head -1 | cut -d' ' -f4,7 | tr -d s ) )
 skernel=$( printf "%.0f\n" ${startup[0]} )
 suser=$( printf "%.0f\n" ${startup[1]} )
-startup="${skernel}s (kernel) + ${suser}s (userspace) = $(( skernel + suser ))s"
+startup="${skernel}s <gr>(kernel)</gr> + ${suser}s <gr>(userspace)</gr> = $(( skernel + suser ))s"
 timezone=$( timedatectl | awk '/zone:/ {print $3}' )
 time="${date[0]}$bullet${date[1]}&emsp;<grw>${timezone//\// &middot; }</grw>"
 uptime=$( uptime -p | tr -d 's,' | sed 's/up //; s/ day/d/; s/ hour/h/; s/ minute/m/' )
