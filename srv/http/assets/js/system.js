@@ -63,6 +63,7 @@ function renderStatus() {
 		+'<br>'+ ( G.cputemp < 80 ? G.cputemp +' °C' : '<red>'+ warning + G.cputemp +' °C</red>' )
 		+'<br>'+ G.time
 		+'<br>'+ G.uptime
+		+'<br>'+ G.startup
 		+ undervoltage
 }
 function soundProfile( arg, callback ) {
@@ -91,7 +92,8 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 			 'CPU Load<br>'
 			+'CPU Temperatue<br>'
 			+'Time<br>'
-			+'Up Time';
+			+'Up Time<br>'
+			+'Startup';
 		var bullet = ' <gr>&bull;</gr> ';
 		if ( G.ip ) {
 			var ip = G.ip.split( ',' );

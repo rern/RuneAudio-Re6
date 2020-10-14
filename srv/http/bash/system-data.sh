@@ -22,7 +22,13 @@ if [[ $throttle != 0x0 ]]; then
 fi
 
 bullet='<gr> &bull; </gr>'
+cpuload=$( cat /proc/loadavg | cut -d' ' -f1-3 | sed 's/ /\&emsp;/g' )
+cputemp=$( printf "%.0f\n" $( /opt/vc/bin/vcgencmd measure_temp | cut -d= -f2 | cut -d\' -f1 ) )
 date=( $( date +'%T %F' ) )
+startup=( $( systemd-analyze | head -1 | cut -d' ' -f4,7 | tr -d s ) )
+skernel=$( printf "%.0f\n" ${startup[0]} )
+suser=$( printf "%.0f\n" ${startup[1]} )
+startup="${skernel}s (kernel) + ${suser}s (userspace) = $(( skernel + suser ))s"
 timezone=$( timedatectl | awk '/zone:/ {print $3}' )
 time="${date[0]}$bullet${date[1]}&emsp;<grw>${timezone//\// &middot; }</grw>"
 uptime=$( uptime -p | tr -d 's,' | sed 's/up //; s/ day/d/; s/ hour/h/; s/ minute/m/' )
@@ -30,8 +36,9 @@ uptimesince=$( uptime -s | cut -d: -f1-2 )
 uptime+="<span class='wide'>&emsp;<gr>since ${uptimesince/ / &bull; }</gr></span>"
 
 data='
-	  "cpuload"         : "'$( cat /proc/loadavg | cut -d' ' -f1-3 | sed 's/ /\&emsp;/g' )'"
-	, "cputemp"         : '$( printf "%.0f\n" $( /opt/vc/bin/vcgencmd measure_temp | cut -d= -f2 | cut -d\' -f1 ) )'
+	  "cpuload"         : "'$cpuload'"
+	, "cputemp"         : '$cputemp'
+	, "startup"         : "'$startup'"
 	, "time"            : "'$time'"
 	, "uptime"          : "'$uptime'"
 	, "undervoltage"    : '$undervoltage'
