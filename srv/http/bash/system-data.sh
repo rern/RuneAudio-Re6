@@ -1,15 +1,5 @@
 #!/bin/bash
 
-# bluetooth
-if systemctl -q is-active bluetooth && [[ ! -e /srv/http/data/system/onboard-bluetooth ]]; then
-	systemctl disable --now bluetooth bluealsa
-	sed -i 's/^#//' /etc/systemd/system/bluetooth.service.d/override.conf
-	systemctl daemon-reload
-	systemctl enable --now bluetooth bluealsa # 1st failed in advance
-	systemctl disable --now bluetooth bluealsa
-	sed -i '/dtparam=krnbt=on/ d' /boot/config.txt
-	sed -i '/# bluetooth/,/^fi/ d' /srv/http/bash/system-data.sh
-fi
 # vcgencmd get_throttled > 0xDDDDD (decimal)
 #  1st D > binary BBBB - occured
 #    1st B = Soft temperature limit
