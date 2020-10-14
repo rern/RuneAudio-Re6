@@ -85,7 +85,10 @@ fi
 if [[ -n $init ]]; then # fix: failed 1st run with 'discovery yes'
 	sed -i 's/^#//' /etc/systemd/system/bluetooth.service.d/override.conf
 	systemctl daemon-reload
-	systemctl restart bluetooth bluealsa
+	systemctl stop bluetooth bluealsa # restart > failed
+	sleep 1
+	systemctl start bluetooth bluealsa
+	sleep 1
 	systemctl disable --now bluetooth bluealsa
 fi
 
