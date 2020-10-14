@@ -141,7 +141,7 @@ done
 [[ -z $Time ]] && Time=false
 [[ -e $dirsystem/updating ]] && updating_db=true || updating_db=false
 [[ -z $volume ]] && volume=false
-counts=$( cat /srv/http/data/mpd/counts )
+counts=$( cat /srv/http/data/mpd/counts 2> /dev/null || echo false )
 librandom=$( systemctl -q is-active libraryrandom && echo true || echo false )
 playlists=$( ls /srv/http/data/playlists | wc -l )
 volumemute=$( cat $dirsystem/volumemute 2> /dev/null || echo 0 )

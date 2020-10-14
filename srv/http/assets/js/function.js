@@ -503,13 +503,15 @@ function getPlaybackStatus() {
 		} else if ( G.library ) {
 			setButtonUpdating();
 			if ( !$( '#lib-search-close' ).text() && !G.librarylist ) renderLibrary();
-			var counts = G.status.counts;
-			$( '#lib-mode-list' ).data( 'count', counts.title )
-			$( '#li-count' ).html( counts.title.toLocaleString() +' <i class="fa fa-music gr"></i>' );
-			delete counts.title;
-			$.each( counts, function( key, val ) {
-				$( '#mode-'+ key ).find( 'grl' ).text( val ? val.toLocaleString() : '' );
-			} );
+			if ( count ) {
+				var counts = G.status.counts;
+				$( '#lib-mode-list' ).data( 'count', counts.title )
+				$( '#li-count' ).html( counts.title.toLocaleString() +' <i class="fa fa-music gr"></i>' );
+				delete counts.title;
+				$.each( counts, function( key, val ) {
+					$( '#mode-'+ key ).find( 'grl' ).text( val ? val.toLocaleString() : '' );
+				} );
+			}
 		} else {
 			setButtonUpdating();
 			if ( !G.savedlist && !G.savedplaylist && !G.sortable && !$( '#pl-search-close' ).text() ) getPlaylist();
