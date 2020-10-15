@@ -96,6 +96,8 @@ audio_output {
 }'
 fi
 
+pushstream refresh '{"page":"network"}' # bluetooth status
+
 if [[ $1 == bt ]]; then
 	macs=( $( bluetoothctl paired-devices | cut -d' ' -f2 ) )
 	[[ -z $mac ]] && sleep 3 && macs=( $( bluetoothctl paired-devices | cut -d' ' -f2 ) )
@@ -112,15 +114,12 @@ audio_output {
 	mixer_type     "software"
 }'
 fi
-pushstream refresh '{"page":"network"}' # bluetooth status
 
 echo "$mpdconf" > $mpdfile
 
 usbdacfile=/srv/http/data/shm/usbdac
 
 systemctl restart mpd  # "restart" while not running = start + stop + start
-
-pushstream refresh '{"page":"mpd"}' # mpd status
 
 if [[ -e $dirsystem/updating ]]; then
 	path=$( cat $dirsystem/updating )
