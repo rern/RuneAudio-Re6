@@ -86,8 +86,8 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 			+'SoC<br>'
 			+'Output Device<br>'
 			+'Kernel<br>'
-			+'<span id="mpd" class="settings">MPD<i class="fa fa-gear"></i></span><br>'
-			+'<span id="network" class="settings">Network<i class="fa fa-gear"></i></span>';
+			+'<span class="settings" data-setting="mpd">MPD<i class="fa fa-gear"></i></span><br>'
+			+'<span class="settings" data-setting="network">Network<i class="fa fa-gear"></i></span>';
 		var statuslabel =
 			 'CPU Load<br>'
 			+'CPU Temperatue<br>'
@@ -199,7 +199,7 @@ $( '#timezone, #i2smodule' ).selectric( { maxHeight: 400 } );
 $( '.selectric-input' ).prop( 'readonly', 1 ); // fix - suppress screen keyboard
 
 $( '.container' ).on( 'click', '.settings', function() {
-	location.href = 'index-settings.php?p='+ this.id
+	location.href = 'index-settings.php?p='+ $( this ).data( 'setting' );
 } );
 $( 'body' ).on( 'click touchstart', function( e ) {
 	if ( !$( e.target ).closest( '.i2s' ).length && $( '#i2smodule option:selected' ).val() === 'none' ) {
