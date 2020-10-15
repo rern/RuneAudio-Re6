@@ -7,9 +7,12 @@
 		<br>- Use wired LAN if possible for better performance.
 	<?php if ( file_exists( '/usr/bin/bluetoothctl' ) ) { ?>
 		<br><wh>Bluetooth</wh>:
-		<br>- Paired devices reconnect automatically when power on.
+		<br>- To reconnect automatically when power on.
+		<br>&emsp;- After a device paired for the first time, disconnect before power off the device.
+		<br>&emsp;- Disconnect / force connect: Tap Bluetooth icon.
 		<br>- Scan for devices while listening makes Bluetooth audio choppy.
-	<?php } ?>		<br><br></span>
+	<?php } ?>
+		<br><br></span>
 
 	<div id="divwebui" class="hide">
 		<div class="col-l">Web UI</div>

@@ -235,7 +235,7 @@ function nicsStatus() {
 		if ( 'bluetooth' in G ) {
 			if ( G.bluetooth ) {
 				G.bluetooth.forEach( function( list ) {
-					html += '<li class="bt"><i class="fa fa-bluetooth"></i>Bluetooth&ensp;';
+					html += '<li class="bt" data-name="'+ list.name +'" data-connected="'+ list.connected +'"><i class="fa fa-bluetooth"></i>Bluetooth&ensp;';
 					html += ( list.connected ? '<grn>&bull;</grn>&ensp;' : '<gr>&bull;</gr>&ensp;' ) + list.name +'</li>';
 				} );
 			} else {
@@ -335,7 +335,7 @@ $( '.back' ).click( function() {
 	$( '#listwifi, #listbt' ).empty();
 	nicsStatus();
 } );
-$( '#listinterfaces' ).on( 'click', 'li', function() {
+$( '#listinterfaces' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
 	G.wlcurrent = $this.prop( 'class' );
 	if ( G.wlcurrent !== 'eth0' ) {
@@ -351,9 +351,28 @@ $( '#listinterfaces' ).on( 'click', 'li', function() {
 				wlanStatus();
 			}
 		} else {
-			$( '#divinterface, #divwebui, #divaccesspoint' ).addClass( 'hide' );
-			$( '#divbluetooth' ).removeClass( 'hide' );
-			btScan();
+			var name = $( this ).data( 'name' );
+			var connected = $( this ).data( 'connected' );
+			if ( $( e.target ).hasClass( 'fa-bluetooth' ) && name ) {
+				info( {
+					  icon    : 'bluetooth'
+					, title   : 'Bluetooth'
+					, message : name
+					, oklabel : connected ? 'Disconnect' : 'Connect'
+					, okcolor : connected ? '#de810e' : ''
+					, ok      : function() {
+						if ( connected ) {
+							bash( '/srv/http/bash/network.sh btdisconnect' );
+						} else {
+							bash( '/srv/http/bash/network.sh btpair' );
+						}
+					}
+				} );
+			} else {
+				$( '#divinterface, #divwebui, #divaccesspoint' ).addClass( 'hide' );
+				$( '#divbluetooth' ).removeClass( 'hide' );
+				btScan();
+			}
 		}
 	} else {
 		if ( !$this.find( 'grn' ).length ) return
