@@ -79,7 +79,6 @@ data+='
 	, "audioaplayname"  : "'$( cat $dirsystem/audio-aplayname 2> /dev/null )'"
 	, "audiooutput"     : "'$( cat $dirsystem/audio-output )'"
 	, "autoplay"        : '$( [[ -e $dirsystem/autoplay ]] && echo true || echo false )'
-	, "bluealsa"        : '$( systemctl -q is-active bluealsa-aplay && echo true || echo false )'
 	, "gpio"            : '$( [[ -e $dirsystem/gpio ]] && echo true || echo false )'
 	, "hardware"        : "'$( awk '/Model/ {$1=$2=""; print}' <<< "$cpuinfo" )'"
 	, "hostname"        : "'$( cat $dirsystem/hostname )'"

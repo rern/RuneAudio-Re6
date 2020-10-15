@@ -139,8 +139,6 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		$( '#statuslabel' ).html( statuslabel );
 		$( '#status' ).html( renderStatus );
 		$( '#airplay' ).prop( 'checked', G.airplay );
-		$( '#bluealsa' ).prop( 'checked', G.bluealsa );
-		$( '#divbluealsa' ).toggleClass( 'hide', !G.bluetooth );
 		$( '#spotify' ).prop( 'checked', G.spotify );
 		$( '#setting-spotify' ).toggleClass( 'hide', !G.spotify );
 		$( '#upnp' ).prop( 'checked', G.upnp );
@@ -234,11 +232,6 @@ $( '#airplay' ).click( function( e ) {
 	G.airplay = $( this ).prop( 'checked' );
 	notify( 'AirPlay Renderer', G.airplay, 'airplay' );
 	bash( [ 'airplay', G.airplay ], getStatusRefresh( 'shairport-sync' ) );
-} );
-$( '#bluealsa' ).click( function( e ) {
-	G.bluealsa = $( this ).prop( 'checked' );
-	notify( 'AirPlay Renderer', G.bluealsa, 'bluetooth' );
-	bash( [ 'bluealsa', G.bluealsa ], getStatusRefresh( 'bluealsa-aplay' ) );
 } );
 $( '#snapclient' ).click( function( e ) {
 	G.snapclient = $( this ).prop( 'checked' );

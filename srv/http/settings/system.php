@@ -66,20 +66,6 @@ $code = '<i class="fa fa-code"></i>';
 </div>
 <pre id="codeshairport-sync" class="hide"></pre>
 	<?php }
-		  if ( file_exists( '/usr/bin/bluetoothctl' ) ) { ?>
-<div id="divbluealsa" class="col-l double status" data-service="bluealsa-aplay">
-	<a>Bluetooth
-	<br><gr>BlueZ ALSA</gr></a><i class="fa fa-bluetooth fa-lg"></i>
-</div>
-<div class="col-r">
-	<input id="bluealsa" type="checkbox">
-	<div class="switchlabel" for="bluealsa"></div>
-	<span class="help-block hide">
-		<a href="https://github.com/Arkq/bluez-alsa">BlueALSA</a> - RuneAudio as Bluetooth speakers.
-	</span>
-</div>
-<pre id="codeshairport-sync" class="hide"></pre>
-	<?php }
 		  if ( file_exists( '/usr/bin/snapserver' ) ) { ?>
 <div id="divsnapclient">
 	<div class="col-l double">
