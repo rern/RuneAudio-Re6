@@ -62,7 +62,20 @@ $code = '<i class="fa fa-code"></i>';
 	<div class="switchlabel" for="airplay"></div>
 	<span class="help-block hide">
 		<a href="https://github.com/mikebrady/shairport-sync">Shairport-sync</a> - RuneAudio as AirPlay rendering device.
-		<br>(Note: Enable AirPlay will also enable URL by Name.)
+	</span>
+</div>
+<pre id="codeshairport-sync" class="hide"></pre>
+	<?php }
+		  if ( file_exists( '/usr/bin/bluetoothctl' ) ) { ?>
+<div id="divbluealsa" class="col-l double status" data-service="bluealsa-aplay">
+	<a>Bluetooth
+	<br><gr>BlueZ ALSA</gr></a><i class="fa fa-bluetooth fa-lg"></i>
+</div>
+<div class="col-r">
+	<input id="bluealsa" type="checkbox">
+	<div class="switchlabel" for="bluealsa"></div>
+	<span class="help-block hide">
+		<a href="https://github.com/Arkq/bluez-alsa">BlueALSA</a> - RuneAudio as Bluetooth speakers.
 	</span>
 </div>
 <pre id="codeshairport-sync" class="hide"></pre>
@@ -274,7 +287,7 @@ $code = '<i class="fa fa-code"></i>';
 		$hwcode = substr( $code, -3, 2 );
 		if ( in_array( $hwcode, [ '0c', '08', '0e', '0d', '11' ] ) ) { # rpi with wireless
 			if ( file_exists( '/usr/bin/bluetoothctl' ) ) { ?>
-<div class="col-l">Bluetooth</div>
+<div class="col-l settings" data-setting="network">Bluetooth<i class="fa fa-gear"></i></div>
 <div class="col-r">
 	<input id="bluetooth" type="checkbox">
 	<div class="switchlabel" for="bluetooth"></div>
@@ -282,7 +295,7 @@ $code = '<i class="fa fa-code"></i>';
 </div>
 		<?php $bluetooth = ', Bluetooth';
 			  } ?>
-<div class="col-l">Wi-Fi</div>
+<div class="col-l settings" data-setting="network">Wi-Fi<i class="fa fa-gear"></i></div>
 <div class="col-r">
 	<input id="wlan" type="checkbox">
 	<div class="switchlabel" for="wlan"></div>
