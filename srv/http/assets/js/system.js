@@ -139,6 +139,8 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		$( '#statuslabel' ).html( statuslabel );
 		$( '#status' ).html( renderStatus );
 		$( '#airplay' ).prop( 'checked', G.airplay );
+		$( '#bluealsa' ).prop( 'checked', G.bluealsa );
+		$( '#divbluealsa' ).toggleClass( 'hide', !G.bluetooth );
 		$( '#spotify' ).prop( 'checked', G.spotify );
 		$( '#setting-spotify' ).toggleClass( 'hide', !G.spotify );
 		$( '#upnp' ).prop( 'checked', G.upnp );
