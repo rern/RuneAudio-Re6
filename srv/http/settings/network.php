@@ -11,6 +11,7 @@
 		<br>&emsp;- After a device paired for the first time, disconnect before power off the device.
 		<br>&emsp;- Disconnect / force connect: Tap Bluetooth icon.
 		<br>- Scan for devices while listening makes Bluetooth audio choppy.
+		<br>- Can be used as Bluetooth speakers, streaming from other devices.
 	<?php } ?>
 		<br><br></span>
 
