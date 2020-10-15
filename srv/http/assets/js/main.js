@@ -1522,7 +1522,19 @@ $( '#lib-list' ).on( 'taphold', '.licoverimg',  function() {
 		window.open( 'https://www.last.fm/music/'+ $this.find( '.liartist' ).text() +'/'+ $this.find( '.lialbum' ).text(), '_blank' );
 		return
 	} else if ( $this.find( '.fa-music' ).length || G.mode === 'webradio' || $target.data( 'target' ) ) {
-		contextmenuLibrary( $this, $target );
+		if ( G.display.tapaddplay ) {
+			G.list = {};
+			G.list.li = $this;
+			var command = [ 'pladd', $this.find( '.lipath' ).text(), 'addplay', 0.2 ];
+			addReplace( 'addplay', command, 'Add to Playlist and play' )
+		} else if ( G.display.tapreplaceplay ) {
+			G.list = {};
+			G.list.li = $this;
+			var command = [ 'pladd', $this.find( '.lipath' ).text(), 'replaceplay', 0.2 ];
+			addReplace( 'replaceplay', command, 'Replace Playlist and play' )
+		} else {
+			contextmenuLibrary( $this, $target );
+		}
 		return
 	}
 	$this.addClass( 'active' );
