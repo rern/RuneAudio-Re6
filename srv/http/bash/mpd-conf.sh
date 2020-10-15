@@ -18,6 +18,10 @@ mpdconf=$( sed '/audio_output/,/}/ d' $mpdfile ) # remove all outputs
 
 . /srv/http/bash/mpd-devices.sh
 
+pushstream() {
+	curl -s -X POST http://127.0.0.1/pub?id=$1 -d "$2"
+}
+
 for (( i=0; i < cardL; i++ )); do
 	card=${Acard[i]}
 	dop=${Adop[i]}
@@ -93,7 +97,6 @@ audio_output {
 fi
 
 if [[ $1 == bt ]]; then
-	sleep 3
 	macs=( $( bluetoothctl paired-devices | cut -d' ' -f2 ) )
 	[[ -z $mac ]] && sleep 3 && macs=( $( bluetoothctl paired-devices | cut -d' ' -f2 ) )
 	for mac in "${macs[@]}"; do
@@ -109,6 +112,7 @@ audio_output {
 	mixer_type     "software"
 }'
 fi
+pushstream refresh '{"page":"network"}' # bluetooth status
 
 echo "$mpdconf" > $mpdfile
 
@@ -120,9 +124,6 @@ if [[ -e $dirsystem/updating ]]; then
 	[[ $path == rescan ]] && mpc rescan || mpc update "$path"
 fi
 
-pushstream() {
-	curl -s -X POST http://127.0.0.1/pub?id=$1 -d "$2"
-}
 status=$( /srv/http/bash/status.sh )
 pushstream mpdplayer "$status"
 pushstream refresh '{"page":"mpd"}'
