@@ -142,10 +142,13 @@ if [[ $# -gt 0 && $1 != bt ]]; then
 			| grep -B1 'pvolume' \
 			| head -1 \
 			| cut -d"'" -f2 )
-		rm -f $usbdacfile
+		rm -f $usbdacfile /etc/asound.conf
 	else # added usb dac - last one
 		[[ $mixertype == 'none' && -n $hwmixer ]] && amixer -c $card sset "$hwmixer" 0dB
 		echo $aplayname > $usbdacfile # flag - active usb
+		echo "\
+defaults.pcm.card $card
+defaults.ctl.card $card" > /etc/asound.conf # set default card
 	fi
 	
 	pushstream notify '{"title":"Audio Output","text":"'"$name"'","icon": "output"}'
