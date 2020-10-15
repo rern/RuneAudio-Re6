@@ -235,6 +235,11 @@ $( '#airplay' ).click( function( e ) {
 	notify( 'AirPlay Renderer', G.airplay, 'airplay' );
 	bash( [ 'airplay', G.airplay ], getStatusRefresh( 'shairport-sync' ) );
 } );
+$( '#bluealsa' ).click( function( e ) {
+	G.bluealsa = $( this ).prop( 'checked' );
+	notify( 'AirPlay Renderer', G.bluealsa, 'bluetooth' );
+	bash( [ 'bluealsa', G.bluealsa ], getStatusRefresh( 'bluealsa-aplay' ) );
+} );
 $( '#snapclient' ).click( function( e ) {
 	G.snapclient = $( this ).prop( 'checked' );
 	$( '#setting-snapclient' ).toggleClass( 'hide', !G.snapclient );
