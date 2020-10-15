@@ -503,7 +503,7 @@ function getPlaybackStatus() {
 		} else if ( G.library ) {
 			setButtonUpdating();
 			if ( !$( '#lib-search-close' ).text() && !G.librarylist ) renderLibrary();
-			if ( count ) {
+			if ( counts ) {
 				var counts = G.status.counts;
 				$( '#lib-mode-list' ).data( 'count', counts.title )
 				$( '#li-count' ).html( counts.title.toLocaleString() +' <i class="fa fa-music gr"></i>' );
