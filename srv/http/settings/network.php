@@ -12,6 +12,7 @@
 		<br>&emsp;- Disconnect / force connect: Tap Bluetooth icon.
 		<br>- Scan for devices while listening makes Bluetooth audio choppy.
 		<br>- Can be used as Bluetooth speakers, streaming from other devices.
+		<br>- Connect one device at a time to avoid complications.
 	<?php } ?>
 		<br><br></span>
 
