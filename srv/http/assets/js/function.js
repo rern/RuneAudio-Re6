@@ -111,7 +111,7 @@ function contextmenuLibrary( $li, $target ) {
 		&& !$li.hasClass( 'licover' )
 	) {
 		var i = G.display.tapaddplay ? 0 : 1;
-		$menu.find( 'a:eq( '+ i +' ) .submenu' ).click();
+		$menu.find( '.submenu:eq( '+ i +' )' ).click();
 		$li.addClass( 'active' );
 		return
 	}
