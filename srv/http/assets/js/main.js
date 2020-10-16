@@ -149,7 +149,9 @@ $( '#snapclient' ).click( function() {
 	} );
 	banner( 'Snapcast - Sync Streaming Client', ( G.status.snapclient ? 'Stop ...' : 'Start ...' ), 'snapcast blink', -1 );
 } );
-$( '#update' ).click( infoUpdate );
+$( '#update' ).click( function() {
+	infoUpdate( '' );
+} );
 $( '#power' ).click( function() {
 	info( {
 		  icon        : 'power'
