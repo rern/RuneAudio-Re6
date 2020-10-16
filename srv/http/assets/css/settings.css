@@ -519,7 +519,6 @@ input:checked + .switchlabel:after {
 .col-r.text {
 	float: left;
 	width: auto;
-	padding-left: 5px !important;
 	white-space: nowrap;
 	line-height: 26px;
 }
