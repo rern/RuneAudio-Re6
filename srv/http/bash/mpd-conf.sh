@@ -103,9 +103,11 @@ if [[ $1 == bt ]]; then
 	[[ -z $mac ]] && sleep 3 && macs=( $( bluetoothctl paired-devices | cut -d' ' -f2 ) )
 	for mac in "${macs[@]}"; do
 		(( $( bluetoothctl info $mac | grep 'Connected: yes\|Audio Sink' | wc -l ) == 2 )) && break
+		mac=
 	done
-	name=$( bluetoothctl paired-devices | grep $mac | cut -d' ' -f3- )
-	mpdconf+='
+	if [[ -n $mac ]]; then
+		name=$( bluetoothctl paired-devices | grep $mac | cut -d' ' -f3- )
+		mpdconf+='
 
 audio_output {
 	name           "'$name'"
@@ -113,6 +115,7 @@ audio_output {
 	type           "alsa"
 	mixer_type     "software"
 }'
+	fi
 fi
 
 echo "$mpdconf" > $mpdfile
