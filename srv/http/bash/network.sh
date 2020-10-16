@@ -61,6 +61,11 @@ btpair )
 	bluetoothctl connect $mac
 	[[ $? == 0 ]] && pushRefresh || echo -1
 	;;
+btset )
+	bluetoothctl discoverable yes
+	bluetoothctl discoverable-timeout 0
+	bluetoothctl system-alias $( cat $dirsystem/hostname )
+	;;
 connect )
 	wlan=${args[1]}
 	ssid=${args[2]}
