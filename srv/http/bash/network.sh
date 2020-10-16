@@ -51,11 +51,11 @@ accesspointset )
 	;;
 btdisconnect )
 	bluetoothctl disconnect ${args[1]}
-	[[ $? == 0 ]] && pushRefresh
+	sleep 3
+	pushRefresh
 	;;
 btpair )
 	mac=${args[1]}
-	bluetoothctl disconnect
 	bluetoothctl trust $mac
 	bluetoothctl pair $mac
 	bluetoothctl connect $mac
