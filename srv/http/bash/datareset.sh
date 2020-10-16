@@ -40,14 +40,15 @@ if [[ -n $1 ]]; then
 					| jq -r .rr$version.version )
 else
 	version=$( cat $dirsystem/version )
-	mv $diraddons $dirtmp
+	versionui=$( cat $diraddons/rr$version )
+	
 fi
 rm -rf $dirdata
 mkdir -p $dirdata/{addons,bookmarks,embedded,lyrics,mpd,playlists,system,tmp,webradios,webradiosimg} /mnt/MPD/{NAS,SD,USB}
 ln -sf /dev/shm $dirdata
 
 echo $version > $dirsystem/version
-echo $versionui >$diraddons/rr$version
+echo $versionui > $diraddons/rr$version
 mv $dirtmp/addons $dirdata 2> /dev/null
 
 # display
