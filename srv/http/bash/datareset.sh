@@ -33,6 +33,7 @@ dtparam=audio=on
 	
 	echo -n "$config" > /boot/config.txt
 fi
+
 mv $diraddons $dirtmp 2> /dev/null
 rm -rf $dirdata
 
