@@ -106,9 +106,17 @@ data+='
 	, "timezone"        : "'$timezone'"
 	, "version"         : "'$version'"
 	, "versionui"       : '$( cat /srv/http/data/addons/rr$version 2> /dev/null || echo 0 )
-[[ -e /usr/bin/bluetoothctl  ]] && data+='
-	, "bluetooth"       : '$( grep -q dtparam=krnbt=on /boot/config.txt && echo true || echo false )'
-	, "bluetoothon"     : '$( [[ $( systemctl is-active bluetooth ) == active ]] && echo true || echo false )
+if [[ -e /usr/bin/bluetoothctl  ]]; then
+	bluetooth=$( grep -q dtparam=krnbt=on /boot/config.txt && echo true || echo false )
+	bluetoothon=$( [[ $( systemctl is-active bluetooth ) == active ]] && echo true || echo false )
+	if [[ $bluetooth == true && $bluetoothon == false ]]; then
+		systemctl stop bluetooth
+		systemctl start bluetooth
+	fi
+	data+='
+	, "bluetooth"       : '$bluetooth'
+	, "bluetoothon"     : '$bluetoothon
+fi
 # renderer
 [[ -e /usr/bin/shairport-sync  ]] && data+='
 	, "airplay"         : '$( systemctl -q is-active shairport-sync && echo true || echo false )
