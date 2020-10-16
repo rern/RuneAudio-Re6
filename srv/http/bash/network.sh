@@ -62,9 +62,9 @@ btpair )
 	[[ $? == 0 ]] && pushRefresh || echo -1
 	;;
 btset )
+	bluetoothctl system-alias $( cat $dirsystem/hostname )
 	bluetoothctl discoverable yes
 	bluetoothctl discoverable-timeout 0
-	bluetoothctl system-alias $( cat $dirsystem/hostname )
 	;;
 connect )
 	wlan=${args[1]}

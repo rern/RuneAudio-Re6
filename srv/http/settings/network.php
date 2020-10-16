@@ -10,15 +10,10 @@
 		<br>- Use wired LAN if possible for better performance.
 	<?php if ( file_exists( '/usr/bin/bluetoothctl' ) ) { ?>
 		<br><wh>Bluetooth</wh>:
-		<br>- As source or target, send or receive signal to/from another device.
-		<br>- Scan and connect
-		<br>&emsp;- Initiate from RuneAudio+R, not from devices.
-		<br>&emsp;- Confirm pairing on PIN required devices.
-		<br>- To reconnect automatically when power on:
-		<br>&emsp;(After paired, first time only)
-		<br>&emsp;- Disconnect - Tap Bluetooth icon > Disconnect
-		<br>&emsp;- Power off Bluetooth device
-		<br>- Scan for devices while listening makes Bluetooth audio choppy.
+		<br>- As source to send signal to another device.
+		<br>- As target to receive signal:
+		<br>&emsp; - SSH > <code>bluetoothctl</code>
+		<br>&emsp; - During connecting process: <code>Authorize service</code> <code>yes</code>
 	<?php } ?>
 		<br><br></span>
 
