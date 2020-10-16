@@ -34,23 +34,18 @@ dtparam=audio=on
 	echo -n "$config" > /boot/config.txt
 fi
 
-if [[ -n $1 ]]; then
-	version=$1
-	versionui=$( wget -qO - https://github.com/rern/RuneAudio_Addons/raw/master/addons-list.json \
-					| jq -r .rr$version.version )
-else
-	version=$( cat $dirsystem/version )
-	versionui=$( cat $diraddons/rr$version )
-	
-fi
+mv $diraddons $dirtmp 2> /dev/null
 rm -rf $dirdata
+
 mkdir -p $dirdata/{addons,bookmarks,embedded,lyrics,mpd,playlists,system,tmp,webradios,webradiosimg} /mnt/MPD/{NAS,SD,USB}
 ln -sf /dev/shm $dirdata
-
-echo $version > $dirsystem/version
-echo $versionui > $diraddons/rr$version
 mv $dirtmp/addons $dirdata 2> /dev/null
-
+if [[ -n $1 ]]; then
+	echo $1 > $dirsystem/version
+	wget -qO - https://github.com/rern/RuneAudio_Addons/raw/master/addons-list.json \
+		| jq -r .rr$version.version \
+		> $diraddons/rr$version
+fi
 # display
 echo '{
 	"album": true,
