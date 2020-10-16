@@ -11,9 +11,11 @@
 	<?php if ( file_exists( '/usr/bin/bluetoothctl' ) ) { ?>
 		<br><wh>Bluetooth</wh>:
 		<br>- As source to send signal to another device.
-		<br>- As target to receive signal:
-		<br>&emsp; - SSH > <code>bluetoothctl</code>
-		<br>&emsp; - During connecting process: <code>Authorize service</code> <code>yes</code>
+		<br>- As target to receive signal - Authorization:
+		<br>&emsp; - Initiate scan from sender device.
+		<br>&emsp; - SSH before scan: <code>bluetoothctl</code>
+		<br>&emsp; - During connecting process: <code>Authorize service</code> <code>yes</code> to all
+		<br>&emsp; - Prompt changed to device name: <code>exit</code>
 	<?php } ?>
 		<br><br></span>
 
