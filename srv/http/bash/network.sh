@@ -55,6 +55,7 @@ btdisconnect )
 	;;
 btpair )
 	mac=${args[1]}
+	bluetoothctl disconnect
 	bluetoothctl trust $mac
 	bluetoothctl pair $mac
 	bluetoothctl connect $mac

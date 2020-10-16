@@ -3,13 +3,24 @@
 	<heading class="noline">Interfaces<i id="refreshing" class="fa fa-wifi-3 blink hide"></i><?=$help?></heading>
 	<ul id="listinterfaces" class="entries"></ul>
 	<span class="help-block hide">
-		<wh>LAN</wh>:
+			- Tap item to start scanning.
+		<br>- Tap icon for actions / options.
+		<br>
+		<br><wh>LAN</wh>:
 		<br>- Use wired LAN if possible for better performance.
 	<?php if ( file_exists( '/usr/bin/bluetoothctl' ) ) { ?>
 		<br><wh>Bluetooth</wh>:
-		<br>- Paired devices reconnect automatically when power on.
+		<br>- As source or target, send or receive signal to/from another device.
+		<br>- Scan and connect
+		<br>&emsp;- Initiate from RuneAudio+R, not from devices.
+		<br>&emsp;- Confirm pairing on PIN required devices.
+		<br>- To reconnect automatically when power on:
+		<br>&emsp;(After paired, first time only)
+		<br>&emsp;- Disconnect - Tap Bluetooth icon > Disconnect
+		<br>&emsp;- Power off Bluetooth device
 		<br>- Scan for devices while listening makes Bluetooth audio choppy.
-	<?php } ?>		<br><br></span>
+	<?php } ?>
+		<br><br></span>
 
 	<div id="divwebui" class="hide">
 		<div class="col-l">Web UI</div>
@@ -55,14 +66,14 @@
 
 	<?php if ( file_exists( '/usr/bin/hostapd' ) ) { ?>
 <div id="divaccesspoint">
-	<heading>RPi Access Point<?=$help?></heading>
+	<heading>RuneAudio+R Access Point<?=$help?></heading>
 	<div class="col-l">Enable</div>
 	<div class="col-r">
 		<input id="accesspoint" type="checkbox">
 		<div class="switchlabel" for="accesspoint"></div>
 		<i id="settings-accesspoint" class="setting fa fa-gear"></i>
-		<span class="help-block hide">Connect with RPi Wi-Fi directly when no routers available.
-			<br>RPi access point should be used only when necessary.</span>
+		<span class="help-block hide">Connect with RuneAudio+R Wi-Fi directly when no routers available.
+			<br>RuneAudio+R access point should be used only when necessary.</span>
 	</div>
 	<p class="brhalf"></p>
 	<div id="boxqr" class="hide">
@@ -71,7 +82,7 @@
 			<gr>SSID:</gr> <span id="ssid"></span><br>
 			<gr>Password:</gr> <span id="passphrase"></span>
 			<div id="qraccesspoint" class="qr"></div>
-			<span class="help-block hide">Scan QR code or find the SSID and use the password to connect remote devices with RPi access point.</span>
+			<span class="help-block hide">Scan QR code or find the SSID and use the password to connect remote devices with RuneAudio+R access point.</span>
 		</div>
 		<div class="col-l">Web UI</div>
 		<div class="col-r">

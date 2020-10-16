@@ -111,7 +111,7 @@ function contextmenuLibrary( $li, $target ) {
 		&& !$li.hasClass( 'licover' )
 	) {
 		var i = G.display.tapaddplay ? 0 : 1;
-		$menu.find( 'a:eq( '+ i +' ) .submenu' ).click();
+		$menu.find( '.submenu:eq( '+ i +' )' ).click();
 		$li.addClass( 'active' );
 		return
 	}
@@ -503,13 +503,15 @@ function getPlaybackStatus() {
 		} else if ( G.library ) {
 			setButtonUpdating();
 			if ( !$( '#lib-search-close' ).text() && !G.librarylist ) renderLibrary();
-			var counts = G.status.counts;
-			$( '#lib-mode-list' ).data( 'count', counts.title )
-			$( '#li-count' ).html( counts.title.toLocaleString() +' <i class="fa fa-music gr"></i>' );
-			delete counts.title;
-			$.each( counts, function( key, val ) {
-				$( '#mode-'+ key ).find( 'grl' ).text( val ? val.toLocaleString() : '' );
-			} );
+			if ( counts ) {
+				var counts = G.status.counts;
+				$( '#lib-mode-list' ).data( 'count', counts.title )
+				$( '#li-count' ).html( counts.title.toLocaleString() +' <i class="fa fa-music gr"></i>' );
+				delete counts.title;
+				$.each( counts, function( key, val ) {
+					$( '#mode-'+ key ).find( 'grl' ).text( val ? val.toLocaleString() : '' );
+				} );
+			}
 		} else {
 			setButtonUpdating();
 			if ( !G.savedlist && !G.savedplaylist && !G.sortable && !$( '#pl-search-close' ).text() ) getPlaylist();

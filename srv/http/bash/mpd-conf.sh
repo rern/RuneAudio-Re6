@@ -18,6 +18,10 @@ mpdconf=$( sed '/audio_output/,/}/ d' $mpdfile ) # remove all outputs
 
 . /srv/http/bash/mpd-devices.sh
 
+pushstream() {
+	curl -s -X POST http://127.0.0.1/pub?id=$1 -d "$2"
+}
+
 for (( i=0; i < cardL; i++ )); do
 	card=${Acard[i]}
 	dop=${Adop[i]}
@@ -92,8 +96,9 @@ audio_output {
 }'
 fi
 
+pushstream refresh '{"page":"network"}' # bluetooth status
+
 if [[ $1 == bt ]]; then
-	sleep 3
 	macs=( $( bluetoothctl paired-devices | cut -d' ' -f2 ) )
 	[[ -z $mac ]] && sleep 3 && macs=( $( bluetoothctl paired-devices | cut -d' ' -f2 ) )
 	for mac in "${macs[@]}"; do
@@ -115,14 +120,12 @@ echo "$mpdconf" > $mpdfile
 usbdacfile=/srv/http/data/shm/usbdac
 
 systemctl restart mpd  # "restart" while not running = start + stop + start
+
 if [[ -e $dirsystem/updating ]]; then
 	path=$( cat $dirsystem/updating )
 	[[ $path == rescan ]] && mpc rescan || mpc update "$path"
 fi
 
-pushstream() {
-	curl -s -X POST http://127.0.0.1/pub?id=$1 -d "$2"
-}
 status=$( /srv/http/bash/status.sh )
 pushstream mpdplayer "$status"
 pushstream refresh '{"page":"mpd"}'
@@ -139,10 +142,13 @@ if [[ $# -gt 0 && $1 != bt ]]; then
 			| grep -B1 'pvolume' \
 			| head -1 \
 			| cut -d"'" -f2 )
-		rm -f $usbdacfile
+		rm -f $usbdacfile /etc/asound.conf
 	else # added usb dac - last one
 		[[ $mixertype == 'none' && -n $hwmixer ]] && amixer -c $card sset "$hwmixer" 0dB
 		echo $aplayname > $usbdacfile # flag - active usb
+		echo "\
+defaults.pcm.card $card
+defaults.ctl.card $card" > /etc/asound.conf # set default card
 	fi
 	
 	pushstream notify '{"title":"Audio Output","text":"'"$name"'","icon": "output"}'

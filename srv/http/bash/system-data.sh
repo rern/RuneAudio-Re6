@@ -24,7 +24,8 @@ bullet='<gr> &bull; </gr>'
 cpuload=$( cat /proc/loadavg | cut -d' ' -f1-3 | sed 's/ /\&emsp;/g' )
 cputemp=$( printf "%.0f\n" $( /opt/vc/bin/vcgencmd measure_temp | cut -d= -f2 | cut -d\' -f1 ) )
 date=( $( date +'%T %F' ) )
-startup=$( systemd-analyze | head -1 | cut -d' ' -f4,7 | tr -d s )
+startup=$( systemd-analyze | head -1 | cut -d' ' -f4- \
+			| sed 's/ = .*//; s|(|<gr class=\\"wide\\">(|g; s|)|)</gr>|g' )
 timezone=$( timedatectl | awk '/zone:/ {print $3}' )
 time="${date[0]}$bullet${date[1]}&emsp;<grw>${timezone//\// &middot; }</grw>"
 uptime=$( uptime -p | tr -d 's,' | sed 's/up //; s/ day/d/; s/ hour/h/; s/ minute/m/' )
