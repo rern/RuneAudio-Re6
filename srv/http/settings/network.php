@@ -7,12 +7,12 @@
 		<br>- Use wired LAN if possible for better performance.
 	<?php if ( file_exists( '/usr/bin/bluetoothctl' ) ) { ?>
 		<br><wh>Bluetooth</wh>:
+		<br>- Scan and connect from RPi, not from devices.
 		<br>- To reconnect automatically when power on.
 		<br>&emsp;- After a device paired for the first time, disconnect before power off the device.
 		<br>&emsp;- Disconnect / force connect: Tap Bluetooth icon.
 		<br>- Scan for devices while listening makes Bluetooth audio choppy.
-		<br>- Can be used as Bluetooth speakers, streaming from other devices.
-		<br>- Connect one device at a time to avoid complications.
+		<br>- Can be used as Bluetooth speakers, receive from other devices.
 	<?php } ?>
 		<br><br></span>
 
