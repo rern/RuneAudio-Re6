@@ -55,6 +55,10 @@ btdisconnect )
 	pushRefresh
 	;;
 btpair )
+	macs=$( bluetoothctl paired-devices | cut -d' ' -f2 )
+	for mac in "${macs[@]}"; do
+		bluetoothctl connect $mac
+	done
 	mac=${args[1]}
 	bluetoothctl trust $mac
 	bluetoothctl pair $mac

@@ -102,10 +102,10 @@ if [[ $1 == bt ]]; then
 	macs=( $( bluetoothctl paired-devices | cut -d' ' -f2 ) )
 	[[ -z $mac ]] && sleep 3 && macs=( $( bluetoothctl paired-devices | cut -d' ' -f2 ) )
 	for mac in "${macs[@]}"; do
-		bluetoothctl info $mac | grep -q 'Connected: yes' && break
+		(( $( bluetoothctl info $mac | grep 'Connected: yes\|Audio Sink' | wc -l ) == 2 )) && break
 	done
 	name=$( bluetoothctl paired-devices | grep $mac | cut -d' ' -f3- )
-		mpdconf+='
+	mpdconf+='
 
 audio_output {
 	name           "'$name'"

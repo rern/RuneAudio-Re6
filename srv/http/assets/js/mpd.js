@@ -20,6 +20,9 @@ function getMpdconf() {
 		$( '#codempdconf' )
 			.html( status )
 			.removeClass( 'hide' );
+		setTimeout( function() {
+			$( '#codempdconf' ).scrollTop( $( '#codempdconf' ).height() );
+		}, 100 );
 	} );
 }
 function getStatus() {
@@ -120,8 +123,6 @@ refreshData = function() {
 		$( '#setting-buffer' ).toggleClass( 'hide', G.buffer === '' );
 		$( '#ffmpeg' ).prop( 'checked', G.ffmpeg );
 		if ( !$( '#codeaplay' ).hasClass( 'hide' ) ) getAplay();
-		if ( !$( '#codestatus' ).hasClass( 'hide' ) ) getStatus();
-		if ( !$( '#codempdconf' ).hasClass( 'hide' ) ) getMpdconf();
 		if ( !$( '#codeamixer' ).hasClass( 'hide' ) ) getAmixer();
 		if ( !$( '#codestatus' ).hasClass( 'hide' ) ) getStatus();
 		if ( !$( '#codempdconf' ).hasClass( 'hide' ) ) getMpdconf();
