@@ -1,10 +1,10 @@
 <div id="divinterface">
 <?php if ( exec ( 'ifconfig | grep ^eth' ) ) { ?>
-	<div>
 	<heading id="headlan" class="noline">LAN<i id="lanadd" class="fa fa-plus-circle"></i></heading>
 	<ul id="listlan" class="entries"></ul>
 <?php }
 	  if ( exec ( 'ifconfig | grep ^wlan' ) ) { ?>
+	<div>
 	<heading id="headwl" class="noline">Wi-Fi<i id="wladd" class="fa fa-plus-circle"></i><i id="wlscan" class="fa fa-search"></i><?=$help?></heading>
 	<ul id="listwl" class="entries"></ul>
 	<span class="help-block hide">
