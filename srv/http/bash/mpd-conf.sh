@@ -99,14 +99,17 @@ fi
 pushstream refresh '{"page":"network"}' # bluetooth status
 
 if [[ $1 == bt ]]; then
-	macs=( $( bluetoothctl paired-devices | cut -d' ' -f2 ) )
-	[[ -z $mac ]] && sleep 3 && macs=( $( bluetoothctl paired-devices | cut -d' ' -f2 ) )
-	for mac in "${macs[@]}"; do
-		(( $( bluetoothctl info $mac | grep 'Connected: yes\|Audio Sink' | wc -l ) == 2 )) && break
-		mac=
-	done
-	if [[ -n $mac ]]; then
-		name=$( bluetoothctl paired-devices | grep $mac | cut -d' ' -f3- )
+	lines=$( bluetoothctl devices | cut -d' ' -f2- )
+	readarray -t lines <<<"$lines"
+	for line in "${lines[@]}"; do
+		name=${line#* }
+		dash=${name//[^-]}
+		(( ${#dash} == 5 )) && continue # filter out unnamed devices
+		mac=${line/ *}
+		! bluetoothctl info $mac | grep -q 'Audio Sink' && continue
+		
+		bluetoothctl pair $mac
+		bluetoothctl connect $mac
 		mpdconf+='
 
 audio_output {
@@ -115,7 +118,7 @@ audio_output {
 	type           "alsa"
 	mixer_type     "software"
 }'
-	fi
+	done
 fi
 
 echo "$mpdconf" > $mpdfile
