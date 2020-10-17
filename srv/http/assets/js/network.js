@@ -8,7 +8,7 @@ function btRender( data ) {
 				+'<a class="liname wh">'+ list.name +'</a>';
 				+'</li>';
 	} );
-	$( '#listbt' ).html( html );
+	$( '#listbtscan' ).html( html );
 }
 function btScan() {
 	bash( '/srv/http/bash/network-scanbt.sh', function( data ) {
@@ -210,41 +210,51 @@ function nicsStatus() {
 		if ( 'bluetooth' in extra ) G.bluetooth = extra.bluetooth;
 		G.hostname = extra.hostname;
 		var html = '';
+		var htmllan = '';
+		var htmlwl = '';
+		var htmlbt = '';
 		$.each( list, function( i, val ) {
-			html += '<li class="'+ val.interface +'"';
+			html = '<li class="'+ val.interface +'"';
 			html += val.ip ? ' data-ip="'+ val.ip +'"' : '';
 			html += val.gateway ? ' data-gateway="'+ val.gateway +'"' : '';
 			html += ' data-dhcp="'+ val.dhcp +'"';
 			html += '><i class="fa fa-';
 			html += val.interface === 'eth0' ? 'lan"></i>LAN' : 'wifi-3"></i>Wi-Fi';
 			if ( val.interface === 'eth0' ) {
-				html += val.ip ? '&ensp;<grn>&bull;</grn>&ensp;'+ val.ip : '';
-				html += val.gateway ? '<gr>&ensp;&raquo;&ensp;'+ val.gateway +'&ensp;</gr>' : '';
-			} else if ( val.ip ) {
+				if ( !val.ip ) return
+				
+				htmllan = html;
+				htmllan += val.ip ? '&ensp;<grn>&bull;</grn>&ensp;'+ val.ip : '';
+				htmllan += val.gateway ? '<gr>&ensp;&raquo;&ensp;'+ val.gateway +'&ensp;</gr>' : '';
+				htmllan += '</li>';
+			} else if ( val.interface.slice( 0, 4 ) === 'wlan' ) {
+				if ( !val.ip ) return
+				
+				G.wlcurrent = val.interface;
+				htmlwl = html;
 				if ( accesspoint && G.hostapd && val.ip === G.hostapdip ) {
-					html += '&ensp;<grn>&bull;</grn>&ensp;<gr>RPi access point&ensp;&raquo;&ensp;</gr>'+ G.hostapdip
+					htmlwl += '&ensp;<grn>&bull;</grn>&ensp;<gr>RPi access point&ensp;&raquo;&ensp;</gr>'+ G.hostapdip
 				} else {
 					G.wlconnected = val.interface;
-					html += '&ensp;<grn>&bull;</grn>&ensp;'+ val.ip +'<gr>&ensp;&raquo;&ensp;'+ val.gateway +'&ensp;&bull;&ensp;</gr>'+ val.ssid;
+					htmlwl += '&ensp;<grn>&bull;</grn>&ensp;'+ val.ip +'<gr>&ensp;&raquo;&ensp;'+ val.gateway +'&ensp;&bull;&ensp;</gr>'+ val.ssid;
 				}
-			} else {
-				html += '&emsp;<i class="fa fa-search"></i><gr>Scan</gr>';
+				htmlwl += '</li>';
 			}
-			html += '</li>';
 		} );
+		if ( !G.wlcurrent ) G.wlcurrent = 'wlan0';
 		if ( 'bluetooth' in G ) {
 			if ( G.bluetooth ) {
 				G.bluetooth.forEach( function( list ) {
-					html += '<li class="bt" data-name="'+ list.name +'" data-connected="'+ list.connected +'" data-mac="'+ list.mac +'"><i class="fa fa-bluetooth"></i>Bluetooth&ensp;';
-					html += ( list.connected ? '<grn>&bull;</grn>&ensp;' : '<gr>&bull;</gr>&ensp;' ) + list.name +'</li>';
+					htmlbt = '<li class="bt" data-name="'+ list.name +'" data-connected="'+ list.connected +'" data-mac="'+ list.mac +'"><i class="fa fa-bluetooth"></i>Bluetooth&ensp;';
+					htmlbt += ( list.connected ? '<grn>&bull;</grn>&ensp;' : '<gr>&bull;</gr>&ensp;' ) + list.name +'</li>';
 				} );
-			} else {
-				html += '<li class="bt"><i class="fa fa-bluetooth"></i>Bluetooth&ensp;<i class="fa fa-search"></i></i><gr>Scan</gr></li>';
 			}
 			$( '#ifconfig' ).next().find( 'code' ).text( 'ifconfig; bluetoothctl show' );
 		}
 		$( '#refreshing' ).addClass( 'hide' );
-		$( '#listinterfaces' ).html( html );
+		$( '#listlan' ).html( htmllan );
+		$( '#listwl' ).html( htmlwl );
+		$( '#listbt' ).html( htmlbt );
 		if ( $( '#divinterface' ).hasClass( 'hide' ) ) return
 		
 		renderQR();
@@ -304,7 +314,7 @@ function wlanScan() {
 		} else {
 			html += '<li><i class="fa fa-lock"></i><gr>(no accesspoints found)</gr></li>';
 		}
-		$( '#listwifi' ).html( html +'</li>' );
+		$( '#listwlscan' ).html( html +'</li>' );
 		intervalscan = setTimeout( wlanScan, 12000 );
 	}, 'json' );
 }
@@ -332,70 +342,38 @@ $( '.back' ).click( function() {
 	clearTimeout( intervalscan );
 	$( '#divinterface, #divwebui, #divaccesspoint' ).removeClass( 'hide' );
 	$( '#divwifi, #divbluetooth' ).addClass( 'hide' );
-	$( '#listwifi, #listbt' ).empty();
+	$( '#listwlscan, #listbtscan' ).empty();
 	nicsStatus();
 } );
-$( '#listinterfaces' ).on( 'click', 'li', function( e ) {
+$( '#listlan' ).on( 'click', 'li', function() {
 	var $this = $( this );
-	G.wlcurrent = $this.prop( 'class' );
-	if ( G.wlcurrent !== 'eth0' ) {
-		if ( G.wlcurrent !== 'bt' ) {
-			if ( G.hostapd && G.wlcurrent === 'wlan0' ) {
-				info( {
-					  icon    : 'wifi-3'
-					, title   : 'Wi-Fi'
-					, message : 'Access Point must be disabled.'
-				} );
-				return
-			} else {
-				wlanStatus();
-			}
-		} else {
-			var name = $( this ).data( 'name' );
-			var connected = $( this ).data( 'connected' );
-			var mac = $( this ).data( 'mac' );
-			if ( $( e.target ).hasClass( 'fa-bluetooth' ) && name ) {
-				info( {
-					  icon    : 'bluetooth'
-					, title   : 'Bluetooth'
-					, message : name
-					, buttonwidth : 1
-					, buttonlabel : '<i class="fa fa-minus-circle"></i>Forget'
-					, buttoncolor : '#bb2828'
-					, button      : function() {
-						console.log( "/srv/http/bash/network.sh btremove$'\n'"+ mac )
-						bash( "/srv/http/bash/network.sh btremove$'\n'"+ mac );
-					}
-					, oklabel : connected ? 'Disconnect' : 'Connect'
-					, okcolor : connected ? '#de810e' : ''
-					, ok      : function() {
-						if ( connected ) {
-							bash( '/srv/http/bash/network.sh btdisconnect' );
-						} else {
-							bash( '/srv/http/bash/network.sh btpair' );
-						}
-					}
-				} );
-			} else {
-				$( '#divinterface, #divwebui, #divaccesspoint' ).addClass( 'hide' );
-				$( '#divbluetooth' ).removeClass( 'hide' );
-				btScan();
-			}
-		}
+	if ( !$this.find( 'grn' ).length ) return
+	
+	editLAN( {
+		  ip      : $this.data( 'ip' ) || ''
+		, gateway : $this.data( 'gateway' ) || ''
+		, dhcp    : $this.data( 'dhcp' )
+	} );
+	$( '#infoCheckBox' ).on( 'click', 'input', function() {
+		$( '#infoText' ).toggle( $( this ).prop( 'checked' ) );
+	} );
+} );
+$( '#wladd' ).click( function() {
+	editWiFi();
+} );
+$( '#wlscan' ).click( function() {
+	if ( G.hostapd ) {
+		info( {
+			  icon    : 'wifi-3'
+			, title   : 'Wi-Fi'
+			, message : 'Access Point must be disabled.'
+		} );
+		return
 	} else {
-		if ( !$this.find( 'grn' ).length ) return
-		
-		editLAN( {
-			  ip      : $this.data( 'ip' ) || ''
-			, gateway : $this.data( 'gateway' ) || ''
-			, dhcp    : $this.data( 'dhcp' )
-		} );
-		$( '#infoCheckBox' ).on( 'click', 'input', function() {
-			$( '#infoText' ).toggle( $( this ).prop( 'checked' ) );
-		} );
+		wlanStatus();
 	}
 } );
-$( '#listwifi' ).on( 'click', 'li', function( e ) {
+$( '#listwlscan' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
 	var connected = $this.data( 'connected' );
 	var profile = $this.data( 'profile' ) || connected;
@@ -477,20 +455,42 @@ $( '#listwifi' ).on( 'click', 'li', function( e ) {
 		}
 	} );
 } );
-$( '#add' ).click( function() {
-	editWiFi();
+$( '#listbt' ).on( 'click', 'li', function() {
+	var $this = $( this );
+	var name = $this.data( 'name' );
+	var connected = $this.data( 'connected' );
+	var mac = $this.data( 'mac' );
+	info( {
+		  icon    : 'bluetooth'
+		, title   : 'Bluetooth'
+		, message : name
+		, buttonwidth : 1
+		, buttonlabel : '<i class="fa fa-minus-circle"></i>Forget'
+		, buttoncolor : '#bb2828'
+		, button      : function() {
+			bash( "/srv/http/bash/network.sh btremove$'\n'"+ mac );
+		}
+		, oklabel : connected ? 'Disconnect' : 'Connect'
+		, okcolor : connected ? '#de810e' : ''
+		, ok      : function() {
+			if ( connected ) {
+				bash( '/srv/http/bash/network.sh btdisconnect' );
+			} else {
+				bash( '/srv/http/bash/network.sh btpair' );
+			}
+		}
+	} );
 } );
-$( '#listbt' ).on( 'click', 'li', function( e ) {
+$( '#btscan' ).click( function() {
+	$( '#divinterface, #divwebui, #divaccesspoint' ).addClass( 'hide' );
+	$( '#divbluetooth' ).removeClass( 'hide' );
+	btScan();
+} );
+$( '#listbtscan' ).on( 'click', 'li', function( e ) {
 	$this = $( this );
 	var mac = $this.data( 'mac' );
 	var name = '<wh>'+ $this.find( '.liname' ).text() +'</wh>';
-	if ( $this.data( 'connected' ) ) {
-		notify( 'Bluetooth', 'Disconnect ...', 'bluetooth' );
-		bash( [ 'btdisconnect', mac ], function( data ) {
-			bannerHide();
-			btScan();
-		} );
-	} else {
+	if ( !$this.data( 'connected' ) ) {
 		notify( 'Bluetooth', 'Pair ...', 'bluetooth' );
 		bash( [ 'btpair', mac ], function( data ) {
 			bannerHide();
