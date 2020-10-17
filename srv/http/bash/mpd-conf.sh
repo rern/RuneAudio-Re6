@@ -104,7 +104,7 @@ if [[ $1 == bt ]]; then
 	for device in "${paired[@]}"; do
 		mac=$( cut -d' ' -f2 <<< "$device" )
 		bluetoothctl trust $mac
-		! bluetoothctl info $mac | grep -q 'Audio Sink' && continue
+		(( $( bluetoothctl info $mac | grep 'Connected: yes\|Audio Sink' | wc -l ) != 2 )) && continue
 		
 		name=$( cut -d' ' -f3- <<< "$device" )
 		mpdconf+='
