@@ -99,17 +99,13 @@ fi
 pushstream refresh '{"page":"network"}' # bluetooth status
 
 if [[ $1 == bt ]]; then
-	lines=$( bluetoothctl devices | cut -d' ' -f2- )
-	readarray -t lines <<<"$lines"
-	for line in "${lines[@]}"; do
-		name=${line#* }
-		dash=${name//[^-]}
-		(( ${#dash} == 5 )) && continue # filter out unnamed devices
-		mac=${line/ *}
+	lines=$( bluetoothctl paired-devices )
+	readarray -t paired <<< "$lines"
+	for device in "${paired[@]}"; do
+		mac=$( cut -d' ' -f2 <<< "$device" )
+		name=$( cut -d' ' -f3- <<< "$device" )
 		! bluetoothctl info $mac | grep -q 'Audio Sink' && continue
 		
-		bluetoothctl pair $mac
-		bluetoothctl connect $mac
 		mpdconf+='
 
 audio_output {
