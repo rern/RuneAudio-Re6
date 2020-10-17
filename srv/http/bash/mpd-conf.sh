@@ -103,6 +103,7 @@ if [[ $1 == bt ]]; then
 	readarray -t paired <<< "$lines"
 	for device in "${paired[@]}"; do
 		mac=$( cut -d' ' -f2 <<< "$device" )
+		bluetoothctl trust $mac
 		! bluetoothctl info $mac | grep -q 'Audio Sink' && continue
 		
 		name=$( cut -d' ' -f3- <<< "$device" )
