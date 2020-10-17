@@ -220,12 +220,12 @@ function nicsStatus() {
 			html += val.gateway ? ' data-gateway="'+ val.gateway +'"' : '';
 			html += ' data-dhcp="'+ val.dhcp +'"';
 			html += '><i class="fa fa-';
-			html += val.interface === 'eth0' ? 'lan"></i>LAN' : 'wifi-3"></i>Wi-Fi';
+			html += val.interface === 'eth0' ? 'lan"></i>' : 'wifi-3"></i>';
 			if ( val.interface === 'eth0' ) {
 				if ( !val.ip ) return
 				
 				htmllan = html;
-				htmllan += val.ip ? '&ensp;<grn>&bull;</grn>&ensp;'+ val.ip : '';
+				htmllan += val.ip ? '<grn>&bull;</grn>&ensp;'+ val.ip : '';
 				htmllan += val.gateway ? '<gr>&ensp;&raquo;&ensp;'+ val.gateway +'&ensp;</gr>' : '';
 				htmllan += '</li>';
 			} else if ( val.interface.slice( 0, 4 ) === 'wlan' ) {
@@ -234,10 +234,10 @@ function nicsStatus() {
 				G.wlcurrent = val.interface;
 				htmlwl = html;
 				if ( accesspoint && G.hostapd && val.ip === G.hostapdip ) {
-					htmlwl += '&ensp;<grn>&bull;</grn>&ensp;<gr>RPi access point&ensp;&raquo;&ensp;</gr>'+ G.hostapdip
+					htmlwl += '<grn>&bull;</grn>&ensp;<gr>RPi access point&ensp;&raquo;&ensp;</gr>'+ G.hostapdip
 				} else {
 					G.wlconnected = val.interface;
-					htmlwl += '&ensp;<grn>&bull;</grn>&ensp;'+ val.ip +'<gr>&ensp;&raquo;&ensp;'+ val.gateway +'&ensp;&bull;&ensp;</gr>'+ val.ssid;
+					htmlwl += '<grn>&bull;</grn>&ensp;'+ val.ip +'<gr>&ensp;&raquo;&ensp;'+ val.gateway +'&ensp;&bull;&ensp;</gr>'+ val.ssid;
 				}
 				htmlwl += '</li>';
 			}
@@ -245,7 +245,7 @@ function nicsStatus() {
 		if ( !G.wlcurrent ) G.wlcurrent = 'wlan0';
 		if ( G.bluetooth ) {
 			G.bluetooth.forEach( function( list ) {
-				htmlbt += '<li class="bt" data-name="'+ list.name +'" data-connected="'+ list.connected +'" data-mac="'+ list.mac +'"><i class="fa fa-bluetooth"></i>Bluetooth&ensp;';
+				htmlbt += '<li class="bt" data-name="'+ list.name +'" data-connected="'+ list.connected +'" data-mac="'+ list.mac +'"><i class="fa fa-bluetooth"></i>';
 				htmlbt += ( list.connected ? '<grn>&bull;</grn>&ensp;' : '<gr>&bull;</gr>&ensp;' ) + list.name +'</li>';
 			} );
 			$( '#ifconfig' ).next().find( 'code' ).text( 'ifconfig; bluetoothctl show' );
