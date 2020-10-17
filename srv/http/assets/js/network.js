@@ -235,7 +235,7 @@ function nicsStatus() {
 		if ( 'bluetooth' in G ) {
 			if ( G.bluetooth ) {
 				G.bluetooth.forEach( function( list ) {
-					html += '<li class="bt" data-name="'+ list.name +'" data-connected="'+ list.connected +'"><i class="fa fa-bluetooth"></i>Bluetooth&ensp;';
+					html += '<li class="bt" data-name="'+ list.name +'" data-connected="'+ list.connected +'" data-mac="'+ list.mac +'"><i class="fa fa-bluetooth"></i>Bluetooth&ensp;';
 					html += ( list.connected ? '<grn>&bull;</grn>&ensp;' : '<gr>&bull;</gr>&ensp;' ) + list.name +'</li>';
 				} );
 			} else {
@@ -353,11 +353,19 @@ $( '#listinterfaces' ).on( 'click', 'li', function( e ) {
 		} else {
 			var name = $( this ).data( 'name' );
 			var connected = $( this ).data( 'connected' );
+			var mac = $( this ).data( 'mac' );
 			if ( $( e.target ).hasClass( 'fa-bluetooth' ) && name ) {
 				info( {
 					  icon    : 'bluetooth'
 					, title   : 'Bluetooth'
 					, message : name
+					, buttonwidth : 1
+					, buttonlabel : '<i class="fa fa-minus-circle"></i>Forget'
+					, buttoncolor : '#bb2828'
+					, button      : function() {
+						console.log( "/srv/http/bash/network.sh btremove$'\n'"+ mac )
+						bash( "/srv/http/bash/network.sh btremove$'\n'"+ mac );
+					}
 					, oklabel : connected ? 'Disconnect' : 'Connect'
 					, okcolor : connected ? '#de810e' : ''
 					, ok      : function() {

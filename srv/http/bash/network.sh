@@ -51,19 +51,22 @@ accesspointset )
 	;;
 btdisconnect )
 	bluetoothctl disconnect ${args[1]}
-	sleep 3
+	sleep 2
 	pushRefresh
 	;;
 btpair )
-	macs=$( bluetoothctl paired-devices | cut -d' ' -f2 )
-	for mac in "${macs[@]}"; do
-		bluetoothctl disconnect $mac
-	done
 	mac=${args[1]}
 	bluetoothctl trust $mac
 	bluetoothctl pair $mac
 	bluetoothctl connect $mac
 	[[ $? == 0 ]] && pushRefresh || echo -1
+	;;
+btremove )
+	mac=${args[1]}
+	bluetoothctl disconnect $mac
+	bluetoothctl remove $mac
+	sleep 2
+	pushRefresh
 	;;
 btset )
 	bluetoothctl system-alias $( cat $dirsystem/hostname )

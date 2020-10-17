@@ -52,7 +52,7 @@ if systemctl -q is-active bluetooth; then
 			mac=$( cut -d' ' -f2 <<<"$device" )
 			name=$( cut -d' ' -f3- <<<"$device" )
 			connected=$( bluetoothctl info $mac | grep -q 'Connected: yes' && echo true || echo false )
-			btlist+=',{"name":"'${name//\"/\\\"}'","connected":'$connected'}'
+			btlist+=',{"name":"'${name//\"/\\\"}'","connected":'$connected',"mac":"'$mac'"}'
 		done
 		btlist=[${btlist:1}]
 	else
