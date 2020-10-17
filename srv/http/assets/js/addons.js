@@ -94,7 +94,8 @@ $( '.boxed-group .btn' ).on( 'taphold', function () {
 	alias = $this.parent().attr( 'alias' );
 	title = addons[ alias ].title.replace( / *\**$/, '' );
 	type = $this.text();
-	opt = [ alias, type, 'master' ];
+	branch = alias === 'rre6' ? 'main' : 'master';
+	opt = [ alias, type, branch ];
 	if ( $this.attr( 'warning' ) ) {
 		info( {
 			  icon    : 'addons'
