@@ -251,10 +251,12 @@ function nicsStatus() {
 			}
 			$( '#ifconfig' ).next().find( 'code' ).text( 'ifconfig; bluetoothctl show' );
 		}
-		$( '#refreshing' ).addClass( 'hide' );
 		$( '#listlan' ).html( htmllan );
 		$( '#listwl' ).html( htmlwl );
 		$( '#listbt' ).html( htmlbt );
+		$( '#headlan' ).toggleClass( 'noline', htmllan !== '' );
+		$( '#headwl' ).toggleClass( 'noline', htmlwl !== '' );
+		$( '#headbt' ).toggleClass( 'noline', htmlbt !== '' );
 		if ( $( '#divinterface' ).hasClass( 'hide' ) ) return
 		
 		renderQR();

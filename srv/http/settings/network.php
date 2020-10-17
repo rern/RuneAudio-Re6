@@ -1,9 +1,9 @@
 <div id="divinterface">
 	<div>
-	<heading class="noline">LAN</heading>
+	<heading id="headlan" class="noline">LAN</heading>
 	<ul id="listlan" class="entries"></ul>
 	
-	<heading class="noline">Wi-Fi<i id="wladd" class="fa fa-plus-circle"></i><i id="wlscan" class="fa fa-search"></i><?=$help?></heading>
+	<heading id="headwl" class="noline">Wi-Fi<i id="wladd" class="fa fa-plus-circle"></i><i id="wlscan" class="fa fa-search"></i><?=$help?></heading>
 	<ul id="listwl" class="entries"></ul>
 	<span class="help-block hide">
 		Use wired LAN if possible for better performance.
@@ -12,7 +12,7 @@
 	
 <?php if ( file_exists( '/usr/bin/bluetoothctl' ) ) { ?>
 	<div>
-	<heading class="noline">Bluetooth<i id="btscan" class="fa fa-search"></i><?=$help?></heading>
+	<heading id="headbt" class="noline">Bluetooth<i id="btscan" class="fa fa-search"></i><?=$help?></heading>
 	<ul id="listbt" class="entries"></ul>
 	<span class="help-block hide">
 			- As sender(source) to send signal to another device.
