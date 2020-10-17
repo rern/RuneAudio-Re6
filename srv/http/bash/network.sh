@@ -51,15 +51,27 @@ accesspointset )
 	;;
 btdisconnect )
 	bluetoothctl disconnect ${args[1]}
-	[[ $? == 0 ]] && pushRefresh
+	sleep 2
+	pushRefresh
 	;;
 btpair )
 	mac=${args[1]}
-	bluetoothctl disconnect
 	bluetoothctl trust $mac
 	bluetoothctl pair $mac
 	bluetoothctl connect $mac
 	[[ $? == 0 ]] && pushRefresh || echo -1
+	;;
+btremove )
+	mac=${args[1]}
+	bluetoothctl disconnect $mac
+	bluetoothctl remove $mac
+	sleep 2
+	pushRefresh
+	;;
+btset )
+	bluetoothctl system-alias $( cat $dirsystem/hostname )
+	bluetoothctl discoverable yes
+	bluetoothctl discoverable-timeout 0
 	;;
 connect )
 	wlan=${args[1]}

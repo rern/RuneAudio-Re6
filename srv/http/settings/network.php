@@ -1,29 +1,38 @@
 <div id="divinterface">
 	<div>
-	<heading class="noline">Interfaces<i id="refreshing" class="fa fa-wifi-3 blink hide"></i><?=$help?></heading>
-	<ul id="listinterfaces" class="entries"></ul>
+	<heading id="headlan" class="noline">LAN<i id="lanadd" class="fa fa-plus-circle"></i></heading>
+	<ul id="listlan" class="entries"></ul>
+	
+	<heading id="headwl" class="noline">Wi-Fi<i id="wladd" class="fa fa-plus-circle"></i><i id="wlscan" class="fa fa-search"></i><?=$help?></heading>
+	<ul id="listwl" class="entries"></ul>
 	<span class="help-block hide">
-			- Tap item to start scanning.
-		<br>- Tap icon for actions / options.
-		<br>
-		<br><wh>LAN</wh>:
-		<br>- Use wired LAN if possible for better performance.
-	<?php if ( file_exists( '/usr/bin/bluetoothctl' ) ) { ?>
-		<br><wh>Bluetooth</wh>:
-		<br>- As source or target, send or receive signal to/from another device.
-		<br>- Scan and connect
-		<br>&emsp;- Initiate from RuneAudio+R, not from devices.
-		<br>&emsp;- Confirm pairing on PIN required devices.
-		<br>- To reconnect automatically when power on:
-		<br>&emsp;(After paired, first time only)
-		<br>&emsp;- Disconnect - Tap Bluetooth icon > Disconnect
-		<br>&emsp;- Power off Bluetooth device
-		<br>- Scan for devices while listening makes Bluetooth audio choppy.
-	<?php } ?>
-		<br><br></span>
-
+		Use wired LAN if possible for better performance.
+	</span>
+	</div>
+	
+<?php if ( file_exists( '/usr/bin/bluetoothctl' ) ) { ?>
+	<div>
+	<heading id="headbt" class="noline">Bluetooth<i id="btscan" class="fa fa-search"></i><?=$help?></heading>
+	<ul id="listbt" class="entries"></ul>
+	<span class="help-block hide">
+			- As sender(source) to send signal to another device.
+		<br>- As receiver(sink) to receive signal:
+		<br>&emsp; Authorization
+		<br>&emsp; - SSH before scan: <code>bluetoothctl</code>
+		<br>&emsp; - Start scan from sender device.
+		<br>&emsp; - During connecting process: <code>Authorize service</code> <code>yes</code> to all
+		<br>&emsp; - Prompt changed to device name on connected.
+		<br>&emsp; - Get MAC address: <code>info</code> (1st line in format <code>xx:xx:xx:xx:xx:xx</code>)
+		<br>&emsp; - Trust sender: <code>trust xx:xx:xx:xx:xx:xx</code>
+		<br>&emsp; - Done: <code>exit</code>
+	</span>
+	</div>
+<?php } ?>
+	
+	<div>
+	<heading>Web User Interface<?=$help?></heading>
 	<div id="divwebui" class="hide">
-		<div class="col-l">Web UI</div>
+		<div class="col-l">URL</div>
 		<div class="col-r">
 			<gr>http://</gr><span id="ipwebui"></span><br>
 			<div id="qrwebui" class="qr"></div>
@@ -45,7 +54,7 @@
 		<i id="add" class="fa fa-plus-circle"></i><i id="scanning-wifi" class="fa fa-wifi-3 blink"></i>
 		<?=$help?><i class="fa fa-arrow-left back"></i>
 	</heading>
-	<ul id="listwifi" class="entries"></ul>
+	<ul id="listwlscan" class="entries"></ul>
 	<span class="help-block hide">Access points with less than -66dBm should not be used.</span>
 	</div>
 	
@@ -61,7 +70,7 @@
 		<i id="scanning-bt" class="fa fa-bluetooth blink"></i>
 		<i class="fa fa-arrow-left back"></i>
 	</heading>
-	<ul id="listbt" class="entries"></ul>
+	<ul id="listbtscan" class="entries"></ul>
 </div>
 
 	<?php if ( file_exists( '/usr/bin/hostapd' ) ) { ?>

@@ -45,14 +45,14 @@ extra='
 	, "wlan"     : '$( lsmod | grep -q ^brcmfmac && echo true || echo false )
 # bluetooth
 if systemctl -q is-active bluetooth; then
-	paired=$( bluetoothctl paired-devices )
-	if [[ -n $paired ]]; then
-		readarray -t devices <<<"$paired"
+	lines=$( bluetoothctl paired-devices )
+	if [[ -n $lines ]]; then
+		readarray -t devices <<< "$lines"
 		for device in "${devices[@]}"; do
-			mac=$( cut -d' ' -f2 <<<"$device" )
-			name=$( cut -d' ' -f3- <<<"$device" )
+			mac=$( cut -d' ' -f2 <<< "$device" )
+			name=$( cut -d' ' -f3- <<< "$device" )
 			connected=$( bluetoothctl info $mac | grep -q 'Connected: yes' && echo true || echo false )
-			btlist+=',{"name":"'${name//\"/\\\"}'","connected":'$connected'}'
+			btlist+=',{"name":"'${name//\"/\\\"}'","connected":'$connected',"mac":"'$mac'"}'
 		done
 		btlist=[${btlist:1}]
 	else
