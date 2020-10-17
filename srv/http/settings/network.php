@@ -1,6 +1,6 @@
 <div id="divinterface">
 	<div>
-	<heading id="headlan" class="noline">LAN</heading>
+	<heading id="headlan" class="noline">LAN<i id="lanadd" class="fa fa-plus-circle"></i></heading>
 	<ul id="listlan" class="entries"></ul>
 	
 	<heading id="headwl" class="noline">Wi-Fi<i id="wladd" class="fa fa-plus-circle"></i><i id="wlscan" class="fa fa-search"></i><?=$help?></heading>

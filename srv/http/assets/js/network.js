@@ -41,15 +41,16 @@ function connect( data ) { // [ ssid, dhcp, wpa, password, hidden, ip, gw ]
 }
 function editLAN( data ) {
 	var data0 = data;
+	var message = data.ip ? 'Current: <wh>'+ ( data.dhcp === 'dhcp' ? 'DHCP' : 'Static IP' ) +'</wh><br>&nbsp;' : '';
 	info( {
-		  icon         : 'edit-circle'
-		, title        : 'LAN IP'
-		, message      : 'Current: <wh>'+ ( data.dhcp === 'dhcp' ? 'DHCP' : 'Static IP' ) +'</wh><br>&nbsp;'
+		  icon         : 'lan'
+		, title        : ( data.ip ? 'LAN' : 'Add LAN' )
+		, message      : message
 		, textlabel    : [ 'IP', 'Gateway' ]
 		, textvalue    : [ data.ip, data.gateway ]
 		, textrequired : [ 0 ]
 		, preshow      : function() {
-			if ( data.dhcp === 'dhcp' ) $( '#infoButton' ).addClass( 'hide' );
+			if ( data.dhcp === 'dhcp' || !data.ip ) $( '#infoButton' ).addClass( 'hide' );
 		}
 		, buttonlabel  : '<i class="fa fa-undo"></i>DHCP'
 		, buttonwidth  : 1
@@ -254,6 +255,7 @@ function nicsStatus() {
 		$( '#listlan' ).html( htmllan );
 		$( '#listwl' ).html( htmlwl );
 		$( '#listbt' ).html( htmlbt );
+		$( '#lanadd' ).toggleClass( 'hide', htmllan !== '' );
 		$( '#headlan' ).toggleClass( 'noline', htmllan !== '' );
 		$( '#headwl' ).toggleClass( 'noline', htmlwl !== '' );
 		$( '#headbt' ).toggleClass( 'noline', htmlbt !== '' );
@@ -346,6 +348,9 @@ $( '.back' ).click( function() {
 	$( '#divwifi, #divbluetooth' ).addClass( 'hide' );
 	$( '#listwlscan, #listbtscan' ).empty();
 	nicsStatus();
+} );
+$( '#lanadd' ).click( function() {
+	editLAN( { dhcp: '', ip: '', gateway: '' } );
 } );
 $( '#listlan' ).on( 'click', 'li', function() {
 	var $this = $( this );
