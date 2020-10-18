@@ -537,6 +537,7 @@ plshuffle )
 plsimilar )
 	plLprev=$( mpc playlist | wc -l )
 	linesL=${#args[@]}
+	[[ ${args[1]} == addplay ]] && pos=$(( $( mpc playlist | wc -l ) + 1 ))
 	for (( i=1; i < linesL; i++ )); do
 		artist=${args[$i]}
 		(( i++ ))
@@ -552,7 +553,12 @@ plsimilar )
 	touch $flagpladd
 	echo "$list" | awk 'NF' | mpc add
 	pushstreamPlaylist
-	echo $(( plL - plLprev ))
+	echo $(( $( mpc playlist | wc -l ) - plLprev ))
+	if [[ -n $pos ]]; then
+		touch $flag
+		mpc -q play $pos
+		pushstreamStatus
+	fi
 	;;
 power )
 	type=${args[1]}
