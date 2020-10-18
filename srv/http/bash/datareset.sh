@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# data - settings directories
 dirdata=/srv/http/data
 diraddons=$dirdata/addons
 dirsystem=$dirdata/system
@@ -33,18 +32,24 @@ dtparam=audio=on
 	
 	echo -n "$config" > /boot/config.txt
 fi
-
-mv $diraddons $dirtmp 2> /dev/null
-rm -rf $dirdata
-
+# addons - new/backup
+if [[ -n $1 ]]; then # from createrune.sh
+	version=$1
+else
+	mv $diraddons $dirtmp
+	rm -rf $dirdata
+fi
+# data directories
 mkdir -p $dirdata/{addons,bookmarks,embedded,lyrics,mpd,playlists,system,tmp,webradios,webradiosimg} /mnt/MPD/{NAS,SD,USB}
 ln -sf /dev/shm $dirdata
-mv $dirtmp/addons $dirdata 2> /dev/null
-if [[ -n $1 ]]; then
-	echo $1 > $dirsystem/version
+# addons - new/restore
+if [[ -n $version ]]; then # from createrune.sh
+	echo $version > $dirsystem/version
 	wget -qO - https://github.com/rern/RuneAudio_Addons/raw/master/addons-list.json \
 		| jq -r .rr$version.version \
 		> $diraddons/rr$version
+else
+	mv $dirtmp/addons $dirdata
 fi
 # display
 echo '{
@@ -145,7 +150,7 @@ chmod 777 /srv/http/data/tmp
 # symlink /mnt for coverart files
 ln -sf /mnt /srv/http/
 
-[[ -n $1 ]] && exit
+[[ -n $version ]] && exit
 
 systemctl start mpd
 
