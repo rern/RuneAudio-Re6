@@ -571,7 +571,7 @@ $( '.contextmenu a, .contextmenu i' ).click( function() {
 						getPlaylist();
 						setButtonControl();
 						banner( title, count +' tracks added.', 'library' );
-						if ( addplay ) setTimeout( function() { $( '#tab-playback' ).click() }, 2000 );
+						if ( addplay && G.display.playbackswitch ) $( '#tab-playback' ).click();
 					} );
 				}
 			}, 'json' );
