@@ -1,16 +1,18 @@
 <div id="divinterface">
-	<div>
+<?php if ( exec ( 'ifconfig | grep ^eth' ) ) { ?>
 	<heading id="headlan" class="noline">LAN<i id="lanadd" class="fa fa-plus-circle"></i></heading>
 	<ul id="listlan" class="entries"></ul>
-	
+<?php }
+	  if ( exec ( 'ifconfig | grep ^wlan' ) ) { ?>
+	<div>
 	<heading id="headwl" class="noline">Wi-Fi<i id="wladd" class="fa fa-plus-circle"></i><i id="wlscan" class="fa fa-search"></i><?=$help?></heading>
 	<ul id="listwl" class="entries"></ul>
 	<span class="help-block hide">
 		Use wired LAN if possible for better performance.
 	</span>
 	</div>
-	
-<?php if ( file_exists( '/usr/bin/bluetoothctl' ) ) { ?>
+<?php }
+	  if ( file_exists( '/usr/bin/bluetoothctl' ) ) { ?>
 	<div>
 	<heading id="headbt" class="noline">Bluetooth<i id="btscan" class="fa fa-search"></i><?=$help?></heading>
 	<ul id="listbt" class="entries"></ul>
