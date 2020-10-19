@@ -486,8 +486,9 @@ function webRadioNew( name, url ) {
 	} );
 }
 //----------------------------------------------------------------------------------------------
-$( '.contextmenu a, .contextmenu i' ).click( function( e ) {
-	var cmd = $( this ).data( 'cmd' );
+$( '.contextmenu a, .contextmenu i' ).click( function() {
+	var $this = $( this );
+	var cmd = $this.data( 'cmd' );
 	$( '.menu' ).addClass( 'hide' );
 	$( 'li.updn' ).removeClass( 'updn' );
 	// playback //////////////////////////////////////////////////////////////
@@ -560,7 +561,8 @@ $( '.contextmenu a, .contextmenu i' ).click( function( e ) {
 				} else {
 					var val = data.similartracks.track;
 					var iL = val.length;
-					var similar = '';
+					var addplay = $this.hasClass( 'submenu' ) ? 1 : 0;
+					var similar = addplay ? 'addplay\n0\n' : '';
 					for ( i = 0; i < iL; i++ ) {
 						similar += val[ i ].artist.name +'\n'+ val[ i ].name +'\n';
 					}
@@ -569,6 +571,7 @@ $( '.contextmenu a, .contextmenu i' ).click( function( e ) {
 						getPlaylist();
 						setButtonControl();
 						banner( title, count +' tracks added.', 'library' );
+						if ( addplay && G.display.playbackswitch ) $( '#tab-playback' ).click();
 					} );
 				}
 			}, 'json' );
