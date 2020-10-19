@@ -196,6 +196,73 @@ function getNetctl() {
 			.removeClass( 'hide' );
 	} );
 }
+function infoConnect( $this ) {
+	var connected = $this.data( 'ip' );
+	var ssid = $this.data( 'ssid' );
+	var ip = $this.data( 'ip' );
+	var gw = $this.data( 'gateway' );
+	var wpa = $this.data( 'wpa' ) || 'wep';
+	var dhcp = $this.data( 'dhcp' );
+	var encrypt = $this.data( 'encrypt' ) === 'on';
+	var password = $this.data( 'password' );
+	var profile = $this.data( 'profile' );
+	info( {
+		  icon        : 'wifi-3'
+		, title       : ssid
+		, message     : !ip ? 'Saved connection' : '<div class="colL">'
+				+ ( dhcp === 'dhcp' ? 'DHCP IP' : 'Static IP' ) +'<br>'
+				+'Gateway'
+			+'</div>'
+			+'<div class="colR wh" style="text-align: left;">'
+				+ ip +'<br>'
+				+ gw
+			+'</div>'
+		, preshow     : function() {
+			if ( profile ) $( '#infoButton1' ).hide();
+		}
+		, buttonwidth : 1
+		, buttonlabel : [
+			  '<i class="fa fa-minus-circle"></i> Forget'
+			, '<i class="fa fa-save-circle"></i> IP'
+		]
+		, buttoncolor : [
+			  '#bb2828'
+			, ''
+		]
+		, button      : [
+			  function() {
+				clearTimeout( intervalscan );
+				notify( ssid, 'Forget ...', 'wifi-3' );
+				bash( [ 'disconnect', G.wlcurrent, ssid ] );
+			}
+			, function() {
+				if ( ip ) {
+					var data = {
+						  Address  : ip
+						, Gateway  : gw
+						, Security : wpa
+						, Key      : password
+						, dhcp     : dhcp
+					}
+					editWiFi( ssid, data );
+				} else {
+					editWiFi( ssid, 0 );
+				}
+			}
+		]
+		, oklabel : connected ? 'Disconnect' : 'Connect'
+		, okcolor : connected ? '#de810e' : ''
+		, ok      : function() {
+			clearTimeout( intervalscan );
+			notify( ssid, connected ? 'Disconnect ...' : 'Connect ...', 'wifi-3 blink' );
+			if ( connected ) {
+				bash( [ 'disconnect', G.wlcurrent ] );
+			} else {
+				connect( [ ssid ] );
+			}
+		}
+	} );
+}
 function nicsStatus() {
 	bash( '/srv/http/bash/network-data.sh', function( list ) {
 		var extra = list.pop();
@@ -219,6 +286,7 @@ function nicsStatus() {
 			html += val.ip ? ' data-ip="'+ val.ip +'"' : '';
 			html += val.gateway ? ' data-gateway="'+ val.gateway +'"' : '';
 			html += ' data-dhcp="'+ val.dhcp +'"';
+			if ( 'ssid' in val ) html += ' data-ssid="'+ val.ssid +'"';
 			html += '><i class="fa fa-';
 			html += val.interface === 'eth0' ? 'lan"></i>' : 'wifi-3"></i>';
 			if ( val.interface === 'eth0' ) {
@@ -378,17 +446,13 @@ $( '#wlscan' ).click( function() {
 		wlanStatus();
 	}
 } );
-$( '#listwlscan' ).on( 'click', 'li', function( e ) {
+$( '#listwlscan' ).on( 'click', 'li', function() {
 	var $this = $( this );
 	var connected = $this.data( 'connected' );
 	var profile = $this.data( 'profile' ) || connected;
 	var ssid = $this.data( 'ssid' );
-	var ip = $this.data( 'ip' );
-	var gw = $this.data( 'gateway' );
 	var wpa = $this.data( 'wpa' ) || 'wep';
-	var dhcp = $this.data( 'dhcp' );
 	var encrypt = $this.data( 'encrypt' ) === 'on';
-	var password = $this.data( 'password' );
 	if ( !profile ) {
 		if ( encrypt ) {
 			info( {
@@ -403,62 +467,12 @@ $( '#listwlscan' ).on( 'click', 'li', function( e ) {
 		} else {
 			connect( [ ssid, 'dhcp' ] );
 		}
-		return
+	} else {
+		infoConnect( $this );
 	}
-	
-	info( {
-		  icon        : 'wifi-3'
-		, title       : ssid
-		, message     : !connected ? 'Saved connection' : '<div class="colL">'
-				+ ( dhcp === 'dhcp' ? 'DHCP IP' : 'Static IP' ) +'<br>'
-				+'Gateway :'
-			+'</div>'
-			+'<div class="colR wh" style="text-align: left;">'
-				+ ip +'<br>'
-				+ gw
-			+'</div>'
-		, buttonwidth : 1
-		, buttonlabel : [
-			  '<i class="fa fa-minus-circle"></i> Forget'
-			, '<i class="fa fa-save-circle"></i> IP'
-		]
-		, buttoncolor : [
-			  '#bb2828'
-			, ''
-		]
-		, button      : [
-			  function() {
-				clearTimeout( intervalscan );
-				notify( ssid, 'Forget ...', 'wifi-3' );
-				bash( [ 'disconnect', G.wlcurrent, ssid ] );
-			}
-			, function() {
-				if ( connected ) {
-					var data = {
-						  Address  : ip
-						, Gateway  : gw
-						, Security : wpa
-						, Key      : password
-						, dhcp     : dhcp
-					}
-					editWiFi( ssid, data );
-				} else {
-					editWiFi( ssid, 0 );
-				}
-			}
-		]
-		, oklabel : connected ? 'Disconnect' : 'Connect'
-		, okcolor : connected ? '#de810e' : ''
-		, ok      : function() {
-			clearTimeout( intervalscan );
-			notify( ssid, connected ? 'Disconnect ...' : 'Connect ...', 'wifi-3 blink' );
-			if ( connected ) {
-				bash( [ 'disconnect', G.wlcurrent ] );
-			} else {
-				connect( [ ssid ] );
-			}
-		}
-	} );
+} );
+$( '#listwl' ).on( 'click', 'li', function() {
+	infoConnect( $( this ) );
 } );
 $( '#listbt' ).on( 'click', 'li', function() {
 	var $this = $( this );
@@ -512,7 +526,7 @@ $( '#listbtscan' ).on( 'click', 'li', function( e ) {
 	}
 } );
 $( '#accesspoint' ).change( function() {
-	if ( !$( '#divinterface li.wlan0' ).length ) {
+	if ( !$( '#listwl li.wlan0' ).length ) {
 		info( {
 			  icon    : 'wifi-3'
 			, title   : 'Wi-Fi'
@@ -525,7 +539,7 @@ $( '#accesspoint' ).change( function() {
 	
 	hostapd = $( this ).prop( 'checked' );
 	if ( hostapd ) {
-		if ( $( '#divinterface li.wlan0' ).data( 'connected' ) ) {
+		if ( $( '#listwl li.wlan0' ).data( 'ip' ) ) {
 			info( {
 				  icon    : 'network'
 				, title   : 'Access Point'

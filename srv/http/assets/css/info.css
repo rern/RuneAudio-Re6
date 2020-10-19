@@ -180,16 +180,15 @@ hr {
 	margin-bottom: 0;
 	color: var( --cg60 );
 }
-.message .colL,
-.message .colR {
+#infoMessage .colL,
+#infoMessage .colR {
 	display: inline-block;
 	margin-bottom: 5px;
 	width: fit-content !important;
 	text-align: right;
-	padding-right: 15px;
 }
-.message .colR {
-	padding-right: 0;
+#infoMessage .colL {
+	padding-right: 10px;
 }
 .infotextlabel,
 #infotextlabel,
