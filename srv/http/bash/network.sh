@@ -72,6 +72,7 @@ btset )
 	bluetoothctl system-alias $( cat $dirsystem/hostname )
 	bluetoothctl discoverable yes
 	bluetoothctl discoverable-timeout 0
+	bluetoothctl pairable yes
 	;;
 connect )
 	wlan=${args[1]}
