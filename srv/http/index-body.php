@@ -18,9 +18,9 @@ $( '#login' ).click( function() {
 			location.reload();
 		} else {
 			info( {
-				  icon: 'lock'
-				, title: 'Login'
-				, message: 'Wrong password'
+				  icon    : 'lock'
+				, title   : 'Login'
+				, message : 'Wrong password'
 			} );
 		}
 	} );
