@@ -13,7 +13,7 @@ if ( $login && !$_SESSION[ 'login' ] ) {
 <script>
 $( '#pwd' ).focus();
 $( '#login' ).click( function() {
-	$.post( 'cmd.php', { login: $( '#pwd' ).val() }, function( data ) {
+	$.post( 'cmd.php', { cmd: 'login', password: $( '#pwd' ).val() }, function( data ) {
 		data ? location.reload() : info( 'Wrong password' );
 	} );
 } );
