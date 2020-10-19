@@ -8,7 +8,42 @@
 # - mixer_device  - card index
 # - dop           - if set
 
-systemctl -q is-active nginx || exit 0 # udev rule trigger on startup
+! systemctl -q is-active nginx && exit 0 # udev rule trigger on startup
+
+pushstream() {
+	curl -s -X POST http://127.0.0.1/pub?id=$1 -d "$2"
+}
+
+if [[ $1 == bt ]]; then
+	# for connected by sender - not paired yet and no trust
+	lines=$( bluetoothctl devices | cut -d' ' -f2 )
+	echo "$lines" >> /srv/http/data/shm/bt
+	readarray -t macs <<< "$lines"
+	for mac in "${macs[@]}"; do
+		bluetoothctl trust $mac
+	done
+	
+	lines=$( bluetoothctl paired-devices )
+	readarray -t paired <<< "$lines"
+	for device in "${paired[@]}"; do
+		mac=$( cut -d' ' -f2 <<< "$device" )
+		(( $( bluetoothctl info $mac | grep 'Connected: yes\|Audio Sink' | wc -l ) != 2 )) && continue
+		
+		btoutput+='
+
+audio_output {
+	name           "'$( cut -d' ' -f3- <<< "$device" )'"
+	device         "bluealsa:DEV='$mac',PROFILE=a2dp"
+	type           "alsa"
+	mixer_type     "software"
+}'
+	done
+	if [[ -z $btoutput ]]; then
+		pushstream refresh '{"page":"network"}' # bluetooth status
+		exit # no Audio Sink bluetooth
+	fi
+fi
+pushstream refresh '{"page":"network"}'
 
 dirsystem=/srv/http/data/system
 audiooutput=$( cat $dirsystem/audio-output )
@@ -17,10 +52,6 @@ mpdfile=/etc/mpd.conf
 mpdconf=$( sed '/audio_output/,/}/ d' $mpdfile ) # remove all outputs
 
 . /srv/http/bash/mpd-devices.sh
-
-pushstream() {
-	curl -s -X POST http://127.0.0.1/pub?id=$1 -d "$2"
-}
 
 for (( i=0; i < cardL; i++ )); do
 	card=${Acard[i]}
@@ -96,27 +127,7 @@ audio_output {
 }'
 fi
 
-pushstream refresh '{"page":"network"}' # bluetooth status
-
-if [[ $1 == bt ]]; then
-	lines=$( bluetoothctl paired-devices )
-	readarray -t paired <<< "$lines"
-	for device in "${paired[@]}"; do
-		mac=$( cut -d' ' -f2 <<< "$device" )
-		bluetoothctl trust $mac
-		(( $( bluetoothctl info $mac | grep 'Connected: yes\|Audio Sink' | wc -l ) != 2 )) && continue
-		
-		name=$( cut -d' ' -f3- <<< "$device" )
-		mpdconf+='
-
-audio_output {
-	name           "'$name'"
-	device         "bluealsa:DEV='$mac',PROFILE=a2dp"
-	type           "alsa"
-	mixer_type     "software"
-}'
-	done
-fi
+[[ -n $btoutput ]] && mpdconf+=$btoutput
 
 echo "$mpdconf" > $mpdfile
 
