@@ -418,7 +418,6 @@ svg path.st1 {
 	width: 100%;
 	margin: 0;
 	font-size: 16px;
-	line-height: 40px;
 	color: var( --cg75 );
 	border-top: 1px solid var( --cga ) !important;
 }
