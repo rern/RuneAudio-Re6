@@ -14,7 +14,15 @@ if ( $login && !$_SESSION[ 'login' ] ) {
 $( '#pwd' ).focus();
 $( '#login' ).click( function() {
 	$.post( 'cmd.php', { cmd: 'login', password: $( '#pwd' ).val() }, function( data ) {
-		data ? location.reload() : info( 'Wrong password' );
+		if ( data != -1 ) {
+			location.reload();
+		} else {
+			info( {
+				  icon: 'lock'
+				, title: 'Login'
+				, message: 'Wrong password'
+			} );
+		}
 	} );
 } );
 $( '#pwd' ).keypress( function( e ) {
