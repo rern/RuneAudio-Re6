@@ -205,17 +205,21 @@ function infoConnect( $this ) {
 	var dhcp = $this.data( 'dhcp' );
 	var encrypt = $this.data( 'encrypt' ) === 'on';
 	var password = $this.data( 'password' );
+	var profile = $this.data( 'profile' );
 	info( {
 		  icon        : 'wifi-3'
 		, title       : ssid
 		, message     : !ip ? 'Saved connection' : '<div class="colL">'
-				+ ( dhcp === 'dhcp' ? 'DHCP IP:' : 'Static IP' ) +'<br>'
-				+'Gateway:'
+				+ ( dhcp === 'dhcp' ? 'DHCP IP' : 'Static IP' ) +'<br>'
+				+'Gateway'
 			+'</div>'
 			+'<div class="colR wh" style="text-align: left;">'
 				+ ip +'<br>'
 				+ gw
 			+'</div>'
+		, preshow     : function() {
+			if ( profile ) $( '#infoButton1' ).hide();
+		}
 		, buttonwidth : 1
 		, buttonlabel : [
 			  '<i class="fa fa-minus-circle"></i> Forget'

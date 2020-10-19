@@ -65,10 +65,7 @@ pushstream.onstatuschange = function( status ) {
 	}
 }
 pushstream.onmessage = function( data, id, channel ) {
-	if ( local ) return
-	
 	switch( channel ) {
-		case 'ip':      psIp( data );      break;
 		case 'refresh': psRefresh( data ); break;
 		case 'reload':  psReload();        break;
 		case 'restore': psRestore( data ); break;
