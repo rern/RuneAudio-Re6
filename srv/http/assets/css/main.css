@@ -399,6 +399,7 @@ svg path.st1 {
 	position: absolute;
 	left: 40px;
 	padding: 0;
+	background: var( --cg );
 	z-index: 11;
 }
 .menu.fixed {
@@ -410,6 +411,7 @@ svg path.st1 {
 }
 .menu .sub {
 	width: calc( 100% - 40px );
+	border-right: 1px solid var( --cga );
 }
 .menu a {
 	display: inline-block;
@@ -418,12 +420,11 @@ svg path.st1 {
 	font-size: 16px;
 	line-height: 40px;
 	color: var( --cg75 );
-	background: var( --cg );
 	border-top: 1px solid var( --cga ) !important;
 }
 .menu i {
 	width: 40px;
-	line-height: 42px;
+	line-height: 40px;
 	vertical-align: -5%;
 	text-align: center;
 	font-size: 22px;
@@ -435,9 +436,7 @@ svg path.st1 {
 }
 .submenu {
 	float: right;
-	background: var( --cg );
 	border-top: 1px solid var( --cga );
-	border-left: 1px solid var( --cga );
 }
 .menushadow {
 	position: absolute;
