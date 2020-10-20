@@ -129,7 +129,6 @@ function contextmenuLibrary( $li, $target ) {
 	$menu
 		.css( 'top',  menutop )
 		.removeClass( 'hide' );
-	$menu.find( '.menushadow' ).css( 'height', $menu.height() +'px' );
 	$menu.toggleClass( 'fixed', G.list.licover && $li.css( 'position' ) === 'fixed' );
 	var targetB = $menu.offset().top + $menu.height();
 	var wH = window.innerHeight;

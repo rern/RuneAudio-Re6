@@ -398,16 +398,14 @@ svg path.st1 {
 .menu {
 	position: absolute;
 	left: 40px;
+	width: 190px;
 	padding: 0;
 	background: var( --cg );
+	box-shadow: 4px 4px 10px #000000;
 	z-index: 11;
 }
 .menu.fixed {
 	position: fixed;
-}
-.menu,
-.menushadow {
-	width: 190px;
 }
 .menu .sub {
 	width: calc( 100% - 40px );
@@ -437,14 +435,6 @@ svg path.st1 {
 	float: right;
 	border-top: 1px solid var( --cga );
 }
-.menushadow {
-	position: absolute;
-	box-shadow: 4px 4px 10px #000000;
-	z-index: -100;
-}
-#settings .menushadow {
-	box-shadow: -4px 4px 10px #000000;
-}
 #settings {
 	position: fixed;
 	float: right;
@@ -452,12 +442,10 @@ svg path.st1 {
 	top: 40px;
 	left: auto;
 	right: 0px;
-	padding: 0;
-	z-index: 104;
-}
-#settings,
-#settings .menushadow {
 	width: 180px;
+	padding: 0;
+	box-shadow: -4px 4px 10px #000000;
+	z-index: 104;
 }
 .iconimg {
 	margin: 0 7px;

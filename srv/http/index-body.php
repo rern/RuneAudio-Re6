@@ -102,8 +102,7 @@ function menudiv( $id, $html ) {
 	return '<div id="menu-'.$id.'" class="menu contextmenu hide">'.$html.'</div>';
 }
 function menucommon( $add, $replace ) {
-	$htmlcommon = '<span class="menushadow"></span>';
-	$htmlcommon.= '<a data-cmd="'.$add.'" class="sub"><i class="fa fa-plus-o"></i>Add</a><i class="fa fa-play-plus submenu" data-cmd="'.$add.'play"></i>';
+	$htmlcommon = '<a data-cmd="'.$add.'" class="sub"><i class="fa fa-plus-o"></i>Add</a><i class="fa fa-play-plus submenu" data-cmd="'.$add.'play"></i>';
 	$htmlcommon.= '<a data-cmd="'.$replace.'" class="replace sub"><i class="fa fa-replace"></i>Replace</a><i class="fa fa-play-replace submenu" data-cmd="'.$replace.'play"></i>';
 	return $htmlcommon;
 }
@@ -114,15 +113,13 @@ $menu = '<div id="contextmenu">';
 
 $htmlcommon = menucommon( 'add', 'replace' );
 
-$html = '<span class="menushadow"></span>';
-$html.= menuli( 'play',       'play',         'Play' );
+$html = menuli( 'play',       'play',         'Play' );
 $html.= menuli( 'pause',      'pause',        'Pause' );
 $html.= menuli( 'stop',       'stop',         'Stop' );
 $html.= menuli( 'savedpladd', 'save-plus',    'Add to a playlist' );
 $html.= menuli( 'remove',     'minus-circle', 'Remove' );
 $html.= menuli( 'similar',    'lastfm',       'Add similar' );
 $html.= menuli( 'tag',        'info-circle',  'Track Info' );
-//$html.= menuli( 'saveradio',  'save',         'Save to WebRadio' );
 $menu.= menudiv( 'plaction', $html );
 
 $menudiv = '';
@@ -163,8 +160,7 @@ $html.= menuli( 'wrdelete',   'minus-circle', 'Delete' );
 $menu.= menudiv( 'webradio', $html );
 
 $menudiv = '';
-$html = '<span class="menushadow"></span>';
-$html.= menucommon( 'pladd', 'plreplace' );
+$html = menucommon( 'pladd', 'plreplace' );
 $html.= menuli( 'plrename', 'edit-circle',  'Rename' );
 $html.= menuli( 'pldelete', 'minus-circle', 'Delete' );
 $menu.= menudiv( 'playlist', $html );
@@ -193,7 +189,6 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	</div>
 </div>
 <div id="settings" class="menu hide">
-	<span class="menushadow"></span>
 	<a id="mpd" class="settings sub"><i class="fa fa-mpd"></i>MPD</a>
 		<i id="update" class="fa fa-refresh-library submenu"></i>
 	<a id="network" class="settings"><i class="fa fa-network"></i>Network</a>
