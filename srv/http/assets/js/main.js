@@ -124,7 +124,6 @@ $( '#button-settings, #badge' ).click( function() {
 		$settings
 			.removeClass( 'hide' )
 			.css( 'top', ( G.bars ? '40px' : 0 ) );
-		$( '#settings .menushadow' ).css( 'height', $settings.height() +'px' );
 	} else {
 		$settings.addClass( 'hide' );
 	}
@@ -1864,7 +1863,6 @@ $( '#pl-list' ).on( 'click', '.pl-icon', function( e ) {
 	$menu
 		.removeClass( 'hide' )
 		.css( 'top', menutop );
-	$( '.menushadow' ).css( 'height', menuH );
 	var targetB = $menu.offset().top + menuH;
 	var wH = window.innerHeight;
 	if ( targetB > wH - ( G.bars ? 80 : 40 ) + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + 42 } );
@@ -1923,7 +1921,6 @@ $( '#pl-savedlist' ).on( 'click', 'li', function( e ) {
 			$menu
 				.removeClass( 'hide' )
 				.css( 'top', ( $this.position().top + 48 ) +'px' );
-			$menu.find( '.menushadow' ).css( 'height', $menu.height() +'px' );
 			var targetB = $menu.offset().top + $menu.height();
 			var wH = window.innerHeight;
 			if ( targetB > wH - ( G.bars ? 80 : 40 ) + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + 42 } );

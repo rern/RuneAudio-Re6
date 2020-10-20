@@ -398,32 +398,30 @@ svg path.st1 {
 .menu {
 	position: absolute;
 	left: 40px;
+	width: 190px;
 	padding: 0;
+	background: var( --cg );
+	box-shadow: 4px 4px 10px #000000;
 	z-index: 11;
 }
 .menu.fixed {
 	position: fixed;
 }
-.menu,
-.menushadow {
-	width: 190px;
-}
 .menu .sub {
 	width: calc( 100% - 40px );
+	border-right: 1px solid var( --cga );
 }
 .menu a {
 	display: inline-block;
 	width: 100%;
 	margin: 0;
 	font-size: 16px;
-	line-height: 40px;
 	color: var( --cg75 );
-	background: var( --cg );
 	border-top: 1px solid var( --cga ) !important;
 }
 .menu i {
 	width: 40px;
-	line-height: 42px;
+	line-height: 40px;
 	vertical-align: -5%;
 	text-align: center;
 	font-size: 22px;
@@ -435,17 +433,7 @@ svg path.st1 {
 }
 .submenu {
 	float: right;
-	background: var( --cg );
 	border-top: 1px solid var( --cga );
-	border-left: 1px solid var( --cga );
-}
-.menushadow {
-	position: absolute;
-	box-shadow: 4px 4px 10px #000000;
-	z-index: -100;
-}
-#settings .menushadow {
-	box-shadow: -4px 4px 10px #000000;
 }
 #settings {
 	position: fixed;
@@ -454,12 +442,10 @@ svg path.st1 {
 	top: 40px;
 	left: auto;
 	right: 0px;
-	padding: 0;
-	z-index: 104;
-}
-#settings,
-#settings .menushadow {
 	width: 180px;
+	padding: 0;
+	box-shadow: -4px 4px 10px #000000;
+	z-index: 104;
 }
 .iconimg {
 	margin: 0 7px;

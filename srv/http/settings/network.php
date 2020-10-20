@@ -23,10 +23,7 @@
 		<br>&emsp; - SSH before scan: <code>bluetoothctl</code>
 		<br>&emsp; - Start scan from sender device.
 		<br>&emsp; - During connecting process: <code>Authorize service</code> <code>yes</code> to all
-		<br>&emsp; - Prompt changed to device name on connected.
-		<br>&emsp; - Get MAC address: <code>info</code> (1st line in format <code>xx:xx:xx:xx:xx:xx</code>)
-		<br>&emsp; - Trust sender: <code>trust xx:xx:xx:xx:xx:xx</code>
-		<br>&emsp; - Done: <code>exit</code>
+		<br>&emsp; - Prompt changed to device name on connected: <code>exit</code>
 	</span>
 	</div>
 <?php } ?>

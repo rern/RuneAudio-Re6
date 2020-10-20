@@ -11,7 +11,7 @@ Sstart=$( date +%s )
 albumfile=/srv/http/data/mpd/album
 
 if [[ -z $1 ]]; then
-	mpdpathlist=$( cat $albumfile | cut -d^ -f5 )
+	mpdpathlist=$( cat $albumfile | cut -d^ -f7 )
 else
 	mpdpathlist=$( find "/mnt/MPD/$1" -type d | cut -c10- )
 fi

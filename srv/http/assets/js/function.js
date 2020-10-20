@@ -129,7 +129,6 @@ function contextmenuLibrary( $li, $target ) {
 	$menu
 		.css( 'top',  menutop )
 		.removeClass( 'hide' );
-	$menu.find( '.menushadow' ).css( 'height', $menu.height() +'px' );
 	$menu.toggleClass( 'fixed', G.list.licover && $li.css( 'position' ) === 'fixed' );
 	var targetB = $menu.offset().top + $menu.height();
 	var wH = window.innerHeight;
@@ -934,13 +933,12 @@ function renderLibraryList( data ) {
 		return
 	}
 	
-	$( '#button-coverart' ).addClass( 'hidden' );
 	G.librarylist = 1;
 	loader( 'show' );
+	$( '#button-coverart' ).addClass( 'hidden' );
 	$( '#lib-mode-list, .menu' ).addClass( 'hide' );
 	$( '#button-lib-back' ).toggleClass( 'hide', data.modetitle === 'search' );
 	$( '#lib-path .lipath' ).text( data.path );
-	var libpath = $( '#lib-path .lipath' ).text();
 	if ( 'count' in data ) {
 		$( '#lib-path' ).css( 'max-width', '40px' );
 		$( '#lib-list' ).css( 'width', '100%' );
@@ -1019,17 +1017,14 @@ function renderLibraryList( data ) {
 			loader( 'hide' );
 		}
 		$( '#lib-list' ).removeClass( 'hide' );
-		var top = G.scrolltop[ libpath ] || 0;
-		setTimeout( function() {
-			$( 'html, body' ).scrollTop( top );
-			if ( $( '.coverart' ).length ) {
-				var coverH = $( '.coverart' ).height();
-				var pH = $( '#lib-list p' ).height();
-				$( '#lib-list p' )
-					.removeClass( 'bars-on' )
-					.css( 'height', pH + 49 - coverH );
-			}
-		}, top ? 0 : 300 );
+		$( 'html, body' ).scrollTop( G.scrolltop[ data.path ] || 0 );
+		if ( $( '.coverart' ).length ) {
+			var coverH = $( '.coverart' ).height();
+			var pH = $( '#lib-list p' ).height();
+			$( '#lib-list p' )
+				.removeClass( 'bars-on' )
+				.css( 'height', pH + 49 - coverH );
+		}
 	} );
 }
 function renderPlayback() {

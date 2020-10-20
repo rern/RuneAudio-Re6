@@ -483,9 +483,9 @@ $( '#setting-login' ).click( function() {
 		, passwordlabel : [ 'Existing', 'New' ]
 		, ok            : function() {
 			$.post( cmdphp, {
-				  cmd    : 'login'
-				, login  : $( '#infoPasswordBox' ).val()
-				, pwdnew : $( '#infoPasswordBox1' ).val()
+				  cmd      : 'login'
+				, password : $( '#infoPasswordBox' ).val()
+				, pwdnew   : $( '#infoPasswordBox1' ).val()
 			}, function( std ) {
 				info( {
 					  icon    : 'lock'
