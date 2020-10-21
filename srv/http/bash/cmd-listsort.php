@@ -113,8 +113,7 @@ function stripSort( $str ) {
 		chr(197).chr(188) => 'z', chr(197).chr(189) => 'Z',
 		chr(197).chr(190) => 'z', chr(197).chr(191) => 's'
 	);
-	$string = strtr( $string, $chars );
-	return $string;
+	return strtr( $string, $chars );
 }
 if ( isset( $argv[ 1 ] ) ) {
 	$file = $argv[ 1 ];
