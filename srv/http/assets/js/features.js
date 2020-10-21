@@ -46,6 +46,7 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		$( '#streaming' ).prop( 'checked', G.streaming );
 		$( '#ip' ).text( G.streamingip +':8000' );
 		$( '#gpio' ).prop( 'checked', G.gpio );
+		$( '#setting-gpio' ).toggleClass( 'hide', !G.gpio );
 		$( '#mpdscribble' ).prop( 'checked', G.mpdscribble );
 		$( '#setting-mpdscribble' ).toggleClass( 'hide', !G.mpdscribble );
 		$( '#login' ).prop( 'checked', G.login );
@@ -268,6 +269,9 @@ $( '#gpio' ).click( function() {
 	$( '#setting-gpio' ).toggleClass( 'hide', !G.gpio );
 	notify( 'GPIO Relay', G.gpio, 'gpio blink' );
 	bash( [ 'gpio', G.gpio ], resetLocal );
+} );
+$( '#setting-gpio' ).click( function() {
+	location.href = 'gpiosettings.php';
 } );
 $( '#mpdscribble' ).click( function() {
 	var mpdscribble = $( this ).prop( 'checked' );

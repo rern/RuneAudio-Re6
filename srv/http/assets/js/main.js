@@ -174,9 +174,6 @@ $( '#screenoff' ).click( function( e ) {
 $( '#gpio' ).click( function( e ) {
 	bash( [ 'gpio', !G.status.gpioon ] );
 } );
-$( '#gpiosetting' ).click( function( e ) {
-	location.href = 'gpiosettings.php';
-} );
 $( '#logout' ).click( function( e ) {
 	$.post( cmdphp, { cmd: 'logout' }, function() {
 		location.reload();
