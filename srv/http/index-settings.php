@@ -42,11 +42,11 @@ include 'logosvg.php';
 $page = $_GET[ 'p' ];
 $sudo = '/usr/bin/sudo /usr/bin';
 $icon = [
-	  'credits' => 'rune'
-	, 'mpd'     => 'mpd'
-	, 'network' => 'network'
-	, 'sources' => 'folder-cascade'
-	, 'system'  => 'sliders'
+	  'features' => 'sliders'
+	, 'mpd'      => 'mpd'
+	, 'network'  => 'network'
+	, 'sources'  => 'folder-cascade'
+	, 'system'   => 'gear'
 ];
 $help = '<i class="help fa fa-question-circle"></i>';
 ?>

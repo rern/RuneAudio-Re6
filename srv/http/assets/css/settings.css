@@ -214,6 +214,10 @@ heading {
 	font-weight: 300;
 	border-bottom: 1px solid var( --cg );
 }
+heading.sub {
+	padding-bottom: 0;
+	font-size: 18px;
+}
 heading.noline {
 	margin-bottom: 0;
 	border-bottom: none;
@@ -489,12 +493,12 @@ input:checked + .switchlabel:after {
 	width: 30px;
 	vertical-align: 5px;
 }
-.col-l i.fa-gear,
+.settings i,
 .col-l i.fa-code {
 	width: 20px;
 	vertical-align: 0;
 }
-.col-l i.fa-gear {
+.settings i {
 	color: var( --cw );
 }
 .w2x {

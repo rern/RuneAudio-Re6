@@ -198,8 +198,8 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 <?php } else { ?>
 	<a id="sources" class="settings"><i class="fa fa-folder-cascade"></i>Sources</a>
 <?php } ?>
-	<a id="system" class="settings sub"><i class="fa fa-sliders"></i>System</a>
-		<i id="credits" class="fa fa-rune settings submenu"></i>
+	<a id="system" class="settings sub"><i class="fa fa-gear"></i>System</a>
+		<i id="features" class="fa fa-sliders settings submenu"></i>
 <?php if ( $login ) { ?>
 	<a id="logout"><i class="fa fa-lock"></i>Logout</a>
 <?php }
