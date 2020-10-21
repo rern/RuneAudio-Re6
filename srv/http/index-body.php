@@ -210,8 +210,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	<a id="power"><i class="fa fa-power"></i>Power</a>
 <?php }
 	  if ( file_exists( $dirsystem.'gpio' ) ) { ?>
-	<a id="gpio" class="sub"><i class="fa fa-gpio"></i>GPIO</a>
-		<i id="gpiosetting" class="fa fa-gear submenu"></i>
+	<a id="gpio"><i class="fa fa-gpio"></i>GPIO</a>
 <?php }
 	  if ( file_exists( '/srv/http/aria2' ) ) {
 		$ariaenable = exec( '/usr/bin/systemctl is-enabled aria2 &> /dev/null && echo true || echo false' );
