@@ -465,7 +465,7 @@ $( '#setting-mpdscribble' ).click( function() {
 		}
 	} );
 } );
-$( '#login' ).click( function( e ) {
+$( '#login' ).click( function() {
 	G.login = $( this ).prop( 'checked' );
 	$( '#setting-login' ).toggleClass( 'hide', !G.login );
 	notify( 'Password Login', G.login, 'lock' );
@@ -504,7 +504,7 @@ $( '#autoplay' ).click( function() {
 	notify( 'Play on Startup', G.autoplay, 'refresh-play' );
 	bash( [ 'autoplay', G.autoplay ], resetLocal );
 } );
-$( '#onboardaudio' ).click( function( e ) {
+$( '#onboardaudio' ).click( function() {
 	var onboardaudio = $( this ).prop( 'checked' );
 	if ( !onboardaudio && G.audioaplayname.slice( 0, 7 ) === 'bcm2835' ) {
 		info( {
@@ -520,13 +520,13 @@ $( '#onboardaudio' ).click( function( e ) {
 		bash( [ 'onboardaudio', G.onboardaudio, G.reboot.join( '\n' ) ], resetLocal );
 	}
 } );
-$( '#bluetooth' ).click( function( e ) {
+$( '#bluetooth' ).click( function() {
 	G.bluetooth = $( this ).prop( 'checked' );
 	rebootText( G.bluetooth ? 'Enable' : 'Disable', 'on-board Bluetooth' );
 	notify( 'On-board Bluetooth', G.bluetooth, 'bluetooth' );
 	bash( [ 'bluetooth', G.bluetooth, G.reboot.join( '\n' ) ], resetLocal );
 } );
-$( '#wlan' ).click( function( e ) {
+$( '#wlan' ).click( function() {
 	G.wlan = $( this ).prop( 'checked' );
 	notify( 'On-board Wi-Fi', G.wlan, 'wifi-3' );
 	bash( [ 'wlan', G.wlan ], resetLocal );
@@ -541,7 +541,7 @@ $( '#i2smodulesw' ).click( function() {
 			.find( '.selectric' ).click();
 	}, 200 );
 } );
-$( '#i2smodule' ).on( 'selectric-change', function( e ) {
+$( '#i2smodule' ).on( 'selectric-change', function() {
 	var audioaplayname = $( this ).val();
 	var audiooutput = $( this ).find( ':selected' ).text();
 	local = 1;
@@ -577,7 +577,7 @@ $( '#i2smodule' ).on( 'selectric-change', function( e ) {
 		} );
 	$( '#output' ).text( G.audiooutput );
 } );
-$( '#soundprofile' ).click( function( e ) {
+$( '#soundprofile' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	rebootText( checked ? 'Enable' : 'Disable', 'sound profile' );
 	notify( 'Sound Profile', checked, 'volume' );
