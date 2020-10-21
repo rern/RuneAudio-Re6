@@ -486,7 +486,7 @@ function webRadioNew( name, url ) {
 	} );
 }
 //----------------------------------------------------------------------------------------------
-$( '.contextmenu a, .contextmenu i' ).click( function() {
+$( '.contextmenu a, .contextmenu .submenu' ).click( function() {
 	var $this = $( this );
 	var cmd = $this.data( 'cmd' );
 	$( '.menu' ).addClass( 'hide' );
