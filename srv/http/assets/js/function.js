@@ -1465,7 +1465,7 @@ function setNameWidth() {
 	} );
 }
 function setPlaylistScroll() {
-	if ( !G.playlist || !G.status.playlistlength || G.sortable ) return // skip if empty or Sortable
+	if ( !G.playlist || !$( '#pl-savedlist' ).hasClass( 'hide' ) || !G.status.playlistlength || G.sortable ) return // skip if empty or Sortable
 	
 	playlistProgress();
 	setNameWidth();
