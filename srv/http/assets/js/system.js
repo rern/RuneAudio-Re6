@@ -40,9 +40,11 @@ function getJournalctl() {
 }
 function getConfigtxt() {
 	bash( 'cat /boot/config.txt', function( status ) {
+		setTimeout( function() {
 		$( '#codeconfigtxt' )
 			.html( status )
 			.removeClass( 'hide' );
+		}, 1000 );
 	} );
 }
 function rebootText( enable, device ) {
@@ -187,9 +189,9 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		$( '#timezone' )
 			.val( G.timezone )
 			.selectric( 'refresh' );
-		$( 'pre:not(.hide)' ).each( function() {
-			getStatus( this.id.replace( 'code', '' ) );
-		} );
+		if ( !$( '#codejournalctl' ).hasClass( 'hide' ) ) getJournalctl();
+		if ( !$( '#codeconfigtxt' ).hasClass( 'hide' ) ) getConfigtxt();
+		resetLocal();
 		showContent();
 	}, 'json' );
 }
