@@ -137,6 +137,7 @@
 <div class="col-r">
 	<input id="gpio" type="checkbox">
 	<div class="switchlabel" for="gpio"></div>
+	<i id="setting-gpio" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
 		<a href="https://github.com/rern/RuneUI_GPIO/blob/master/README.md">RuneUI - GPIO</a> - Control GPIO-connected relay module for power on / off equipments.
 	</span>
