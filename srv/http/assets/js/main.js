@@ -1821,7 +1821,6 @@ $( '#pl-list' ).on( 'click', 'li', function( e ) {
 		$( '#pl-list li.active, #playback-controls .btn' ).removeClass( 'active' );
 		$this.add( '#play' ).addClass( 'active' );
 		if ( $this.find( '.fa-webradio' ).length ) G.status.Title = '';
-		setPlaylistScroll();
 	}
 } );
 $( '#pl-list' ).on( 'click', '.pl-icon', function( e ) {
