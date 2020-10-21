@@ -226,7 +226,8 @@ RuneAudio <i class="fa fa-addons gr"></i> <?=( file_get_contents( '/srv/http/dat
 <heading class="sub">Data<?=$help?></heading>
 <span class="help-block hide">
 	<a href="https://www.last.fm">last.fm</a><gr> - Coverarts and artist biographies</gr><br>
-	<a href="https://webservice.fanart.tv">fanart.tv</a><gr> - Coverarts and artist images</gr>
+	<a href="https://webservice.fanart.tv">fanart.tv</a><gr> - Coverarts and artist images</gr><br>
+	<a href="https://radioparadise.com">Radio Paradise</a><gr> - Coverarts of their own and default stations</gr>
 </span>
 </div>
 
