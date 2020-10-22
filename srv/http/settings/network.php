@@ -68,7 +68,7 @@
 	<div class="col-r">
 		<input id="accesspoint" type="checkbox">
 		<div class="switchlabel" for="accesspoint"></div>
-		<i id="settings-accesspoint" class="setting fa fa-gear"></i>
+		<i id="setting-accesspoint" class="setting fa fa-gear"></i>
 		<span class="help-block hide">Connect with RuneAudio+R Wi-Fi directly when no routers available.
 			<br>RuneAudio+R access point should be used only when necessary.</span>
 	</div>

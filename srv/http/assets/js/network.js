@@ -323,7 +323,6 @@ function nicsStatus() {
 		renderQR();
 		bannerHide();
 		$( '#divaccesspoint' ).toggleClass( 'hide', !extra.wlan );
-		if ( !$( '#codeifconfig' ).hasClass( 'hide' ) ) getIfconfig();
 		if ( !$( '#codenetctl' ).hasClass( 'hide' ) ) getNetctl();
 		showContent();
 	}, 'json' );
@@ -549,7 +548,7 @@ $( '#accesspoint' ).change( function() {
 	notify( 'RPi Access Point', G.hostapd, 'wifi-3' );
 	bash( [ 'accesspoint', G.hostapd, G.hostapdip ] );
 } );
-$( '#settings-accesspoint' ).click( function() {
+$( '#setting-accesspoint' ).click( function() {
 	info( {
 		  icon      : 'network'
 		, title     : 'Access Point Settings'
