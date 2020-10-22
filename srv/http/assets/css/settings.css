@@ -139,7 +139,7 @@ a:hover {
 	color: var( --cm );
 	text-decoration: none !important;
 }
-#hostname {
+input {
 	width: 230px;
 	height: 40px;
 	margin-bottom: 10px;
@@ -173,7 +173,6 @@ pre {
 	background: -webkit-radial-gradient(50% -50%, 160% 200%, hsla(0,0%,100%,.3) 50%, hsla(0,0%,100%,0) 55%);
 	background: radial-gradient(160% 100% at 50% 0% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 55%);
 	text-shadow: 1px 1px 2px #000000;
-	cUrsor: pointer;
 }
 .btn-default {
 	background-color: var( --cg );
@@ -235,10 +234,6 @@ heading i.back {
 heading i:nth-child( 2 ) {
 	width: 30px;
 }
-heading i,
-.status {
-	cursor: pointer;
-}
 heading i.fa-question-circle {
 	float: right;
 	width: 25px;
@@ -269,7 +264,6 @@ heading i.fa-question-circle {
 	text-align: center;
 	font-size: 24px;
 	text-shadow: 1px 1px 2px #000000;
-	cursor: pointer;
 }
 .page-icon {
 	float: left;
@@ -285,7 +279,6 @@ heading i.fa-question-circle {
 #close {
 	font-size: 2em !important;
 	color: var( --cm );
-	cursor: pointer;
 }
 .title {
 	margin-left: 15px;
@@ -297,7 +290,6 @@ heading i.fa-question-circle {
 .back {
 	float: right;
 	color: var( --cm );
-	cursor: pointer;
 }
 code {
 	font-family: 'Inconsolata';
@@ -352,7 +344,6 @@ grw,
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	cursor: pointer;
 	user-select: none;
 }
 .entries li:first-of-type {
@@ -401,7 +392,6 @@ input[type=image] {
 	background: var( --cg );
 	border-radius: 4px;
 	box-shadow: inset 0px 1px 2px #000000;
-	cursor: pointer;
 }
 .btn-primary,
 .switchlabel:after,
@@ -445,7 +435,6 @@ input:checked + .switchlabel:after {
 	width: 40px;
 	text-align: center;
 	font-size: 26px;
-	cursor: pointer;
 }
 .settingedit {
 	position: static;
@@ -496,7 +485,7 @@ input:checked + .switchlabel:after {
 	vertical-align: 5px;
 }
 .settings i,
-.col-l i.fa-code {
+.col-l a i.fa-code {
 	width: 20px;
 	vertical-align: 0;
 }
@@ -527,9 +516,6 @@ input:checked + .switchlabel:after {
 	width: auto;
 	white-space: nowrap;
 	line-height: 26px;
-}
-.settings {
-	cursor: pointer;
 }
 #guide {
 	position: absolute;
@@ -577,7 +563,6 @@ input:checked + .switchlabel:after {
 	float: right;
 	font-size: 24px;
 	color: var( --cm );
-	cursor: pointer;
 }
 @media (min-width: 768px) {
 	.container {
@@ -658,5 +643,20 @@ input:checked + .switchlabel:after {
 	}
 	.entries li:hover {
 		background: hsl(0,0%,15%)/*bh*/;
+	}
+	heading i,
+	.back,
+	.btn,
+	.code,
+	.entries li,
+	.page-icon,
+	.prev-next,
+	.settings,
+	.settingedit,
+	.status,
+	.switchlabel,
+	#close,
+	#help {
+		cursor: pointer;
 	}
 }
