@@ -9,11 +9,8 @@ installstart "$1"
 file=/etc/systemd/system/bluez-authorize.service
 if [[ -e /usr/bin/bluetoothctl && ! -e $file ]]; then
 	bt=1
-	pacman -Sy
-	pacman -S python-dbus
-	pacman -S python-gobject
-	echo "\
-[Unit]
+	pacman -Sy python-dbus python-gobject
+	echo "[Unit]
 Description=Bluetooth auto authorization
 After=bluetooth.service
 Requires=bluetooth.service
@@ -27,8 +24,7 @@ fi
 
 file=/etc/systemd/system/wlan0-powersaveoff.service
 if [[ ! -e $file ]]; then
-	echo "\
-[Unit]
+	echo "[Unit]
 Description=Set WiFi power save off
 After=sys-subsystem-net-devices-wlan0.device
 
