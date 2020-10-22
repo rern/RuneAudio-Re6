@@ -176,3 +176,5 @@
 	<span class="help-block hide">Start playing automatically after boot.</span>
 </div>
 </div>
+
+<div style="clear: both"></div>

@@ -45,7 +45,7 @@ include 'logosvg.php';
 var nlibrary = 21;
 var nplaylist = 38;
 var nsettings = 44;
-var ntotal = 52;
+var ntotal = 53;
 var n = 1;
 $.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
 $( '#count' ).text( n +'/'+ ntotal );
