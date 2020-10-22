@@ -42,7 +42,7 @@ fi
 
 getinstallzip
 
-if[[ -n $bt ]]; then
+if [[ -n $bt ]]; then
 	systemctl daemon-reload
 	systemctl try-restart bluetooth
 fi
