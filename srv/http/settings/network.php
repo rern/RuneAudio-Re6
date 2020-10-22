@@ -34,12 +34,6 @@
 		</div>
 	</div>
 	</div>
-	
-	<div>
-	<heading id="ifconfig" class="status">Status<i class="fa fa-code"></i><?=$help?></heading>
-	<span class="help-block hide"><code>ifconfig</code></span>
-	<pre id="codeifconfig" class="hide"></pre>
-	</div>
 </div>
 
 <div id="divwifi" class="hide">

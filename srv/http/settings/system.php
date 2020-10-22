@@ -81,31 +81,34 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 <div>
 <heading>On-board Devices<?=$help?></heading>
 <div id="divonboardaudio">
-	<div class="col-l">Audio</div>
+	<div id="aplay" class="col-l icon">Audio <i class="fa fa-code code"></i></div>
 	<div class="col-r">
 		<input id="onboardaudio" type="checkbox">
 		<div class="switchlabel" for="onboardaudio"></div>
 		<span class="help-block hide">Should be disabled if use other devices as audio output.</span>
 	</div>
+	<pre id="codeaplay" class="hide"></pre>
 </div>
 	<?php $code = exec( "awk '/Revision/ {print \$NF}' /proc/cpuinfo" );
 		$hwcode = substr( $code, -3, 2 );
 		if ( in_array( $hwcode, [ '0c', '08', '0e', '0d', '11' ] ) ) { # rpi with wireless
 			if ( file_exists( '/usr/bin/bluetoothctl' ) ) { ?>
-<div class="col-l settings" data-setting="network">Bluetooth<i class="fa fa-gear"></i></div>
+<div id="bluetoothctl" class="col-l icon">Bluetooth <i class="fa fa-code code"></i></div>
 <div class="col-r">
 	<input id="bluetooth" type="checkbox">
 	<div class="switchlabel" for="bluetooth"></div>
 	<span class="help-block hide">Should be disabled if not used.</span>
 </div>
+<pre id="codebluetoothctl" class="hide"></pre>
 		<?php $bluetooth = ', Bluetooth';
 			  } ?>
-<div class="col-l settings" data-setting="network">Wi-Fi<i class="fa fa-gear"></i></div>
+<div id="ifconfig" class="col-l icon">Wi-Fi <i class="fa fa-code code"></i></div>
 <div class="col-r">
 	<input id="wlan" type="checkbox">
 	<div class="switchlabel" for="wlan"></div>
 	<span class="help-block hide">Should be disabled if not used.</span>
 </div>
+<pre id="codeifconfig" class="hide"></pre>
 	<?php } ?>
 </div>
 

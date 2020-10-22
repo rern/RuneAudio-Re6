@@ -182,13 +182,6 @@ function editWiFiSet( ssid, data ) {
 		} );
 	}
 }
-function getIfconfig() {
-	bash( [ 'statusifconfig' ], function( status ) {
-		$( '#codeifconfig' )
-			.html( status )
-			.removeClass( 'hide' );
-	} );
-}
 function getNetctl() {
 	bash( [ 'statusnetctl' ], function( data ) {
 		$( '#codenetctl' )
@@ -584,9 +577,6 @@ $( '#settings-accesspoint' ).click( function() {
 			bash( [ 'accesspointset', iprange, ip, passphrase ] );
 		}
 	} );
-} );
-$( '#ifconfig' ).click( function( e ) {
-	codeToggle( e.target, this.id, getIfconfig );
 } );
 $( '#netctl' ).click( function( e ) {
 	codeToggle( e.target, this.id, getNetctl );

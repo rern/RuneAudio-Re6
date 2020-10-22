@@ -183,13 +183,6 @@ ifconfig )
 ipused )
 	arp -n | grep -q ^${args[1]} && echo 1 || echo 0
 	;;
-statusifconfig )
-	ifconfig
-	if systemctl -q is-active bluetooth; then
-		echo '<hr>'
-		bluetoothctl show | sed 's/^\(Controller.*\)/bluetooth: \1/'
-	fi
-	;;
 statusnetctl )
 	lists=$( netctl list )
 	[[ -z $lists ]] && echo '(none)' && exit

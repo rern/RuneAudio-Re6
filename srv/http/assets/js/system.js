@@ -1,5 +1,35 @@
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+function getAplay() {
+	bash( 'aplay -l', function( status ) {
+		$( '#codeaplay' )
+			.html( status )
+			.removeClass( 'hide' );
+	} );
+}
+function getBluetoothctl() {
+	bash( 'systemctl -q is-active bluetooth && bluetoothctl show', function( status ) {
+		$( '#codebluetoothctl' )
+			.html( status )
+			.removeClass( 'hide' );
+	} );
+}
+function getConfigtxt() {
+	bash( 'cat /boot/config.txt', function( status ) {
+		setTimeout( function() {
+		$( '#codeconfigtxt' )
+			.html( status )
+			.removeClass( 'hide' );
+		}, 1000 );
+	} );
+}
+function getIfconfig() {
+	bash( 'ifconfig', function( status ) {
+		$( '#codeifconfig' )
+			.html( status )
+			.removeClass( 'hide' );
+	} );
+}
 function getIwregget() {
 	bash( 'iw reg get', function( status ) {
 		$( '#codeiwregget' )
@@ -23,15 +53,6 @@ function getJournalctl() {
 			.removeClass( 'fa-code' )
 			.addClass( 'fa-refresh blink' );
 	}
-}
-function getConfigtxt() {
-	bash( 'cat /boot/config.txt', function( status ) {
-		setTimeout( function() {
-		$( '#codeconfigtxt' )
-			.html( status )
-			.removeClass( 'hide' );
-		}, 1000 );
-	} );
 }
 function rebootText( enable, device ) {
 	G.reboot = G.reboot.filter( function( el ) {
@@ -203,16 +224,25 @@ $( '#onboardaudio' ).click( function() {
 		bash( [ 'onboardaudio', G.onboardaudio, G.reboot.join( '\n' ) ], resetLocal );
 	}
 } );
+$( '#aplay' ).click( function( e ) {
+	codeToggle( e.target, this.id, getAplay );
+} );
 $( '#bluetooth' ).click( function() {
 	G.bluetooth = $( this ).prop( 'checked' );
 	rebootText( G.bluetooth ? 'Enable' : 'Disable', 'on-board Bluetooth' );
 	notify( 'On-board Bluetooth', G.bluetooth, 'bluetooth' );
 	bash( [ 'bluetooth', G.bluetooth, G.reboot.join( '\n' ) ], resetLocal );
 } );
+$( '#bluetoothctl' ).click( function( e ) {
+	codeToggle( e.target, this.id, getBluetoothctl );
+} );
 $( '#wlan' ).click( function() {
 	G.wlan = $( this ).prop( 'checked' );
 	notify( 'On-board Wi-Fi', G.wlan, 'wifi-3' );
 	bash( [ 'wlan', G.wlan ], resetLocal );
+} );
+$( '#ifconfig' ).click( function( e ) {
+	codeToggle( e.target, this.id, getIfconfig );
 } );
 $( '#i2smodulesw' ).click( function() {
 	// delay to show switch sliding
