@@ -18,12 +18,7 @@
 	<ul id="listbt" class="entries"></ul>
 	<span class="help-block hide">
 			- As sender(source) to send signal to another device.
-		<br>- As receiver(sink) to receive signal:
-		<br>&emsp; Authorization
-		<br>&emsp; - SSH before scan: <code>bluetoothctl</code>
-		<br>&emsp; - Start scan from sender device.
-		<br>&emsp; - During connecting process: <code>Authorize service</code> <code>yes</code> to all
-		<br>&emsp; - Prompt changed to device name on connected: <code>exit</code>
+		<br>- As receiver(sink) to receive signal from another device
 	</span>
 	</div>
 <?php } ?>

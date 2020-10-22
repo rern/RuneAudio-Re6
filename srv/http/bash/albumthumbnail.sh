@@ -16,8 +16,6 @@ else
 	mpdpathlist=$( find "/mnt/MPD/$1" -type d | cut -c10- )
 fi
 dirtmp=/srv/http/data/shm
-coverartsize=200x200
-thumbsize=80x80
 unsharp=0x.5
 color=( K R G Y B M C W Gr )
 cL=${#color[@]}

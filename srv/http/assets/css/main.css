@@ -415,6 +415,7 @@ svg path.st1 {
 	display: inline-block;
 	width: 100%;
 	margin: 0;
+	line-height: 40px;
 	font-size: 16px;
 	color: var( --cg75 );
 	border-top: 1px solid var( --cga ) !important;
@@ -447,15 +448,21 @@ svg path.st1 {
 	box-shadow: -4px 4px 10px #000000;
 	z-index: 104;
 }
+#power, #screenoff {
+	background: var( --cga );
+}
+#screenoff {
+	line-height: 41px;
+}
+#power {
+	border-right: 1px solid #000000;
+}
 .iconimg {
 	margin: 0 7px;
 	width: 26px;
 	border-radius: 50%;
 	vertical-align: -8px;
 	box-shadow: 1px 1px 2px #000000;
-}
-.submenu.imgicon {
-	border-bottom: 1px solid var( --cga );
 }
 #settings i.on {
 	color: var( --cml ) !important;
@@ -521,10 +528,11 @@ svg path.st1 {
 	height: inherit;
 	z-index: 10;
 }
-#bar-top,
-#bar-bottom,
 .content-top,
 .licover,
+#bar-top,
+#bar-bottom,
+#biocontent .artist,
 #divlyricsartist {
 	box-shadow: 0 0 10px 4px #000000;
 }
@@ -1373,10 +1381,10 @@ svg path.st1 {
 }
 #biocontent .artist {
 	width: 100%;
+	margin-bottom: 10px;
 	font-size: 30px;
 	line-height: 60px;
 	background: #000000;
-	box-shadow: 0px 4px 10px #000000;
 	border-bottom: 1px solid var( --cg );
 }
 #biocontent .genre {
@@ -1548,14 +1556,6 @@ svg path.st1 {
 	.lyricstext {
 		height: calc(100vh - 150px);
 	}
-}
-
-.pnotify_custom {
-	top: 60px !important;
-	bottom: auto !important;
-	left: 0 !important;
-	width: 210px !important;
-	box-shadow: -4px 4px 10px #000000;
 }
 /* ---------------------- library and queue ---------------------- */
 #lib-mode-list {

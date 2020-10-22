@@ -189,17 +189,17 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	</div>
 </div>
 <div id="settings" class="menu hide">
-	<a id="mpd" class="settings sub"><i class="fa fa-mpd"></i>MPD</a>
-		<i id="update" class="fa fa-refresh-library submenu"></i>
-	<a id="network" class="settings"><i class="fa fa-network"></i>Network</a>
 <?php if ( file_exists( $dirsystem.'snapclient' ) ) { ?>
-	<a id="sources" class="settings sub"><i class="fa fa-folder-cascade"></i>Sources</a>
+	<a id="mpd" class="settings sub"><i class="fa fa-mpd"></i>MPD</a>
 		<i id="snapclient" class="fa fa-snapcast submenu"></i>
 <?php } else { ?>
-	<a id="sources" class="settings"><i class="fa fa-folder-cascade"></i>Sources</a>
+	<a id="mpd" class="settings"><i class="fa fa-mpd"></i>MPD</a>
 <?php } ?>
-	<a id="system" class="settings sub"><i class="fa fa-sliders"></i>System</a>
-		<i id="credits" class="fa fa-rune settings submenu"></i>
+	<a id="network" class="settings"><i class="fa fa-network"></i>Network</a>
+	<a id="sources" class="settings sub"><i class="fa fa-folder-cascade"></i>Sources</a>
+		<i id="update" class="fa fa-refresh-library submenu"></i>
+	<a id="system" class="settings sub"><i class="fa fa-gear"></i>System</a>
+		<i id="features" class="fa fa-sliders settings submenu"></i>
 <?php if ( $login ) { ?>
 	<a id="logout"><i class="fa fa-lock"></i>Logout</a>
 <?php }
@@ -210,8 +210,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	<a id="power"><i class="fa fa-power"></i>Power</a>
 <?php }
 	  if ( file_exists( $dirsystem.'gpio' ) ) { ?>
-	<a id="gpio" class="sub"><i class="fa fa-gpio"></i>GPIO</a>
-		<i id="gpiosetting" class="fa fa-gear submenu"></i>
+	<a id="gpio"><i class="fa fa-gpio"></i>GPIO</a>
 <?php }
 	  if ( file_exists( '/srv/http/aria2' ) ) {
 		$ariaenable = exec( '/usr/bin/systemctl is-enabled aria2 &> /dev/null && echo true || echo false' );

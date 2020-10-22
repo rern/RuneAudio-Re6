@@ -174,9 +174,6 @@ $( '#screenoff' ).click( function( e ) {
 $( '#gpio' ).click( function( e ) {
 	bash( [ 'gpio', !G.status.gpioon ] );
 } );
-$( '#gpiosetting' ).click( function( e ) {
-	location.href = 'gpiosettings.php';
-} );
 $( '#logout' ).click( function( e ) {
 	$.post( cmdphp, { cmd: 'logout' }, function() {
 		location.reload();
@@ -1821,7 +1818,6 @@ $( '#pl-list' ).on( 'click', 'li', function( e ) {
 		$( '#pl-list li.active, #playback-controls .btn' ).removeClass( 'active' );
 		$this.add( '#play' ).addClass( 'active' );
 		if ( $this.find( '.fa-webradio' ).length ) G.status.Title = '';
-		setPlaylistScroll();
 	}
 } );
 $( '#pl-list' ).on( 'click', '.pl-icon', function( e ) {

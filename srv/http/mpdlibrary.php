@@ -111,7 +111,7 @@ case 'ls':
 		$html = '';
 		foreach( $array as $each ) {
 			$path = $each->path;
-			$index = mb_substr( $each->sort, 0, 1, 'UTF-8' );
+			$index = strtoupper( mb_substr( $each->sort, 0, 1, 'UTF-8' ) );
 			$indexes[] = $index;
 			$pathnoext = '/mnt/MPD/'.$path.'/thumb';
 			if ( $nas200 || file_exists( $pathnoext.'.jpg' ) ) {
@@ -235,7 +235,8 @@ case 'webradio':
 	$time = time();
 	$html = '';
 	foreach( $array as $each ) {
-		$indexes[] = mb_substr( $each->sort, 0, 1, 'UTF-8' );
+		$index = strtoupper( mb_substr( $each->sort, 0, 1, 'UTF-8' ) );
+		$indexes[] = $index;
 		$name = str_replace( '/', '|', $each->url );
 		$pathnoext = '/srv/http/data/webradiosimg/'.$name.'-thumb';
 		if ( file_exists( $pathnoext.'.jpg' ) ) {
@@ -251,7 +252,7 @@ case 'webradio':
 		} else {
 			$icon = '<i class="fa fa-webradio lib-icon" data-target="#menu-webradio"></i>';
 		}
-		$html.= '<li class="file">'
+		$html.= '<li class="file" data-index="'.$index.'">'
 					.$icon
 					.'<a class="lipath">'.$each->url.'</a>'
 					.'<a class="liname">'.$each->name.'</a>'
@@ -311,7 +312,7 @@ function htmlFind( $mode, $lists, $f ) { // non-file 'find' command
 		$key1 = $f[ 1 ];
 		$val0 = $each->$key0;
 		$val1 = $each->$key1;
-		$index = mb_substr( $each->sort, 0, 1, 'UTF-8' );
+		$index = strtoupper( mb_substr( $each->sort, 0, 1, 'UTF-8' ) );
 		$indexes[] = $index;
 		if ( in_array( $mode, [ 'artist', 'albumartist' ] ) ) { // display as artist - album
 			$name = $fL > 1 ? $val0.'<gr> • </gr>'.$val1 : $val0;
@@ -351,7 +352,7 @@ function htmlList( $mode, $lists ) { // non-file 'list' command
 	if ( $mode !== 'album' ) {
 		foreach( $lists as $list ) {
 			$data = explode( '^^', $list );
-			$index = $data[ 0 ];
+			$index = strtoupper( $data[ 0 ] );
 			$indexes[] = $index;
 			$name = $data[ 1 ];
 			$html.= '<li data-mode="'.$mode.'" data-index="'.$index.'">'
@@ -364,7 +365,7 @@ function htmlList( $mode, $lists ) { // non-file 'list' command
 		$time = time();
 		foreach( $lists as $list ) {
 			$data = explode( '^^', $list );
-			$index = $data[ 0 ];
+			$index = strtoupper( $data[ 0 ] );
 			$indexes[] = $index;
 			$path = $data[ 3 ];
 			$coverfile = '/mnt/MPD/'.rawurlencode( $path ).'/coverart.'.$time.'.jpg';

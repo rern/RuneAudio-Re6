@@ -91,11 +91,3 @@ if [[ -e $dirsystem/accesspoint && -n $wlan0up ]]; then
 fi
 
 /srv/http/bash/cmd.sh addonsupdate
-
-wlans=$( ip a | awk '/wlan.:/ {print $2}' | tr -d ':' )
-[[ -z "$wlans" ]] && exit
-
-sleep 15 # wait "power_save" ready for setting
-for wlan in $wlans; do
-	iw $wlan set power_save off
-done 

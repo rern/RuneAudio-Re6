@@ -17,7 +17,6 @@ foreach( $timezonelist as $key => $zone ) {
 }
 $selecttimezone.= '</select>';
 $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status SERVICE</code></span>';
-$code = '<i class="fa fa-code"></i>';
 ?>
 <div>
 <heading>System<?=$help?></heading>
@@ -46,186 +45,6 @@ $code = '<i class="fa fa-code"></i>';
 			<br>- RPi 3B+: 60°C soft limit (optimized throttling)
 		</div>
 	</span>
-</div>
-</div>
-
-<div>
-<heading>Renderers<?=$help?></heading>
-<span class="help-block hide"><?=$helpstatus?>
-	<?php if ( file_exists( '/usr/bin/shairport-sync' ) ) { ?>
-<div class="col-l double status" data-service="shairport-sync">
-	<a>AirPlay
-	<br><gr>Shairport-sync<?=$code?></gr></a><i class="fa fa-airplay fa-lg"></i>
-</div>
-<div class="col-r">
-	<input id="airplay" type="checkbox">
-	<div class="switchlabel" for="airplay"></div>
-	<span class="help-block hide">
-		<a href="https://github.com/mikebrady/shairport-sync">Shairport-sync</a> - RuneAudio as AirPlay rendering device.
-	</span>
-</div>
-<pre id="codeshairport-sync" class="hide"></pre>
-	<?php }
-		  if ( file_exists( '/usr/bin/snapserver' ) ) { ?>
-<div id="divsnapclient">
-	<div class="col-l double">
-		<a>SnapClient
-		<br><gr>Snapcast</gr></a><i class="fa fa-snapcast fa-lg"></i>
-	</div>
-	<div class="col-r">
-		<input id="snapclient" type="checkbox">
-		<div class="switchlabel" for="snapclient"></div>
-		<i id="setting-snapclient" class="setting fa fa-gear hide"></i>
-		<span class="help-block hide">
-			<a href="https://github.com/badaix/snapcast">Snapcast</a> - Multiroom client-server audio player
-			<br>SnapClient - Connect: Menu >&ensp;<i class="fa fa-folder-cascade"></i>&ensp;Sources |&ensp;<i class="fa fa-snapcast"></i>
-			<br>(Note: Not available while Snapcast server enabled.)
-		</span>
-	</div>
-</div>
-	<?php }
-		  if ( file_exists( '/usr/bin/spotifyd' ) ) { ?>
-<div class="col-l double status" data-service="spotifyd">
-	<a>Spotify
-	<br><gr>Spotifyd<?=$code?></gr></a><i class="fa fa-spotify fa-lg"></i>
-</div>
-<div class="col-r">
-	<input id="spotify" type="checkbox">
-	<div class="switchlabel" for="spotify"></div>
-	<i id="setting-spotify" class="setting fa fa-gear hide"></i>
-	<span class="help-block hide">
-		<a href="https://github.com/Spotifyd/spotifyd">Spotifyd</a> - RuneAudio as Spotify Connect device.(For Premium account only)
-		<br><i class="fa fa-gear"></i>&ensp;Manually select audio output (when default not working only)
-	</span>
-</div>
-<pre id="codespotifyd" class="hide"></pre>
-	<?php }
-		  if ( file_exists( '/usr/bin/upmpdcli' ) ) { ?>
-<div class="col-l double status" data-service="upmpdcli">
-	<a>UPnP
-	<br><gr>upmpdcli<?=$code?></gr></a><i class="fa fa-upnp fa-lg"></i>
-</div>
-<div class="col-r">
-	<input id="upnp" type="checkbox">
-	<div class="switchlabel" for="upnp"></div>
-	<i id="setting-upnp" class="setting fa fa-gear hide"></i>
-	<span class="help-block hide">
-		<a href="https://www.lesbonscomptes.com/upmpdcli/">upmpdcli</a> - RuneAudio as UPnP / DLNA rendering device.
-	</span>
-</div>
-<pre id="codeupmpdcli" class="hide"></pre>
-	<?php } ?>
-</div>
-
-<div>
-<heading>Streamers<?=$help?></heading>
-<span class="help-block hide"><?=$helpstatus?>
-<div class="col-l double">
-	<a>For browsers
-	<br><gr>MPD http</gr></a><i class="fa fa-webradio fa-lg"></i>
-</div>
-<div class="col-r">
-	<input id="streaming" type="checkbox">
-	<div class="switchlabel" for="streaming"></div>
-	<span class="help-block hide">Asynchronous streaming for browsers via <code id="ip"></code> (Latency - several seconds)</span>
-</div>
-	<?php if ( file_exists( '/usr/bin/snapserver' ) ) { ?>
-<div class="col-l double status" data-service="snapserver">
-	<a>Synchronous
-	<br><gr>Snapcast<?=$code?></gr></a><i class="fa fa-snapcast fa-lg"></i>
-</div>
-<div class="col-r">
-	<input id="snapcast" type="checkbox">
-	<div class="switchlabel" for="snapcast"></div>
-	<span class="help-block hide">
-		<a href="https://github.com/badaix/snapcast">Snapcast</a> - Multiroom client-server audio player
-		<br>SnapServer - Clients can be either RPis with RuneAudio+R e or Snapcast capable devices.
-		<br>(Note: Enable Snapcast will disable SnapClient.)
-	</span>
-</div>
-<pre id="codesnapserver" class="hide"></pre>
-	<?php } ?>
-</div>
-
-<div>
-<heading>Features<?=$help?></heading>
-<span class="help-block hide"><?=$helpstatus?>
-	<?php if ( file_exists( '/usr/bin/chromium' ) ) { ?>
-<div class="col-l double status" data-service="localbrowser">
-	<a>Browser on RPi
-	<br><gr>Chromium<?=$code?></gr></a><i class="fa fa-chromium fa-lg"></i>
-</div>
-<div class="col-r">
-	<input id="localbrowser" type="checkbox">
-	<div class="switchlabel" for="localbrowser"></div>
-	<i id="setting-localbrowser" class="setting fa fa-gear"></i>
-	<span class="help-block hide">
-		<a href="https://github.com/chromium/chromium">Chromium</a> - Browser on RPi connected screen. (Overscan change needs reboot.)
-	</span>
-</div>
-<pre id="codelocalbrowser" class="hide"></pre>
-	<?php } 
-		  if ( file_exists( '/usr/bin/smbd' ) ) { ?>
-<div class="col-l double status" data-service="smb">
-	<a>File Sharing
-	<br><gr>Samba<?=$code?></gr></a><i class="fa fa-network fa-lg"></i>
-</div>
-<div class="col-r">
-	<input id="samba" type="checkbox">
-	<div class="switchlabel" for="samba"></div>
-	<i id="setting-samba" class="setting fa fa-gear"></i>
-	<span class="help-block hide">
-		<a href="https://www.samba.org">Samba</a> - Share files on RuneAudio.
-		<br>Set sources permissions for read+write - directory: <code>0777</code> file: <code>0555</code>
-		<br><i class="fa fa-gear"></i>&ensp;Enable/disable write.
-	</span>
-</div>
-<pre id="codesmb" class="hide"></pre>
-	<?php }
-		  if ( file_exists( '/srv/http/data/system/gpio.json' ) ) { ?>
-<div class="col-l double">
-	<a>GPIO Relay
-	<br><gr>RPI.GPIO</gr></a><i class="fa fa-gpio fa-lg"></i>
-</div>
-<div class="col-r">
-	<input id="gpio" type="checkbox">
-	<div class="switchlabel" for="gpio"></div>
-	<span class="help-block hide">
-		<a href="https://github.com/rern/RuneUI_GPIO/blob/master/README.md">RuneUI - GPIO</a> - Control GPIO-connected relay module for power on / off equipments.
-	</span>
-</div>
-	<?php } ?>
-<div class="col-l double status" data-service="mpdscribble">
-	<a>Last.fm Scrobbler
-	<br><gr>mpdscribble<?=$code?></gr></a><i class="fa fa-lastfm fa-lg"></i>
-</div>
-<div class="col-r">
-	<input id="mpdscribble" type="checkbox">
-	<div class="switchlabel" for="mpdscribble"></div>
-	<i id="setting-mpdscribble" class="setting fa fa-gear"></i>
-	<span class="help-block hide">
-		<a href="https://github.com/MusicPlayerDaemon/mpdscribble">mpdscribble</a> - Automatically send listened music data to Last.fm for tracking.
-	</span>
-</div>
-<pre id="codempdscribble" class="hide"></pre>
-<div class="col-l double">
-	<a>Password Login
-	<br><gr>Blowfish</gr></a><i class="fa fa-lock-circle fa-lg"></i>
-</div>
-<div class="col-r">
-	<input id="login" type="checkbox"<?=( password_verify( 'rune', file_get_contents( '/srv/http/data/system/password' ) ) ? ' data-default="1"' : '' )?>>
-	<div class="switchlabel" for="password"></div>
-	<i id="setting-login" class="setting fa fa-gear"></i>
-	<span class="help-block hide">Browser interface login. (Default: <code>rune</code>)</span>
-</div>
-<div class="col-l double">
-	<a>Play on Startup
-	<br><gr>System</gr></a><i class="fa fa-refresh-play fa-lg"></i>
-</div>
-<div class="col-r">
-	<input id="autoplay" type="checkbox">
-	<div class="switchlabel" for="autoplay"></div>
-	<span class="help-block hide">Start playing automatically after boot.</span>
 </div>
 </div>
 
@@ -294,7 +113,7 @@ $code = '<i class="fa fa-code"></i>';
 <heading>Environment<?=$help?></heading>
 <div class="col-l">Name</div>
 <div class="col-r">
-	<input type="text" id="hostname" readonly style="cursor: pointer">
+	<input type="text" id="hostname" readonly>
 	<span class="help-block hide">Name for Renderers, Streamers, RPi access point<?=$bluetooth?> and system hostname.</span>
 </div>
 <div class="col-l">Timezone</div>
@@ -324,6 +143,92 @@ $code = '<i class="fa fa-code"></i>';
 <div>
 <heading id="backuprestore" class="status">Backup/Restore Settings<i class="fa fa-gear"></i><?=$help?></heading>
 <span class="help-block hide">Backup or restore all settings and  MPD database.</span>
+</div>
+
+<?php
+$listruneos = [
+	  'Avahi'                    => 'https://www.avahi.org/'
+	, 'BlueZ'                    => 'http://www.bluez.org'
+	, 'BlueZ-Alsa'               => 'https://github.com/Arkq/bluez-alsa'
+	, 'Chromium'                 => 'https://www.chromium.org/'
+	, 'Cronie'                   => 'https://github.com/cronie-crond/cronie'
+	, 'Dnsmasq'                  => 'http://www.thekelleys.org.uk/dnsmasq/doc.html'
+	, 'dosfstools'               => 'https://github.com/dosfstools/dosfstools'
+	, 'FFmpeg'                   => 'http://ffmpeg.org'
+	, 'Gifsicle'                 => 'https://www.lcdf.org/gifsicle/'
+	, 'hfsprogs'                 => 'https://aur.archlinux.org/packages/hfsprogs'
+	, 'hostapd'                  => 'https://w1.fi/hostapd'
+	, 'ifplugd'                  => 'http://0pointer.de/lennart/projects/ifplugd'
+	, 'ImageMagick'              => 'https://imagemagick.org'
+	, 'jq'                       => 'https://stedolan.github.io/jq'
+	, 'Kid3 - Audio Tagger'      => 'https://kid3.sourceforge.io'
+	, 'MPD'                      => 'http://www.musicpd.org'
+	, 'nfs-utils'                => 'http://nfs.sourceforge.net'
+	, 'NGINX'                    => 'http://nginx.org'
+	, 'NGINX Push Stream Module' => 'https://github.com/wandenberg/nginx-push-stream-module'
+	, 'nss-mdns'                 => 'http://0pointer.de/lennart/projects/nss-mdns'
+	, 'NTFS-3G'                  => 'https://www.tuxera.com/community/open-source-ntfs-3g'
+	, 'Parted'                   => 'https://www.gnu.org/software/parted/parted.html'
+	, 'PHP'                      => 'http://php.net'
+	, 'ply-image'                => 'https://chromium.googlesource.com/chromiumos/third_party/ply-image/+/refs/heads/master/README.chromium'
+	, 'Python'                   => 'https://www.python.org'
+	, 'raspi-rotate'             => 'https://github.com/colinleroy/raspi-rotate'
+	, 'Samba'                    => 'http://www.samba.org'
+	, 'Shairport-sync'           => 'https://github.com/mikebrady/shairport-sync'
+	, 'Snapcast'                 => 'https://github.com/badaix/snapcast'
+	, 'Spotifyd'                 => 'https://github.com/Spotifyd/spotifyd'
+	, 'Sudo'                     => 'https://www.sudo.ws/sudo'
+	, 'udevil'                   => 'http://ignorantguru.github.io/udevil'
+	, 'upmpdcli'                 => 'http://www.lesbonscomptes.com/upmpdcli'
+	, 'Wget'                     => 'https://www.gnu.org/software/wget/wget.html'
+	, 'Web Service Discovery'    => 'https://github.com/christgau/wsdd'
+	, 'X'                        => 'https://xorg.freedesktop.org'
+];
+$runeoshtml = '';
+foreach( $listruneos as $name => $link ) {
+	$runeoshtml.= '<a href="'.$link.'">'.$name.'</a><br>';
+}
+$listruneui = [
+	  'HTML5-Color-Picker'  => 'https://github.com/NC22/HTML5-Color-Picker'
+	, 'jQuery'              => 'https://jquery.com/'
+	, 'jQuery Mobile'       => 'https://jquerymobile.com/'
+	, 'jQuery Selectric'    => 'https://github.com/lcdsantos/jQuery-Selectric'
+	, 'Lato-Fonts'          => 'http://www.latofonts.com/lato-free-fonts'
+	, 'LazyLoad'            => 'https://github.com/verlok/lazyload'
+	, 'pica'                => 'https://github.com/nodeca/pica'
+	, 'QR Code generator'   => 'https://github.com/datalog/qrcode-svg'
+	, 'roundSlider'         => 'https://github.com/soundar24/roundSlider'
+	, 'simple-keyboard'     => 'https://github.com/hodgef/simple-keyboard/'
+	, 'Sortable'            => 'https://github.com/SortableJS/Sortable'
+];
+$runeuihtml = '';
+foreach( $listruneui as $name => $link ) {
+	$runeuihtml.= '<a href="'.$link.'">'.$name.'</a><br>';
+}
+?>
+<br><br>
+<heading>About</heading>
+RuneAudio <i class="fa fa-addons gr"></i> <?=( file_get_contents( '/srv/http/data/system/version' ) )?>&emsp;by&emsp;<a href="https://github.com/rern/">r e r n</a>
+<div>
+<heading class="sub">RuneOS<?=$help?></heading>
+<span class="help-block hide">
+	<a href="https://www.archlinuxarm.org" style="font-size: 20px;">ArchLinuxArm</a> + default pakages<br>
+	<?=$runeoshtml?>
+</span>
+</div>
+<div>
+<heading class="sub">RuneUI<?=$help?></heading>
+<span class="help-block hide">
+	<?=$runeuihtml?>
+</span>
+</div>
+<div>
+<heading class="sub">Data<?=$help?></heading>
+<span class="help-block hide">
+	<a href="https://www.last.fm">last.fm</a><gr> - Coverarts and artist biographies</gr><br>
+	<a href="https://webservice.fanart.tv">fanart.tv</a><gr> - Coverarts and artist images</gr><br>
+	<a href="https://radioparadise.com">Radio Paradise</a><gr> - Coverarts of their own and default stations</gr>
+</span>
 </div>
 
 <div style="clear: both"></div>

@@ -2,7 +2,7 @@
 function stripSort( $str ) {
 	// usort: <spcae> ! " # $ % & ' ( ) * + , - . / 0 : ; < = > ? @ A [ \ ] ^ _ ` a { | }
 	$string = preg_replace(
-		  [ '/^The\s+|^A\s+|^An\s+|^[^\w\p{L}\p{N}\p{Pd} ~]/ui',
+		  [ '/The\s+|A\s+|An\s+|^[^\w\p{L}\p{N}\p{Pd} ~]/ui',
 			'/^_/',
 			'/\^\^/',
 			'/\s+/'
@@ -113,8 +113,7 @@ function stripSort( $str ) {
 		chr(197).chr(188) => 'z', chr(197).chr(189) => 'Z',
 		chr(197).chr(190) => 'z', chr(197).chr(191) => 's'
 	);
-	$string = strtr( $string, $chars );
-	return $string;
+	return strtr( $string, $chars );
 }
 if ( isset( $argv[ 1 ] ) ) {
 	$file = $argv[ 1 ];
