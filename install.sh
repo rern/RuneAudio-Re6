@@ -9,7 +9,9 @@ installstart "$1"
 file=/etc/systemd/system/bluez-authorize.service
 if [[ -e /usr/bin/bluetoothctl && ! -e $file ]]; then
 	bt=1
-	pacman -Sy python-dbus python-gobject
+	pacman -Sy
+	pacman -S python-dbus
+	pacman -S python-gobject
 	echo "\
 [Unit]
 Description=Bluetooth auto authorization
