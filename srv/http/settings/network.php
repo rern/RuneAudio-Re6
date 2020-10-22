@@ -12,7 +12,7 @@
 	</span>
 	</div>
 <?php }
-	  if ( file_exists( '/usr/bin/bluetoothctl' ) ) { ?>
+	  if ( exec( 'systemctl -q is-active bluetooth && echo 1 || echo 0' ) ) { ?>
 	<div>
 	<heading id="headbt" class="noline">Bluetooth<i id="btscan" class="fa fa-search"></i><?=$help?></heading>
 	<ul id="listbt" class="entries"></ul>
