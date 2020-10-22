@@ -8,6 +8,8 @@ installstart "$1"
 
 getinstallzip
 
+sed -i 's/noop/& ipv6.disable=1/' /boot/cmdline.txt
+
 if ! pacman -Qe python-dbus &> /dev/null; then
 	pacman -Sy --noconfirm python-dbus python-gobject
 	echo "[Unit]
