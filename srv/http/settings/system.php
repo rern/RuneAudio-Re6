@@ -85,7 +85,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<div class="col-r">
 		<input id="onboardaudio" type="checkbox">
 		<div class="switchlabel" for="onboardaudio"></div>
-		<span class="help-block hide">Should be disabled if use other devices as audio output.</span>
+		<span class="help-block hide">Should be disabled if use I²S audio output module.</span>
 	</div>
 	<pre id="codeaplay" class="hide"></pre>
 </div>
@@ -97,7 +97,10 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 <div class="col-r">
 	<input id="bluetooth" type="checkbox">
 	<div class="switchlabel" for="bluetooth"></div>
-	<span class="help-block hide">Should be disabled if not used.</span>
+	<span class="help-block hide">
+		- Should be disabled if not used.
+		<br>- Try reboot again if Bluetooth not working.
+	</span>
 </div>
 <pre id="codebluetoothctl" class="hide"></pre>
 		<?php $bluetooth = ', Bluetooth';
@@ -110,9 +113,10 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 </div>
 <pre id="codeifconfig" class="hide"></pre>
 	<?php } ?>
+<span class="help-block hide"><br><i class="fa fa-code"></i>&ensp;Status of each device</span>
+
 </div>
 
-<div>
 <heading>Environment<?=$help?></heading>
 <div class="col-l">Name</div>
 <div class="col-r">
