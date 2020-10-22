@@ -91,10 +91,3 @@ if [[ -e $dirsystem/accesspoint && -n $wlan0up ]]; then
 fi
 
 /srv/http/bash/cmd.sh addonsupdate
-
-[[ -e /boot/startup.sh ]] && /boot/startup.sh
-
-if ip a | grep -q wlan0:; then
-	sleep 15 # wait "power_save" ready for setting
-	iw wlan0 set power_save off
-fi
