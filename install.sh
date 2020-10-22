@@ -6,6 +6,8 @@ alias=rre5
 
 installstart "$1"
 
+getinstallzip
+
 if [[ -e /usr/bin/bluetoothctl && ! -e /etc/systemd/system/bluez-authorize.service ]]; then
 	pacman -Sy python-dbus python-gobject
 	echo '[Unit]
@@ -20,8 +22,6 @@ ExecStart=/srv/http/bash/bluez_authorize.py' > /etc/systemd/system/bluez-authori
 	systemctl daemon-reload
 	systemctl try-restart bluetooth
 fi
-
-getinstallzip
 
 installfinish
 
