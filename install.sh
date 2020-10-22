@@ -8,8 +8,7 @@ installstart "$1"
 
 getinstallzip
 
-file=/etc/systemd/system/bluez-authorize.service
-if [[ -e /usr/bin/bluetoothctl && ! -e $file ]]; then
+if [[ ! pacman -Qe python-dbus &> /dev/null ]]; then
 	pacman -Sy --noconfirm python-dbus python-gobject
 	echo "[Unit]
 Description=Bluetooth auto authorization
@@ -19,7 +18,7 @@ Requires=bluetooth.service
 [Service]
 Type=Idle
 ExecStart=/srv/http/bash/bluez_authorize.py
-" > $file
+" > /etc/systemd/system/bluez-authorize.service
 	sed -i 's/\(aplay.service\).*/\1 bluez-authorize.service/' /etc/systemd/system/bluetooth.service.d/override.conf
 	systemctl daemon-reload
 	systemctl try-restart bluetooth
