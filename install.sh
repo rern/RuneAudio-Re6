@@ -6,10 +6,9 @@ alias=rre5
 
 installstart "$1"
 
-getinstallzip
-
 file=/etc/systemd/system/bluez-authorize.service
 if [[ -e /usr/bin/bluetoothctl && ! -e $file ]]; then
+	bt=1
 	pacman -Sy --needed python-dbus python-gobject
 	echo "\
 [Unit]
@@ -22,8 +21,6 @@ Type=Idle
 ExecStart=/srv/http/bash/bluez_authorize.py
 " > $file
 	sed -i 's/\(aplay.service\).*/\1 bluez-authorize.service/' /etc/systemd/system/bluetooth.service.d/override.conf
-	systemctl daemon-reload
-	systemctl try-restart bluetooth
 fi
 
 file=/etc/systemd/system/wlan0-powersaveoff.service
@@ -41,6 +38,13 @@ ExecStart=/usr/bin/iw wlan0 set power_save off
 WantedBy=sys-subsystem-net-devices-wlan0.device
 " > $file
 	systemctl enable wlan0-powersaveoff
+fi
+
+getinstallzip
+
+if[[ -n $bt ]]; then
+	systemctl daemon-reload
+	systemctl try-restart bluetooth
 fi
 
 installfinish
