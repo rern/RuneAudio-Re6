@@ -659,7 +659,7 @@ input:checked + .switchlabel:after {
 	.entries li,
 	.page-icon,
 	.prev-next,
-	.settings,
+	.setting,
 	.settingedit,
 	.status,
 	.switchlabel,
