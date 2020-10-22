@@ -92,10 +92,9 @@ fi
 
 /srv/http/bash/cmd.sh addonsupdate
 
-wlans=$( ip a | awk '/wlan.:/ {print $2}' | tr -d ':' )
-[[ -z "$wlans" ]] && exit
+[[ -e /boot/startup.sh ]] && /boot/startup.sh
 
-sleep 15 # wait "power_save" ready for setting
-for wlan in $wlans; do
-	iw $wlan set power_save off
-done 
+if ip a | grep -q wlan0:; then
+	sleep 15 # wait "power_save" ready for setting
+	iw wlan0 set power_save off
+fi
