@@ -115,6 +115,13 @@ statusbootlog )
 		echo "$finish<hr>$log" | tee $filebootlog
 	fi
 	;;
+statusonboard )
+	ifconfig
+	if systemctl -q is-active bluetooth; then
+		echo '<hr>'
+		bluetoothctl show | sed 's/^\(Controller.*\)/bluetooth: \1/'
+	fi
+	;;
 timezone )
 	timezone=${args[1]}
 	timedatectl set-timezone $timezone

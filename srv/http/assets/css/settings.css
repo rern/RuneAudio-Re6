@@ -485,9 +485,16 @@ input:checked + .switchlabel:after {
 	vertical-align: 5px;
 }
 .settings i,
+.col-l i.code,
 .col-l a i.fa-code {
 	width: 20px;
 	vertical-align: 0;
+}
+.col-l.icon {
+	padding-top: 2px;
+}
+.col-l i.code {
+	font-size: 15px;
 }
 .settings i {
 	color: var( --cw );
@@ -648,10 +655,11 @@ input:checked + .switchlabel:after {
 	.back,
 	.btn,
 	.code,
+	.col-l.icon,
 	.entries li,
 	.page-icon,
 	.prev-next,
-	.settings,
+	.setting,
 	.settingedit,
 	.status,
 	.switchlabel,

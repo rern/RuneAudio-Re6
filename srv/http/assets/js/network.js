@@ -182,13 +182,6 @@ function editWiFiSet( ssid, data ) {
 		} );
 	}
 }
-function getIfconfig() {
-	bash( [ 'statusifconfig' ], function( status ) {
-		$( '#codeifconfig' )
-			.html( status )
-			.removeClass( 'hide' );
-	} );
-}
 function getNetctl() {
 	bash( [ 'statusnetctl' ], function( data ) {
 		$( '#codenetctl' )
@@ -329,8 +322,6 @@ function nicsStatus() {
 		
 		renderQR();
 		bannerHide();
-		$( '#divaccesspoint' ).toggleClass( 'hide', !extra.wlan );
-		if ( !$( '#codeifconfig' ).hasClass( 'hide' ) ) getIfconfig();
 		if ( !$( '#codenetctl' ).hasClass( 'hide' ) ) getNetctl();
 		showContent();
 	}, 'json' );
@@ -526,17 +517,6 @@ $( '#listbtscan' ).on( 'click', 'li', function( e ) {
 	}
 } );
 $( '#accesspoint' ).change( function() {
-	if ( !$( '#listwl li.wlan0' ).length ) {
-		info( {
-			  icon    : 'wifi-3'
-			, title   : 'Wi-Fi'
-			, message : 'Wi-Fi device not available.'
-					   +'<br>Enable in Sysytem settings.'
-		} );
-		$( this ).prop( 'checked', 0 );
-		return
-	}
-	
 	hostapd = $( this ).prop( 'checked' );
 	if ( hostapd ) {
 		if ( $( '#listwl li.wlan0' ).data( 'ip' ) ) {
@@ -556,7 +536,7 @@ $( '#accesspoint' ).change( function() {
 	notify( 'RPi Access Point', G.hostapd, 'wifi-3' );
 	bash( [ 'accesspoint', G.hostapd, G.hostapdip ] );
 } );
-$( '#settings-accesspoint' ).click( function() {
+$( '#setting-accesspoint' ).click( function() {
 	info( {
 		  icon      : 'network'
 		, title     : 'Access Point Settings'
@@ -584,9 +564,6 @@ $( '#settings-accesspoint' ).click( function() {
 			bash( [ 'accesspointset', iprange, ip, passphrase ] );
 		}
 	} );
-} );
-$( '#ifconfig' ).click( function( e ) {
-	codeToggle( e.target, this.id, getIfconfig );
 } );
 $( '#netctl' ).click( function( e ) {
 	codeToggle( e.target, this.id, getNetctl );

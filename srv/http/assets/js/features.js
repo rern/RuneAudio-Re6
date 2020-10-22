@@ -54,6 +54,8 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		$( '#avahi' ).prop( 'checked', G.avahi );
 		$( '#avahiname' ).text( G.hostname.toLowerCase() );
 		$( '#autoplay' ).prop( 'checked', G.autoplay );
+		$( '#accesspoint' ).prop( 'checked', G.hostapd );
+		$( '#setting-accesspoint' ).toggleClass( 'hide', !G.hostapd );
 		resetLocal();
 		showContent();
 	}, 'json' );
@@ -346,6 +348,17 @@ $( '#autoplay' ).click( function() {
 	G.autoplay = $( this ).prop( 'checked' );
 	notify( 'Play on Startup', G.autoplay, 'refresh-play' );
 	bash( [ 'autoplay', G.autoplay ], resetLocal );
+} );
+$( '#accesspoint' ).click( function() {
+	if ( $( this ).prop( 'checked' ) ) {
+		location.href = 'index-settings.php?p=network';
+	} else {
+		notify( 'RPi Access Point', 'Disable ...', 'wifi-3' );
+		bash( "/srv/http/bash/network.sh accesspoint$'\n'false", resetLocal );
+	}
+} );
+$( '#setting-accesspoint' ).click( function() {
+	location.href = 'index-settings.php?p=network';
 } );
 
 } );
