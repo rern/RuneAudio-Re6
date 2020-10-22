@@ -8,7 +8,7 @@ installstart "$1"
 
 getinstallzip
 
-if [[ ! pacman -Qe python-dbus &> /dev/null ]]; then
+if ! pacman -Qe python-dbus &> /dev/null; then
 	pacman -Sy --noconfirm python-dbus python-gobject
 	echo "[Unit]
 Description=Bluetooth auto authorization
