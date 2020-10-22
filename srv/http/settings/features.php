@@ -175,9 +175,9 @@
 	<div class="switchlabel" for="autoplay"></div>
 	<span class="help-block hide">Start playing automatically after boot.</span>
 </div>
-<div class="col-l double">
+<div class="col-l double status" data-service="hostapd">
 	<a>RPi Access Point
-	<br><gr>hostapd</gr></a><i class="fa fa-wifi-3 fa-lg"></i>
+	<br><gr>hostapd<?=$code?></gr></a><i class="fa fa-wifi-3 fa-lg"></i>
 </div>
 <div class="col-r">
 	<input id="accesspoint" type="checkbox">
@@ -186,6 +186,7 @@
 	<span class="help-block hide">Connect with RuneAudio+R Wi-Fi directly when no routers available.
 		<br>RuneAudio+R access point should be used only when necessary.</span>
 </div>
+<pre id="codehostapd" class="hide"></pre>
 
 </div>
 
