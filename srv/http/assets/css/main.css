@@ -1380,6 +1380,7 @@ svg path.st1 {
 }
 #biocontent .artist {
 	width: 100%;
+	margin-bottom: 10px;
 	font-size: 30px;
 	line-height: 60px;
 	background: #000000;
