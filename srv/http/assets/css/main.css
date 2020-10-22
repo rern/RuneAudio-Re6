@@ -451,6 +451,9 @@ svg path.st1 {
 #power, #screenoff {
 	background: var( --cga );
 }
+#screenoff {
+	line-height: 41px;
+}
 #power.sub {
 	border-right: 1px solid #000000;
 }
