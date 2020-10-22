@@ -10,7 +10,7 @@ getinstallzip
 
 file=/etc/systemd/system/bluez-authorize.service
 if [[ -e /usr/bin/bluetoothctl && ! -e $file ]]; then
-	pacman -Sy python-dbus python-gobject
+	pacman -Sy --noconfirm python-dbus python-gobject
 	echo "[Unit]
 Description=Bluetooth auto authorization
 After=bluetooth.service
