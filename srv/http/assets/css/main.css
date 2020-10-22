@@ -415,6 +415,7 @@ svg path.st1 {
 	display: inline-block;
 	width: 100%;
 	margin: 0;
+	line-height: 40px;
 	font-size: 16px;
 	color: var( --cg75 );
 	border-top: 1px solid var( --cga ) !important;
@@ -459,9 +460,6 @@ svg path.st1 {
 	border-radius: 50%;
 	vertical-align: -8px;
 	box-shadow: 1px 1px 2px #000000;
-}
-.submenu.imgicon {
-	border-bottom: 1px solid var( --cga );
 }
 #settings i.on {
 	color: var( --cml ) !important;
