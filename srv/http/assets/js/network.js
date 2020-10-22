@@ -322,7 +322,6 @@ function nicsStatus() {
 		
 		renderQR();
 		bannerHide();
-		$( '#divaccesspoint' ).toggleClass( 'hide', !extra.wlan );
 		if ( !$( '#codenetctl' ).hasClass( 'hide' ) ) getNetctl();
 		showContent();
 	}, 'json' );
@@ -518,17 +517,6 @@ $( '#listbtscan' ).on( 'click', 'li', function( e ) {
 	}
 } );
 $( '#accesspoint' ).change( function() {
-	if ( !$( '#listwl li.wlan0' ).length ) {
-		info( {
-			  icon    : 'wifi-3'
-			, title   : 'Wi-Fi'
-			, message : 'Wi-Fi device not available.'
-					   +'<br>Enable in Sysytem settings.'
-		} );
-		$( this ).prop( 'checked', 0 );
-		return
-	}
-	
 	hostapd = $( this ).prop( 'checked' );
 	if ( hostapd ) {
 		if ( $( '#listwl li.wlan0' ).data( 'ip' ) ) {

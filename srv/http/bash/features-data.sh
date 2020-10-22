@@ -7,6 +7,7 @@ snaplatency=$( grep OPTS= /etc/default/snapclient | sed 's/.*latency=\(.*\)"/\1/
 data+='
 	  "autoplay"        : '$( [[ -e $dirsystem/autoplay ]] && echo true || echo false )'
 	, "gpio"            : '$( [[ -e $dirsystem/gpio ]] && echo true || echo false )'
+	, "hostapd"         : '$( systemctl -q is-active hostapd && echo true || echo false )'
 	, "hostname"        : "'$( hostname )'"
 	, "login"           : '$( [[ -e $dirsystem/login ]] && echo true || echo false )'
 	, "mpdscribble"     : '$( systemctl -q is-active mpdscribble@mpd && echo true || echo false )'
