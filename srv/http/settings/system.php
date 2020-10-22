@@ -113,7 +113,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 <heading>Environment<?=$help?></heading>
 <div class="col-l">Name</div>
 <div class="col-r">
-	<input type="text" id="hostname" readonly style="cursor: pointer">
+	<input type="text" id="hostname" readonly>
 	<span class="help-block hide">Name for Renderers, Streamers, RPi access point<?=$bluetooth?> and system hostname.</span>
 </div>
 <div class="col-l">Timezone</div>
