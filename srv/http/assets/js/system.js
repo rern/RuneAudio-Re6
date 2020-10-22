@@ -160,7 +160,7 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		$( '#setting-soundprofile' ).toggleClass( 'hide', G.soundprofile === '' );
 		$( '#eth0help' ).toggleClass( 'hide', G.ip.slice( 0, 4 ) !== 'eth0' );
 		$( '#onboardaudio' ).prop( 'checked', G.onboardaudio );
-		$( '#divonboardaudio' ).toggleClass( 'hide', !i2senabled );
+//		$( '#divonboardaudio' ).toggleClass( 'hide', !i2senabled );
 		$( '#bluetooth' ).prop( 'checked', G.bluetooth );
 		$( '#wlan' ).prop( 'checked', G.wlan );
 		$( '#hostname' ).val( G.hostname );
@@ -209,6 +209,17 @@ $( '#refresh' ).click( function( e ) {
 	}
 } );
 $( '#onboardaudio' ).click( function() {
+	if ( $( '#i2smodule' ).val() === 'none' ) {
+		info( {
+			  icon    : 'volume'
+			, title   : 'On-board Audio'
+			, message : 'No I²S Module installed.'
+						+'<br>On-board audio cannot be disabled.'
+		} );
+		$( this ).prop( 'checked', true )
+		return
+	}
+	
 	var onboardaudio = $( this ).prop( 'checked' );
 	if ( !onboardaudio && G.audioaplayname.slice( 0, 7 ) === 'bcm2835' ) {
 		info( {
