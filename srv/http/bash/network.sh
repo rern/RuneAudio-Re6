@@ -12,43 +12,6 @@ pushRefresh() {
 
 case ${args[0]} in
 
-accesspoint )
-	if [[ ${args[1]} == true ]]; then
-		ifconfig wlan0 ${args[2]}
-		systemctl enable --now hostapd dnsmasq
-		touch $dirsystem/accesspoint
-	else
-		systemctl disable --now hostapd dnsmasq
-		rm $dirsystem/accesspoint
-		ifconfig wlan0 0.0.0.0
-	fi
-	pushRefresh
-	;;
-accesspointset )
-	iprange=${args[1]}
-	router=${args[2]}
-	password=${args[3]}
-	sed -i -e "s/^\(dhcp-range=\).*/\1$iprange/
-	" -e "s/^\(.*option:router,\).*/\1$router/
-	" -e "s/^\(.*option:dns-server,\).*/\1$router
-	" /etc/dnsmasq.conf
-	sed -i -e '/wpa\|rsn_pairwise/ s/^#\+//
-	' -e "s/\(wpa_passphrase=\).*/\1$password/
-	" /etc/hostapd/hostapd.conf
-	systemctl restart hostapd dnsmasq
-	if [[ $router == 192.168.5.1 ]]; then
-		rm $dirsystem/accesspoint-ip*
-	else
-		echo $router > $dirsystem/accesspoint-ip
-		echo $iprange > $dirsystem/accesspoint-iprange
-	fi
-	if [[ $password == RuneAudio ]]; then
-		rm $dirsystem/accesspoint-passphrase
-	else
-		echo $password > $dirsystem/accesspoint-passphrase
-	fi
-	pushRefresh
-	;;
 btdisconnect )
 	bluetoothctl disconnect ${args[1]}
 	sleep 2

@@ -1,16 +1,14 @@
 #!/bin/bash
 
 # accesspoint
-if [[ -e /usr/bin/hostapd ]]; then
-	hostapd=$( systemctl -q is-active hostapd && echo true || echo false )
-	ssid=$( grep ssid= /etc/hostapd/hostapd.conf | cut -d= -f2 )
-	passphrase=$( grep '^wpa_passphrase' /etc/hostapd/hostapd.conf | cut -d'=' -f2 )
-	hostapdip=$( grep router /etc/dnsmasq.conf | cut -d',' -f2 )
+if systemctl -q is-active hostapd; then
+	ssid=$( awk -F'=' '/^ssid/ {print $2}' /etc/hostapd/hostapd.conf )
+	passphrase=$( awk -F'=' '/^wpa_passphrase/ {print $2}' /etc/hostapd/hostapd.conf )
+	hostapdip=$( awk -F',' '/router/ {print $2}' /etc/dnsmasq.conf )
 	ap='
 	  "ssid"       : "'${ssid//\"/\\\"}'"
 	, "passphrase" : "'${passphrase//\"/\\\"}'"
-	, "hostapdip"  : "'$hostapdip'"
-	, "hostapd"    : '$hostapd
+	, "hostapdip"  : "'$hostapdip'"'
 fi
 
 lines=$( /srv/http/bash/network.sh ifconfig )

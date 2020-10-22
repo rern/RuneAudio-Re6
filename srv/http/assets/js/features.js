@@ -350,15 +350,56 @@ $( '#autoplay' ).click( function() {
 	bash( [ 'autoplay', G.autoplay ], resetLocal );
 } );
 $( '#accesspoint' ).click( function() {
-	if ( $( this ).prop( 'checked' ) ) {
-		location.href = 'index-settings.php?p=network';
-	} else {
-		notify( 'RPi Access Point', 'Disable ...', 'wifi-3' );
-		bash( "/srv/http/bash/network.sh accesspoint$'\n'false", resetLocal );
+	var checked = $( this ).prop( 'checked' );
+	if ( checked && G.wlanup ) {
+		info( {
+			  icon      : 'network'
+			, title     : 'RPi Access Point'
+			, message   : '<wh>Wi-Fi is currently connected.</wh>'
+						 +'<br>Disconnect and continue?'
+			, ok        : function() {
+				G.hostapd = true;
+				$( '#setting-accesspoint' ).removeClass( 'hide' );
+				notify( 'RPi Access Point', true, 'wifi-3' );
+				bash( [ 'accesspoint', true, G.hostapdip ], resetLocal );
+			}
+		} )
+		return
 	}
+	
+	G.hostapd = checked;
+	$( '#setting-accesspoint' ).toggleClass( 'hide', !G.hostapd );
+	notify( 'RPi Access Point', G.hostapd, 'wifi-3' );
+	bash( [ 'accesspoint', G.hostapd, G.hostapdip ], resetLocal );
 } );
 $( '#setting-accesspoint' ).click( function() {
-	location.href = 'index-settings.php?p=network';
+	info( {
+		  icon      : 'network'
+		, title     : 'RPi Access Point Settings'
+		, message   : 'Password - at least 8 characters'
+		, textlabel : [ 'Password', 'IP' ]
+		, textvalue : [ G.passphrase, G.hostapdip ]
+		, textrequired : [ 0, 1 ]
+		, ok      : function() {
+			var ip = $( '#infoTextBox1' ).val();
+			var passphrase = $( '#infoTextBox' ).val();
+			if ( ip === G.hostapdip && passphrase === G.passphrase ) return
+			
+			if ( passphrase.length < 8 ) {
+				info( 'Password must be at least 8 characters.' );
+				return
+			}
+			
+			G.hostapdip = ip;
+			G.passphrase = passphrase;
+			var ips = ip.split( '.' );
+			var ip3 = ips.pop();
+			var ip012 = ips.join( '.' );
+			var iprange = ip012 +'.'+ ( +ip3 + 1 ) +','+ ip012 +'.254,24h';
+			notify( 'RPi Access Point', 'Change ...', 'wifi-3' );
+			bash( [ 'accesspointset', iprange, ip, passphrase ], resetLocal );
+		}
+	} );
 } );
 
 } );
