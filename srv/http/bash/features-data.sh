@@ -7,7 +7,6 @@ snaplatency=$( grep OPTS= /etc/default/snapclient | sed 's/.*latency=\(.*\)"/\1/
 data+='
 	  "autoplay"        : '$( [[ -e $dirsystem/autoplay ]] && echo true || echo false )'
 	, "gpio"            : '$( [[ -e $dirsystem/gpio ]] && echo true || echo false )'
-	, "hostapd"         : '$( systemctl -q is-active hostapd && echo true || echo false )'
 	, "hostname"        : "'$( hostname )'"
 	, "login"           : '$( [[ -e $dirsystem/login ]] && echo true || echo false )'
 	, "mpdscribble"     : '$( systemctl -q is-active mpdscribble@mpd && echo true || echo false )'
@@ -18,6 +17,17 @@ data+='
 	, "snapclient"      : '$( [[ -e $dirsystem/snapclient ]] && echo true || echo false )'
 	, "snaplatency"     : '$snaplatency'
 	, "streaming"       : '$( grep -q 'type.*"httpd"' /etc/mpd.conf && echo true || echo false )
+# accesspoint
+if [[ -e /usr/bin/hostapd ]]; then
+	passphrase=$( awk -F'=' '/^wpa_passphrase/ {print $2}' /etc/hostapd/hostapd.conf )
+	ssid=$( awk -F'=' '/^ssid/ {print $2}' /etc/hostapd/hostapd.conf )
+	data+='
+	, "hostapd"         : '$( systemctl -q is-active hostapd && echo true || echo false )'
+	, "hostapdip"       : "'$( awk -F',' '/router/ {print $2}' /etc/dnsmasq.conf )'"
+	, "passphrase"      : "'${passphrase//\"/\\\"}'"
+	, "ssid"            : "'${ssid//\"/\\\"}'"
+	, "wlanup"          : '$( ip link show wlan0 | grep -q 'state UP' && echo true || echo false )
+fi
 # renderer
 [[ -e /usr/bin/shairport-sync  ]] && data+='
 	, "airplay"         : '$( systemctl -q is-active shairport-sync && echo true || echo false )

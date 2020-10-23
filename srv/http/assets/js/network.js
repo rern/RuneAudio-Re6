@@ -189,6 +189,13 @@ function getNetctl() {
 			.removeClass( 'hide' );
 	} );
 }
+function infoAccesspoint() {
+	info( {
+		  icon    : 'wifi-3'
+		, title   : 'Wi-Fi'
+		, message : 'RPi Access Point must be disabled.'
+	} );
+}
 function infoConnect( $this ) {
 	var connected = $this.data( 'ip' );
 	var ssid = $this.data( 'ssid' );
@@ -264,8 +271,6 @@ function nicsStatus() {
 			$( '#ssid' ).text( G.ssid );
 			$( '#passphrase' ).text( G.passphrase )
 			$( '#ipwebuiap' ).text( G.hostapdip );
-			$( '#accesspoint' ).prop( 'checked', G.hostapd );
-			$( '#settings-accesspoint, #boxqr' ).toggleClass( 'hide', !G.hostapd );
 		}
 		G.reboot = extra.reboot ? extra.reboot.split( '\n' ) : [];
 		if ( 'bluetooth' in extra ) G.bluetooth = extra.bluetooth;
@@ -294,8 +299,8 @@ function nicsStatus() {
 				
 				G.wlcurrent = val.interface;
 				htmlwl = html;
-				if ( accesspoint && G.hostapd && val.ip === G.hostapdip ) {
-					htmlwl += '<grn>&bull;</grn>&ensp;<gr>RPi access point&ensp;&raquo;&ensp;</gr>'+ G.hostapdip
+				if ( G.ssid ) {
+					htmlwl += '<grn>&bull;</grn>&ensp;<gr>RPi access point&ensp;&laquo;&ensp;</gr>'+ G.hostapdip
 				} else {
 					G.wlconnected = val.interface;
 					htmlwl += '<grn>&bull;</grn>&ensp;'+ val.ip +'<gr>&ensp;&raquo;&ensp;'+ val.gateway +'&ensp;&bull;&ensp;</gr>'+ val.ssid;
@@ -344,8 +349,6 @@ function renderQR() {
 			return false
 		}
 	} );
-	if ( !accesspoint || !G.hostapd ) return
-	
 	$( '#qraccesspoint' ).html( qr( 'WIFI:S:'+ G.ssid +';T:WPA;P:'+ G.passphrase +';' ) );
 	$( '#qrwebuiap' ).html( qr( 'http://'+ G.hostapdip ) );
 	$( '#boxqr' ).removeClass( 'hide' );
@@ -423,19 +426,13 @@ $( '#listlan' ).on( 'click', 'li', function() {
 	} );
 } );
 $( '#wladd' ).click( function() {
-	editWiFi();
+	'ssid' in G ? infoAccesspoint() : editWiFi();
 } );
 $( '#wlscan' ).click( function() {
-	if ( G.hostapd ) {
-		info( {
-			  icon    : 'wifi-3'
-			, title   : 'Wi-Fi'
-			, message : 'Access Point must be disabled.'
-		} );
-		return
-	} else {
-		wlanStatus();
-	}
+	'ssid' in G ? infoAccesspoint() : wlanStatus();
+} );
+$( '#listwl' ).on( 'click', 'li', function() {
+	if ( !( 'ssid' in G ) ) infoConnect( $( this ) );
 } );
 $( '#listwlscan' ).on( 'click', 'li', function() {
 	var $this = $( this );
@@ -462,8 +459,8 @@ $( '#listwlscan' ).on( 'click', 'li', function() {
 		infoConnect( $this );
 	}
 } );
-$( '#listwl' ).on( 'click', 'li', function() {
-	infoConnect( $( this ) );
+$( '#netctl' ).click( function( e ) {
+	codeToggle( e.target, this.id, getNetctl );
 } );
 $( '#listbt' ).on( 'click', 'li', function() {
 	var $this = $( this );
@@ -516,57 +513,8 @@ $( '#listbtscan' ).on( 'click', 'li', function( e ) {
 		} );
 	}
 } );
-$( '#accesspoint' ).change( function() {
-	hostapd = $( this ).prop( 'checked' );
-	if ( hostapd ) {
-		if ( $( '#listwl li.wlan0' ).data( 'ip' ) ) {
-			info( {
-				  icon    : 'network'
-				, title   : 'Access Point'
-				, message : 'Wi-Fi wlan0 must be disconnected.'
-			} );
-			$( this ).prop( 'checked', 0 );
-			return
-		}
-		
-	} else {
-		$( '#boxqr, #settings-accesspoint' ).addClass( 'hide' );
-	}
-	G.hostapd = hostapd;
-	notify( 'RPi Access Point', G.hostapd, 'wifi-3' );
-	bash( [ 'accesspoint', G.hostapd, G.hostapdip ] );
-} );
 $( '#setting-accesspoint' ).click( function() {
-	info( {
-		  icon      : 'network'
-		, title     : 'Access Point Settings'
-		, message   : 'Password - at least 8 characters'
-		, textlabel : [ 'Password', 'IP' ]
-		, textvalue : [ G.passphrase, G.hostapdip ]
-		, textrequired : [ 0, 1 ]
-		, ok      : function() {
-			var ip = $( '#infoTextBox1' ).val();
-			var passphrase = $( '#infoTextBox' ).val();
-			if ( ip === G.hostapdip && passphrase === G.passphrase ) return
-			
-			if ( passphrase.length < 8 ) {
-				info( 'Password must be at least 8 characters.' );
-				return
-			}
-			
-			G.hostapdip = ip;
-			G.passphrase = passphrase;
-			var ips = ip.split( '.' );
-			var ip3 = ips.pop();
-			var ip012 = ips.join( '.' );
-			var iprange = ip012 +'.'+ ( +ip3 + 1 ) +','+ ip012 +'.254,24h';
-			notify( 'RPi Access Point', 'Change ...', 'wifi-3' );
-			bash( [ 'accesspointset', iprange, ip, passphrase ] );
-		}
-	} );
-} );
-$( '#netctl' ).click( function( e ) {
-	codeToggle( e.target, this.id, getNetctl );
+	location.href = 'index-settings.php?p=features';
 } );
 
 } );
