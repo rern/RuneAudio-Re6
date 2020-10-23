@@ -317,7 +317,7 @@ if [[ $ext == Radio || -e $dirtmp/webradio ]]; then # webradio start - 'file:' m
 ########
 	status+='
 , "coverartradio" : "'$coverartradio'"'
-	if [[ $state == play ]]; then
+	if [[ $state == play && -n $Title ]]; then
 		# $Title          Artist Name - Title Name or Artist Name: Title Name (extra tag)
 		# /\s*$\| (.*$//  remove trailing sapces and extra ( tag )
 		# / - \|: /\n/    split artist - title
