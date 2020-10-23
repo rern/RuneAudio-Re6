@@ -3,7 +3,8 @@
 	<heading id="headlan" class="noline">LAN<i id="lanadd" class="fa fa-plus-circle"></i></heading>
 	<ul id="listlan" class="entries"></ul>
 <?php }
-	  if ( exec( 'ifconfig | grep ^wlan' ) ) { ?>
+	  $wlan = exec ( 'ifconfig | grep ^wlan' );
+	  if ( $wlan ) { ?>
 	<div>
 	<heading id="headwl" class="noline">Wi-Fi<i id="wladd" class="fa fa-plus-circle"></i><i id="wlscan" class="fa fa-search"></i><?=$help?></heading>
 	<ul id="listwl" class="entries"></ul>
@@ -61,7 +62,7 @@
 	<ul id="listbtscan" class="entries"></ul>
 </div>
 
-	<?php if ( exec( 'systemctl -q is-active hostapd && echo 1 || echo 0' ) ) { ?>
+	<?php if ( $wlan && file_exists( '/usr/bin/hostapd' ) ) { ?>
 <div id="divaccesspoint">
 	<heading>RPi Access Point<?=$help?></heading>
 	<div class="col-l">Enable</div>
