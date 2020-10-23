@@ -148,7 +148,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 </div>
 
 <div>
-<heading id="backuprestore" class="status">Backup/Restore Settings<i class="fa fa-gear"></i><?=$help?></heading>
+<heading id="backuprestore">Backup/Restore Settings<i class="fa fa-gear"></i><?=$help?></heading>
 <span class="help-block hide">Backup or restore all settings and  MPD database.</span>
 </div>
 
