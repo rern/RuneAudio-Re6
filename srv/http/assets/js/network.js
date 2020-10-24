@@ -475,7 +475,8 @@ $( '#listbt' ).on( 'click', 'li', function() {
 		, buttonlabel : '<i class="fa fa-minus-circle"></i>Forget'
 		, buttoncolor : '#bb2828'
 		, button      : function() {
-			bash( "/srv/http/bash/network.sh btremove$'\n'"+ mac );
+			notify( name, 'Forget ... ', 'bluetooth' );
+			bash( "/srv/http/bash/network.sh btremove$'\n'"+ mac, resetLocal );
 		}
 		, oklabel : connected ? 'Disconnect' : 'Connect'
 		, okcolor : connected ? '#de810e' : ''
