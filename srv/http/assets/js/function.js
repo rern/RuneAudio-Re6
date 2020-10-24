@@ -1068,8 +1068,8 @@ function renderPlayback() {
 	[ 'airplay', 'snapclient', 'spotify', 'upnp', 'webradio' ].forEach( function( el ) {
 		$( '#i-'+ el ).toggleClass( 'hide', !status[ el ] );
 	} );
-	sampling = status.webradio ? status.sampling +' &bull; Radio' : status.sampling;
-	$( '#sampling' ).html( sampling );
+	if ( status.webradio ) var radiosampling = status.sampling ? ' &bull; Radio' : 'Radio';
+	$( '#sampling' ).html( status.sampling + radiosampling );
 	if ( !G.coversave ) $( '.cover-save' ).remove();
 	// webradio ////////////////////////////////////////
 	if ( status.webradio ) {
