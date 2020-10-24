@@ -52,7 +52,7 @@ var pushstream = new PushStream( {
 	, timeout                               : 5000
 	, reconnectOnChannelUnavailableInterval : 5000
 } );
-var streams = [ 'airplay', 'bookmark', 'coverart', 'display', 'gpio', 'info', 'mpdplayer', 'mpdupdate',
+var streams = [ 'airplay', 'bookmark', 'coverart', 'display', 'gpio', 'mpdplayer', 'mpdupdate',
 	'notify', 'option', 'order', 'package', 'playlist', 'reload', 'seek', 'snapcast', 'spotify', 'volume', 'volumenone', 'webradio' ];
 streams.forEach( function( stream ) {
 	pushstream.addChannel( stream );
@@ -72,7 +72,6 @@ pushstream.onmessage = function( data, id, channel ) {
 		case 'coverart':   psCoverart( data );   break;
 		case 'display':    psDisplay( data );    break;
 		case 'gpio':       psGPIO( data );       break;
-		case 'info':       psInfo( data );       break;
 		case 'mpdplayer':  psMpdPlayer( data );  break;
 		case 'mpdupdate' : psMpdUpdate( data );  break;
 		case 'notify':     psNotify( data );     break;
@@ -279,9 +278,6 @@ function psGPIO( response ) { // on receive broadcast
 			, nobutton  : 1
 		} );
 	}
-}
-function psInfo( json ) {
-	json === 0 ? infoReset() : info( json );
 }
 function psMpdPlayer( data ) {
 	$.each( data, function( key, value ) {
