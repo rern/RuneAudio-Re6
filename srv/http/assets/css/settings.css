@@ -139,7 +139,7 @@ a:hover {
 	color: var( --cm );
 	text-decoration: none !important;
 }
-input {
+input[type="text"] {
 	width: 230px;
 	height: 40px;
 	margin-bottom: 10px;
