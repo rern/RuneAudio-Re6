@@ -13,6 +13,15 @@ pushRefresh() {
 
 case ${args[0]} in
 
+btdiscoverable )
+	yesno=${args[1]}
+	bluetoothctl discoverable $yesno
+	if [[ $yesno == yes ]]; then
+		rm -f $dirsystem/btdiscoverno
+	else
+		touch $dirsystem/btdiscoverno
+	fi
+	;;
 bluetooth )
 	if [[ ${args[1]} == true ]]; then
 		sed -i '$ a\dtparam=krnbt=on' /boot/config.txt

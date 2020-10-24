@@ -102,10 +102,12 @@ if [[ -e /usr/bin/bluetoothctl  ]]; then
 	if [[ $bluetooth == true && $bluetoothon == false ]]; then
 		systemctl stop bluetooth
 		systemctl start bluetooth
+		bluetoothon=$( [[ $( systemctl is-active bluetooth ) == active ]] && echo true || echo false )
 	fi
 	data+='
 	, "bluetooth"       : '$bluetooth'
-	, "bluetoothon"     : '$bluetoothon
+	, "bluetoothon"     : '$bluetoothon'
+	, "btdiscoverable"  : '$( bluetoothctl show | grep -q 'Discoverable: yes' && echo true || echo false )
 fi
 [[ ${hwcode: -3:2} =~ ^(08|0c|0d|0e|11)$ ]] && data+='
 	, "wlan"            : '$( lsmod | grep -q '^brcmfmac ' && echo true || echo false )

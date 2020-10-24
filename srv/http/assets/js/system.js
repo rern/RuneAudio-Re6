@@ -160,8 +160,8 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		$( '#setting-soundprofile' ).toggleClass( 'hide', G.soundprofile === '' );
 		$( '#eth0help' ).toggleClass( 'hide', G.ip.slice( 0, 4 ) !== 'eth0' );
 		$( '#onboardaudio' ).prop( 'checked', G.onboardaudio );
-//		$( '#divonboardaudio' ).toggleClass( 'hide', !i2senabled );
 		$( '#bluetooth' ).prop( 'checked', G.bluetooth );
+		$( '#setting-bluetooth' ).toggleClass( 'hide', !G.bluetooth );
 		$( '#wlan' ).prop( 'checked', G.wlan );
 		$( '#hostname' ).val( G.hostname );
 		$( '#timezone' )
@@ -243,6 +243,19 @@ $( '#bluetooth' ).click( function() {
 	rebootText( G.bluetooth ? 'Enable' : 'Disable', 'on-board Bluetooth' );
 	notify( 'On-board Bluetooth', G.bluetooth, 'bluetooth' );
 	bash( [ 'bluetooth', G.bluetooth, G.reboot.join( '\n' ) ], resetLocal );
+} );
+$( '#setting-bluetooth' ).click( function() {
+	info( {
+		  icon     : 'bluetooth'
+		, title    : 'On-board Bluetooth'
+		, checkbox : { Discoverable: 1 }
+		, checked  : ( G.btdiscoverable ? 0 : 1 )
+		, ok       : function() {
+			G.btdiscoverable = $( '#infoCheckBox input' ).prop( 'checked' );
+			notify( 'Bluetooth Discoverable', G.btdiscoverable, 'bluetooth' );
+			bash( [ 'btdiscoverable', ( G.btdiscoverable ? 'yes' : 'no' ) ], resetLocal( 3000 ) );
+		}
+	} );
 } );
 $( '#bluetoothctl' ).click( function( e ) {
 	codeToggle( e.target, this.id, getBluetoothctl );
