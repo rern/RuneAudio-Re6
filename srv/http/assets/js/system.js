@@ -464,7 +464,7 @@ $( '#backuprestore' ).click( function( e ) {
 		, buttoncolor : '#0a8c68'
 		, button      : function() {
 			notify( backuptitle, 'Backup ...', 'sd blink', -1 );
-			bash( '/srv/http/bash/cmd.sh databackup', function( data ) {
+			bash( [ 'databackup' ], function( data ) {
 				if ( data == 1 ) {
 					notify( backuptitle, 'Download ...', 'sd blink' );
 					fetch( '/data/tmp/backup.gz' )

@@ -250,23 +250,6 @@ coversave )
 	coverfile="$path/cover.jpg"
 	jpgThumbnail coverart "$source" "$coverfile"
 	;;
-databackup )
-	backupfile=$dirdata/tmp/backup.gz
-	rm -f $backupfile
-	bsdtar \
-		--exclude './addons' \
-		--exclude './coverarts' \
-		--exclude './mpd/cue' \
-		--exclude './mpd/list' \
-		--exclude './embedded' \
-		--exclude './shm' \
-		--exclude './system/version' \
-		--exclude './tmp' \
-		-czf $backupfile \
-		-C /srv/http \
-		data \
-		2> /dev/null && echo 1
-	;;
 displayget )
 	output=$( cat $dirsystem/usbdac 2> /dev/null )
 	[[ -z $output ]] && output=$( cat $dirsystem/audio-output )
