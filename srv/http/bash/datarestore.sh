@@ -96,17 +96,6 @@ if [[ -e $file ]]; then
 ' /etc/mpdscribble.conf
 	[[ -e $dirsystem/mpdscribble ]] && enable+=' mpdscribble'
 fi
-# netctl profiles
-if ls $dirsystem/netctl-* &> /dev/null; then
-	files=( $dirsystem/netctl-* )
-	if [[ -n $files ]]; then
-		for file in "${files[@]}"; do
-			filename=$( basename $file )
-			cp "$file" "/etc/netctl/${filename/netctl-}"
-		done
-		enable+=' netctl-auto@wlan0'
-	fi
-fi
 # ntp
 [[ -e $dirsystem/ntp ]] && sed -i "s/#*NTP=.*/NTP=$( cat $dirsystem/ntp )/" /etc/systemd/timesyncd.conf
 # samba
