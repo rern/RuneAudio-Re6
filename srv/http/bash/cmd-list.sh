@@ -17,14 +17,36 @@ dirsystem=$dirdata/system
 touch $dirsystem/listing
 
 [[ $( ls /mnt/MPD/NAS ) ]] && nas=1
+
+albumlist() {
+	album_artist_file=$( mpc -f '%album%^^[%albumartist%|%artist%]^^%file%' listall \
+		| awk -F'/[^/]*$' 'NF && !/^\^/ && !a[$0]++ {print $1}' \
+		| sort -u )
+	[[ -z $album_artist_file ]] && mpdbuffer
+}
+mpdbuffer() {
+	buffer=$( awk -F '"' '/max_output_buffer_size/ {print $2}' )
+	[[ -z $buffer ]] && buffer=8192
+	buffer=$(( buffer + 8192 ))
+	if (( $buffer > 60000 )); then
+		notify '{"title":"Library Database","text":"Too many music files!<br>No list in Album.","icon":"library"}'
+		exit
+	fi
+	
+	sed -i -e '/max_output_buffer_size/ d
+' -e '/music_directory/ i\max_output_buffer_size "'$buffer'"
+' /etc/mpd.conf
+	systemctl restart mpd
+	albumlist
+	[[ -n $album_artist_file ]] && echo $buffer > $dirsystem/outputbuffer
+}
 notify() {
 	[[ -n $nas ]] && curl -s -X POST http://127.0.0.1/pub?id=notify -d "$1"
 }
 
 ##### normal list #############################################
-album_artist_file=$( mpc -f '%album%^^[%albumartist%|%artist%]^^%file%' listall \
-	| awk -F'/[^/]*$' 'NF && !/^\^/ && !a[$0]++ {print $1}' \
-	| sort -u )
+albumlist
+
 ##### wav list #############################################
 # mpd not read *.wav albumartist
 if [[ ! -e $dirsystem/wav ]]; then
@@ -80,7 +102,7 @@ done
 for mode in NAS SD USB; do
 	printf -v $mode '%s' $( mpc ls $mode 2> /dev/null | wc -l )
 done
-title=$( mpc stats | awk '/^Songs/ {print $NF}' )
+song=$( mpc stats | awk '/^Songs/ {print $NF}' )
 webradio=$( ls -1q $dirdata/webradios | wc -l )
 counts='
   "album"       : '$album'
@@ -92,9 +114,8 @@ counts='
 , "nas"         : '$NAS'
 , "sd"          : '$SD'
 , "usb"         : '$USB'
-, "title"       : '$title'
+, "song"        : '$song'
 , "webradio"    : '$webradio
-
 echo {$counts} | jq . > $dirmpd/counts
 curl -s -X POST http://127.0.0.1/pub?id=mpdupdate -d "{$counts}"
 chown -R mpd:audio $dirmpd
