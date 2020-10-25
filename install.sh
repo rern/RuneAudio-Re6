@@ -8,6 +8,14 @@ installstart "$1"
 
 getinstallzip
 
+if [[ -e /etc/systemd/system/libraryrandom.service ]]; then
+	if systemctl is-active libraryrandom; then
+		systemctl disable --now libraryrandom
+		touch /srv/http/data/system/librandom
+	fi
+	rm -f /etc/systemd/system/libraryrandom.service /srv/http/bash/libraryrandom.sh
+fi
+
 sed -i 's/noop/& ipv6.disable=1/' /boot/cmdline.txt
 
 if ! pacman -Qe python-dbus &> /dev/null; then

@@ -2023,7 +2023,7 @@ input[type=text] {
 .liinfo .liartist,
 .liinfo .licomposer,
 .liinfo .liinfopath,
-#pl-list .name,
+#pl-list .liname,
 #pl-list .song,
 #pl-list .li2,
 #pl-savedlist span {
@@ -2031,8 +2031,8 @@ input[type=text] {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-#pl-list .name {
-	max-width: calc( 100% - 95px );
+#pl-list .liname {
+	max-width: calc( 100% - 190px );
 }
 #pl-list .song {
 	max-width: calc( 100% - 60px );

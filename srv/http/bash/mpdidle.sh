@@ -29,6 +29,13 @@ mpc idleloop | while read changed; do
 					killall status-coverartonline.sh &> /dev/null # kill if still running
 					if [[ ! -e $dirtmp/player-snapclient ]]; then
 						pushstream mpdplayer "$( /srv/http/bash/status.sh )"
+						if [[ -e /srv/http/data/system/librandom ]]; then
+							touch $flagpl
+							counts=$( mpc | awk '/\[playing\]/ {print $2}' | tr -d '#' )
+							pos=${counts/\/*}
+							total=${counts/*\/}
+							(( $(( total - pos )) < 2 )) && /srv/http/bash/cmd.sh randomfile
+						fi
 					else
 						sed -i '/^$/d' $snapclientfile # remove blank lines
 						if [[ -s $snapclientfile ]]; then

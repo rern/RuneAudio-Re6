@@ -115,6 +115,25 @@ pushstreamStatus() {
 pushstreamVolume() {
 	pushstream volume '{"type":"'$1'", "val":'$2' }'
 }
+randomfile() {
+	[[ -n $1 ]] && dir=$1 || dir=$( find /mnt/MPD -type d | shuf -n 1 )
+	file=$( mpc ls "${dir:9}" 2> /dev/null | shuf -n 1 )
+	if [[ -d "$file" ]]; then
+		randomfile "$file"
+	else
+		if [[ -n $file ]]; then
+			if [[ ${file: -4} == .cue ]]; then
+				plL=$(( $( mpc ls "$file" | wc -l ) - 1 ))
+				range=$( shuf -i 0-$plL -n 1 )
+				mpc --range=$range load "$file"
+			else
+				mpc add "$file"
+			fi
+		else
+			randomfile
+		fi
+	fi
+}
 urldecode() { # for webradio url to filename
 	: "${*//+/ }"
 	echo -e "${_//%/\\x}"
@@ -288,18 +307,24 @@ ignoredir )
 	mpc update "$mpdpath" #1 get .mpdignore into database
 	mpc update "$mpdpath" #2 after .mpdignore was in database
 	;;
+randomfile )
+	randomfile
+	;;
 librandom )
 	enable=${args[1]}
 	if [[ $enable == false ]]; then
-		systemctl stop libraryrandom
+		rm -f $dirsystem/librandom
 	else
 		mpc random 0
 		plL=$( mpc playlist | wc -l )
-		mpc listall | shuf -n 3 | mpc add
+		randomfile # 1st track
 		mpc play $(( plL +1 ))
-		systemctl start libraryrandom
+		touch $dirsystem/librandom
+		randomfile # 2nd track
+		randomfile # 3rd track
 	fi
-	pushstream mpdoptions '{ "librandom": '$enable' }'
+	pushstream mpdoptions '{ "option": '$enable' }'
+	pushstream playlist "$( php /srv/http/mpdplaylist.php current )"
 	;;
 list )
 	list
@@ -441,7 +466,7 @@ plcrop )
 		mpc stop
 	fi
 	touch $flagpladd
-	systemctl -q is-active libraryrandom && mpc listall | shuf -n 2 | mpc add
+	systemctl -q is-active libraryrandom && randomfile
 	pushstreamStatus
 	pushstreamPlaylist
 	;;
