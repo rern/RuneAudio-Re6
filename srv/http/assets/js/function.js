@@ -1461,12 +1461,12 @@ function setNameWidth() {
 function setPlaylistScroll() {
 	if ( !G.playlist || !$( '#pl-savedlist' ).hasClass( 'hide' ) || !G.status.playlistlength || G.sortable ) return // skip if empty or Sortable
 	
-	$( '#pl-list li' )
-		.removeClass( 'active' )
-		.eq( G.status.song || 0 ).addClass( 'active' );
 	playlistProgress();
 	setNameWidth();
 	displayTopBottom();
+	$( '#pl-list li' )
+		.removeClass( 'active' )
+		.eq( G.status.song || 0 ).addClass( 'active' );
 	$( '#menu-plaction' ).addClass( 'hide' );
 	$( '#pl-list li' ).removeClass( 'updn' );
 	if ( G.status.playlistlength < 5 ) {
