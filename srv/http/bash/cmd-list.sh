@@ -16,7 +16,7 @@ dirsystem=$dirdata/system
 touch $dirsystem/listing
 
 notify() {
-	curl -s -X POST http://127.0.0.1/pub?id=notify -d '{"title":"Wave files - Album artists","text":"'$1'","icon":"file-wave blink","delay":'$2'}'
+	curl -s -X POST http://127.0.0.1/pub?id=notify -d "$1"
 }
 
 ##### normal list #############################################
@@ -43,11 +43,11 @@ if [[ ! -e $dirsystem/wav ]]; then
 		album_artist_file+="$albumwav"$'\n'
 	fi
 else
-	notify 'Query ...' -1
+	notify '{"title":"Wave files - Album artists","text":"Query ...","icon":"file-wave blink","delay":-1}'
 	dirwav=$( find /mnt/MPD -type f -name *.wav  -printf '%h\n' | sort -u )
 	if [[ -n $dirwav ]]; then
 		readarray -t dirwav <<< "$dirwav"
-		notify "${#dirwav[@]}' *.wav in Library ..." 3000
+		notify '{"title":"Wave files - Album artists","text":"'${#dirwav[@]}' *.wav in Library ...","icon":"file-wave blink"}'
 		for dir in "${dirwav[@]}"; do
 			[[ -e "$dir/"*.cue ]] && continue
 			
