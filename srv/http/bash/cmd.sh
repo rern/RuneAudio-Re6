@@ -116,22 +116,14 @@ pushstreamVolume() {
 	pushstream volume '{"type":"'$1'", "val":'$2' }'
 }
 randomfile() {
-	[[ -n $1 ]] && dir=$1 || dir=$( find /mnt/MPD -type d | shuf -n 1 )
-	file=$( mpc ls "${dir:9}" 2> /dev/null | shuf -n 1 )
-	if [[ -d "$file" ]]; then
-		randomfile "$file"
+	dir=$( cat $dirmpd/album | shuf -n 1 | cut -d^ -f7 )
+	file=$( mpc ls "$dir" | shuf -n 1 )
+	if [[ ${file: -4} == .cue ]]; then
+		plL=$(( $( grep '^\s*TRACK' "/mnt/MPD/$file" | wc -l ) - 1 ))
+		range=$( shuf -i 0-$plL -n 1 )
+		mpc --range=$range load "$file"
 	else
-		if [[ -n $file ]]; then
-			if [[ ${file: -4} == .cue ]]; then
-				plL=$(( $( mpc ls "$file" | wc -l ) - 1 ))
-				range=$( shuf -i 0-$plL -n 1 )
-				mpc --range=$range load "$file"
-			else
-				mpc add "$file"
-			fi
-		else
-			randomfile
-		fi
+		mpc add "$file"
 	fi
 }
 urldecode() { # for webradio url to filename
@@ -318,10 +310,11 @@ librandom )
 		mpc random 0
 		plL=$( mpc playlist | wc -l )
 		randomfile # 1st track
+		sleep 1
 		mpc play $(( plL +1 ))
-		touch $dirsystem/librandom
 		randomfile # 2nd track
 		randomfile # 3rd track
+		touch $dirsystem/librandom
 	fi
 	pushstream mpdoptions '{ "option": '$enable' }'
 	pushstream playlist "$( php /srv/http/mpdplaylist.php current )"

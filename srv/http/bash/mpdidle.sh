@@ -30,11 +30,14 @@ mpc idleloop | while read changed; do
 					if [[ ! -e $dirtmp/player-snapclient ]]; then
 						pushstream mpdplayer "$( /srv/http/bash/status.sh )"
 						if [[ -e /srv/http/data/system/librandom ]]; then
-							touch $flagpl
 							counts=$( mpc | awk '/\[playing\]/ {print $2}' | tr -d '#' )
 							pos=${counts/\/*}
 							total=${counts/*\/}
-							(( $(( total - pos )) < 2 )) && /srv/http/bash/cmd.sh randomfile
+							if (( $(( total - pos )) < 2 )); then
+								sleep 1
+								/srv/http/bash/cmd.sh randomfile
+								touch $flagpl
+							fi
 						fi
 					else
 						sed -i '/^$/d' $snapclientfile # remove blank lines
