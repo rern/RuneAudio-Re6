@@ -1,10 +1,9 @@
 #!/bin/bash
 
-# Flags: 'updating', 'listing', 'wav', 'cue'
+# Flags: 'updating', 'listing', 'wav'
 #
 #  - Use only `updating` flag from start to finish.
-#  - 'cue', 'wav' flag - optional:
-#    - Take times, even more on NAS
+#  - 'wav' flag - optional: Take times, even more on NAS
 #  - Resume on boot:
 #    - 'updating' flag for resume `mpc update`
 #    - 'listing' flag for resume without `mpc update`
