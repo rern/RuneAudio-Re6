@@ -27,7 +27,7 @@ mpdbuffer() {
 	buffer=$( awk -F '"' '/max_output_buffer_size/ {print $2}' )
 	[[ -z $buffer ]] && buffer=8192
 	buffer=$(( buffer + 8192 ))
-	if (( $buffer > 60000 )); then
+	if (( $buffer > 65536 )); then # 8 x 8192
 		notify '{"title":"Library Database","text":"Too many music files!<br>No list in Album.","icon":"library"}'
 		exit
 	fi
