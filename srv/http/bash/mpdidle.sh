@@ -34,7 +34,6 @@ mpc idleloop | while read changed; do
 							pos=${counts/\/*}
 							total=${counts/*\/}
 							if (( $(( total - pos )) < 2 )); then
-								sleep 1
 								/srv/http/bash/cmd.sh randomfile
 								touch $flagpl
 							fi
