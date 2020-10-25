@@ -833,7 +833,6 @@ function playlistProgress() {
 	var $name = $this.find( '.name' );
 	var $song = $this.find( '.song' );
 	var slash = G.status.webradio ? '' : ' <gr>/</gr>';
-	$( '#pl-list li.active' ).find( '.elapsed' ).empty();
 	$( '.li1 .radioname' ).removeClass( 'hide' );
 	$( '.li2 .radioname' ).addClass( 'hide' );
 	if ( G.status.state === 'pause' ) {
@@ -854,7 +853,6 @@ function playlistProgress() {
 		}
 		getTitleWidth();
 		var time = $this.find( '.time' ).data( 'time' );
-		if ( G.status.elapsed ) G.status.elapsed++; // G.status.elapsed === 0 : track changed - no delay
 		G.intElapsedPl = setInterval( function() {
 			G.status.elapsed++;
 			if ( G.status.elapsed === time ) {
@@ -862,7 +860,7 @@ function playlistProgress() {
 				$elapsed.empty();
 				G.status.elapsed = 0;
 				if ( G.status.state === 'play' ) {
-					$( '#pl-list li.active .elapsed' ).empty();
+					$( '#pl-list li .elapsed' ).empty();
 					setPlaylistScroll();
 				}
 				return
