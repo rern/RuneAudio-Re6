@@ -8,6 +8,8 @@ installstart "$1"
 
 getinstallzip
 
+systemctl restart mpd
+
 if [[ -e /etc/systemd/system/libraryrandom.service ]]; then
 	if systemctl is-active libraryrandom; then
 		systemctl disable --now libraryrandom
