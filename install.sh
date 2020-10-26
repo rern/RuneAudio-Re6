@@ -18,7 +18,7 @@ if [[ -e /etc/systemd/system/libraryrandom.service ]]; then
 	rm -f /etc/systemd/system/libraryrandom.service /srv/http/bash/libraryrandom.sh
 fi
 
-sed -i 's/noop/& ipv6.disable=1/' /boot/cmdline.txt
+! grep -q ipv6.disable /boot/cmdline.txt && sed -i 's/noop/& ipv6.disable=1/' /boot/cmdline.txt
 
 if ! pacman -Qe python-dbus &> /dev/null; then
 	pacman -Sy --noconfirm python-dbus python-gobject
@@ -37,7 +37,7 @@ ExecStart=/srv/http/bash/bluez-authorize.py
 fi
 
 file=/etc/systemd/system/bluez-authorize.service
-if [[ -e $file ]] && grep -q bluez_authorize $file; then
+if grep -q bluez_authorize $file; then
 	sed -i 's/bluez_authorize/bluez-authorize/' $file
 	mv /srv/http/bash/bluez{_,-}authorize.py
 	systemctl daemon-reload
