@@ -1246,7 +1246,7 @@ renderPlaylist = function( data ) {
 	$( '#button-pl-save, #button-pl-clear, #button-pl-search' ).removeClass( 'disable' );
 	$( '#button-pl-crop, #button-pl-shuffle' ).toggleClass( 'disable', G.status.playlistlength < 2 );
 	$( '#button-pl-consume' ).toggleClass( 'bl', G.status.consume );
-	$( '#button-pl-random' ).toggleClass( 'bl', G.status.librandom );
+	$( '#button-pl-librandom' ).toggleClass( 'bl', G.status.librandom );
 	var plremove = $( '#pl-list .pl-remove' ).length;
 	$( '#pl-list' ).html( data.html +'<p></p>' ).promise().done( function() {
 		if ( $( '#pl-list img.lazy' ).length ) G.lazyload.update();
@@ -1413,8 +1413,17 @@ function setButtonOptions() {
 		$( '#'+ prefix +'-repeat' ).toggleClass( 'hide', !G.status.repeat || G.status.single );
 		$( '#'+ prefix +'-repeat1' ).toggleClass( 'hide', !( G.status.repeat && G.status.single ) );
 	}
-	$( '#'+ prefix +'-consume' ).toggleClass( 'hide', !G.status.consume );
-	$( '#'+ prefix +'-librandom' ).toggleClass( 'hide', !G.status.librandom );
+	[ 'consume', 'librandom' ].forEach( function( option ) {
+		$( '#button-pl-'+ option ).toggleClass( 'bl', G.status[ option ] );
+		$( '#i-'+ option +', #ti-'+ option ).addClass( 'hide' );
+		if ( G.display.time ) {
+			$( '#i-'+ option ).addClass( 'hide' );
+			$( '#ti-'+ option ).toggleClass( 'hide', !G.status[ option ] );
+		} else {
+			$( '#ti-'+ option ).addClass( 'hide' );
+			$( '#i-'+ option ).toggleClass( 'hide', !G.status[ option ] );
+		}
+	} );
 	$( '#'+ prefix +'-addons' ).toggleClass( 'hide', !$( '#badge' ).length );
 	setButtonUpdating();
 }

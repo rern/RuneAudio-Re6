@@ -372,30 +372,9 @@ function psNotify( data ) {
 function psOption( data ) {
 	if ( G.local ) return
 	
-	if ( 'librandom' in data ) {
-		G.status.librandom = data.librandom;
-		$( '#button-pl-random' ).toggleClass( 'bl', G.status.librandom );
-		$( '#i-librandom, #ti-librandom' ).addClass( 'hide' );
-		if ( G.display.time ) {
-			$( '#i-librandom' ).addClass( 'hide' );
-			$( '#ti-librandom' ).toggleClass( 'hide', !G.status.librandom );
-		} else {
-			$( '#ti-librandom' ).addClass( 'hide' );
-			$( '#i-librandom' ).toggleClass( 'hide', !G.status.librandom );
-		}
-	} else {
-		if ( 'consume' in data ) {
-			G.status.comsume = data.consume
-			$( '#button-pl-consume' ).toggleClass( 'bl', data.consume );
-		} else if ( 'random' in data ) {
-			G.status.random = data.random
-		} else if ( 'repeat' in data ) {
-			G.status.repeat = data.repeat
-		} else {
-			G.status.single = data.single
-		}
-		if ( G.playback ) setButtonOptions();
-	}
+	var option = Object.keys( data )[ 0 ];
+	G.status[ option ] = Object.values( data )[ 0 ];
+	setButtonOptions();
 }
 function psOrder( data ) {
 	if ( G.local ) return
