@@ -83,7 +83,7 @@ data+='
 	, "ip"              : "'${iplist:1}'"
 	, "kernel"          : "'$( uname -r )'"
 	, "mpd"             : "'$( pacman -Q mpd 2> /dev/null |  cut -d' ' -f2 )'"
-	, "mpdstats"        : "'$( jq '.title, .album, .artist' /srv/http/data/mpd/counts 2> /dev/null )'"
+	, "mpdstats"        : "'$( jq '.song, .album, .artist' /srv/http/data/mpd/counts 2> /dev/null )'"
 	, "ntp"             : "'$( grep '^NTP' /etc/systemd/timesyncd.conf | cut -d= -f2 )'"
 	, "onboardaudio"    : '$( grep -q 'dtparam=audio=on' /boot/config.txt && echo true || echo false )'
 	, "reboot"          : "'$( cat /srv/http/data/shm/reboot 2> /dev/null )'"
