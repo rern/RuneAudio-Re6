@@ -367,7 +367,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 			<span class="lipath"></span>
 		</div>
 	</div>
-	<div id="lib-mode-list" class="list" data-count="<?=$counts->title?>"><?=$modehtml?></div>
+	<div id="lib-mode-list" class="list" data-count="<?=$counts->song?>"><?=$modehtml?></div>
 	<ul id="lib-list" class="list"></ul>
 	<div id="lib-index" class="hide"></div>
 </div>
@@ -391,7 +391,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 			<i id="button-pl-open" class="fa fa-folder-open"></i>
 			<i id="button-pl-save" class="fa fa-save pllength"></i>
 			<i id="button-pl-consume" class="fa fa-flash"></i>
-			<i id="button-pl-random" class="fa fa-dice"></i>
+			<i id="button-pl-librandom" class="fa fa-dice"></i>
 			<i id="button-pl-shuffle" class="fa fa-shuffle pllength"></i>
 			<i id="button-pl-clear" class="fa fa-minus-circle pllength"></i>
 		</div>
