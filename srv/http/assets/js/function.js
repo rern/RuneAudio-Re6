@@ -1415,7 +1415,6 @@ function setButtonOptions() {
 	}
 	[ 'consume', 'librandom' ].forEach( function( option ) {
 		$( '#button-pl-'+ option ).toggleClass( 'bl', G.status[ option ] );
-		$( '#i-'+ option +', #ti-'+ option ).addClass( 'hide' );
 		if ( G.display.time ) {
 			$( '#i-'+ option ).addClass( 'hide' );
 			$( '#ti-'+ option ).toggleClass( 'hide', !G.status[ option ] );
@@ -1424,7 +1423,15 @@ function setButtonOptions() {
 			$( '#i-'+ option ).toggleClass( 'hide', !G.status[ option ] );
 		}
 	} );
-	$( '#'+ prefix +'-addons' ).toggleClass( 'hide', !$( '#badge' ).length );
+	if ( !G.display.bar ) {
+		if ( G.display.time ) {
+			$( '#i-addons' ).addClass( 'hide' );
+			$( '#ti-addons' ).toggleClass( 'hide', !$( '#badge' ).length );
+		} else {
+			$( '#ti-addons'+ option ).addClass( 'hide' );
+			$( '#i-addons'+ option ).toggleClass( 'hide', !$( '#badge' ).length );
+		}
+	}
 	setButtonUpdating();
 }
 function setButtonUpdating() {
