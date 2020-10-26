@@ -367,7 +367,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 			<span class="lipath"></span>
 		</div>
 	</div>
-	<div id="lib-mode-list" class="list" data-count="<?=$counts->title?>"><?=$modehtml?></div>
+	<div id="lib-mode-list" class="list" data-count="<?=$counts->song?>"><?=$modehtml?></div>
 	<ul id="lib-list" class="list"></ul>
 	<div id="lib-index" class="hide"></div>
 </div>
