@@ -379,12 +379,14 @@ mpcprevnext )
 	length=${args[3]}
 	mpc | grep -q '^\[playing\]' && playing=1
 	
-	if [[ $( mpc | awk '/random/ {print $6}' ) == on ]]; then
+	if mpc | grep -q 'random: on'; then
 		pos=$( shuf -n 1 <( seq $length | grep -v $current ) )
 		mpc play $pos
 	else
 		if [[ $command == next ]]; then
 			(( $current != $length )) && mpc play $(( current + 1 )) || mpc play 1
+			mpc | grep -q 'consume: on' && mpc del $current
+			[[ -e $dirsystem/librandom ]] && /srv/http/bash/cmd.sh randomfile
 		else
 			(( $current != 1 )) && mpc play $(( current - 1 )) || mpc play $length
 		fi

@@ -64,6 +64,19 @@ buffer )
 	restartMPD
 	pushRefresh
 	;;
+bufferoutput )
+	buffer=${args[1]}
+	if [[ -n $buffer ]]; then
+		sed -i -e '/^max_output_buffer/ d
+		' -e '1 i\max_output_buffer_size "'$buffer'"' /etc/mpd.conf
+		echo $buffer > $dirsystem/mpd-bufferoutput
+	else
+		sed -i '/^max_output_buffer_size/ d' /etc/mpd.conf
+		rm $dirsystem/mpd-bufferoutput
+	fi
+	restartMPD
+	pushRefresh
+	;;
 crossfade )
 	crossfade=${args[1]}
 	if [[ -n $crossfade ]]; then
