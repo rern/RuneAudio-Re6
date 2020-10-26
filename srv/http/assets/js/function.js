@@ -473,9 +473,6 @@ function getOrientation( file, callback ) { // return: 1 - undefined
 	reader.readAsArrayBuffer( file.slice( 0, 64 * 1024 ) );
 }
 function getPlaybackStatus() {
-	if ( G.status.librandom && G.playlist && !G.savedlist && G.status.mpd ) {
-		list( { cmd: 'current' }, renderPlaylist, 'json' );
-	}
 	local();
 	bash( '/srv/http/bash/status.sh get', function( status ) {
 		if ( !status ) return
@@ -512,8 +509,8 @@ function getPlaybackStatus() {
 				} );
 			}
 		} else {
-			setButtonUpdating();
 			if ( !G.savedlist && !G.savedplaylist && !G.sortable && !$( '#pl-search-close' ).text() ) getPlaylist();
+			setButtonUpdating();
 		}
 	}, 'json' );
 }
@@ -1252,6 +1249,7 @@ renderPlaylist = function( data ) {
 	$( '#button-pl-random' ).toggleClass( 'bl', G.status.librandom );
 	var plremove = $( '#pl-list .pl-remove' ).length;
 	$( '#pl-list' ).html( data.html +'<p></p>' ).promise().done( function() {
+		if ( $( '#pl-list img.lazy' ).length ) G.lazyload.update();
 		$( '.list p' ).toggleClass( 'bars-on', G.bars );
 		$( '#pl-list li' )
 			.removeClass( 'active activeplay' )
@@ -1269,7 +1267,6 @@ renderPlaylist = function( data ) {
 					$( this ).replaceWith( '<i class="fa fa-music pl-icon" data-target="#menu-filesavedpl"></i>' );
 				} );
 		} );
-		if ( $( '#pl-list img.lazy' ).length ) G.lazyload.update();
 	} );
 }
 function renderPlaylistList() {
@@ -1462,15 +1459,14 @@ function setPlaylistScroll() {
 	playlistProgress();
 	setNameWidth();
 	displayTopBottom();
-	$( '#pl-list li' )
-		.removeClass( 'active' )
-		.eq( G.status.song || 0 ).addClass( 'active' );
+	$( '#pl-list li' ).removeClass( 'active updn' );
+	$liactive = $( '#pl-list li' ).eq( G.status.song || 0 );
+	$liactive.addClass( 'active' );
 	$( '#menu-plaction' ).addClass( 'hide' );
-	$( '#pl-list li' ).removeClass( 'updn' );
 	if ( G.status.playlistlength < 5 ) {
 		$( 'html, body' ).scrollTop( 0 );
 	} else {
-		var scrollpos = $( '#pl-list li.active' ).offset().top - $( '#pl-list' ).offset().top - ( G.bars ? 80 : 40 ) - ( 49 * 3 );
+		var scrollpos = $liactive.offset().top - ( G.bars ? 80 : 40 ) - ( 49 * 3 );
 		$( 'html, body' ).scrollTop( scrollpos );
 	}
 }
