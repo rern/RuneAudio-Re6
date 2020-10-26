@@ -121,6 +121,8 @@ refreshData = function() {
 		$( '#autoupdate' ).prop( 'checked', G.autoupdate );
 		$( '#buffer' ).prop( 'checked', G.buffer > 4096 );
 		$( '#setting-buffer' ).toggleClass( 'hide', G.buffer === '' );
+		$( '#bufferoutput' ).prop( 'checked', G.bufferoutput > 8192 );
+		$( '#setting-bufferoutput' ).toggleClass( 'hide', G.bufferoutput === '' );
 		$( '#ffmpeg' ).prop( 'checked', G.ffmpeg );
 		if ( !$( '#codeaplay' ).hasClass( 'hide' ) ) getAplay();
 		if ( !$( '#codeamixer' ).hasClass( 'hide' ) ) getAmixer();
@@ -333,9 +335,9 @@ $( '#setting-buffer' ).click( function() {
 	info( {
 		  icon      : 'mpd'
 		, title     : 'Audio Buffer'
+		, message   : '<code>audio_buffer_size</code> (default: 4096)'
 		, textlabel : 'Size <gr>(kB)</gr>'
 		, textvalue : G.buffer || 4096
-		, footer   : '(default: 4096)'
 		, cancel    : function() {
 			if ( !G.buffer ) {
 				$( '#buffer' ).prop( 'checked', 0 );
@@ -356,6 +358,45 @@ $( '#setting-buffer' ).click( function() {
 				G.buffer = buffer;
 				notify( 'Audio Buffer', 'Change ...', 'mpd' );
 				bash( [ 'buffer', G.buffer ], refreshData );
+			}
+		}
+	} );
+} );
+$( '#bufferoutput' ).click( function() {
+	if ( $( this ).prop( 'checked' ) ) {
+		$( '#setting-bufferoutput' ).click();
+	} else {
+		notify( 'Custom Output Buffer', 'Disable ...', 'mpd' );
+		bash( [ 'bufferoutput' ], refreshData );
+	}
+} );
+$( '#setting-bufferoutput' ).click( function() {
+	info( {
+		  icon      : 'mpd'
+		, title     : 'Output Buffer'
+		, message   : '<code>max_output_buffer_size</code> (default: 8192)'
+		, textlabel : 'Size <gr>(kB)</gr>'
+		, textvalue : G.bufferoutput || 8192
+		, cancel    : function() {
+			if ( !G.buffer ) {
+				$( '#bufferoutput' ).prop( 'checked', 0 );
+				$( '#setting-bufferoutput' ).addClass( 'hide' );
+			}
+		}
+		, ok        : function() {
+			var buffer = $( '#infoTextBox' ).val().replace( /\D/g, '' );
+			if ( buffer < 8192 ) {
+				info( {
+					  icon    : 'mpd'
+					, title   : 'Output Buffer'
+					, message : '<i class="fa fa-warning fa-lg"></i> Warning<br>'
+							   +'<br>Output buffer must be greater than <wh>8192 kB</wh>.'
+				} );
+				if ( !G.bufferoutput ) $( '#bufferoutput' ).prop( 'checked', 0 );
+			} else if ( buffer !== G.bufferoutput ) {
+				G.bufferoutput = buffer;
+				notify( 'Output Buffer', 'Change ...', 'mpd' );
+				bash( [ 'bufferoutput', G.bufferoutput ], refreshData );
 			}
 		}
 	} );

@@ -223,6 +223,7 @@ h1 {
 .revisiontext {
 	display:none;
 	padding-left: 20px;
+	    line-height: 20px;
 }
 .detailtext i {
 	color: var( --cg60 );

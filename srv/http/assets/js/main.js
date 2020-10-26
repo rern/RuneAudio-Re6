@@ -1633,7 +1633,7 @@ $( '#button-pl-consume' ).click( function() {
 	G.status.consume = !G.status.consume;
 	bash( [ 'mpcoption', 'consume', G.status.consume ] );
 } );
-$( '#button-pl-random' ).click( function() {
+$( '#button-pl-librandom' ).click( function() {
 	var $this = $( this );
 	if ( G.status.librandom ) {
 		G.status.librandom = false;

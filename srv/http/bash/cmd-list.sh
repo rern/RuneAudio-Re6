@@ -55,7 +55,7 @@ else
 			if [[ -e "$dirparent/.mpdignore" ]]; then
 				readarray -t mpdignore <<< "$( cat "$dirparent/.mpdignore" )"
 				for dirignore in "${mpdignore[@]}"; do
-					[[ "$dirparent/$dirignore" == "$dir" ]] && continue 2
+					[[ "$dirignore" == "${dir/*\/}" ]] && continue 2
 				done
 			fi
 			file=$( ls "$dir"/*.wav | head -1 )
@@ -69,7 +69,7 @@ else
 			fi
 			if [[ -n $albumwav ]]; then
 				album_artist_file+=$albumwav
-				echo "${albumwav: 1}" > $dirmpd/albumwav
+				echo "$albumwav" > $dirmpd/albumwav
 			fi
 		done
 	fi

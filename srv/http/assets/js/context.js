@@ -262,7 +262,7 @@ function tagEditor() {
 				} ).length
 				if ( plcue ) {
 					$( 'ib:last').remove();
-					$( '#infoFooter' ).text( 'Tap coverart to browse that album' );
+					$( '#infoFooter' ).text( 'Tap coverart to browse this album' );
 				}
 				$( '#infoMessage' ).click( function() {
 					if ( G.library ) return

@@ -105,6 +105,18 @@
 	<span class="help-block hide">
 			<code>audio_buffer_size "N"</code>
 		<br>Default buffer size: 4096 kB (24 seconds of CD-quality audio)
+		<br>Increase to fix intermittent audio.
+	</span>
+</div>
+<div class="col-l">Custom Output Buffer</div>
+<div class="col-r">
+	<input id="bufferoutput" type="checkbox">
+	<div class="switchlabel" for="bufferoutput"></div>
+	<i id="setting-bufferoutput" class="setting fa fa-gear"></i>
+	<span class="help-block hide">
+			<code>max_output_buffer_size "N"</code>
+		<br>Default buffer size: 8192 kB
+		<br>Increase to fix missing Album list with large Library.
 	</span>
 </div>
 	<?php if ( file_exists( '/usr/bin/ffmpeg' ) ) { ?>

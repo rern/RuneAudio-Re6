@@ -84,6 +84,7 @@ file=$dirsystem/mpd
 if ls $file-* &> /dev/null; then
 	[[ -e $file-autoupdate ]] &&    sed -i '1 i\auto_update             "yes"' /etc/mpd.conf
 	[[ -e $file-buffer ]] &&        sed -i '1 i\audio_buffer_size       "'$( cat $dirsystem/mpd-buffer )'"' /etc/mpd.conf
+	[[ -e $file-bufferoutput ]] &&  sed -i '/music_directory/ i\max_output_buffer_size  "'$( cat $dirsystem/mpd-bufferoutput )'"' /etc/mpd.conf
 	[[ -e $file-ffmpeg ]] &&        sed -i '/ffmpeg/ {n;s/\(enabled\s*"\).*/\1yes"/}' /etc/mpd.conf
 	[[ -e $file-normalization ]] && sed -i '/^user/ a\volume_normalization  "yes"' /etc/mpd.conf
 	[[ -e $file-replaygain ]] &&    sed -i 's/\(replaygain\s*\"\).*/\1'$( cat $dirsystem/mpd-replaygain )'"/' /etc/mpd.conf
