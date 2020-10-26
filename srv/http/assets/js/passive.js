@@ -374,6 +374,14 @@ function psOption( data ) {
 	if ( 'librandom' in data ) {
 		G.status.librandom = data.librandom;
 		$( '#button-pl-random' ).toggleClass( 'bl', G.status.librandom );
+		$( '#i-librandom, #ti-librandom' ).addClass( 'hide' );
+		if ( G.display.time ) {
+			$( '#i-librandom' ).addClass( 'hide' );
+			$( '#ti-librandom' ).toggleClass( 'hide', !G.status.librandom );
+		} else {
+			$( '#ti-librandom' ).addClass( 'hide' );
+			$( '#i-librandom' ).toggleClass( 'hide', !G.status.librandom );
+		}
 	} else {
 		if ( 'consume' in data ) {
 			G.status.comsume = data.consume

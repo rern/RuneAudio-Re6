@@ -117,7 +117,9 @@ pushstreamVolume() {
 }
 randomfile() {
 	dir=$( cat $dirmpd/album | shuf -n 1 | cut -d^ -f7 )
-	file=$( mpc ls "$dir" | shuf -n 1 )
+	mpcls=$( mpc ls "$dir" )
+	file=$( echo "$mpcls" | shuf -n 1 )
+	echo $mpcls | grep -q .cue$ && file="${file%.*}.cue"
 	if [[ ${file: -4} == .cue ]]; then
 		plL=$(( $( grep '^\s*TRACK' "/mnt/MPD/$file" | wc -l ) - 1 ))
 		range=$( shuf -i 0-$plL -n 1 )
@@ -310,13 +312,13 @@ librandom )
 		mpc random 0
 		plL=$( mpc playlist | wc -l )
 		randomfile # 1st track
-		sleep 1
-		mpc play $(( plL +1 ))
 		randomfile # 2nd track
 		randomfile # 3rd track
 		touch $dirsystem/librandom
+		sleep 1
+		mpc play $(( plL + 1 ))
 	fi
-	pushstream mpdoptions '{ "option": '$enable' }'
+	pushstream option '{ "librandom": '$enable' }'
 	pushstream playlist "$( php /srv/http/mpdplaylist.php current )"
 	;;
 list )
