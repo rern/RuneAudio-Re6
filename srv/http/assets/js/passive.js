@@ -321,6 +321,7 @@ function psMpdUpdate( data ) {
 		if ( G.bars ) {
 			$( '#tab-library, #button-library' ).addClass( 'blink' );
 		} else {
+			$( '#button-library' ).addClass( 'blink' );
 			$( '#'+ ( G.display.time ? 'ti' : 'i' ) +'-update' ).removeClass( 'hide' );
 		}
 	} else {
