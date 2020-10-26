@@ -1,6 +1,6 @@
 #!/bin/bash
 
-alias=rre5
+alias=rre6
 
 . /srv/http/bash/addons.sh
 
