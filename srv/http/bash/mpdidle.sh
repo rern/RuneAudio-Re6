@@ -33,8 +33,10 @@ mpc idleloop | while read changed; do
 							counts=$( mpc | awk '/\[playing\]/ {print $2}' | tr -d '#' )
 							pos=${counts/\/*}
 							total=${counts/*\/}
-							if (( $(( total - pos )) < 2 )); then
+							left=$(( total - pos ))
+							if (( $left < 2 )); then
 								/srv/http/bash/cmd.sh randomfile
+								(( $left == 0 )) && /srv/http/bash/cmd.sh randomfile
 								touch $flagpl
 							fi
 						fi
