@@ -332,10 +332,10 @@ $( '#buffer' ).click( function() {
 $( '#setting-buffer' ).click( function() {
 	info( {
 		  icon      : 'mpd'
-		, title     : 'Buffer'
-		, message   : '<px20/>(default: 4096)'
-		, textlabel : 'Buffer size <gr>(kB)</gr>'
+		, title     : 'Audio Buffer'
+		, textlabel : 'Size <gr>(kB)</gr>'
 		, textvalue : G.buffer || 4096
+		, footer   : '(default: 4096)'
 		, cancel    : function() {
 			if ( !G.buffer ) {
 				$( '#buffer' ).prop( 'checked', 0 );
@@ -347,14 +347,14 @@ $( '#setting-buffer' ).click( function() {
 			if ( buffer < 4097 ) {
 				info( {
 					  icon    : 'mpd'
-					, title   : 'Buffer'
+					, title   : 'Audio Buffer'
 					, message : '<i class="fa fa-warning fa-lg"></i> Warning<br>'
-							   +'<br>Custom buffer must be greater than <wh>4096KB</wh>.'
+							   +'<br>Audio buffer must be greater than <wh>4096 kB</wh>.'
 				} );
 				if ( !G.buffer ) $( '#buffer' ).prop( 'checked', 0 );
 			} else if ( buffer !== G.buffer ) {
 				G.buffer = buffer;
-				notify( 'Custom Buffer', 'Change ...', 'mpd' );
+				notify( 'Audio Buffer', 'Change ...', 'mpd' );
 				bash( [ 'buffer', G.buffer ], refreshData );
 			}
 		}

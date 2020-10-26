@@ -3,8 +3,7 @@
 	<heading id="headlan" class="noline">LAN<i id="lanadd" class="fa fa-plus-circle"></i></heading>
 	<ul id="listlan" class="entries"></ul>
 <?php }
-	  $wlan = exec ( 'ifconfig | grep ^wlan' );
-	  if ( $wlan ) { ?>
+	  if ( exec( 'ifconfig | grep ^wlan' ) ) { ?>
 	<div>
 	<heading id="headwl" class="noline">Wi-Fi<i id="wladd" class="fa fa-plus-circle"></i><i id="wlscan" class="fa fa-search"></i><?=$help?></heading>
 	<ul id="listwl" class="entries"></ul>
@@ -62,18 +61,9 @@
 	<ul id="listbtscan" class="entries"></ul>
 </div>
 
-	<?php if ( $wlan && file_exists( '/usr/bin/hostapd' ) ) { ?>
+	<?php if ( exec( 'systemctl -q is-active hostapd && echo 1 || echo 0' ) ) { ?>
 <div id="divaccesspoint">
-	<heading>RPi Access Point<?=$help?></heading>
-	<div class="col-l">Enable</div>
-	<div class="col-r">
-		<input id="accesspoint" type="checkbox">
-		<div class="switchlabel" for="accesspoint"></div>
-		<i id="setting-accesspoint" class="setting fa fa-gear"></i>
-		<span class="help-block hide">Connect with RuneAudio+R Wi-Fi directly when no routers available.
-			<br>RuneAudio+R access point should be used only when necessary.</span>
-	</div>
-	<p class="brhalf"></p>
+	<heading>RPi Access Point<i id="setting-accesspoint" class="fa fa-gear"></i><?=$help?></heading>
 	<div id="boxqr" class="hide">
 		<div class="col-l">Credential</div>
 		<div class="col-r">

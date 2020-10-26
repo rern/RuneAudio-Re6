@@ -60,20 +60,29 @@
 	<input id="crossfade" class="switch" type="checkbox">
 	<div class="switchlabel" for="crossfade"></div>
 	<i id="setting-crossfade" class="setting fa fa-gear"></i>
-	<span class="help-block hide">Fade-out to fade-in between songs.</span>
+	<span class="help-block hide">
+			<code>mpc crossfade N</code>
+		<br>Fade-out to fade-in between songs.
+	</span>
 </div>
 <div class="col-l">Normalization</div>
 <div class="col-r">
 	<input id="normalization" type="checkbox">
 	<div class="switchlabel" for="normalization"></div>
-	<span class="help-block hide">Normalize the volume level of songs as they play.</span>
+	<span class="help-block hide">
+			<code>volume_normalization "yes"</code>
+		<br>Normalize the volume level of songs as they play.
+	</span>
 </div>
 <div class="col-l">Replay Gain</div>
 <div class="col-r">
 	<input id="replaygain" type="checkbox">
 	<div class="switchlabel" for="replaygain"></div>
 	<i id="setting-replaygain" class="setting fa fa-gear"></i>
-	<span class="help-block hide">Set gain control to setting in replaygain tag. Currently only FLAC, Ogg Vorbis, Musepack, and MP3 (through ID3v2 ReplayGain tags, not APEv2) are supported.</span>
+	<span class="help-block hide">
+			<code>replaygain "N"</code>
+		<br>Set gain control to setting in replaygain tag. Currently only FLAC, Ogg Vorbis, Musepack, and MP3 (through ID3v2 ReplayGain tags, not APEv2) are supported.
+	</span>
 </div>
 </div>
 
@@ -83,21 +92,29 @@
 <div class="col-r">
 	<input id="autoupdate" type="checkbox">
 	<div class="switchlabel" for="autoupdate"></div>
-	<span class="help-block hide">Automatic update MPD database when files changed.</span>
+	<span class="help-block hide">
+			<code>auto_update "yes"</code>
+		<br>Automatic update MPD database when files changed.
+	</span>
 </div>
-<div class="col-l">Custom Buffer</div>
+<div class="col-l">Custom Audio Buffer</div>
 <div class="col-r">
 	<input id="buffer" type="checkbox">
 	<div class="switchlabel" for="buffer"></div>
 	<i id="setting-buffer" class="setting fa fa-gear"></i>
-	<span class="help-block hide">Default buffer size: 4096KB (24 seconds of CD-quality audio)</span>
+	<span class="help-block hide">
+			<code>audio_buffer_size "N"</code>
+		<br>Default buffer size: 4096 kB (24 seconds of CD-quality audio)
+	</span>
 </div>
 	<?php if ( file_exists( '/usr/bin/ffmpeg' ) ) { ?>
 <div class="col-l">FFmpeg Decoder</div>
 <div class="col-r">
 	<input id="ffmpeg" type="checkbox">
 	<div class="switchlabel" for="ffmpeg"></div>
-	<span class="help-block hide">Should be disabled if not used for faster Sources update.
+	<span class="help-block hide">
+			<code>ffmpeg "yes"</code>
+		<br>Should be disabled if not used for faster Sources update.
 		<br>Decoder for audio filetypes:
 		<div style="margin-left: 20px">
 			<?php

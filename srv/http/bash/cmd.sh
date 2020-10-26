@@ -115,6 +115,17 @@ pushstreamStatus() {
 pushstreamVolume() {
 	pushstream volume '{"type":"'$1'", "val":'$2' }'
 }
+randomfile() {
+	dir=$( cat $dirmpd/album | shuf -n 1 | cut -d^ -f7 )
+	file=$( mpc ls "$dir" | shuf -n 1 )
+	if [[ ${file: -4} == .cue ]]; then
+		plL=$(( $( grep '^\s*TRACK' "/mnt/MPD/$file" | wc -l ) - 1 ))
+		range=$( shuf -i 0-$plL -n 1 )
+		mpc --range=$range load "$file"
+	else
+		mpc add "$file"
+	fi
+}
 urldecode() { # for webradio url to filename
 	: "${*//+/ }"
 	echo -e "${_//%/\\x}"
@@ -250,23 +261,6 @@ coversave )
 	coverfile="$path/cover.jpg"
 	jpgThumbnail coverart "$source" "$coverfile"
 	;;
-databackup )
-	backupfile=$dirdata/tmp/backup.gz
-	rm -f $backupfile
-	bsdtar \
-		--exclude './addons' \
-		--exclude './coverarts' \
-		--exclude './mpd/cue' \
-		--exclude './mpd/list' \
-		--exclude './embedded' \
-		--exclude './shm' \
-		--exclude './system/version' \
-		--exclude './tmp' \
-		-czf $backupfile \
-		-C /srv/http \
-		data \
-		2> /dev/null && echo 1
-	;;
 displayget )
 	output=$( cat $dirsystem/usbdac 2> /dev/null )
 	[[ -z $output ]] && output=$( cat $dirsystem/audio-output )
@@ -305,18 +299,25 @@ ignoredir )
 	mpc update "$mpdpath" #1 get .mpdignore into database
 	mpc update "$mpdpath" #2 after .mpdignore was in database
 	;;
+randomfile )
+	randomfile
+	;;
 librandom )
 	enable=${args[1]}
 	if [[ $enable == false ]]; then
-		systemctl stop libraryrandom
+		rm -f $dirsystem/librandom
 	else
 		mpc random 0
 		plL=$( mpc playlist | wc -l )
-		mpc listall | shuf -n 3 | mpc add
+		randomfile # 1st track
+		sleep 1
 		mpc play $(( plL +1 ))
-		systemctl start libraryrandom
+		randomfile # 2nd track
+		randomfile # 3rd track
+		touch $dirsystem/librandom
 	fi
-	pushstream mpdoptions '{ "librandom": '$enable' }'
+	pushstream mpdoptions '{ "option": '$enable' }'
+	pushstream playlist "$( php /srv/http/mpdplaylist.php current )"
 	;;
 list )
 	list
@@ -458,7 +459,7 @@ plcrop )
 		mpc stop
 	fi
 	touch $flagpladd
-	systemctl -q is-active libraryrandom && mpc listall | shuf -n 2 | mpc add
+	systemctl -q is-active libraryrandom && randomfile
 	pushstreamStatus
 	pushstreamPlaylist
 	;;

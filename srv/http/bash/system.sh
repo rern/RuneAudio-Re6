@@ -1,8 +1,10 @@
 #!/bin/bash
 
-dirsystem=/srv/http/data/system
-filebootlog=/srv/http/data/shm/bootlog
-filereboot=/srv/http/data/shm/reboot
+dirdata=/srv/http/data
+dirsystem=$dirdata/system
+dirtmp=$dirdata/shm
+filebootlog=$dirtmp/bootlog
+filereboot=$dirtmp/reboot
 
 # convert each line to each args
 readarray -t args <<< "$1"
@@ -13,6 +15,15 @@ pushRefresh() {
 
 case ${args[0]} in
 
+btdiscoverable )
+	yesno=${args[1]}
+	bluetoothctl discoverable $yesno
+	if [[ $yesno == yes ]]; then
+		rm -f $dirsystem/btdiscoverno
+	else
+		touch $dirsystem/btdiscoverno
+	fi
+	;;
 bluetooth )
 	if [[ ${args[1]} == true ]]; then
 		sed -i '$ a\dtparam=krnbt=on' /boot/config.txt
@@ -25,6 +36,20 @@ bluetooth )
 		rm $dirsystem/onboard-bluetooth
 	fi
 	pushRefresh
+	;;
+databackup )
+	backupfile=$dirdata/tmp/backup.gz
+	rm -f $backupfile
+	bsdtar \
+		--exclude './addons' \
+		--exclude './embedded' \
+		--exclude './shm' \
+		--exclude './system/version' \
+		--exclude './tmp' \
+		-czf $backupfile \
+		-C /srv/http \
+		data \
+		2> /dev/null && echo 1
 	;;
 hostname )
 	hostname=${args[1]}

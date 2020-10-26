@@ -97,8 +97,10 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 <div class="col-r">
 	<input id="bluetooth" type="checkbox">
 	<div class="switchlabel" for="bluetooth"></div>
+	<i id="setting-bluetooth" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
-		- Should be disabled if not used.
+		<i class="fa fa-gear"></i>&ensp;Discoverable: Allow RuneAudio+R to be discovered by other devices.
+		<br>- Should be disabled if not used.
 		<br>- Try reboot again if Bluetooth not working.
 	</span>
 </div>

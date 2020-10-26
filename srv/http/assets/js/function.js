@@ -833,10 +833,6 @@ function playlistProgress() {
 	var $name = $this.find( '.name' );
 	var $song = $this.find( '.song' );
 	var slash = G.status.webradio ? '' : ' <gr>/</gr>';
-	$( '#pl-list li.active' )
-		.removeClass( 'active' )
-		.find( '.elapsed' ).empty();
-	$this.addClass( 'active' );
 	$( '.li1 .radioname' ).removeClass( 'hide' );
 	$( '.li2 .radioname' ).addClass( 'hide' );
 	if ( G.status.state === 'pause' ) {
@@ -857,7 +853,6 @@ function playlistProgress() {
 		}
 		getTitleWidth();
 		var time = $this.find( '.time' ).data( 'time' );
-		if ( G.status.elapsed ) G.status.elapsed++; // G.status.elapsed === 0 : track changed - no delay
 		G.intElapsedPl = setInterval( function() {
 			G.status.elapsed++;
 			if ( G.status.elapsed === time ) {
@@ -865,10 +860,7 @@ function playlistProgress() {
 				$elapsed.empty();
 				G.status.elapsed = 0;
 				if ( G.status.state === 'play' ) {
-					$( '#pl-list li.active .elapsed' ).empty();
-					$( '#pl-list li.active' )
-						.removeClass( 'active' )
-						.next( 'li' ).addClass( 'active' );
+					$( '#pl-list li .elapsed' ).empty();
 					setPlaylistScroll();
 				}
 				return
@@ -1068,8 +1060,9 @@ function renderPlayback() {
 	[ 'airplay', 'snapclient', 'spotify', 'upnp', 'webradio' ].forEach( function( el ) {
 		$( '#i-'+ el ).toggleClass( 'hide', !status[ el ] );
 	} );
-	sampling = status.webradio ? status.sampling +' &bull; Radio' : status.sampling;
-	$( '#sampling' ).html( sampling );
+	var radiosampling = '';
+	if ( status.webradio ) radiosampling = status.sampling ? ' &bull; Radio' : 'Radio';
+	$( '#sampling' ).html( status.sampling + radiosampling );
 	if ( !G.coversave ) $( '.cover-save' ).remove();
 	// webradio ////////////////////////////////////////
 	if ( status.webradio ) {
@@ -1266,7 +1259,6 @@ renderPlaylist = function( data ) {
 			.empty();
 		$( '#pl-list li .name' ).removeClass( 'hide' );
 		$( '#pl-list li .song' ).css( 'max-width', '' );
-		$( '#pl-list li' ).eq( G.status.song || 0 ).addClass( 'active' );
 		loader( 'hide' );
 		setPlaylistScroll();
 		if ( plremove ) $( '#pl-list .li1' ).before( '<i class="fa fa-minus-circle pl-remove"></i>' );
@@ -1470,6 +1462,9 @@ function setPlaylistScroll() {
 	playlistProgress();
 	setNameWidth();
 	displayTopBottom();
+	$( '#pl-list li' )
+		.removeClass( 'active' )
+		.eq( G.status.song || 0 ).addClass( 'active' );
 	$( '#menu-plaction' ).addClass( 'hide' );
 	$( '#pl-list li' ).removeClass( 'updn' );
 	if ( G.status.playlistlength < 5 ) {

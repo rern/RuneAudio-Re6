@@ -1634,9 +1634,10 @@ $( '#button-pl-consume' ).click( function() {
 	bash( [ 'mpcoption', 'consume', G.status.consume ] );
 } );
 $( '#button-pl-random' ).click( function() {
+	var $this = $( this );
 	if ( G.status.librandom ) {
 		G.status.librandom = false;
-		$( this ).removeClass( 'bl' );
+		$this.removeClass( 'bl' );
 		banner( 'Roll The Dice', 'Off ...', 'dice' );
 		bash( [ 'librandom', false ] );
 	} else {
@@ -1646,7 +1647,7 @@ $( '#button-pl-random' ).click( function() {
 			, message : 'Randomly add songs and play continuously?'
 			, ok      : function() {
 				G.status.librandom = true;
-				$( this ).addClass( 'bl' );
+				$this.addClass( 'bl' );
 				banner( 'Roll The Dice', 'Add+play ...', 'dice' );
 				bash( [ 'librandom', true ] );
 			}

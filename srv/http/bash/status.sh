@@ -136,13 +136,13 @@ for line in "${lines[@]}"; do
 done
 
 [[ -z $elapsed ]] && elapsed=false || elapsed=$( printf '%.0f\n' $elapsed )
+[[ -e $dirsystem/librandom ]] && librandom=true || librandom=false
 [[ -z $playlistlength ]] && playlistlength=0
 [[ -z $song ]] && song=false
 [[ -z $Time ]] && Time=false
 [[ -e $dirsystem/updating ]] && updating_db=true || updating_db=false
 [[ -z $volume ]] && volume=false
 counts=$( cat /srv/http/data/mpd/counts 2> /dev/null || echo false )
-librandom=$( systemctl -q is-active libraryrandom && echo true || echo false )
 playlists=$( ls /srv/http/data/playlists | wc -l )
 volumemute=$( cat $dirsystem/volumemute 2> /dev/null || echo 0 )
 ########
@@ -317,7 +317,7 @@ if [[ $ext == Radio || -e $dirtmp/webradio ]]; then # webradio start - 'file:' m
 ########
 	status+='
 , "coverartradio" : "'$coverartradio'"'
-	if [[ $state == play ]]; then
+	if [[ $state == play && -n $Title ]]; then
 		# $Title          Artist Name - Title Name or Artist Name: Title Name (extra tag)
 		# /\s*$\| (.*$//  remove trailing sapces and extra ( tag )
 		# / - \|: /\n/    split artist - title

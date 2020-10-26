@@ -33,7 +33,7 @@ btremove )
 	;;
 btset )
 	bluetoothctl system-alias $( cat $dirsystem/hostname )
-	bluetoothctl discoverable yes
+	[[ ! -e $dirsystem/btdiscoverno ]] && bluetoothctl discoverable yes
 	bluetoothctl discoverable-timeout 0
 	bluetoothctl pairable yes
 	;;
@@ -71,7 +71,7 @@ Hidden=yes
 Address=$ip/24
 Gateway=$gw
 "
-		echo "$profile" | tee "/srv/http/data/system/netctl-$ssid" > "/etc/netctl/$ssid"
+		echo "$profile" > "/etc/netctl/$ssid"
 	fi
 	
 	ifconfig $wlan down
@@ -79,7 +79,7 @@ Gateway=$gw
 		systemctl enable netctl-auto@$wlan
 	else
 		echo -1
-		rm "/srv/http/data/system/netctl-$ssid" "/etc/netctl/$ssid"
+		rm -f "/etc/netctl/$ssid"
 	fi
 	ifconfig $wlan up
 	pushRefresh
