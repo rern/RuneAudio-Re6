@@ -98,7 +98,7 @@ data+='
 	, "versionui"       : '$( cat /srv/http/data/addons/rr$version 2> /dev/null || echo 0 )
 if [[ -e /usr/bin/bluetoothctl  ]]; then
 	bluetooth=$( grep -q dtparam=krnbt=on /boot/config.txt && echo true || echo false )
-	bluetoothon=$( [[ $( systemctl is-active bluetooth ) == active ]] && echo true || echo false )
+	bluetoothon=$( systemctl -q is-active bluetooth && echo true || echo false )
 	if [[ $bluetooth == true && $bluetoothon == false ]]; then
 		systemctl stop bluetooth
 		systemctl start bluetooth
