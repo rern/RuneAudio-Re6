@@ -11,7 +11,7 @@ getinstallzip
 systemctl restart mpd
 
 if [[ -e /etc/systemd/system/libraryrandom.service ]]; then
-	if systemctl is-active libraryrandom; then
+	if systemctl -q is-active libraryrandom; then
 		systemctl disable --now libraryrandom
 		touch /srv/http/data/system/librandom
 	fi
