@@ -1428,8 +1428,8 @@ function setButtonOptions() {
 			$( '#i-addons' ).addClass( 'hide' );
 			$( '#ti-addons' ).toggleClass( 'hide', !$( '#badge' ).length );
 		} else {
-			$( '#ti-addons'+ option ).addClass( 'hide' );
-			$( '#i-addons'+ option ).toggleClass( 'hide', !$( '#badge' ).length );
+			$( '#ti-addons' ).addClass( 'hide' );
+			$( '#i-addons' ).toggleClass( 'hide', !$( '#badge' ).length );
 		}
 	}
 	setButtonUpdating();
