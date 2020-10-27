@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # reset player, tmp files
-# set and connect wi-fi if pre-configured
+# set and connect wi-fi if pre-configured (once)
 # expand root partition (once)
 # enable/disable wlan
 # set sound profile if enabled
@@ -9,9 +9,13 @@
 #   - list sound devices
 #   - populate mpd.conf
 #   - start mpd, mpdidle
-# set autoplay if enabled
-# disable wlan power saving
+# mount fstab
+#   - verify ip
+#   - verify source ip
+# start hostapd if enable
+# autoplay if enabled
 # check addons updates
+# continue mpd update if pending
 
 dirdata=/srv/http/data
 dirmpd=$dirdata/mpd
@@ -71,10 +75,13 @@ if [[ -n "$mountpoints" ]]; then
 	done
 fi
 
-if systemctl -q is-enabled hostapd; then
+if [[ -n $wlanip ]] && systemctl -q is-enabled hostapd; then
 	ifconfig wlan0 $( grep router /etc/dnsmasq.conf | cut -d, -f2 )
 	systemctl start dnsmasq hostapd
 fi
+
+/srv/http/bash/cmd.sh addonsupdate
+
 # after all sources connected
 if [[ ! -e $dirmpd/mpd.db ]] || $( mpc stats | awk '/Songs/ {print $NF}' ) -eq 0 ]]; then
 	/srv/http/bash/cmd.sh mpcupdate$'\n'true
@@ -86,5 +93,3 @@ elif [[ -e $dirsystem/listing || ! -e $dirmpd/counts ]]; then
 elif [[ -e $dirsystem/autoplay ]]; then
 	mpc play
 fi
-
-/srv/http/bash/cmd.sh addonsupdate
