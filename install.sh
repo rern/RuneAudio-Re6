@@ -10,6 +10,8 @@ getinstallzip
 
 systemctl restart mpd
 
+sed -i 's/title/song/' /srv/http/data/mpd/counts
+
 if [[ -e /etc/systemd/system/libraryrandom.service ]]; then
 	if systemctl -q is-active libraryrandom; then
 		systemctl disable --now libraryrandom
