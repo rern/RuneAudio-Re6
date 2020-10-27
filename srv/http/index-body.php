@@ -230,7 +230,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 		<i id="displaylibrary2" class="fa fa-gear submenu"></i>
 	<a id="displayplayback" class="sub"><i class="fa fa-play-circle"></i>Playback</a>
 		<i id="displaycolor" class="submenu"><canvas id="iconrainbow"></i>
-	<a id="addons" class="sub"><i class="fa fa-plus-o"></i><?=( $addonsupdate ? '<span id="badgeaddons">'.$addonsupdate.'</span>' : '' )?>Addons</a>
+	<a id="addons" class="sub"><i class="fa fa-jigsaw"></i><?=( $addonsupdate ? '<span id="badgeaddons">'.$addonsupdate.'</span>' : '' )?>Addons</a>
 		<i id="guide" class="fa fa-question-circle submenu"></i>
 </div>
 

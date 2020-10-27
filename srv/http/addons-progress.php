@@ -63,7 +63,7 @@ if ( $branch !== 'master' ) $installurl = str_replace( 'raw/master', 'raw/'.$bra
 <div id="splash" class="hide"><svg viewBox="0 0 480.2 144.2"><?=$logo?></svg></div>
 <div class="container">
 	<h1>
-		<i class="fa fa-addons gr"></i>&ensp;<span><?=$heading?></span>
+		<i class="fa fa-jigsaw gr"></i>&ensp;<span><?=$heading?></span>
 		<i class="close-root fa fa-times"></i>
 	</h1>
 	<p class="bl"></p>
