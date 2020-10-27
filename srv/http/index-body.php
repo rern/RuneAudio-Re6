@@ -198,7 +198,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	<a id="network" class="settings"><i class="fa fa-network"></i>Network</a>
 	<a id="sources" class="settings sub"><i class="fa fa-folder-cascade"></i>Sources</a>
 		<i id="update" class="fa fa-refresh-library submenu"></i>
-	<a id="system" class="settings sub"><i class="fa fa-gear"></i>System</a>
+	<a id="system" class="settings sub"><i class="fa fa-addons"></i>System</a>
 		<i id="features" class="fa fa-sliders settings submenu"></i>
 <?php if ( $login ) { ?>
 	<a id="logout"><i class="fa fa-lock"></i>Logout</a>
@@ -230,7 +230,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 		<i id="displaylibrary2" class="fa fa-gear submenu"></i>
 	<a id="displayplayback" class="sub"><i class="fa fa-play-circle"></i>Playback</a>
 		<i id="displaycolor" class="submenu"><canvas id="iconrainbow"></i>
-	<a id="addons" class="sub"><i class="fa fa-addons"></i><?=( $addonsupdate ? '<span id="badgeaddons">'.$addonsupdate.'</span>' : '' )?>Addons</a>
+	<a id="addons" class="sub"><i class="fa fa-plus-o"></i><?=( $addonsupdate ? '<span id="badgeaddons">'.$addonsupdate.'</span>' : '' )?>Addons</a>
 		<i id="guide" class="fa fa-question-circle submenu"></i>
 </div>
 

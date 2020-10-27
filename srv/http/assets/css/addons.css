@@ -42,6 +42,7 @@
 .fa-link:before { content: "\f52C" }
 .fa-minus-circle:before { content: "\f563" }
 .fa-plus-circle:before { content: "\f564" }
+.fa-plus-o:before { content: "\f530" }
 .fa-question-circle:before { content: "\f560" }
 .fa-refresh:before { content: "\f526" }
 .fa-reset:before { content: "\f527" }
