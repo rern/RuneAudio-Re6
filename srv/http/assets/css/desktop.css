@@ -73,7 +73,11 @@
 }
 #lib-list li:active:hover,
 #pl-savedlist li:active:hover,
-#pl-list li:active:hover {
+#pl-list li:active:hover,
+#power.active,
+#screenoff.active,
+#power:hover,
+#screenoff:hover {
 	background-color: var( --cgd ) !important;
 }
 .licover.active:active:hover {
