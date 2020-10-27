@@ -41,7 +41,7 @@ fi
 
 sleep 10 # wait for network interfaces
 notifyFailed() {
-	echo "$1<br><br><gr>Try reboot again.</gr>" > $dirdata/shm/reboot
+	echo "$1<br><br><gr>Try reboot again.</gr>" >> $dirdata/shm/reboot
 	curl -s -X POST http://127.0.0.1/pub?id=reload -d 1
 }
 mountpoints=$( grep /mnt/MPD/NAS /etc/fstab | awk '{print $2}' )
@@ -50,22 +50,30 @@ if [[ -n "$mountpoints" ]]; then
 	wlanip=$( ifconfig | grep -A1 ^wlan0 | awk '/inet/ {print $2}' )
 	if [[ -z $lanip && -z wlanip ]]; then # wait for ip address
 		for (( i=0; i <= 20; i++ )); do
-			sleep 1
-			(( i == 20 )) && notifyFailed 'Network not connected.'
 			wlanip=$( ifconfig | grep -A1 ^wlan0 | awk '/inet/ {print $2}' )
 			[[ -n $wlanip ]] && break
+			
+			sleep 1
+			(( i == 20 )) && notifyFailed 'Network not connected.'
 		done
 	fi
 	for mountpoint in $mountpoints; do # verify target before mount
 		ip=$( grep "$mountpoint" /etc/fstab | cut -d' ' -f1 | sed 's|^//||; s|:*/.*$||' )
-		for (( i=0; i <= 20; i++ )); do
-			ping -c 1 -w 1 $ip &> /dev/null && break
-			
-			sleep 1
-			(( i == 20 )) && notifyFailed 'NAS IP address cannot be reached.'
-		done
+		if [[ $ip != $lanip && $ip != $wlanip ]]; then
+			for (( i=0; i <= 20; i++ )); do
+				ping -4 -c 1 -w 1 $ip &> /dev/null && break
+				
+				sleep 1
+				(( i == 20 )) && notifyFailed "NAS IP: $ip cannot be reached."
+			done
+		fi
 		mount $mountpoint
 	done
+fi
+
+if systemctl -q is-enabled hostapd; then
+	ifconfig wlan0 $( grep router /etc/dnsmasq.conf | cut -d, -f2 )
+	systemctl start dnsmasq hostapd
 fi
 # after all sources connected
 if [[ ! -e $dirmpd/mpd.db ]] || $( mpc stats | awk '/Songs/ {print $NF}' ) -eq 0 ]]; then
@@ -77,17 +85,6 @@ elif [[ -e $dirsystem/listing || ! -e $dirmpd/counts ]]; then
 	/srv/http/bash/cmd-list.sh &> dev/null &
 elif [[ -e $dirsystem/autoplay ]]; then
 	mpc play
-fi
-
-for (( i=0; i <= 20; i++ )); do
-	wlan0up=$( ip a show wlan0 &> /dev/null )
-	[[ -n $wlan0up ]] && break
-	
-	sleep 1
-done
-if [[ -e $dirsystem/accesspoint && -n $wlan0up ]]; then
-	ifconfig wlan0 $( grep router /etc/dnsmasq.conf | cut -d, -f2 )
-	systemctl start dnsmasq hostapd
 fi
 
 /srv/http/bash/cmd.sh addonsupdate
