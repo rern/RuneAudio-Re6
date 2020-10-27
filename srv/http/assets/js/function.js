@@ -495,9 +495,7 @@ function getPlaybackStatus() {
 			renderPlayback();
 			displayPlayback();
 			setButtonControl();
-			if ( G.playlist && !G.savedlist && !G.savedplaylist ) setPlaylistScroll();
 		} else if ( G.library ) {
-			setButtonUpdating();
 			if ( !$( '#lib-search-close' ).text() && !G.librarylist ) renderLibrary();
 			if ( counts ) {
 				var counts = G.status.counts;
@@ -510,8 +508,8 @@ function getPlaybackStatus() {
 			}
 		} else {
 			if ( !G.savedlist && !G.savedplaylist && !G.sortable && !$( '#pl-search-close' ).text() ) getPlaylist();
-			setButtonUpdating();
 		}
+		setButtonUpdating();
 	}, 'json' );
 }
 function getPlaylist() {

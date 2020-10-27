@@ -357,9 +357,9 @@ $( '#displayplayback' ).click( function() {
 				G.bars = G.display.bars;
 				displayTopBottom();
 				if ( G.playback ) {
-					setButtonControl();
+					renderPlayback();
 					displayPlayback();
-					 G.display.cover ? getPlaybackStatus() : renderPlayback();
+					setButtonControl();
 					$( '#ti-gpio, #i-gpio' ).toggleClass( 'hide', !G.status.gpioon );
 				} else if ( G.library ) {
 					$( '.list p' ).toggleClass( 'bars-on', G.bars );
