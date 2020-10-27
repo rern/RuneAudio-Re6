@@ -135,7 +135,7 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 					  +'&ensp;<i class="fa fa-artist gr"></i> '+ Number( counts[ 2 ] ).toLocaleString() +'</span>';
 		}
 		$( '#system' ).html(
-			  '<i class="fa fa-addons gr" style="line-height: 20px;"></i> '+ G.version +' <gr>'+ G.versionui +'</gr>'+ bullet + G.hostname +'<br>'
+			  '<i class="fa fa-plus-r gr" style="line-height: 20px;"></i> '+ G.version +' <gr>'+ G.versionui +'</gr>'+ bullet + G.hostname +'<br>'
 			+ G.hardware +'<br>'
 			+ G.soc +'<br>'
 			+ '<span id="output">'+ G.audiooutput +'</span><br>'

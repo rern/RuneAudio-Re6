@@ -61,6 +61,7 @@
 .fa-play-circle:before { content: "\f507" }
 .fa-plus:before { content: "\f519" }
 .fa-plus-circle:before { content: "\f564" }
+.fa-plus-r:before { content: "\f581" }
 .fa-qobuz:before { content: "\f593" }
 .fa-question-circle:before { content: "\f560" }
 .fa-reboot:before { content: "\f521" }
@@ -227,7 +228,7 @@ heading i {
 	width: 60px;
 	text-align: center;
 }
-heading i.fa-addons,
+heading i.fa-plus-r,
 heading i.back {
 	width: 40px;
 }

@@ -198,7 +198,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	<a id="network" class="settings"><i class="fa fa-network"></i>Network</a>
 	<a id="sources" class="settings sub"><i class="fa fa-folder-cascade"></i>Sources</a>
 		<i id="update" class="fa fa-refresh-library submenu"></i>
-	<a id="system" class="settings sub"><i class="fa fa-addons"></i>System</a>
+	<a id="system" class="settings sub"><i class="fa fa-plus-r"></i>System</a>
 		<i id="features" class="fa fa-sliders settings submenu"></i>
 <?php if ( $login ) { ?>
 	<a id="logout"><i class="fa fa-lock"></i>Logout</a>
@@ -263,7 +263,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 				<i id="i-consume" class="fa fa-flash hide"></i>
 				<i id="i-librandom" class="fa fa-dice hide"></i>
 				<i id="i-update" class="fa fa-library blink hide"></i>
-				<i id="i-addons" class="fa fa-addons hide"></i>
+				<i id="i-addons" class="fa fa-plus-r hide"></i>
 				<i id="i-gpio" class="fa fa-gpio hide"></i>
 			</span>
 		</div>
@@ -279,7 +279,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 				<i id="ti-consume" class="fa fa-flash hide"></i>
 				<i id="ti-librandom" class="fa fa-dice hide"></i>
 				<i id="ti-update" class="fa fa-library blink hide"></i>
-				<i id="ti-addons" class="fa fa-addons hide"></i>
+				<i id="ti-plus-r" class="fa fa-plus-r hide"></i>
 				<i id="ti-gpio" class="fa fa-gpio hide"></i>
 			</div>
 			<span id="elapsed" class="controls1"></span>

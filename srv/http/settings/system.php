@@ -217,7 +217,7 @@ foreach( $listruneui as $name => $link ) {
 ?>
 <br><br>
 <heading>About</heading>
-RuneAudio <i class="fa fa-addons gr"></i> <?=( file_get_contents( '/srv/http/data/system/version' ) )?>&emsp;by&emsp;<a href="https://github.com/rern/">r e r n</a>
+RuneAudio <i class="fa fa-plus-r gr"></i> <?=( file_get_contents( '/srv/http/data/system/version' ) )?>&emsp;by&emsp;<a href="https://github.com/rern/">r e r n</a>
 <div>
 <heading class="sub">RuneOS<?=$help?></heading>
 <span class="help-block hide">
