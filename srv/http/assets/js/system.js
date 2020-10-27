@@ -205,7 +205,7 @@ $( '#refresh' ).click( function( e ) {
 				$( '#status' ).html( renderStatus );
 			}, 'json' );
 		}, 10000 );
-		notify( 'System Status', 'Refresh every 10 seconds.<br>Click again to stop.', 'sliders', 10000 );
+		banner( 'System Status', 'Refresh every 10 seconds.<br>Click again to stop.', 'sliders', 10000 );
 	}
 } );
 $( '#onboardaudio' ).click( function() {
