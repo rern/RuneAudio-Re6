@@ -163,7 +163,7 @@ pre {
 	background: var( --cgd );
 	font-family: 'Inconsolata';
 	font-size: 15px;
-	overflow-x: scroll;
+	overflow-x: auto;
 }
 .btn {
 	margin-bottom: 5px !important;
