@@ -125,7 +125,8 @@ function psCoverart( data ) {
 	switch( data.type ) {
 		case 'coverart':
 			G.status.coverart = src;
-			if ( G.playback ) {
+			if ( G.playback ) $( '#coverart' ).attr( 'src', src );
+/*			if ( G.playback ) {
 				$( '#coverart' ).attr( 'src', src );
 			} else if ( G.library ) {
 				if ( !G.librarylist ) return
@@ -142,7 +143,7 @@ function psCoverart( data ) {
 				}
 			} else {
 				$( '#tab-playlist' ).click();
-			}
+			}*/
 			break;
 		case 'bookmarks':
 			var $li = $( '.bookmark' ).filter( function() {
