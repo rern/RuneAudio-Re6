@@ -63,22 +63,20 @@ if [[ -n "$mountpoints" ]]; then
 			(( i == 20 )) && notifyFailed 'Network not connected.'
 		done
 	fi
-	for mountpoint in "${mountpoints[@]}"; do # verify target before mount
-		readarray -t ips <<< $( grep "$mountpoint" /etc/fstab | cut -d' ' -f1 | sed 's|^//||; s|:*/.*$||' )
-		for ip in "${ips[@]}"; do
-			for (( i=0; i <= 20; i++ )); do
-				ping -4 -c 1 -w 1 $ip &> /dev/null && break
-				
-				sleep 1
-				(( i == 20 )) && notifyFailed "NAS @$ip cannot be reached."
-			done
-			mount "$mountpoint"
+	for mountpoint in "${mountpoints[@]}"; do # ping target before mount
+		ip=$( grep "$mountpoint" /etc/fstab | cut -d' ' -f1 | sed 's|^//||; s|:*/.*$||' )
+		for (( i=0; i <= 20; i++ )); do
+			ping -4 -c 1 -w 1 $ip &> /dev/null && break
+			
+			sleep 1
+			(( i == 20 )) && notifyFailed "NAS @$ip cannot be reached."
 		done
+		mount "$mountpoint"
 	done
 fi
 
 if [[ -n $wlanip ]] && systemctl -q is-enabled hostapd; then
-	ifconfig wlan0 $( grep router /etc/dnsmasq.conf | cut -d, -f2 )
+	ifconfig wlan0 $( awk -F',' '/router/ {print $2}' /etc/dnsmasq.conf )
 	systemctl start dnsmasq hostapd
 fi
 
