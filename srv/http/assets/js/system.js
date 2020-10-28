@@ -167,6 +167,7 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		$( '#timezone' )
 			.val( G.timezone )
 			.selectric( 'refresh' );
+		if ( !$( '#codeifconfig' ).hasClass( 'hide' ) ) getIfconfig();
 		if ( !$( '#codejournalctl' ).hasClass( 'hide' ) ) getJournalctl();
 		if ( !$( '#codeconfigtxt' ).hasClass( 'hide' ) ) getConfigtxt();
 		resetLocal();
