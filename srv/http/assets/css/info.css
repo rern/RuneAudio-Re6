@@ -236,8 +236,7 @@ hr {
 	max-width: calc( 100% - 120px );
 	display: inline-block;
 }
-.infopasswordbox,
-#infoPasswordBox {
+#infoText input[type=password] {
 	display: inline-block;
 }
 .eye {
