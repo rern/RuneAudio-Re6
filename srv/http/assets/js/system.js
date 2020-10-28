@@ -24,7 +24,7 @@ function getConfigtxt() {
 	} );
 }
 function getIfconfig() {
-	bash( 'ifconfig', function( status ) {
+	bash( 'ifconfig wlan0', function( status ) {
 		$( '#codeifconfig' )
 			.html( status )
 			.removeClass( 'hide' );
@@ -118,7 +118,7 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 			} )
 		}
 		if ( G.sources.length ) {
-			systemlabel += '<span id="sources" class="settings">Sources<i class="fa fa-gear"></i></span>';
+			systemlabel += '<span class="settings" data-setting="sources">Sources<i class="fa fa-gear"></i></span>';
 			var sourcelist = '';
 			$.each( G.sources, function( i, val ) {
 				sourcelist += '<i class="fa fa-'+ val.icon +' gr"></i>&ensp;'+ val.mountpoint.replace( '/mnt/MPD/USB/', '' );
@@ -397,7 +397,7 @@ $( '#setting-soundprofile' ).click( function() {
 } );
 $( '#hostname' ).click( function() {
 	info( {
-		  icon      : 'rune'
+		  icon      : 'plus-r'
 		, title     : 'Player Name'
 		, textlabel : 'Name'
 		, textvalue : G.hostname
