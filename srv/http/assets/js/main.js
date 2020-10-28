@@ -1118,7 +1118,7 @@ $( '#button-lib-back' ).click( function() {
 //			if ( query.query === 'ls' ) G.mode = 'file';
 			list( query, function( data ) {
 				if ( data != -1 ) {
-					if ( G.mode !== 'album' ) data.path = query.path;
+					data.path = G.mode === 'album' ? 'ALBUM' : query.path;
 					data.modetitle = query.modetitle;
 					renderLibraryList( data );
 				} else {
