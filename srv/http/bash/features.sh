@@ -119,9 +119,9 @@ localbrowserset )
 	fi
 	[[ $screenoff != 0 ]] && echo $screenoff > $path-screenoff || rm $path-screenoff
 	[[ $zoom != 1 ]] && echo $zoom > $path-zoom || rm $path-zoom
-	sed -i -e 's/\(-use_cursor \).*/\1"'$cursor'" \&/
-	' -e 's/\(xset dpms 0 0 \).*/\1"'$screenoff'" \&/
-	' -e 's/\(factor=\).*/\1"'$zoom'"/
+	sed -i -e 's/\(-use_cursor \).*/\1'$cursor' \&/
+	' -e 's/\(xset dpms 0 0 \).*/\1'$screenoff' \&/
+	' -e 's/\(factor=\).*/\1'$zoom'/
 	' /etc/X11/xinit/xinitrc
 	systemctl restart localbrowser
 	pushRefresh
