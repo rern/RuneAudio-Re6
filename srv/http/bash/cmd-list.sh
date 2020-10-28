@@ -51,7 +51,7 @@ if (( $? != 0 )); then # very large database
 		listalbum "$albums"
 		echo $buffer > $dirsystem/mpd-bufferoutput
 	else
-		notify '{"title":"Library","text":"Library is too large.","icon":"library","delay":-1}'
+		toolarge=1
 	fi
 fi
 ##### wav list #############################################
@@ -127,3 +127,8 @@ echo {$counts} | jq . > $dirmpd/counts
 curl -s -X POST http://127.0.0.1/pub?id=mpdupdate -d "{$counts}"
 chown -R mpd:audio $dirmpd
 rm -f $dirsystem/{updating,listing}
+
+[[ -z $toolarge ]] && exit
+
+sleep 3
+notify '{"title":"Update Library Database","text":"Library is too large.<br>Album list cannot be created.","icon":"refresh-library","delay":-1}'
