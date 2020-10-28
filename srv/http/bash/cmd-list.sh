@@ -23,7 +23,7 @@ notify() {
 album_artist_file=$( mpc -f '%album%^^[%albumartist%|%artist%]^^%file%' listall \
 	| awk -F'/[^/]*$' 'NF && !/^\^/ && !a[$0]++ {print $1}' \
 	| sort -u )$'\n'
-if [[ -z $album_artist_file ]]; then
+if (( $? != 0 )); then
 	readarray -t albums <<< "$( mpc list album )"
 	for album in "${albums[@]}"; do
 		album_artist_file+=$( mpc -f '%album%^^[%albumartist%|%artist%]^^%file%' find album "$album" \
