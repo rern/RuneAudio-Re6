@@ -163,6 +163,8 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		$( '#bluetooth' ).prop( 'checked', G.bluetooth );
 		$( '#setting-bluetooth' ).toggleClass( 'hide', !G.bluetooth );
 		$( '#wlan' ).prop( 'checked', G.wlan );
+		$( '#lcd' ).prop( 'checked', G.lcd );
+		$( '#setting-lcd' ).toggleClass( 'hide', !G.lcd );
 		$( '#hostname' ).val( G.hostname );
 		$( '#timezone' )
 			.val( G.timezone )
@@ -265,6 +267,24 @@ $( '#wlan' ).click( function() {
 	G.wlan = $( this ).prop( 'checked' );
 	notify( 'On-board Wi-Fi', G.wlan, 'wifi-3' );
 	bash( [ 'wlan', G.wlan ], resetLocal );
+} );
+$( '#lcd' ).click( function() {
+	G.lcd = $( this ).prop( 'checked' );
+	rebootText( G.lcd ? 'Enable' : 'Disable', 'LCD HAT display' );
+	notify( 'LCD HAT display', G.bluetooth, 'gear' );
+	bash( [ 'lcd', G.lcd, G.reboot.join( '\n' ) ], resetLocal );
+} );
+$( '#setting-lcd' ).click( function() {
+	info( {
+		  icon        : 'gear'
+		, title       : 'LCD HAT display'
+		, message     : 'Calibrate touch screen?'
+		, oklabel     : 'Start'
+		, ok          : function() {
+			notify( 'Calibrate touch screen ...', 'Start ...', 'gear' );
+			bash( [ 'lcdcalibrate' ] );
+		}
+	} );
 } );
 $( '#ifconfig' ).click( function( e ) {
 	codeToggle( e.target, this.id, getIfconfig );

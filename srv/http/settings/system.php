@@ -119,6 +119,15 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 
 </div>
 
+<heading>HAT Display<?=$help?></heading>
+<div class="col-l">Enable</div>
+<div class="col-r">
+	<input id="lcd" type="checkbox">
+	<div class="switchlabel" for="lcd"></div>
+	<i id="setting-lcd" class="setting fa fa-gear"></i>
+	<span class="help-block hide">For 3.5" 480x320 LCD HAT display.</span>
+</div>
+
 <heading>Environment<?=$help?></heading>
 <div class="col-l">Name</div>
 <div class="col-r">
