@@ -3,11 +3,13 @@
 dirsystem=/srv/http/data/system
 snaplatency=$( grep OPTS= /etc/default/snapclient | sed 's/.*latency=\(.*\)"/\1/' )
 [[ -z $snaplatency ]] && snaplatency=0
+lcd=$( grep -q dtoverlay=tft35a /boot/config.txt && echo true || echo false )
 
 data+='
 	  "autoplay"        : '$( [[ -e $dirsystem/autoplay ]] && echo true || echo false )'
 	, "gpio"            : '$( [[ -e $dirsystem/gpio ]] && echo true || echo false )'
 	, "hostname"        : "'$( hostname )'"
+	, "lcd"             : '$lcd'
 	, "login"           : '$( [[ -e $dirsystem/login ]] && echo true || echo false )'
 	, "mpdscribble"     : '$( systemctl -q is-active mpdscribble@mpd && echo true || echo false )'
 	, "mpdscribbleuser" : "'$( grep ^username /etc/mpdscribble.conf | cut -d' ' -f3- )'"
@@ -43,8 +45,18 @@ fi
 	, "writeusb"        : '$( grep -A1 /mnt/MPD/USB /etc/samba/smb.conf | grep -q 'read only = no' && echo true || echo false )
 xinitrc=/etc/X11/xinit/xinitrc
 if [[ -e $xinitrc ]]; then
-	file='/etc/X11/xorg.conf.d/99-raspi-rotate.conf'
-	[[ -e $file ]] && rotate=$( grep rotate $file | cut -d'"' -f4 ) || rotate=NORMAL
+	if [[ $lcd == true ]]; then
+		rotate=$( grep rotate /boot/config.txt | sed 's/.*rotate=\(.*\)/\1/' )
+		case $rotate in
+			0 )   rotate=NORMAL ;;
+			180 ) rotate=UD ;;
+			270 ) rotate=CW ;;
+			* )   rotate=CCW ;;
+		esac
+	else
+		file='/etc/X11/xorg.conf.d/99-raspi-rotate.conf'
+		[[ -e $file ]] && rotate=$( grep rotate $file | cut -d'"' -f4 ) || rotate=NORMAL
+	fi
 	data+='
 	, "cursor"          : '$( grep -q 'cursor yes' $xinitrc && echo true || echo false )'
 	, "localbrowser"    : '$( systemctl -q is-enabled localbrowser && echo true || echo false )'

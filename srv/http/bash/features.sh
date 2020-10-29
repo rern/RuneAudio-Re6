@@ -78,6 +78,11 @@ gpio )
 		rm $dirsystem/gpio
 	fi
 	;;
+lcdrotate )
+	degree=${args[1]}
+	sed -i "s/\(tft35a\).*/\1:rotate=$degree/" /boot/config.txt
+	echo Rotate GPIO LCD screen > /srv/http/data/shm/reboot
+	;;
 localbrowser )
 	if [[ ${args[1]} == true ]]; then
 		enable localbrowser localbrowser
