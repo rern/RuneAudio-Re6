@@ -39,8 +39,9 @@ fi
 if [[ -e /usr/bin/chromium ]]; then
 	file=$dirsystem/localbrowser
 	[[ -e $file-cursor ]] && sed -i -e "s/\(-use_cursor \).*/\1yes \&/" /etc/X11/xinit/xinitrc
-	[[ -e $file-rotate ]] && cp $file-rotatefile /etc/X11/xorg.conf.d/99-raspi-rotate.conf
-	[[ -e $file-screenoff ]] && sed -i 's/\(xset dpms 0 0 \).*/\1'$( cat $file-screenoff )' \&/' /etc/X11/xinit/xinitrc
+	[[ -e $file-rotatefile ]] && cp $file-rotatefile /etc/X11/xorg.conf.d/99-raspi-rotate.conf
+	screenoff=$( cat $file-screenoff )
+	[[ -e $file-screenoff ]] && sed -i 's/\(xset dpms \).*/\1'$screenoff $screenoff $screenoff' \&/' /etc/X11/xinit/xinitrc
 	[[ -e $file-zoom ]] && sed -i 's/\(factor=.*\)/\1'$( cat $file-zoom )'/' /etc/X11/xinit/xinitrc
 	if [[ ! -e $file ]]; then
 		sed -i 's/\(console=\).*/\1tty1/' /boot/cmdline.txt
@@ -192,6 +193,22 @@ else
 	config+="\
 dtparam=audio=on
 "
+fi
+
+if [[ -e $dirsystem/lcd ]]; then
+	sed -i '1 s/$/ console=ttyAMA0,115200 fbcon=map:10 fbcon=font:ProFont6x11/' /boot/cmdline.txt
+	cp {$dirsystem,/etc/X11/xorg.conf.d}/99-calibration.conf
+	config+="\
+hdmi_force_hotplug=1
+dtparam=i2c_arm=on
+dtparam=spi=on
+dtoverlay=tft35a
+"
+	echo -n "\
+i2c-bcm2708
+i2c-dev
+" >> /etc/modules-load.d/raspberrypi.conf
+	sed -i 's/fb0/fb1/' /usr/share/X11/xorg.conf.d/99-fbturbo.conf
 fi
 
 [[ -n $config ]] && echo -n "$config" >> /boot/config.txt

@@ -78,34 +78,6 @@ gpio )
 		rm $dirsystem/gpio
 	fi
 	;;
-lcdrotate )
-	degree=${args[1]}
-	file=/etc/X11/xorg.conf.d/99-calibration.conf
-	sed -i "s/\(tft35a\).*/\1:rotate=$degree/" /boot/config.txt
-	sed -i '/SwapAxes\|Invert/ d' $file
-	if [[ $degree == 0 ]]; then
-		sed -i '/EndSection/ i\
-    Option  "SwapAxes"  "0"\
-    Option  "InvertX"   "1"
-' $file
-	elif [[ $degree == 180 ]]; then
-		sed -i '/EndSection/ i\
-    Option  "SwapAxes"  "0"\
-    Option  "InvertY"   "1"
-' $file
-	elif [[ $degree == 90 ]]; then
-		sed -i '/EndSection/ i\
-    Option  "SwapAxes"  "1"
-' $file
-	elif [[ $degree == 270 ]]; then
-		sed -i '/EndSection/ i\
-    Option  "SwapAxes"  "1"\
-    Option  "InvertX"   "1"\
-    Option  "InvertY"   "1"
-' $file
-	fi
-	echo Rotate GPIO LCD screen > /srv/http/data/shm/reboot
-	;;
 localbrowser )
 	if [[ ${args[1]} == true ]]; then
 		enable localbrowser localbrowser
@@ -125,7 +97,37 @@ localbrowserset )
 	screenoff=${args[3]}
 	zoom=${args[4]}
 	path=$dirsystem/localbrowser
-	if ! grep -q dtoverlay=tft35a /boot/config.txt; then
+	if grep -q dtoverlay=tft35a /boot/config.txt; then
+		case $rotate in
+			CW )     degree=0 ;;
+			NORMAL ) degree=90 ;;
+			CCW )    degree=180 ;;
+			UD )     degree=270 ;;
+		esac
+		file=/etc/X11/xorg.conf.d/99-calibration.conf
+		sed -i "s/\(tft35a\).*/\1:rotate=$degree/" /boot/config.txt
+		sed -i '/SwapAxes\|Invert/ d' $file
+		case $degree in
+			0 )   sed -i '/EndSection/ i\
+	Option  "SwapAxes"  "0"\
+	Option  "InvertX"   "1"
+' $file ;;
+			180 ) sed -i '/EndSection/ i\
+	Option  "SwapAxes"  "0"\
+	Option  "InvertY"   "1"
+' $file
+			90 )  sed -i '/EndSection/ i\
+	Option  "SwapAxes"  "1"
+' $file
+			270 ) sed -i '/EndSection/ i\
+	Option  "SwapAxes"  "1"\
+	Option  "InvertX"   "1"\
+	Option  "InvertY"   "1"
+' $file
+		fi
+		echo Rotate GPIO LCD screen > /srv/http/data/shm/reboot
+		[[ $degree == 90 ]] && rm -f $path-rotatedegree || echo $degree > $path-rotatedegree
+	else
 		rotateconf=/etc/X11/xorg.conf.d/99-raspi-rotate.conf
 		if [[ $rotate == NORMAL ]]; then
 			rm -f $rotateconf $path-rotatefile
@@ -150,7 +152,7 @@ localbrowserset )
 	[[ $screenoff != 0 ]] && echo $screenoff > $path-screenoff || rm $path-screenoff
 	[[ $zoom != 1 ]] && echo $zoom > $path-zoom || rm $path-zoom
 	sed -i -e 's/\(-use_cursor \).*/\1'$cursor' \&/
-	' -e 's/\(xset dpms 0 0 \).*/\1'$screenoff' \&/
+	' -e 's/\(xset dpms \).*/\1'$screenoff $screenoff $screenoff' \&/
 	' -e 's/\(factor=\).*/\1'$zoom'/
 	' /etc/X11/xinit/xinitrc
 	systemctl restart localbrowser

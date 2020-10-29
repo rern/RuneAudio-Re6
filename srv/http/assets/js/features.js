@@ -221,12 +221,6 @@ $( '#setting-localbrowser' ).click( function( e ) {
 			G.zoom      = zoom < 2 ? ( zoom < 0.5 ? 0.5 : zoom ) : 2;
 			if ( cursor == G.cursor && rotate == G.rotate && screenoff == G.screenoff && zoom == G.zoom ) return
 			
-			if ( G.lcd && rotate != G.rotate ) {
-				var deg = { NORMAL: 90, CCW: 180, UD: 270, CW: 0 }
-				bash( [ 'lcdrotate', deg[ rotate ] ] );
-				if ( cursor == G.cursor && screenoff == G.screenoff && zoom == G.zoom ) return
-			}
-			
 			G.cursor    = cursor;
 			G.rotate    = rotate;
 			G.screenoff = screenoff;
