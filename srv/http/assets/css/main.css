@@ -2695,3 +2695,9 @@ li.active .li2 bl {
 		min-width: auto;
 	}
 }
+/* 3.5" lcd */
+@media( max-height: 480px ) and ( max-width: 320px ) {
+	#page-playback { padding-top: 40px !important; }
+	#sampling { display: none; }
+	#divcover { max-width: 90vw !important; }
+}
