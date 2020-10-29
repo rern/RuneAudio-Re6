@@ -111,7 +111,7 @@ i2c-dev
 	fi
 	;;
 lcdcalibrate )
-	sed -i -e 's/^#//' -e '/^chromium/ s/^/#/' /etc/X11/xinit/xinitrc
+	touch /srv/http/data/shm/calibrate
 	systemctl restart localbrowser
 	pushRefresh
 	;;
