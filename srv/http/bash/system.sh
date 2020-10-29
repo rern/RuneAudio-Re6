@@ -112,6 +112,7 @@ i2c-dev
 	;;
 lcdcalibrate )
 	touch /srv/http/data/shm/calibrate
+	sed -i 's/\(Option\s*"Calibration"\s*\).*/\1"3932 300 294 3801"/' /etc/X11/xorg.conf.d/99-calibration.conf
 	systemctl restart localbrowser
 	pushRefresh
 	;;

@@ -278,10 +278,10 @@ $( '#setting-lcd' ).click( function() {
 	info( {
 		  icon        : 'gear'
 		, title       : 'LCD HAT display'
-		, message     : 'Calibrate touch screen?'
+		, message     : 'Calibrate touchscreen?'
 		, oklabel     : 'Start'
 		, ok          : function() {
-			notify( 'Calibrate touch screen ...', 'Start ...', 'gear' );
+			notify( 'Calibrate Touchscreen ...', 'Start ...', 'gear' );
 			bash( [ 'lcdcalibrate' ] );
 		}
 	} );
