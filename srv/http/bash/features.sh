@@ -80,7 +80,30 @@ gpio )
 	;;
 lcdrotate )
 	degree=${args[1]}
+	file=/etc/X11/xorg.conf.d/99-calibration.conf
 	sed -i "s/\(tft35a\).*/\1:rotate=$degree/" /boot/config.txt
+	sed -i '/SwapAxes\|Invert/ d' $file
+	if [[ $degree == 0 ]]; then
+		sed -i '/EndSection/ i\
+    Option  "SwapAxes"  "0"\
+    Option  "InvertX"   "1"
+' $file
+	elif [[ $degree == 180 ]]; then
+		sed -i '/EndSection/ i\
+    Option  "SwapAxes"  "0"\
+    Option  "InvertY"   "1"
+' $file
+	elif [[ $degree == 90 ]]; then
+		sed -i '/EndSection/ i\
+    Option  "SwapAxes"  "1"
+' $file
+	elif [[ $degree == 270 ]]; then
+		sed -i '/EndSection/ i\
+    Option  "SwapAxes"  "1"\
+    Option  "InvertX"   "1"\
+    Option  "InvertY"   "1"
+' $file
+	fi
 	echo Rotate GPIO LCD screen > /srv/http/data/shm/reboot
 	;;
 localbrowser )

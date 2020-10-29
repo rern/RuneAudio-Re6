@@ -48,10 +48,10 @@ if [[ -e $xinitrc ]]; then
 	if [[ $lcd == true ]]; then
 		rotate=$( grep rotate /boot/config.txt | sed 's/.*rotate=\(.*\)/\1/' )
 		case $rotate in
-			0 )   rotate=NORMAL ;;
-			180 ) rotate=UD ;;
-			270 ) rotate=CW ;;
-			* )   rotate=CCW ;;
+			0 )   rotate=CW ;;
+			90 )  rotate=NORMAL ;;
+			180 ) rotate=CCW ;;
+			270 ) rotate=UD ;;
 		esac
 	else
 		file='/etc/X11/xorg.conf.d/99-raspi-rotate.conf'
