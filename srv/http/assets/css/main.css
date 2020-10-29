@@ -2496,6 +2496,12 @@ li.active .li2 bl {
 		line-height: 35px;
 	}
 }
+@media( max-width: 700px ) {
+	#pl-count .title { display: none; }
+}
+@media( max-width: 700px ) {
+	#pl-count, #pl-path { display: none; }
+}
 /* portrait */
 @media( orientation: portrait ) and ( max-height: 768px ) {
 	#page-playback.barshidden {
@@ -2570,10 +2576,6 @@ li.active .li2 bl {
 	#volume-knob {
 		order: 3;
 		-webkit-order: 3;
-	}
-	#pl-count,
-	#pl-path {
-		display: none;
 	}
 }
 @media( orientation: portrait ) and ( max-width: 540px ) {
