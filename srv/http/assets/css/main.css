@@ -2686,6 +2686,7 @@ li.active .li2 bl {
 	.infocol {
 		width: 140px;
 	}
+	n { display: none }
 }
 @media( orientation: portrait ) and ( max-width: 280px ) {
 	#sampling {

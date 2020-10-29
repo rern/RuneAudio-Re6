@@ -277,10 +277,10 @@ $( '#displaylibrary, #displaylibrary2' ).click( function() {
 	} );
 } );
 var chkplayback = {
-	  bars         : '_Top-Bottom bars'
-	, barsalways   : 'Bars on small screen'
+	  bars         : '_Top-Bottom <n>bars</n>'
+	, barsalways   : 'Bars always on'
 	, time         : '_Time'
-	, radioelapsed : 'WebRadio elapsed'
+	, radioelapsed : 'WebRadio time'
 	, cover        : '_Cover art'
 	, coversmall   : 'Small cover art'
 	, progressbar  : '_Progress bar'
