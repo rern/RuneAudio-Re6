@@ -200,11 +200,13 @@ $( '#setting-localbrowser' ).click( function( e ) {
 		  icon        : 'chromium'
 		, title       : 'Browser on RPi'
 		, content     : localbrowserinfo
+		, footer      : ( G.lcd ? '(Reboot required for rotate)' : '' )
 		, preshow     : function() {
 			$( '#infoTextBox1' ).val( G.zoom );
 			$( '#infoTextBox' ).val( G.screenoff );
 			$( 'input[name=inforadio]' ).val( [ G.rotate ] );
 			$( '#infoCheckBox input:eq( 0 )' ).prop( 'checked', G.cursor );
+			if ( G.lcd ) $( '#infoRadio' ).after( '<gr>(Reboot required for rotate)</gr>' );
 		}
 		, buttonlabel : '<i class="fa fa-refresh"></i>Refresh'
 		, buttoncolor : '#de810e'
