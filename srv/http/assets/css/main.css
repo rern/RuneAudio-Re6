@@ -636,6 +636,12 @@ svg path.st1 {
 #page-playback {
 	padding: 120px 0 60px;
 }
+#page-library,
+#page-playlist	{
+	width: 100%;
+	height: 100%;
+	overflow-y: auto;
+}
 /* ---------------------- info ----------------------*/
 #artist, #song, #album {
 	display: table; /* allow get width */
@@ -2456,6 +2462,12 @@ li.active .li2 bl {
 		display: none;
 	}
 }
+@media( max-width: 700px ) {
+	#pl-count .title { display: none; }
+}
+@media( max-width: 700px ) {
+	#pl-count, #pl-path { display: none; }
+}
 /* landscape */
 @media( orientation: landscape ) and ( max-height: 767px ) {
 	.licover {
@@ -2495,12 +2507,6 @@ li.active .li2 bl {
 		height: 35px;
 		line-height: 35px;
 	}
-}
-@media( max-width: 700px ) {
-	#pl-count .title { display: none; }
-}
-@media( max-width: 700px ) {
-	#pl-count, #pl-path { display: none; }
 }
 /* portrait */
 @media( orientation: portrait ) and ( max-height: 768px ) {
