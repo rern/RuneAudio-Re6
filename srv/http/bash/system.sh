@@ -104,7 +104,7 @@ i2c-dev
 		sed -i 's/fb0/fb1/' /usr/share/X11/xorg.conf.d/99-fbturbo.conf
 	else
 		sed -i 's/ console=ttyAMA0.*ProFont6x11// d' /boot/cmdline.txt
-		sed -i 'hotplug/,/tft35a/ d' /boot/config.txt
+		sed -i '/i2c_arm=on/,/tft35a/ d' /boot/config.txt
 		sed -i '/i2c-bcm2708\|i2c-dev/ d' /etc/modules-load.d/raspberrypi.conf
 		sed -i 's/fb1/fb0/' /usr/share/X11/xorg.conf.d/99-fbturbo.conf
 	fi
