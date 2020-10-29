@@ -22,6 +22,55 @@ disable() {
 	rm $dirsystem/$2
 	pushRefresh
 }
+rotate() {
+#	echo $1 > /srv/http/data/shm/lcd
+	rotate=$1
+	if grep -q dtoverlay=tft35a /boot/config.txt; then
+		case $rotate in
+			CW )     degree=0 ;;
+			NORMAL ) degree=90 ;;
+			CCW )    degree=180 ;;
+			UD )     degree=270 ;;
+		esac
+		file=/etc/X11/xorg.conf.d/99-calibration.conf
+		sed -i "s/\(tft35a\).*/\1:rotate=$degree/" /boot/config.txt
+		sed -i '/SwapAxes\|Invert/ d' $file
+		case $degree in
+			0 )   sed -i '/EndSection/ i\
+	Option  "SwapAxes"  "0"\
+	Option  "InvertX"   "1"
+' $file ;;
+			180 ) sed -i '/EndSection/ i\
+	Option  "SwapAxes"  "0"\
+	Option  "InvertY"   "1"
+' $file ;;
+			90 )  sed -i '/EndSection/ i\
+	Option  "SwapAxes"  "1"
+' $file ;;
+			270 ) sed -i '/EndSection/ i\
+	Option  "SwapAxes"  "1"\
+	Option  "InvertX"   "1"\
+	Option  "InvertY"   "1"
+' $file ;;
+		esac
+		echo Rotate GPIO LCD screen > /srv/http/data/shm/reboot
+		[[ $degree == 90 ]] && rm -f $path-rotatedegree || echo $degree > $path-rotatedegree
+	else
+		rotateconf=/etc/X11/xorg.conf.d/99-raspi-rotate.conf
+		if [[ $rotate == NORMAL ]]; then
+			rm -f $rotateconf $path-rotatefile
+		else
+			case $rotate in
+				CW )  matrix='0 1 0 -1 0 1 0 0 1';;
+				CCW ) matrix='0 -1 1 1 0 0 0 0 1';;
+				UD )  matrix='-1 0 1 0 -1 1 0 0 1';;
+			esac
+			sed -e "s/ROTATION_SETTING/$rotate/
+			" -e "s/MATRIX_SETTING/$matrix/" /etc/X11/xinit/rotateconf | tee $rotateconf $path-rotatefile
+		fi
+		ln -sf /srv/http/assets/img/{$rotate,splash}.png
+	fi
+}
 
 case ${args[0]} in
 
@@ -92,69 +141,28 @@ localbrowser )
 	pushRefresh
 	;;
 localbrowserset )
+	echo "${args[@]}" > /srv/http/data/shm/lcd
 	rotate=${args[1]}
 	cursor=${args[2]}
 	screenoff=${args[3]}
 	zoom=${args[4]}
 	path=$dirsystem/localbrowser
-	if grep -q dtoverlay=tft35a /boot/config.txt; then
-		case $rotate in
-			CW )     degree=0 ;;
-			NORMAL ) degree=90 ;;
-			CCW )    degree=180 ;;
-			UD )     degree=270 ;;
-		esac
-		file=/etc/X11/xorg.conf.d/99-calibration.conf
-		sed -i "s/\(tft35a\).*/\1:rotate=$degree/" /boot/config.txt
-		sed -i '/SwapAxes\|Invert/ d' $file
-		case $degree in
-			0 )   sed -i '/EndSection/ i\
-	Option  "SwapAxes"  "0"\
-	Option  "InvertX"   "1"
-' $file ;;
-			180 ) sed -i '/EndSection/ i\
-	Option  "SwapAxes"  "0"\
-	Option  "InvertY"   "1"
-' $file
-			90 )  sed -i '/EndSection/ i\
-	Option  "SwapAxes"  "1"
-' $file
-			270 ) sed -i '/EndSection/ i\
-	Option  "SwapAxes"  "1"\
-	Option  "InvertX"   "1"\
-	Option  "InvertY"   "1"
-' $file
-		fi
-		echo Rotate GPIO LCD screen > /srv/http/data/shm/reboot
-		[[ $degree == 90 ]] && rm -f $path-rotatedegree || echo $degree > $path-rotatedegree
-	else
-		rotateconf=/etc/X11/xorg.conf.d/99-raspi-rotate.conf
-		if [[ $rotate == NORMAL ]]; then
-			rm -f $rotateconf $path-rotatefile
-		else
-			case $rotate in
-				CW )  matrix='0 1 0 -1 0 1 0 0 1';;
-				CCW ) matrix='0 -1 1 1 0 0 0 0 1';;
-				UD )  matrix='-1 0 1 0 -1 1 0 0 1';;
-			esac
-			sed -e "s/ROTATION_SETTING/$rotate/
-			" -e "s/MATRIX_SETTING/$matrix/" /etc/X11/xinit/rotateconf | tee $rotateconf $path-rotatefile
-		fi
-		ln -sf /srv/http/assets/img/{$rotate,splash}.png
-	fi
+	
+	rotate $rotate
+		
 	if [[ $cursor == true ]]; then
 		touch $path-cursor
 		cursor=yes
 	else
-		rm $path-cursor
+		rm -f $path-cursor
 		cursor=no
 	fi
 	[[ $screenoff != 0 ]] && echo $screenoff > $path-screenoff || rm $path-screenoff
 	[[ $zoom != 1 ]] && echo $zoom > $path-zoom || rm $path-zoom
 	sed -i -e 's/\(-use_cursor \).*/\1'$cursor' \&/
-	' -e 's/\(xset dpms \).*/\1'$screenoff $screenoff $screenoff' \&/
-	' -e 's/\(factor=\).*/\1'$zoom'/
-	' /etc/X11/xinit/xinitrc
+' -e "s/\(xset dpms \).*/\1$screenoff $screenoff $screenoff \&/
+" -e 's/\(factor=\).*/\1'$zoom'/
+' /etc/X11/xinit/xinitrc
 	systemctl restart localbrowser
 	pushRefresh
 	;;
