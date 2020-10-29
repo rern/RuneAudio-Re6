@@ -1342,8 +1342,13 @@ function resetOrientation( file, ori, callback ) {
 	}
 	reader.readAsDataURL( file );
 }
-function scrollLongText() {
+function scrollLongText() {	
 	var $el = $( '#artist, #song, #album' );
+	if ( G.localhost && G.status.lcd ) {
+		$el.addClass( 'scrollellipse' );
+		return
+	}
+	
 	var wW = window.innerWidth;
 	var tWmax = 0;
 	$el.each( function() {
@@ -1358,7 +1363,9 @@ function scrollLongText() {
 				.removeAttr( 'style' ); // fix - iOS needs whole style removed
 		}
 	} );
-	$el.css( 'visibility', 'visible' ); // from initial hidden
+	$el
+		.removeClass( 'scrollellipse' )
+		.css( 'visibility', 'visible' ); // from initial hidden
 	if ( !$( '.scrollleft' ).length ) return
 	
 	// varied width only when scaled

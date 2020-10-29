@@ -712,6 +712,14 @@ svg path.st1 {
 	position: relative;
 	overflow: hidden;
 }
+.scrollellipse {
+	display: block !important;
+	padding: 0 10px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	visibility: visible !important;
+}
 .scrollleft {
 	backface-visibility : hidden; /* for less flickering */
 }
@@ -2460,8 +2468,8 @@ li.active .li2 bl {
 @media( max-width: 700px ) {
 	#pl-count .title { display: none; }
 }
-@media( max-width: 700px ) {
-	#pl-count, #pl-path { display: none; }
+@media( max-width: 500px ) {
+	#pl-path { display: none; }
 }
 /* landscape */
 @media( orientation: landscape ) and ( max-height: 767px ) {
