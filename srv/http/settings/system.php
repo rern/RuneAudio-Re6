@@ -125,7 +125,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<input id="lcd" type="checkbox">
 	<div class="switchlabel" for="lcd"></div>
 	<i id="setting-lcd" class="setting fa fa-gear"></i>
-	<span class="help-block hide">For GPIO 3.5" 480x320 LCD display.</span>
+	<span class="help-block hide">For GPIO 3.5" 480x320 LCD display only.</span>
 </div>
 
 <heading>Environment<?=$help?></heading>
