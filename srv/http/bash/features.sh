@@ -125,19 +125,21 @@ localbrowserset )
 	screenoff=${args[3]}
 	zoom=${args[4]}
 	path=$dirsystem/localbrowser
-	rotateconf=/etc/X11/xorg.conf.d/99-raspi-rotate.conf
-	if [[ $rotate == NORMAL ]]; then
-		rm -f $rotateconf $path-rotatefile
-	else
-		case $rotate in
-			CW )  matrix='0 1 0 -1 0 1 0 0 1';;
-			CCW ) matrix='0 -1 1 1 0 0 0 0 1';;
-			UD )  matrix='-1 0 1 0 -1 1 0 0 1';;
-		esac
-		sed -e "s/ROTATION_SETTING/$rotate/
-		" -e "s/MATRIX_SETTING/$matrix/" /etc/X11/xinit/rotateconf | tee $rotateconf $path-rotatefile
+	if ! grep -q dtoverlay=tft35a /boot/config.txt; then
+		rotateconf=/etc/X11/xorg.conf.d/99-raspi-rotate.conf
+		if [[ $rotate == NORMAL ]]; then
+			rm -f $rotateconf $path-rotatefile
+		else
+			case $rotate in
+				CW )  matrix='0 1 0 -1 0 1 0 0 1';;
+				CCW ) matrix='0 -1 1 1 0 0 0 0 1';;
+				UD )  matrix='-1 0 1 0 -1 1 0 0 1';;
+			esac
+			sed -e "s/ROTATION_SETTING/$rotate/
+			" -e "s/MATRIX_SETTING/$matrix/" /etc/X11/xinit/rotateconf | tee $rotateconf $path-rotatefile
+		fi
+		ln -sf /srv/http/assets/img/{$rotate,splash}.png
 	fi
-	ln -sf /srv/http/assets/img/{$rotate,splash}.png
 	if [[ $cursor == true ]]; then
 		touch $path-cursor
 		cursor=yes
