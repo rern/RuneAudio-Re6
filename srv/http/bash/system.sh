@@ -69,7 +69,7 @@ i2smodule )
 	aplayname=${args[1]}
 	output=${args[2]}
 	reboot=${args[3]}
-	dtoverlay=$( grep 'dtparam=krnbt=on\|dtoverlay=gpio\|dtoverlay=sdtweak,poll_once' /boot/config.txt )
+	dtoverlay=$( grep 'dtparam=i2c_arm=on\|dtparam=krnbt=on\|dtparam=spi=on\|dtoverlay=gpio\|dtoverlay=sdtweak,poll_once\|dtoverlay=tft35a\|hdmi_force_hotplug=1' /boot/config.txt )
 	sed -i '/dtparam=\|dtoverlay=\|^$/ d' /boot/config.txt
 	[[ -n $dtoverlay ]] && sed -i '$ r /dev/stdin' /boot/config.txt <<< "$dtoverlay"
 	if [[ ${aplayname:0:7} != bcm2835 ]]; then
