@@ -36,17 +36,25 @@ rotate() {
 		opt=$( grep -v 'SwapAxes\|Invert\|EndSection\|^$' $file )
 		case $degree in
 			0 )   opt+='
-    Option  "SwapAxes"  "0"
-    Option  "InvertX"   "1"';;
+    Option  "Calibration"  "268 3880 227 3936"
+    Option  "SwapAxes"     "0"
+    Option  "InvertX"      "1"'
+				;;
 			180 ) opt+='
-    Option  "SwapAxes"  "0"
-    Option  "InvertY"   "1"';;
+    Option  "Calibration"  "3880 268 3936 227"
+    Option  "SwapAxes"     "0"
+    Option  "InvertY"      "1"'
+				;;
 			90 )  opt+='
-    Option  "SwapAxes"  "1"';;
+    Option  "Calibration"  "3936 227 268 3880"
+    Option  "SwapAxes"     "1"'
+				;;
 			270 ) opt+='
-    Option  "SwapAxes"  "1"
-    Option  "InvertX"   "1"
-    Option  "InvertY"   "1"';;
+    Option  "Calibration"  "227 3936 3880 268"
+    Option  "SwapAxes"     "1"
+    Option  "InvertX"      "1"
+    Option  "InvertY"      "1"'
+				;;
 		esac
 		opt+='
 EndSection'
