@@ -23,7 +23,6 @@ disable() {
 	pushRefresh
 }
 rotate() {
-#	echo $1 > /srv/http/data/shm/lcd
 	rotate=$1
 	if grep -q dtoverlay=tft35a /boot/config.txt; then
 		case $rotate in
@@ -34,25 +33,24 @@ rotate() {
 		esac
 		file=/etc/X11/xorg.conf.d/99-calibration.conf
 		sed -i "s/\(tft35a\).*/\1:rotate=$degree/" /boot/config.txt
-		sed -i '/SwapAxes\|Invert/ d' $file
+		opt=$( grep -v 'SwapAxes\|Invert\|EndSection\|^$' $file )
 		case $degree in
-			0 )   sed -i '/EndSection/ i\
-	Option  "SwapAxes"  "0"\
-	Option  "InvertX"   "1"
-' $file ;;
-			180 ) sed -i '/EndSection/ i\
-	Option  "SwapAxes"  "0"\
-	Option  "InvertY"   "1"
-' $file ;;
-			90 )  sed -i '/EndSection/ i\
-	Option  "SwapAxes"  "1"
-' $file ;;
-			270 ) sed -i '/EndSection/ i\
-	Option  "SwapAxes"  "1"\
-	Option  "InvertX"   "1"\
-	Option  "InvertY"   "1"
-' $file ;;
+			0 )   opt+='
+    Option  "SwapAxes"  "0"
+    Option  "InvertX"   "1"';;
+			180 ) opt+='
+    Option  "SwapAxes"  "0"
+    Option  "InvertY"   "1"';;
+			90 )  opt+='
+    Option  "SwapAxes"  "1"';;
+			270 ) opt+='
+    Option  "SwapAxes"  "1"
+    Option  "InvertX"   "1"
+    Option  "InvertY"   "1"';;
 		esac
+		opt+='
+EndSection'
+		echo "$opt" > $file
 		echo Rotate GPIO LCD screen > /srv/http/data/shm/reboot
 		[[ $degree == 90 ]] && rm -f $path-rotatedegree || echo $degree > $path-rotatedegree
 	else
@@ -70,6 +68,27 @@ rotate() {
 		fi
 		ln -sf /srv/http/assets/img/{$rotate,splash}.png
 	fi
+}
+screenoff() {
+	sec=$1
+	if [[ $sec == 0 ]]; then
+		sed -i -e '/xset/ d
+' -e '/export DISPLAY/ a\
+xset dpms 0 0 0\
+xset s off\
+xset -dpms
+' /etc/X11/xinit/xinitrc
+		DISPLAY=:0 xset dpms 0 0 0
+		rm $path-screenoff
+	else
+		sed -i -e '/xset/ d
+' -e "/export DISPLAY/ a\
+xset dpms $sec $sec $sec
+" /etc/X11/xinit/xinitrc
+		DISPLAY=:0 xset dpms $sec $sec $sec
+		echo $sec > $path-screenoff
+	fi
+	pushRefresh
 }
 
 case ${args[0]} in
@@ -141,7 +160,6 @@ localbrowser )
 	pushRefresh
 	;;
 localbrowserset )
-	echo "${args[@]}" > /srv/http/data/shm/lcd
 	rotate=${args[1]}
 	cursor=${args[2]}
 	screenoff=${args[3]}
@@ -149,6 +167,7 @@ localbrowserset )
 	path=$dirsystem/localbrowser
 	
 	rotate $rotate
+	screenoff $screenoff
 		
 	if [[ $cursor == true ]]; then
 		touch $path-cursor
@@ -157,11 +176,9 @@ localbrowserset )
 		rm -f $path-cursor
 		cursor=no
 	fi
-	[[ $screenoff != 0 ]] && echo $screenoff > $path-screenoff || rm $path-screenoff
 	[[ $zoom != 1 ]] && echo $zoom > $path-zoom || rm $path-zoom
 	sed -i -e 's/\(-use_cursor \).*/\1'$cursor' \&/
-' -e "s/\(xset dpms \).*/\1$screenoff $screenoff $screenoff \&/
-" -e 's/\(factor=\).*/\1'$zoom'/
+' -e 's/\(factor=\).*/\1'$zoom'/
 ' /etc/X11/xinit/xinitrc
 	systemctl restart localbrowser
 	pushRefresh
