@@ -33,7 +33,7 @@ rotate() {
 		esac
 		file=/etc/X11/xorg.conf.d/99-calibration.conf
 		sed -i "s/\(tft35a\).*/\1:rotate=$degree/" /boot/config.txt
-		opt=$( grep -v 'SwapAxes\|Invert\|EndSection\|^$' $file )
+		opt=$( grep -v 'Option\|EndSection\|^$' $file )
 		case $degree in
 			0 )   opt+='
     Option  "Calibration"  "268 3880 227 3936"
