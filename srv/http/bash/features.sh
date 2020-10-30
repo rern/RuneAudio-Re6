@@ -33,26 +33,20 @@ rotate() {
 		esac
 		file=/etc/X11/xorg.conf.d/99-calibration.conf
 		sed -i "s/\(tft35a\).*/\1:rotate=$degree/" /boot/config.txt
-		opt=$( grep -v 'Option\|EndSection\|^$' $file )
+		opt=$( grep -v 'SwapAxes\|Invert\|EndSection\|^$' $file )
 		case $degree in
-			0 )   opt+='
-    Option  "Calibration"  "268 3880 227 3936"
-    Option  "SwapAxes"     "0"
-    Option  "InvertX"      "1"'
+			0 )   opt+=
 				;;
 			180 ) opt+='
-    Option  "Calibration"  "3880 268 3936 227"
-    Option  "SwapAxes"     "0"
+    Option  "InvertX"      "1"
     Option  "InvertY"      "1"'
 				;;
 			90 )  opt+='
-    Option  "Calibration"  "3936 227 268 3880"
-    Option  "SwapAxes"     "1"'
+    Option  "SwapAxes"     "1"
+    Option  "InvertX"      "1"'
 				;;
 			270 ) opt+='
-    Option  "Calibration"  "227 3936 3880 268"
     Option  "SwapAxes"     "1"
-    Option  "InvertX"      "1"
     Option  "InvertY"      "1"'
 				;;
 		esac
@@ -60,7 +54,7 @@ rotate() {
 EndSection'
 		echo "$opt" > $file
 		echo Rotate GPIO LCD screen > /srv/http/data/shm/reboot
-		[[ $degree == 90 ]] && rm -f $path-rotatedegree || echo $degree > $path-rotatedegree
+		[[ $degree == 0 ]] && rm -f $path-rotatedegree || echo $degree > $path-rotatedegree
 	else
 		rotateconf=/etc/X11/xorg.conf.d/99-raspi-rotate.conf
 		if [[ $rotate == NORMAL ]]; then

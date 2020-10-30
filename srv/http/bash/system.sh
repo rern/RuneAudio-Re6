@@ -115,16 +115,8 @@ i2c-dev
 	fi
 	;;
 lcdcalibrate )
-	# reset to default before calibrate
-	degree=$( grep tft35a /boot/config.txt | cut -d= -f3 )
-	case degree in
-		0 )   value='268 3880 227 3936'
-		90 )  value='3880 268 3936 227'
-		180 ) value='3936 227 268 3880'
-		270 ) value='227 3936 3880 268'
-	esac
-	sed -i "s/\(Calibration\"  \"\).*/\1$value\"/" /etc/X11/xorg.conf.d/99-calibration.conf
 	touch /srv/http/data/shm/calibrate
+	sed -i 's/\(Option\s*"Calibration"\s*\).*/\1"3932 300 294 3801"/' /etc/X11/xorg.conf.d/99-calibration.conf
 	systemctl restart localbrowser
 	pushRefresh
 	;;
