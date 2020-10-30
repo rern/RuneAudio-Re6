@@ -224,7 +224,14 @@ $( '#setting-localbrowser' ).click( function( e ) {
 			if ( screenoff != G.screenoff && cursor == G.cursor && rotate == G.rotate && zoom == G.zoom ) {
 				G.screenoff = screenoff;
 				notify( 'Chromium - Browser on RPi', 'Change ...', 'chromium blink' );
-				bash( [ 'localbrowserscreenoff', ( screenoff * 60 ) ], resetLocal );
+				bash( [ 'screenoff', ( screenoff * 60 ) ], resetLocal );
+				return
+			}
+			
+			if ( rotate != G.rotate && cursor == G.cursor && screenoff == G.screenoff && zoom == G.zoom ) {
+				G.rotate = rotate;
+				notify( 'Chromium - Browser on RPi', 'Change ...', 'chromium blink' );
+				bash( [ 'rotate', rotate ], resetLocal );
 				return
 			}
 			
