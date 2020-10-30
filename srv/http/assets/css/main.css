@@ -2438,12 +2438,11 @@ li.active .li2 bl {
 	#page-playback.barsalways { --scale: 0.65 !important }
 }
 @media( orientation: landscape ) and ( max-height: 320px ) {
-	#page-playback.barsalways { --scale: 0.6 !important; padding: 80px 0 80px !important; }
+	#page-playback { --scale: 0.6; padding: 80px 0 80px !important; }
 	#sampling { display: none; }
 }
 @media( orientation: landscape ) and ( max-height: 300px ) {
-	#page-playback { --scale: 0.65 }
-	#page-playback.barsalways { --scale: 0.55 !important }
+	#page-playback { --scale: 0.55 }
 }
 
 @media( max-height: 768px ) {
@@ -2698,7 +2697,6 @@ li.active .li2 bl {
 }
 /* 3.5" lcd */
 @media( max-height: 480px ) and ( max-width: 320px ) {
-	#page-playback { padding-top: 40px !important; }
+	#page-playback { padding-top: 30px !important; }
 	#sampling { display: none; }
-	#divcover { max-width: 90vw !important; }
 }
