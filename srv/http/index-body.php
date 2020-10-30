@@ -91,10 +91,12 @@ if ( count( $files ) ) {
 }
 // context menus
 function menuli( $command, $icon, $label, $type = '' ) {
-	$class = in_array( $icon, [ 'refresh-library', 'tag', 'minus-circle', 'lastfm' ] ) ? $icon : '';
 	if ( $command === 'similar' ) {
 		$class.= ' sub';
 		$submenu = '<i class="fa fa-play-plus submenu" data-cmd="similar"></i>';
+	} else {
+		$class = in_array( $icon, [ 'refresh-library', 'tag', 'minus-circle', 'lastfm' ] ) ? $icon : '';
+		$submenu = '';
 	}
 	return '<a data-cmd="'.$command.'" class="'.$class.'"><i class="fa fa-'.$icon.'"></i>'.$label.'</a>'.$submenu;
 }
