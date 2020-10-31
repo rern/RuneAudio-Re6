@@ -702,7 +702,7 @@ $( '#coverT, #timeT' ).tap( function() {
 	
 	$( '.covermap, .guide' ).addClass( 'mapshow' );
 	$( '.guide' ).toggleClass( 'hide', !G.status.playlistlength && G.status.mpd );
-	$( '#guide-artist, #guide-album' ).toggleClass( 'hide', G.status.webradio || !G.status.playlistlength );
+	$( '#guide-artist, #guide-bio, #guide-album' ).toggleClass( 'hide', G.status.webradio || !G.status.playlistlength );
 	$( '#volume-text' ).addClass( 'hide' );
 	if ( !G.display.cover ) $( '.timemap' ).addClass( 'mapshow' );
 	if ( !G.display.volumenone && G.display.volume ) $( '.volmap' ).addClass( 'mapshow' );

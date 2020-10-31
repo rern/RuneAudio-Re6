@@ -630,7 +630,7 @@ svg path.st1 {
 	user-select: none;           /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 .page {
-	height: 100%;
+	min-height: 100%;
 	touch-action: manipulation; /* fix: Unable to preventDefault inside passive event listener */
 }
 #page-playback {
@@ -2687,14 +2687,23 @@ li.active .li2 bl {
 }
 /* 3.5" lcd */
 @media( max-width: 480px ) and ( max-height: 320px ) {
-	#page-playback { --scale: 0.6; padding: 30px 0 0 !important; }
+	#page-playback {
+		--scale: 0.6;
+		max-height: 100%;
+		padding: 30px 0 0 !important;
+	}
 	#sampling { display: none; }
 	#coverart-block,
 	#divcover { max-width: 120vh; }
+	#coverart-block { margin-bottom : 0; }
 }
 @media( max-height: 480px ) and ( max-width: 320px ) {
-	#page-playback { padding-top: 30px !important; }
-	#sampling { display: none; }
-	#page-library,
-	#page-playlist { overflow-y: auto }
+	#page-playback {
+		max-height: 100%;
+		padding-top: 30px !important;		
+	}
+	#sampling,
+	#time-knob,
+	#volume-knob { display: none; }
+	#coverart-block { margin-bottom : 0; }
 }
