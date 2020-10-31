@@ -196,6 +196,12 @@ mpdscribbleset )
 	fi
 	pushRefresh
 	;;
+rotate )
+	rotate ${args[1]}
+	;;
+rotatelcd )
+	rotatelcd ${args[1]}
+	;;
 samba )
 	if [[ ${args[1]} == true ]]; then
 		systemctl enable --now wsdd smb

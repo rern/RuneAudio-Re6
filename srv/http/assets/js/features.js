@@ -231,7 +231,12 @@ $( '#setting-localbrowser' ).click( function( e ) {
 			if ( rotate != G.rotate && cursor == G.cursor && screenoff == G.screenoff && zoom == G.zoom ) {
 				G.rotate = rotate;
 				notify( 'Chromium - Browser on RPi', 'Change ...', 'chromium blink' );
-				bash( [ 'rotate', rotate ], resetLocal );
+				if ( G.lcd ) {
+					var degree = { CW: 0, NORMAL: 90, CCW: 180, UD: 270 }
+					bash( [ 'rotatelcd', degree[ rotate ] ], resetLocal );
+				} else {
+					bash( [ 'rotate', rotate ], resetLocal );
+				}
 				return
 			}
 			
