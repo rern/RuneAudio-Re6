@@ -133,7 +133,6 @@ body {
 	line-height: 1.42857143;
 	color: var( --cw );
 	background-color: #000;
-	overflow: hidden;
 	overscroll-behavior: none; /* disable android pull-down refresh */
 }
 .hide{ display: none !important; }
