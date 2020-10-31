@@ -66,7 +66,7 @@
                     cont.mm = function(e) {
                         if (pushed) {
                             (scroller = el.scroller||el).scrollLeft -=
-                                newScrollX = (- lastClientX + (lastClientX=e.clientX));
+                                newScrollX = (0);
                             scroller.scrollTop -=
                                 newScrollY = (- lastClientY + (lastClientY=e.clientY));
                             if (el == _document.body) {
