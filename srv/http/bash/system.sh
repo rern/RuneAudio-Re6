@@ -116,9 +116,9 @@ i2c-dev
 	;;
 lcdcalibrate )
 	touch /srv/http/data/shm/calibrate
-	sed -i 's/\(Option\s*"Calibration"\s*\).*/\1"3932 300 294 3801"/' /etc/X11/xorg.conf.d/99-calibration.conf
+	degree=$( grep rotate /boot/config.txt | cut -d= -f3 )
+	cp -f /etc/X11/{lcd$degree,xorg.conf.d/99-calibration.conf}
 	systemctl restart localbrowser
-	pushRefresh
 	;;
 onboardaudio )
 	if [[ ${args[1]} == true ]]; then
