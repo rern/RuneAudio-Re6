@@ -78,7 +78,6 @@ include "settings/$page.php";
 	<?php	}
 		  } ?>
 	<?php if ( $localhost ) { ?>
-<script src="/assets/js/plugin/dragscroll.<?=$time?>.js"></script>
 <script src="/assets/js/plugin/simple-keyboard.min.<?=$time?>.js"></script>
 <script src="/assets/js/keyboard.<?=$time?>.js"></script>
 	<?php } ?>
