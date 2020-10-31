@@ -119,15 +119,21 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 
 </div>
 
+<div>
 <heading>GPIO LCD Display<?=$help?></heading>
 <div class="col-l">Enable</div>
 <div class="col-r">
 	<input id="lcd" type="checkbox">
 	<div class="switchlabel" for="lcd"></div>
 	<i id="setting-lcd" class="setting fa fa-gear"></i>
-	<span class="help-block hide">For GPIO 3.5" 480x320 LCD display only.</span>
+	<span class="help-block hide">
+		For 3.5" 480x320 GPIO LCD display only.
+	<br><i class="fa fa-gear"></i>&ensp;Calibrate touchscreen precision.
+	</span>
+</div>
 </div>
 
+<div>
 <heading>Environment<?=$help?></heading>
 <div class="col-l">Name</div>
 <div class="col-r">
@@ -146,6 +152,8 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 		<br>Active regulatory domian may be reassigned by connected router.</p>
 	</span>
 </div>
+</div>
+
 <div>
 <heading id="journalctl" class="status">Boot Log<i id="journalctlicon" class="fa fa-code"></i><?=$help?></heading>
 <span class="help-block hide"><code>journalctl -b | sed -n '1,/Startup finished/ p'</code></span>
