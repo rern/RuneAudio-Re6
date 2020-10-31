@@ -99,6 +99,7 @@ dtparam=i2c_arm=on
 dtparam=spi=on
 dtoverlay=tft35a:rotate=0
 " >> /boot/config.txt
+		cp -f /etc/X11/{lcd0,xorg.conf.d/99-calibration.conf}
 		echo -n "\
 i2c-bcm2708
 i2c-dev
