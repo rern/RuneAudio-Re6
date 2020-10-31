@@ -97,7 +97,7 @@ lcd )
 		echo -n "\
 dtparam=i2c_arm=on
 dtparam=spi=on
-dtoverlay=tft35a
+dtoverlay=tft35a:rotate=0
 " >> /boot/config.txt
 		echo -n "\
 i2c-bcm2708
