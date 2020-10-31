@@ -224,6 +224,9 @@ sambaset )
 	systemctl restart smb wsdd
 	pushRefresh
 	;;
+screenoff )
+	screenoff ${args[1]}
+	;;
 snapcast )
 	[[ ${args[1]} == true ]] && enable snapserver snapcast || disable snapserver snapcast
 	/srv/http/bash/mpd-conf.sh
