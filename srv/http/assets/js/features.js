@@ -205,7 +205,7 @@ $( '#setting-localbrowser' ).click( function( e ) {
 			$( '#infoTextBox' ).val( G.screenoff );
 			$( 'input[name=inforadio]' ).val( [ G.rotate ] );
 			$( '#infoCheckBox input:eq( 0 )' ).prop( 'checked', G.cursor );
-			if ( G.lcd ) $( '#infoRadio' ).after( '<gr>(Reboot required for rotate)</gr>' );
+			if ( G.lcd ) $( '#infoRadio' ).after( '<gr>(Rotate GPIO LCD: Reboot required.)</gr>' );
 		}
 		, buttonlabel : '<i class="fa fa-refresh"></i>Refresh'
 		, buttoncolor : '#de810e'
