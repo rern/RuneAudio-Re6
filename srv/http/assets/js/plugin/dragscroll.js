@@ -89,3 +89,4 @@
 
     exports.reset = reset;
 }));
+$( 'body' ).addClass( 'dragscroll' );
