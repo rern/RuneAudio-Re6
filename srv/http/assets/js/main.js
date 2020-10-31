@@ -562,6 +562,9 @@ $( '#lib-list, #pl-list, #pl-savedlist' ).on( 'click', 'p', function() {
 	$( '#pl-list .name' ).css( 'max-width', '' );
 } );
 // PLAYBACK /////////////////////////////////////////////////////////////////////////////////////
+$( '#info' ).click( function() {
+	if ( G.localhost ) scrollLongText();
+} );
 $( '.emptyadd' ).click( function( e ) {
 	$( '#tab-library' ).click();
 } );
