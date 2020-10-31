@@ -630,8 +630,12 @@ svg path.st1 {
 	user-select: none;           /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 .page {
-	min-height: 100%;
+	height: 100%;
 	touch-action: manipulation; /* fix: Unable to preventDefault inside passive event listener */
+}
+#page-library,
+#plag-playlist {
+	overflow-y: auto;
 }
 #page-playback {
 	padding: 120px 0 60px;
@@ -2694,13 +2698,13 @@ li.active .li2 bl {
 	}
 	#sampling { display: none; }
 	#coverart-block,
-	#divcover { max-width: 120vh; }
+	#divcover { max-width: 320px; }
 	#coverart-block { margin-bottom : 0; }
 }
 @media( max-height: 480px ) and ( max-width: 320px ) {
 	#page-playback {
-		max-height: 100%;
-		padding-top: 30px !important;		
+		padding-top: 30px !important;
+		overflow: hidden;
 	}
 	#sampling,
 	#time-knob,

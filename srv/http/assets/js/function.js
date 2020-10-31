@@ -1344,14 +1344,10 @@ function resetOrientation( file, ori, callback ) {
 }
 function scrollLongText() {	
 	var $el = $( '#artist, #song, #album' );
-	if ( G.localhost && G.status.lcd ) {
-		$el.addClass( 'scrollellipse' );
-		return
-	}
-	
 	var wW = window.innerWidth;
 	var tWmax = 0;
-	$el.each( function() {
+	$el.removeClass( 'scrollellipse' )
+		.each( function() {
 		var $this = $( this );
 		var tW = $this.width() * G.scale;
 		if ( tW > wW * 0.98 ) {
@@ -1363,18 +1359,29 @@ function scrollLongText() {
 				.removeAttr( 'style' ); // fix - iOS needs whole style removed
 		}
 	} );
-	$el
-		.removeClass( 'scrollellipse' )
-		.css( 'visibility', 'visible' ); // from initial hidden
+	$el.css( 'visibility', 'visible' ); // from initial hidden
 	if ( !$( '.scrollleft' ).length ) return
 	
 	// varied width only when scaled
 	var cssanimate = ( wW + tWmax ) / G.scrollspeed +'s infinite scrollleft linear'; // calculate to same speed
 	$( '.scrollleft' ).css( {
-		  width               : tWmax +'px'
-		, animation           : cssanimate
+		  'width '            : tWmax +'px'
+		, 'animation'         : cssanimate
 		, '-moz-animation'    : cssanimate
 		, '-webkit-animation' : cssanimate
+	} );
+	if ( !G.localhost ) return
+	
+	$( '.scrollleft' )
+		.css( 'animation-iteration-count', 1 )
+		.on( 'animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd', function() {
+		$( this ).css( {
+			  width               : ''
+			, animation           : ''
+			, '-moz-animation'    : ''
+			, '-webkit-animation' : ''
+		} ).removeClass( 'scrollleft' ).addClass( 'scrollellipse' );
+			
 	} );
 }
 function second2HMS( second ) {
