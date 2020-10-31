@@ -2460,6 +2460,7 @@ li.active .li2 bl {
 	#pl-count .title { display: none; }
 }
 @media( max-width: 500px ) {
+	#pl-count,
 	#pl-path { display: none; }
 }
 /* landscape */
