@@ -55,7 +55,7 @@ $desktop = isset( $_SERVER[ 'HTTP_USER_AGENT' ] )
 	<?php } ?>
 	
 </head>
-<body>
+<body<?=( $localhost ? ' class="dragscroll"' : '' )?>>
 
 <?php include 'index-body.php';?>
 
@@ -79,6 +79,7 @@ $desktop = isset( $_SERVER[ 'HTTP_USER_AGENT' ] )
 <script src="/assets/js/shortcut.<?=$time?>.js"></script>
 	<?php } ?>
 	<?php if ( $localhost ) { ?>
+<script src="/assets/js/plugin/dragscroll.<?=$time?>.js"></script>
 <script src="/assets/js/plugin/simple-keyboard.min.<?=$time?>.js"></script>
 <script src="/assets/js/keyboard.<?=$time?>.js"></script>
 	<?php } ?>

@@ -630,12 +630,8 @@ svg path.st1 {
 	user-select: none;           /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 .page {
+	min-height: 100%;
 	touch-action: manipulation; /* fix: Unable to preventDefault inside passive event listener */
-}
-#page-library,
-#page-playlist {
-	height: 100%;
-	overflow-y: auto;
 }
 #page-playback {
 	padding: 120px 0 60px;
