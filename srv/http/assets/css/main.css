@@ -2699,7 +2699,7 @@ li.active .li2 bl {
 	#sampling,
 	#guide-lyrics { display: none; }
 	#coverart-block,
-	#divcover { max-width: 320px; }
+	#divcover { max-width: 120vh; }
 	#coverart-block { margin-bottom : 0; }
 }
 @media( max-height: 480px ) and ( max-width: 320px ) {
