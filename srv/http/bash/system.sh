@@ -95,6 +95,7 @@ lcd )
 	if [[ $enable == true ]]; then
 		sed -i '1 s/$/ console=ttyAMA0,115200 fbcon=map:10 fbcon=font:ProFont6x11/' /boot/cmdline.txt
 		echo -n "\
+hdmi_force_hotplug=1
 dtparam=i2c_arm=on
 dtparam=spi=on
 dtoverlay=tft35a:rotate=0
@@ -107,7 +108,7 @@ i2c-dev
 		touch $dirsystem/lcd
 	else
 		sed -i 's/ console=ttyAMA0.*ProFont6x11//' /boot/cmdline.txt
-		sed -i '/i2c_arm=on\|spi=on\|tft35a/ d' /boot/config.txt
+		sed -i '/hdmi_force_hotplug\|i2c_arm=on\|spi=on\|tft35a/ d' /boot/config.txt
 		sed -i '/i2c-bcm2708\|i2c-dev/ d' /etc/modules-load.d/raspberrypi.conf
 		sed -i 's/fb1/fb0/' /etc/X11/xorg.conf.d/99-fbturbo.conf
 		rm $dirsystem/lcd
