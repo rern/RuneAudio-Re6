@@ -2690,10 +2690,10 @@ li.active .li2 bl {
 }
 /* 3.5" lcd */
 @media( max-width: 480px ) and ( max-height: 320px ) {
-	#page-playback { --scale: 0.6; padding: 80px 0 80px !important; }
+	#page-playback { --scale: 0.6; padding: 30px 0 0 !important; }
 	#sampling { display: none; }
 	#coverart-block,
-	#divcover { max-width: 90vh; }
+	#divcover { max-width: 120vh; }
 }
 @media( max-height: 480px ) and ( max-width: 320px ) {
 	#page-playback { padding-top: 30px !important; }
