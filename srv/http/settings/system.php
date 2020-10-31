@@ -119,6 +119,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 
 </div>
 
+<?php if ( file_exists( '/etc/X11/xorg.conf.d/99-fbturbo.conf' ) ) { ?>
 <div>
 <heading>GPIO LCD Display<?=$help?></heading>
 <div class="col-l">Enable</div>
@@ -132,6 +133,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	</span>
 </div>
 </div>
+<?php } ?>
 
 <div>
 <heading>Environment<?=$help?></heading>
