@@ -276,12 +276,13 @@ $( '#lcd' ).click( function() {
 } );
 $( '#setting-lcd' ).click( function() {
 	info( {
-		  icon        : 'gear'
-		, title       : 'LCD HAT display'
+		  icon        : 'edit'
+		, title       : 'GPIO LCD Display'
 		, message     : 'Calibrate touchscreen?'
+						+'<br>(Get stylus ready.)'
 		, oklabel     : 'Start'
 		, ok          : function() {
-			notify( 'Calibrate Touchscreen ...', 'Start ...', 'gear' );
+			notify( 'Calibrate Touchscreen ...', 'Start ...', 'edit' );
 			bash( [ 'lcdcalibrate' ] );
 		}
 	} );
