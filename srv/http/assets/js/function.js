@@ -1575,14 +1575,17 @@ function switchPage( page ) {
 		$timeRS.setValue( 0 );
 		$( 'html, body' ).scrollTop( 0 );
 		if ( G.status.state === 'play' && !G.status.webradio ) $( '#elapsed' ).empty(); // hide flashing
+		$( '#volbar' ).removeClass( 'hide' );
 	} else if ( G.library ) {
 		if ( G.librarylist ) {
 			$( 'html, body' ).scrollTop( G.liscrolltop );
 		} else {
 			renderLibrary();
 		}
+		$( '#volbar' ).addClass( 'hide' );
 	} else if ( G.playlist ) {
 		if ( G.savedlist || G.savedplaylist ) $( 'html, body' ).scrollTop( G.plscrolltop );
+		$( '#volbar' ).addClass( 'hide' );
 	}
 }
 function thumbUpdate( path ) {
