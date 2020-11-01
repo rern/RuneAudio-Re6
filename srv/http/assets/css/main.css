@@ -508,6 +508,7 @@ svg path.st1 {
 	bottom: 0;
 }
 #volbar {
+	display: none;
 	top: 0;
 }
 #volbarM {
@@ -2591,6 +2592,9 @@ li.active .li2 bl {
 	}
 }
 @media( orientation: portrait ) and ( max-width: 540px ) {
+	#volbar {
+		display: block;
+	}
 	#playback-row {
 		margin-top: 20px;
 	}
