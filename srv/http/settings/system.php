@@ -119,6 +119,21 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 
 </div>
 
+<div>
+<heading>GPIO LCD Display<?=$help?></heading>
+<div class="col-l">Enable</div>
+<div class="col-r">
+	<input id="lcd" type="checkbox">
+	<div class="switchlabel" for="lcd"></div>
+	<i id="setting-lcd" class="setting fa fa-gear"></i>
+	<span class="help-block hide">
+		For 3.5" 480x320 GPIO LCD display only.
+	<br><i class="fa fa-gear"></i>&ensp;Calibrate touchscreen precision.
+	</span>
+</div>
+</div>
+
+<div>
 <heading>Environment<?=$help?></heading>
 <div class="col-l">Name</div>
 <div class="col-r">
@@ -137,6 +152,8 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 		<br>Active regulatory domian may be reassigned by connected router.</p>
 	</span>
 </div>
+</div>
+
 <div>
 <heading id="journalctl" class="status">Boot Log<i id="journalctlicon" class="fa fa-code"></i><?=$help?></heading>
 <span class="help-block hide"><code>journalctl -b | sed -n '1,/Startup finished/ p'</code></span>
@@ -198,7 +215,8 @@ foreach( $listruneos as $name => $link ) {
 	$runeoshtml.= '<a href="'.$link.'">'.$name.'</a><br>';
 }
 $listruneui = [
-	  'HTML5-Color-Picker'  => 'https://github.com/NC22/HTML5-Color-Picker'
+	  'dragscroll'               => 'https://github.com/asvd/dragscroll'
+	, 'HTML5-Color-Picker'  => 'https://github.com/NC22/HTML5-Color-Picker'
 	, 'jQuery'              => 'https://jquery.com/'
 	, 'jQuery Mobile'       => 'https://jquerymobile.com/'
 	, 'jQuery Selectric'    => 'https://github.com/lcdsantos/jQuery-Selectric'
@@ -217,7 +235,7 @@ foreach( $listruneui as $name => $link ) {
 ?>
 <br><br>
 <heading>About</heading>
-RuneAudio <i class="fa fa-addons gr"></i> <?=( file_get_contents( '/srv/http/data/system/version' ) )?>&emsp;by&emsp;<a href="https://github.com/rern/">r e r n</a>
+RuneAudio <i class="fa fa-plus-r gr"></i> <?=( file_get_contents( '/srv/http/data/system/version' ) )?>&emsp;by&emsp;<a href="https://github.com/rern/">r e r n</a>
 <div>
 <heading class="sub">RuneOS<?=$help?></heading>
 <span class="help-block hide">

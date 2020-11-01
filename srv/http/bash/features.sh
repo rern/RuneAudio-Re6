@@ -22,6 +22,50 @@ disable() {
 	rm $dirsystem/$2
 	pushRefresh
 }
+rotate() {
+	rotate=$1
+	rotateconf=/etc/X11/xorg.conf.d/99-raspi-rotate.conf
+	if [[ $rotate == NORMAL ]]; then
+		rm -f $rotateconf $path-rotatefile
+	else
+		case $rotate in
+			CW )  matrix='0 1 0 -1 0 1 0 0 1';;
+			CCW ) matrix='0 -1 1 1 0 0 0 0 1';;
+			UD )  matrix='-1 0 1 0 -1 1 0 0 1';;
+		esac
+		sed -e "s/ROTATION_SETTING/$rotate/
+		" -e "s/MATRIX_SETTING/$matrix/" /etc/X11/xinit/rotateconf | tee $rotateconf $path-rotatefile
+	fi
+	ln -sf /srv/http/assets/img/{$rotate,splash}.png
+}
+rotatelcd() {
+	degree=$1
+	sed -i "s/\(tft35a\).*/\1:rotate=$degree/" /boot/config.txt
+	cp -f /etc/X11/{lcd$degree,xorg.conf.d/99-calibration.conf}
+	(( $degree != 0 )) && cp -f /etc/X11/xorg.conf.d/99-calibration.conf $dirsystem/calibration
+	echo Rotate GPIO LCD screen > /srv/http/data/shm/reboot
+}
+screenoff() {
+	sec=$1
+	if [[ $sec == 0 ]]; then
+		sed -i -e '/xset/ d
+' -e '/export DISPLAY/ a\
+xset dpms 0 0 0\
+xset s off\
+xset -dpms
+' /etc/X11/xinit/xinitrc
+		DISPLAY=:0 xset dpms 0 0 0
+		rm $path-screenoff
+	else
+		sed -i -e '/xset/ d
+' -e "/export DISPLAY/ a\
+xset dpms $sec $sec $sec
+" /etc/X11/xinit/xinitrc
+		DISPLAY=:0 xset dpms $sec $sec $sec
+		echo $sec > $path-screenoff
+	fi
+	pushRefresh
+}
 
 case ${args[0]} in
 
@@ -97,32 +141,21 @@ localbrowserset )
 	screenoff=${args[3]}
 	zoom=${args[4]}
 	path=$dirsystem/localbrowser
-	rotateconf=/etc/X11/xorg.conf.d/99-raspi-rotate.conf
-	if [[ $rotate == NORMAL ]]; then
-		rm -f $rotateconf $path-rotatefile
-	else
-		case $rotate in
-			CW )  matrix='0 1 0 -1 0 1 0 0 1';;
-			CCW ) matrix='0 -1 1 1 0 0 0 0 1';;
-			UD )  matrix='-1 0 1 0 -1 1 0 0 1';;
-		esac
-		sed -e "s/ROTATION_SETTING/$rotate/
-		" -e "s/MATRIX_SETTING/$matrix/" /etc/X11/xinit/rotateconf | tee $rotateconf $path-rotatefile
-	fi
-	ln -sf /srv/http/assets/img/{$rotate,splash}.png
+	
+	rotate $rotate
+	screenoff $screenoff
+		
 	if [[ $cursor == true ]]; then
 		touch $path-cursor
 		cursor=yes
 	else
-		rm $path-cursor
+		rm -f $path-cursor
 		cursor=no
 	fi
-	[[ $screenoff != 0 ]] && echo $screenoff > $path-screenoff || rm $path-screenoff
 	[[ $zoom != 1 ]] && echo $zoom > $path-zoom || rm $path-zoom
-	sed -i -e 's/\(-use_cursor \).*/\1"'$cursor'" \&/
-	' -e 's/\(xset dpms 0 0 \).*/\1"'$screenoff'" \&/
-	' -e 's/\(factor=\).*/\1"'$zoom'"/
-	' /etc/X11/xinit/xinitrc
+	sed -i -e 's/\(-use_cursor \).*/\1'$cursor' \&/
+' -e 's/\(factor=\).*/\1'$zoom'/
+' /etc/X11/xinit/xinitrc
 	systemctl restart localbrowser
 	pushRefresh
 	;;
@@ -163,6 +196,12 @@ mpdscribbleset )
 	fi
 	pushRefresh
 	;;
+rotate )
+	rotate ${args[1]}
+	;;
+rotatelcd )
+	rotatelcd ${args[1]}
+	;;
 samba )
 	if [[ ${args[1]} == true ]]; then
 		systemctl enable --now wsdd smb
@@ -184,6 +223,9 @@ sambaset )
 	fi
 	systemctl restart smb wsdd
 	pushRefresh
+	;;
+screenoff )
+	screenoff ${args[1]}
 	;;
 snapcast )
 	[[ ${args[1]} == true ]] && enable snapserver snapcast || disable snapserver snapcast

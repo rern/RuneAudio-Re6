@@ -55,8 +55,8 @@ for line in "${line[@]}"; do
 		password=
 	fi
 	if [[ $ssid == $connectedssid ]]; then
-		connected=1
 		ip=$( ifconfig $wlan | awk '/inet / {print $2}' )
+		[[ -n $ip ]] && connected=1
 		gateway=$( ip r | grep "^default.*$wlan" | awk '{print $3}' )
 		[[ -z $gateway ]] && gateway=$( ip r | grep ^default | head -n1 | cut -d' ' -f3 )
 	else

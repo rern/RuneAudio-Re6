@@ -40,6 +40,8 @@ bluetooth )
 databackup )
 	backupfile=$dirdata/tmp/backup.gz
 	rm -f $backupfile
+	cp {/etc/X11/xorg.conf.d,$dirdata/system}/99-calibration.conf
+	cp {/etc/X11/xinit,$dirdata/system}/xinitrc
 	bsdtar \
 		--exclude './addons' \
 		--exclude './embedded' \
@@ -69,7 +71,7 @@ i2smodule )
 	aplayname=${args[1]}
 	output=${args[2]}
 	reboot=${args[3]}
-	dtoverlay=$( grep 'dtparam=krnbt=on\|dtoverlay=gpio\|dtoverlay=sdtweak,poll_once' /boot/config.txt )
+	dtoverlay=$( grep 'dtparam=i2c_arm=on\|dtparam=krnbt=on\|dtparam=spi=on\|dtoverlay=gpio\|dtoverlay=sdtweak,poll_once\|dtoverlay=tft35a\|hdmi_force_hotplug=1' /boot/config.txt )
 	sed -i '/dtparam=\|dtoverlay=\|^$/ d' /boot/config.txt
 	[[ -n $dtoverlay ]] && sed -i '$ r /dev/stdin' /boot/config.txt <<< "$dtoverlay"
 	if [[ ${aplayname:0:7} != bcm2835 ]]; then
@@ -87,6 +89,35 @@ dtoverlay=${args[1]}"
 	echo $output > $dirsystem/audio-output
 	echo "$reboot" > $filereboot
 	pushRefresh
+	;;
+lcd )
+	enable=${args[1]}
+	if [[ $enable == true ]]; then
+		echo -n "\
+hdmi_force_hotplug=1
+dtparam=i2c_arm=on
+dtparam=spi=on
+dtoverlay=tft35a:rotate=0
+" >> /boot/config.txt
+		cp -f /etc/X11/{lcd0,xorg.conf.d/99-calibration.conf}
+		echo -n "\
+i2c-bcm2708
+i2c-dev
+" >> /etc/modules-load.d/raspberrypi.conf
+		sed -i 's/fb0/fb1/' /etc/X11/xorg.conf.d/99-fbturbo.conf
+		touch $dirsystem/lcd
+	else
+		sed -i '/hdmi_force_hotplug\|i2c_arm=on\|spi=on\|tft35a/ d' /boot/config.txt
+		sed -i '/i2c-bcm2708\|i2c-dev/ d' /etc/modules-load.d/raspberrypi.conf
+		sed -i 's/fb1/fb0/' /etc/X11/xorg.conf.d/99-fbturbo.conf
+		rm $dirsystem/lcd
+	fi
+	;;
+lcdcalibrate )
+	touch /srv/http/data/shm/calibrate
+	degree=$( grep rotate /boot/config.txt | cut -d= -f3 )
+	cp -f /etc/X11/{lcd$degree,xorg.conf.d/99-calibration.conf}
+	systemctl restart localbrowser
 	;;
 onboardaudio )
 	if [[ ${args[1]} == true ]]; then

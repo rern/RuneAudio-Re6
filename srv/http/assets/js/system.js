@@ -24,7 +24,7 @@ function getConfigtxt() {
 	} );
 }
 function getIfconfig() {
-	bash( 'ifconfig', function( status ) {
+	bash( 'ifconfig wlan0', function( status ) {
 		$( '#codeifconfig' )
 			.html( status )
 			.removeClass( 'hide' );
@@ -118,7 +118,7 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 			} )
 		}
 		if ( G.sources.length ) {
-			systemlabel += '<span id="sources" class="settings">Sources<i class="fa fa-gear"></i></span>';
+			systemlabel += '<span class="settings" data-setting="sources">Sources<i class="fa fa-gear"></i></span>';
 			var sourcelist = '';
 			$.each( G.sources, function( i, val ) {
 				sourcelist += '<i class="fa fa-'+ val.icon +' gr"></i>&ensp;'+ val.mountpoint.replace( '/mnt/MPD/USB/', '' );
@@ -135,7 +135,7 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 					  +'&ensp;<i class="fa fa-artist gr"></i> '+ Number( counts[ 2 ] ).toLocaleString() +'</span>';
 		}
 		$( '#system' ).html(
-			  '<i class="fa fa-addons gr" style="line-height: 20px;"></i> '+ G.version +' <gr>'+ G.versionui +'</gr>'+ bullet + G.hostname +'<br>'
+			  '<i class="fa fa-plus-r gr" style="line-height: 20px;"></i> '+ G.version +' <gr>'+ G.versionui +'</gr>'+ bullet + G.hostname +'<br>'
 			+ G.hardware +'<br>'
 			+ G.soc +'<br>'
 			+ '<span id="output">'+ G.audiooutput +'</span><br>'
@@ -163,10 +163,13 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		$( '#bluetooth' ).prop( 'checked', G.bluetooth );
 		$( '#setting-bluetooth' ).toggleClass( 'hide', !G.bluetooth );
 		$( '#wlan' ).prop( 'checked', G.wlan );
+		$( '#lcd' ).prop( 'checked', G.lcd );
+		$( '#setting-lcd' ).toggleClass( 'hide', !G.lcd );
 		$( '#hostname' ).val( G.hostname );
 		$( '#timezone' )
 			.val( G.timezone )
 			.selectric( 'refresh' );
+		if ( !$( '#codeifconfig' ).hasClass( 'hide' ) ) getIfconfig();
 		if ( !$( '#codejournalctl' ).hasClass( 'hide' ) ) getJournalctl();
 		if ( !$( '#codeconfigtxt' ).hasClass( 'hide' ) ) getConfigtxt();
 		resetLocal();
@@ -205,7 +208,7 @@ $( '#refresh' ).click( function( e ) {
 				$( '#status' ).html( renderStatus );
 			}, 'json' );
 		}, 10000 );
-		notify( 'System Status', 'Refresh every 10 seconds.<br>Click again to stop.', 'sliders', 10000 );
+		banner( 'System Status', 'Refresh every 10 seconds.<br>Click again to stop.', 'sliders', 10000 );
 	}
 } );
 $( '#onboardaudio' ).click( function() {
@@ -264,6 +267,25 @@ $( '#wlan' ).click( function() {
 	G.wlan = $( this ).prop( 'checked' );
 	notify( 'On-board Wi-Fi', G.wlan, 'wifi-3' );
 	bash( [ 'wlan', G.wlan ], resetLocal );
+} );
+$( '#lcd' ).click( function() {
+	G.lcd = $( this ).prop( 'checked' );
+	rebootText( G.lcd ? 'Enable' : 'Disable', 'LCD HAT display' );
+	notify( 'LCD HAT display', G.bluetooth, 'gear' );
+	bash( [ 'lcd', G.lcd, G.reboot.join( '\n' ) ], resetLocal );
+} );
+$( '#setting-lcd' ).click( function() {
+	info( {
+		  icon        : 'edit'
+		, title       : 'GPIO LCD Display'
+		, message     : 'Calibrate touchscreen?'
+						+'<br>(Get stylus ready.)'
+		, oklabel     : 'Start'
+		, ok          : function() {
+			notify( 'Calibrate Touchscreen ...', 'Start ...', 'edit' );
+			bash( [ 'lcdcalibrate' ] );
+		}
+	} );
 } );
 $( '#ifconfig' ).click( function( e ) {
 	codeToggle( e.target, this.id, getIfconfig );
@@ -397,7 +419,7 @@ $( '#setting-soundprofile' ).click( function() {
 } );
 $( '#hostname' ).click( function() {
 	info( {
-		  icon      : 'rune'
+		  icon      : 'plus-r'
 		, title     : 'Player Name'
 		, textlabel : 'Name'
 		, textvalue : G.hostname

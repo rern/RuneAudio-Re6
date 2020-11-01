@@ -63,6 +63,7 @@
 .fa-gpio:before { content: "\f522" }
 .fa-guide:before { content: "\f579" }
 .fa-info-circle:before { content: "\f561" }
+.fa-jigsaw:before { content: "\f50E" }
 .fa-lastfm:before { content: "\f585" }
 .fa-left:before { content: "\f606" }
 .fa-library:before { content: "\f506" }
@@ -87,6 +88,7 @@
 .fa-plus:before { content: "\f519" }
 .fa-plus-circle:before { content: "\f564" }
 .fa-plus-o:before { content: "\f530" }
+.fa-plus-r:before { content: "\f581" }
 .fa-power:before { content: "\f520" }
 .fa-previous:before { content: "\f501" }
 .fa-question-circle:before { content: "\f560" }
@@ -451,11 +453,11 @@ svg path.st1 {
 #power, #screenoff {
 	background: var( --cga );
 }
+#power.sub {
+	border-right: 1px solid #000000
+}
 #screenoff {
 	line-height: 41px;
-}
-#power {
-	border-right: 1px solid #000000;
 }
 .iconimg {
 	margin: 0 7px;
@@ -492,8 +494,8 @@ svg path.st1 {
 /* ---------------------- bars ----------------------*/
 #bar-top,
 #bar-bottom,
-#swipeL,
-#swipeR,
+.swipe,
+#volbar,
 #swipebar {
 	position: fixed;
 	width: 100%;
@@ -502,17 +504,25 @@ svg path.st1 {
 	z-index: 105;
 }
 #bar-bottom,
-#swipeL,
-#swipeR,
 #swipebar {
 	bottom: 0;
 }
+#volbar {
+	display: none;
+	top: 0;
+}
+#volbarM {
+	width: 100%;
+}
+#volbarL,
 #swipeL {
 	left: 0;
 }
+#volbarR,
 #swipeR {
 	right: 0;
 }
+#volbar,
 #swipebar {
 	text-align: center;
 	background: var( --cga );
@@ -522,10 +532,10 @@ svg path.st1 {
 #swipebar i {
 	width: 80px;
 }
-#swipeL,
-#swipeR {
+.swipe {
 	width: 40px !important;
 	height: inherit;
+	text-align: center;
 	z-index: 10;
 }
 .content-top,
@@ -628,8 +638,12 @@ svg path.st1 {
 	user-select: none;           /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 .page {
-	min-height: 100%;
+	height: 100%;
 	touch-action: manipulation; /* fix: Unable to preventDefault inside passive event listener */
+}
+#page-library,
+#plag-playlist {
+	overflow-y: auto;
 }
 #page-playback {
 	padding: 120px 0 60px;
@@ -708,6 +722,14 @@ svg path.st1 {
 #divalbum {
 	position: relative;
 	overflow: hidden;
+}
+.scrollellipse {
+	display: block !important;
+	padding: 0 10px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	visibility: visible !important;
 }
 .scrollleft {
 	backface-visibility : hidden; /* for less flickering */
@@ -2423,14 +2445,6 @@ li.active .li2 bl {
 	#page-playback { --scale: 0.75 }
 	#page-playback.barsalways { --scale: 0.65 !important }
 }
-@media( orientation: landscape ) and ( max-height: 320px ) {
-	#page-playback { --scale: 0.7 }
-	#page-playback.barsalways { --scale: 0.6 !important; padding: 80px 0 80px !important; }
-}
-@media( orientation: landscape ) and ( max-height: 300px ) {
-	#page-playback { --scale: 0.65 }
-	#page-playback.barsalways { --scale: 0.55 !important }
-}
 
 @media( max-height: 768px ) {
 	#page-playback {
@@ -2453,6 +2467,13 @@ li.active .li2 bl {
 	#vol-group {
 		display: none;
 	}
+}
+@media( max-width: 700px ) {
+	#pl-count .title { display: none; }
+}
+@media( max-width: 500px ) {
+	#pl-count,
+	#pl-path { display: none; }
 }
 /* landscape */
 @media( orientation: landscape ) and ( max-height: 767px ) {
@@ -2569,12 +2590,11 @@ li.active .li2 bl {
 		order: 3;
 		-webkit-order: 3;
 	}
-	#pl-count,
-	#pl-path {
-		display: none;
-	}
 }
 @media( orientation: portrait ) and ( max-width: 540px ) {
+	#volbar {
+		display: block;
+	}
 	#playback-row {
 		margin-top: 20px;
 	}
@@ -2670,6 +2690,7 @@ li.active .li2 bl {
 	.infocol {
 		width: 140px;
 	}
+	n { display: none }
 }
 @media( orientation: portrait ) and ( max-width: 280px ) {
 	#sampling {
@@ -2678,4 +2699,28 @@ li.active .li2 bl {
 	#divcover {
 		min-width: auto;
 	}
+}
+/* 3.5" lcd */
+@media( max-width: 480px ) and ( max-height: 320px ) {
+	#page-playback {
+		--scale: 0.6;
+		max-height: 100%;
+		padding: 30px 0 0 !important;
+	}
+	#sampling,
+	#guide-lyrics { display: none; }
+	#coverart-block,
+	#divcover { max-width: 120vh; }
+	#coverart-block { margin-bottom : 0; }
+}
+@media( max-height: 480px ) and ( max-width: 320px ) {
+	#page-playback {
+		padding-top: 30px !important;
+		overflow: hidden;
+	}
+	#sampling,
+	#time-knob,
+	#volume-knob,
+	#guide-lyrics { display: none; }
+	#coverart-block { margin-bottom : 0; }
 }

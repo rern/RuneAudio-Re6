@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # reset player, tmp files
-# set and connect wi-fi if pre-configured
+# set and connect wi-fi if pre-configured (once)
 # expand root partition (once)
 # enable/disable wlan
 # set sound profile if enabled
@@ -9,9 +9,13 @@
 #   - list sound devices
 #   - populate mpd.conf
 #   - start mpd, mpdidle
-# set autoplay if enabled
-# disable wlan power saving
+# mount fstab
+#   - verify ip
+#   - verify source ip
+# start hostapd if enable
+# autoplay if enabled
 # check addons updates
+# continue mpd update if pending
 
 dirdata=/srv/http/data
 dirmpd=$dirdata/mpd
@@ -40,35 +44,46 @@ fi
 /srv/http/bash/mpd-conf.sh # mpd start by this script
 
 sleep 10 # wait for network interfaces
+
 notifyFailed() {
-	echo "$1<br><br><gr>Try reboot again.</gr>" > $dirdata/shm/reboot
+	echo "$1<br><br><gr>Try reboot again.</gr>" >> $dirdata/shm/reboot
 	curl -s -X POST http://127.0.0.1/pub?id=reload -d 1
 }
-mountpoints=$( grep /mnt/MPD/NAS /etc/fstab | awk '{print $2}' )
+
+readarray -t mountpoints <<< $( grep /mnt/MPD/NAS /etc/fstab | awk '{print $2}' )
 if [[ -n "$mountpoints" ]]; then
-	lanip=$( ifconfig | grep -A1 ^eth0 | awk '/inet/ {print $2}' )
-	wlanip=$( ifconfig | grep -A1 ^wlan0 | awk '/inet/ {print $2}' )
-	if [[ -z $lanip && -z wlanip ]]; then # wait for ip address
+	lanip=$( ifconfig eth0 | awk '/inet / {print $2}' )
+	[[ -z $lanip ]] && wlanip=$( ifconfig wlan0 | awk '/inet / {print $2}' )
+	if [[ -z $lanip && -z wlanip ]]; then # wait for connection
 		for (( i=0; i <= 20; i++ )); do
-			sleep 1
-			(( i == 20 )) && notifyFailed 'Network not connected.'
 			wlanip=$( ifconfig | grep -A1 ^wlan0 | awk '/inet/ {print $2}' )
 			[[ -n $wlanip ]] && break
-		done
-	fi
-	for mountpoint in $mountpoints; do # verify target before mount
-		ip=$( grep "$mountpoint" /etc/fstab | cut -d' ' -f1 | sed 's|^//||; s|:*/.*$||' )
-		for (( i=0; i <= 20; i++ )); do
-			ping -c 1 -w 1 $ip &> /dev/null && break
 			
 			sleep 1
-			(( i == 20 )) && notifyFailed 'NAS IP address cannot be reached.'
+			(( i == 20 )) && notifyFailed 'Network not connected.'
 		done
-		mount $mountpoint
+	fi
+	for mountpoint in "${mountpoints[@]}"; do # ping target before mount
+		ip=$( grep "$mountpoint" /etc/fstab | cut -d' ' -f1 | sed 's|^//||; s|:*/.*$||' )
+		for (( i=0; i <= 20; i++ )); do
+			ping -4 -c 1 -w 1 $ip &> /dev/null && break
+			
+			sleep 1
+			(( i == 20 )) && notifyFailed "NAS @$ip cannot be reached."
+		done
+		mount "$mountpoint"
 	done
 fi
+
+if [[ -n $wlanip ]] && systemctl -q is-enabled hostapd; then
+	ifconfig wlan0 $( awk -F',' '/router/ {print $2}' /etc/dnsmasq.conf )
+	systemctl start dnsmasq hostapd
+fi
+
+/srv/http/bash/cmd.sh addonsupdate
+
 # after all sources connected
-if [[ ! -e $dirmpd/mpd.db ]] || $( mpc stats | awk '/Songs/ {print $NF}' ) -eq 0 ]]; then
+if [[ ! -e $dirmpd/mpd.db || $( mpc stats | awk '/Songs/ {print $NF}' ) -eq 0 ]]; then
 	/srv/http/bash/cmd.sh mpcupdate$'\n'true
 elif [[ -e $dirsystem/updating ]]; then
 	path=$( cat $dirsystem/updating )
@@ -78,16 +93,3 @@ elif [[ -e $dirsystem/listing || ! -e $dirmpd/counts ]]; then
 elif [[ -e $dirsystem/autoplay ]]; then
 	mpc play
 fi
-
-for (( i=0; i <= 20; i++ )); do
-	wlan0up=$( ip a show wlan0 &> /dev/null )
-	[[ -n $wlan0up ]] && break
-	
-	sleep 1
-done
-if [[ -e $dirsystem/accesspoint && -n $wlan0up ]]; then
-	ifconfig wlan0 $( grep router /etc/dnsmasq.conf | cut -d, -f2 )
-	systemctl start dnsmasq hostapd
-fi
-
-/srv/http/bash/cmd.sh addonsupdate

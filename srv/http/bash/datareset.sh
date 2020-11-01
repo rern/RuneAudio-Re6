@@ -8,6 +8,11 @@ dirtmp=$dirdata/shm
 systemctl stop mpd
 rm -f $dirsystem/{updating,listing,wav}
 
+# lcd
+sed -i 's/ console=ttyAMA0.*ProFont6x11//' /boot/cmdline.txt
+sed -i '/i2c-bcm2708\|i2c-dev/ d' /etc/modules-load.d/raspberrypi.conf
+sed -i 's/fb1/fb0/' /usr/share/X11/xorg.conf.d/99-fbturbo.conf 2> /dev/null
+
 # config.txt
 code=$( awk '/Revision/ {print $NF}' /proc/cpuinfo )
 hwcode=${code: -3:2}
@@ -78,6 +83,7 @@ echo '{
 	"buttons": true,
 	"cover": true,
 	"coversmall": false,
+	"progressbar": false,
 	"radioelapsed": false,
 	"time": true,
 	"volume": true

@@ -132,7 +132,7 @@ if ( page === 'credits' ) {
 	getReset();
 }
 $( '#close' ).click( function() {
-	if ( page === 'system' ) {
+	if ( page === 'system' || page === 'features' ) {
 		getReset( function() {
 			if ( G.reboot.length ) {
 				info( {

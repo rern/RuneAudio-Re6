@@ -495,9 +495,7 @@ function getPlaybackStatus() {
 			renderPlayback();
 			displayPlayback();
 			setButtonControl();
-			if ( G.playlist && !G.savedlist && !G.savedplaylist ) setPlaylistScroll();
 		} else if ( G.library ) {
-			setButtonUpdating();
 			if ( !$( '#lib-search-close' ).text() && !G.librarylist ) renderLibrary();
 			if ( counts ) {
 				var counts = G.status.counts;
@@ -510,8 +508,8 @@ function getPlaybackStatus() {
 			}
 		} else {
 			if ( !G.savedlist && !G.savedplaylist && !G.sortable && !$( '#pl-search-close' ).text() ) getPlaylist();
-			setButtonUpdating();
 		}
+		setButtonUpdating();
 	}, 'json' );
 }
 function getPlaylist() {
@@ -531,7 +529,7 @@ function getTitleWidth() {
 function hideGuide() {
 	G.guide = false;
 	$( '.map' ).removeClass( 'mapshow' );
-	$( '.band, #swipebar' ).addClass( 'transparent' );
+	$( '.band, #volbar, #swipebar' ).addClass( 'transparent' );
 	if ( !G.display.progressbar ) $( '#timebar' ).addClass( 'hide' );
 	$( '#volume-bar, #volume-text' ).addClass( 'hide' );
 	$( '.cover-save' ).css( 'z-index', '' );
@@ -1344,11 +1342,12 @@ function resetOrientation( file, ori, callback ) {
 	}
 	reader.readAsDataURL( file );
 }
-function scrollLongText() {
+function scrollLongText() {	
 	var $el = $( '#artist, #song, #album' );
 	var wW = window.innerWidth;
 	var tWmax = 0;
-	$el.each( function() {
+	$el.removeClass( 'scrollellipse' )
+		.each( function() {
 		var $this = $( this );
 		var tW = $this.width() * G.scale;
 		if ( tW > wW * 0.98 ) {
@@ -1366,10 +1365,23 @@ function scrollLongText() {
 	// varied width only when scaled
 	var cssanimate = ( wW + tWmax ) / G.scrollspeed +'s infinite scrollleft linear'; // calculate to same speed
 	$( '.scrollleft' ).css( {
-		  width               : tWmax +'px'
-		, animation           : cssanimate
+		  'width '            : tWmax +'px'
+		, 'animation'         : cssanimate
 		, '-moz-animation'    : cssanimate
 		, '-webkit-animation' : cssanimate
+	} );
+	if ( !G.localhost ) return
+	
+	$( '.scrollleft' )
+		.css( 'animation-iteration-count', 1 )
+		.on( 'animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd', function() {
+		$( this ).css( {
+			  width               : ''
+			, animation           : ''
+			, '-moz-animation'    : ''
+			, '-webkit-animation' : ''
+		} ).removeClass( 'scrollleft' ).addClass( 'scrollellipse' );
+			
 	} );
 }
 function second2HMS( second ) {

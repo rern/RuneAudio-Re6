@@ -6,13 +6,16 @@ playerfile=$dirtmp/player
 
 gpio=$( [[ -e $dirsystem/gpio ]] && echo true || echo false )
 gpioon=$( [[ -e  $dirtmp/gpiotimer ]] && echo true || echo false )
+lcd=$( grep -q dtoverlay=tft35a /boot/config.txt && echo true || echo false )
+
 ########
 status=$( cat $playerfile )
 ########
 status+='
 , "webradio" : false
 , "gpio"     : '$gpio'
-, "gpioon"   : '$gpioon
+, "gpioon"   : '$gpioon'
+, "lcd"      : '$lcd
 if [[ -e $playerfile-snapclient ]]; then
 	[[ -e $dirsystem/snapserverpw ]] && snapserverpw=$( cat $dirsystem/snapserverpw ) || snapserverpw=rune
 	snapserverip=$( cat $dirtmp/snapserverip )

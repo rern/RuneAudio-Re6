@@ -52,7 +52,7 @@ if ( $MiBunpart < 10 ) {
 <body>
 <div class="container">
 	<h1>
-		<i class="fa fa-addons gr"></i>&ensp;Addons
+		<i class="fa fa-jigsaw gr"></i>&ensp;Addons
 		<i class="close-root fa fa-times"></i>
 	</h1>
 	<p class="bl"></p>

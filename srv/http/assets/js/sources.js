@@ -19,6 +19,7 @@ function infoMount( formdata, cifs ) {
 		  icon    : 'network'
 		, title   : 'Mount Share'
 		, content : html
+		, boxwidth : 200
 		, preshow : function() {
 			if ( $.isEmptyObject( formdata ) ) {
 				$( '#infoRadio input' ).eq( 0 ).prop( 'checked', 1 );
@@ -134,7 +135,7 @@ var html = heredoc( function() { /*
 				<input type="text" class="infoinput" name="directory" spellcheck="false">
 				<div class="guest">
 				<input type="text" class="infoinput" name="user" spellcheck="false">
-				<input type="password" class="infoinput" name="password">
+				<input type="password" class="infoinput" name="password"><i class="eye fa fa-eye fa-lg"></i>
 				</div>
 				<input type="text" class="infoinput" name="options" spellcheck="false">
 			</div>

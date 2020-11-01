@@ -10,7 +10,7 @@ $( '#lyricsartist' ).click( function() {
 	getBio( $( this ).text() );
 } );
 $( '#song, #guide-lyrics' ).tap( function() {
-	if ( !G.status.Title ) return;
+	if ( !G.status.Title || G.localhost ) return;
 	
 	var artist = G.status.Artist;
 	var title = G.status.Title;

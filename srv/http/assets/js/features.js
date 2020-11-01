@@ -14,12 +14,6 @@ function getStatusRefresh( service ) {
 	service !== 'localbrowser' ? resetLocal() : resetLocal( 7000 );
 	if ( !$( '#code'+ service ).hasClass( 'hide' ) ) getStatus( service );
 }
-function rebootText( enable, device ) {
-	G.reboot = G.reboot.filter( function( el ) {
-		return el.indexOf( device ) === -1
-	} );
-	G.reboot.push( enable +' '+ device );
-}
 refreshData = function() { // system page: use resetLocal() to aviod delay
 	bash( '/srv/http/bash/features-data.sh', function( list ) {
 		G = list;
@@ -211,6 +205,7 @@ $( '#setting-localbrowser' ).click( function( e ) {
 			$( '#infoTextBox' ).val( G.screenoff );
 			$( 'input[name=inforadio]' ).val( [ G.rotate ] );
 			$( '#infoCheckBox input:eq( 0 )' ).prop( 'checked', G.cursor );
+			if ( G.lcd ) $( '#infoRadio' ).after( '<gr>(Rotate GPIO LCD: Reboot required.)</gr>' );
 		}
 		, buttonlabel : '<i class="fa fa-refresh"></i>Refresh'
 		, buttoncolor : '#de810e'
@@ -224,8 +219,26 @@ $( '#setting-localbrowser' ).click( function( e ) {
 			var screenoff = $( '#infoTextBox' ).val();
 			var zoom = parseFloat( $( '#infoTextBox1' ).val() ) || 1;
 			G.zoom      = zoom < 2 ? ( zoom < 0.5 ? 0.5 : zoom ) : 2;
-			if ( cursor === G.cursor && rotate === G.rotate 
-				&& screenoff === G.screenoff && zoom === G.zoom ) return
+			if ( cursor == G.cursor && rotate == G.rotate && screenoff == G.screenoff && zoom == G.zoom ) return
+			
+			if ( screenoff != G.screenoff && cursor == G.cursor && rotate == G.rotate && zoom == G.zoom ) {
+				G.screenoff = screenoff;
+				notify( 'Chromium - Browser on RPi', 'Change ...', 'chromium blink' );
+				bash( [ 'screenoff', ( screenoff * 60 ) ], resetLocal );
+				return
+			}
+			
+			if ( rotate != G.rotate && cursor == G.cursor && screenoff == G.screenoff && zoom == G.zoom ) {
+				G.rotate = rotate;
+				notify( 'Chromium - Browser on RPi', 'Change ...', 'chromium blink' );
+				if ( G.lcd ) {
+					var degree = { CW: 0, NORMAL: 90, CCW: 180, UD: 270 }
+					bash( [ 'rotatelcd', degree[ rotate ] ], resetLocal );
+				} else {
+					bash( [ 'rotate', rotate ], resetLocal );
+				}
+				return
+			}
 			
 			G.cursor    = cursor;
 			G.rotate    = rotate;

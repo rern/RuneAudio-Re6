@@ -55,7 +55,7 @@ $desktop = isset( $_SERVER[ 'HTTP_USER_AGENT' ] )
 	<?php } ?>
 	
 </head>
-<body>
+<body<?=( $localhost ? ' class="dragscroll"' : '' )?>>
 
 <?php include 'index-body.php';?>
 

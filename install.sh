@@ -10,6 +10,11 @@ getinstallzip
 
 systemctl restart mpd
 
+# skip - version 9.3.1-1 bug 
+sed -i 's/#\(IgnorePkg\s*=\)/\1 dhcpcd/' /etc/pacman.conf
+
+sed -i 's/title/song/' /srv/http/data/mpd/counts
+
 if [[ -e /etc/systemd/system/libraryrandom.service ]]; then
 	if systemctl -q is-active libraryrandom; then
 		systemctl disable --now libraryrandom

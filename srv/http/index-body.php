@@ -91,10 +91,12 @@ if ( count( $files ) ) {
 }
 // context menus
 function menuli( $command, $icon, $label, $type = '' ) {
-	$class = in_array( $icon, [ 'refresh-library', 'tag', 'minus-circle', 'lastfm' ] ) ? $icon : '';
 	if ( $command === 'similar' ) {
 		$class.= ' sub';
 		$submenu = '<i class="fa fa-play-plus submenu" data-cmd="similar"></i>';
+	} else {
+		$class = in_array( $icon, [ 'refresh-library', 'tag', 'minus-circle', 'lastfm' ] ) ? $icon : '';
+		$submenu = '';
 	}
 	return '<a data-cmd="'.$command.'" class="'.$class.'"><i class="fa fa-'.$icon.'"></i>'.$label.'</a>'.$submenu;
 }
@@ -198,7 +200,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	<a id="network" class="settings"><i class="fa fa-network"></i>Network</a>
 	<a id="sources" class="settings sub"><i class="fa fa-folder-cascade"></i>Sources</a>
 		<i id="update" class="fa fa-refresh-library submenu"></i>
-	<a id="system" class="settings sub"><i class="fa fa-gear"></i>System</a>
+	<a id="system" class="settings sub"><i class="fa fa-plus-r"></i>System</a>
 		<i id="features" class="fa fa-sliders settings submenu"></i>
 <?php if ( $login ) { ?>
 	<a id="logout"><i class="fa fa-lock"></i>Logout</a>
@@ -230,7 +232,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 		<i id="displaylibrary2" class="fa fa-gear submenu"></i>
 	<a id="displayplayback" class="sub"><i class="fa fa-play-circle"></i>Playback</a>
 		<i id="displaycolor" class="submenu"><canvas id="iconrainbow"></i>
-	<a id="addons" class="sub"><i class="fa fa-addons"></i><?=( $addonsupdate ? '<span id="badgeaddons">'.$addonsupdate.'</span>' : '' )?>Addons</a>
+	<a id="addons" class="sub"><i class="fa fa-jigsaw"></i><?=( $addonsupdate ? '<span id="badgeaddons">'.$addonsupdate.'</span>' : '' )?>Addons</a>
 		<i id="guide" class="fa fa-question-circle submenu"></i>
 </div>
 
@@ -263,7 +265,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 				<i id="i-consume" class="fa fa-flash hide"></i>
 				<i id="i-librandom" class="fa fa-dice hide"></i>
 				<i id="i-update" class="fa fa-library blink hide"></i>
-				<i id="i-addons" class="fa fa-addons hide"></i>
+				<i id="i-addons" class="fa fa-plus-r hide"></i>
 				<i id="i-gpio" class="fa fa-gpio hide"></i>
 			</span>
 		</div>
@@ -279,7 +281,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 				<i id="ti-consume" class="fa fa-flash hide"></i>
 				<i id="ti-librandom" class="fa fa-dice hide"></i>
 				<i id="ti-update" class="fa fa-library blink hide"></i>
-				<i id="ti-addons" class="fa fa-addons hide"></i>
+				<i id="ti-plus-r" class="fa fa-plus-r hide"></i>
 				<i id="ti-gpio" class="fa fa-gpio hide"></i>
 			</div>
 			<span id="elapsed" class="controls1"></span>
@@ -442,10 +444,15 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	<textarea id="lyricstextarea" class="lyricstext"></textarea>
 	<div id="lyricsfade"></div>
 </div>
+<div id="volbar" class="transparent">
+	<i id="volbarL" class="swipe fa fa-minus fa-2x"></i>
+	<i id="volbarM" class="fa fa-volume fa-2x"></i>
+	<i id="volbarR" class="swipe fa fa-plus fa-2x"></i>
+</div>
 <div id="swipebar" class="transparent">
-	<i id="swipeL" class="fa fa-left fa-2x"></i>
+	<i id="swipeL" class="swipe fa fa-left fa-2x"></i>
 	<i class="fa fa-reload fa-2x"></i><i class="fa fa-swipe fa-2x"></i><i class="fa fa-gear fa-2x"></i>
-	<i id="swipeR" class="fa fa-right fa-2x"></i>
+	<i id="swipeR" class="swipe fa fa-right fa-2x"></i>
 </div>
 <div id="bar-bottom" class="hide">
 	<i id="tab-library" class="fa fa-library"></i>
