@@ -494,8 +494,8 @@ svg path.st1 {
 /* ---------------------- bars ----------------------*/
 #bar-top,
 #bar-bottom,
-#swipeL,
-#swipeR,
+.swipe,
+#volbar,
 #swipebar {
 	position: fixed;
 	width: 100%;
@@ -504,17 +504,24 @@ svg path.st1 {
 	z-index: 105;
 }
 #bar-bottom,
-#swipeL,
-#swipeR,
 #swipebar {
 	bottom: 0;
 }
+#volbar {
+	top: 0;
+}
+#volbarM {
+	width: 100%;
+}
+#volbarL,
 #swipeL {
 	left: 0;
 }
+#volbarR,
 #swipeR {
 	right: 0;
 }
+#volbar,
 #swipebar {
 	text-align: center;
 	background: var( --cga );
@@ -524,10 +531,10 @@ svg path.st1 {
 #swipebar i {
 	width: 80px;
 }
-#swipeL,
-#swipeR {
+.swipe {
 	width: 40px !important;
 	height: inherit;
+	text-align: center;
 	z-index: 10;
 }
 .content-top,

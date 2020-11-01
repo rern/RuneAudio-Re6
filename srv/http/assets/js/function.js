@@ -529,7 +529,7 @@ function getTitleWidth() {
 function hideGuide() {
 	G.guide = false;
 	$( '.map' ).removeClass( 'mapshow' );
-	$( '.band, #swipebar' ).addClass( 'transparent' );
+	$( '.band, #volbar, #swipebar' ).addClass( 'transparent' );
 	if ( !G.display.progressbar ) $( '#timebar' ).addClass( 'hide' );
 	$( '#volume-bar, #volume-text' ).addClass( 'hide' );
 	$( '.cover-save' ).css( 'z-index', '' );
