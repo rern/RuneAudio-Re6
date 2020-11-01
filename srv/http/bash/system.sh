@@ -105,6 +105,7 @@ i2c-bcm2708
 i2c-dev
 " >> /etc/modules-load.d/raspberrypi.conf
 		sed -i 's/fb0/fb1/' /etc/X11/xorg.conf.d/99-fbturbo.conf
+		echo "${args[2]}" > $filereboot
 		touch $dirsystem/lcd
 	else
 		sed -i '/hdmi_force_hotplug\|i2c_arm=on\|spi=on\|tft35a/ d' /boot/config.txt
