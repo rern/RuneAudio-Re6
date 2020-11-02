@@ -366,14 +366,7 @@ function htmlList( $mode, $lists ) { // non-file 'list' command
 					</div>';
 		}
 	}
-	$indexes = array_keys( array_flip( $indexes ) ); // faster than array_unique
-	$indexarray = range( 'A', 'Z' );
-	$indexbar = '<a class="wh">#</a>';
-	foreach( $indexarray as $i => $char ) {
-		$white = in_array( $char, $indexes ) ? 'wh' : '';
-		$half = $i % 2 ? ' half' : '';
-		$indexbar.= '<a class="'.$white.$half.'">'.$char."</a>\n";
-	}
+	$indexbar = indexbar( array_keys( array_flip( $indexes ) ) ); // faster than array_unique
 	return [ 'html' => $html, 'index' => $indexbar ];
 }
 function htmlTracks( $lists, $f, $filemode = '', $string = '' ) { // track list - no sort ($string: cuefile or search)
