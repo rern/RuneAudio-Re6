@@ -932,14 +932,11 @@ function renderLibraryList( data ) {
 		$( '#lib-search-close' ).html( '<i class="fa fa-times"></i><span>' + data.count + ' <grl>of</grl></span>&ensp;' );
 		var htmlpath = '';
 	} else if ( [ 'file', 'sd', 'nas', 'usb' ].indexOf( G.mode ) === -1 ) {
-		if ( 'index' in data || data.modetitle === 'ALBUM' ) { // track view - keep previous title
-			var htmlpath = '<i class="fa fa-'+ G.mode +'"></i> <span id="mode-title">'+ data.modetitle +'</span>';
-			if ( data.modetitle === 'ALBUM' ) htmlpath += '&ensp;<i id="button-coverart" class="fa fa-coverart hidden"></i>';
-		}
-		if ( G.mode === 'webradio' ) {
-			htmlpath += ' <i class="button-webradio-new fa fa-plus-circle"></i>';
-			$( '#button-lib-search' ).addClass( 'hide' );
-		}
+		// track view - keep previous title
+		var htmlpath = '<i class="fa fa-'+ G.mode +'"></i> <span id="mode-title">'+ data.modetitle +'</span>';
+		if ( G.mode === 'album' ) htmlpath += '&ensp;<i id="button-coverart" class="fa fa-coverart hidden"></i>';
+		if ( G.mode === 'webradio' ) htmlpath += '<i class="button-webradio-new fa fa-plus-circle"></i>';
+		$( '#button-lib-search' ).addClass( 'hide' );
 	} else { // dir breadcrumbs
 		var dir = data.modetitle.split( '/' );
 		var dir0 = dir[ 0 ];
