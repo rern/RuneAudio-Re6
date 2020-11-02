@@ -937,7 +937,7 @@ function renderLibraryList( data ) {
 			if ( data.modetitle === 'ALBUM' ) htmlpath += '&ensp;<i id="button-coverart" class="fa fa-coverart hidden"></i>';
 		}
 		if ( G.mode === 'webradio' ) {
-			htmlpath += ' <i class="button-webradio-new fa fa-plus-circle"></i>';
+			htmlpath = '<i class="fa fa-webradio"></i> <span id="mode-title"><n>WEBRADIO</n></span> <i class="button-webradio-new fa fa-plus-circle"></i>';
 			$( '#button-lib-search' ).addClass( 'hide' );
 		}
 	} else { // dir breadcrumbs
