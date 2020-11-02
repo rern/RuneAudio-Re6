@@ -24,7 +24,7 @@ $desktop = isset( $_SERVER[ 'HTTP_USER_AGENT' ] )
 <link rel="apple-touch-icon" sizes="152x152" href="/assets/img/apple-touch-icon-152x152.<?=$time?>.png">
 <link rel="apple-touch-icon" sizes="167x167" href="/assets/img/apple-touch-icon-167x167.<?=$time?>.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/apple-touch-icon-180x180.<?=$time?>.png">
-<link rel="icon" type="image/png" href="/assets/img/favicon-192x192.<?=$time?>.png" sizes="192x192">
+<link rel="icon" type="image/png" href="/assets/img/favicon.<?=$time?>.png" sizes="192x192">
 <meta name="apple-mobile-web-app-title" content="RuneAudio">
 <meta name="msapplication-TileColor" content="#000000">
 <meta name="msapplication-TileImage" content="/assets/img/mstile-144x144.<?=$time?>.png">
