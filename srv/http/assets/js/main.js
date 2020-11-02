@@ -1596,19 +1596,21 @@ $( '#lib-list' ).on( 'taphold', '.licoverimg',  function() {
 	query.modetitle = modetitle;
 	G.query.push( query );
 } );
-$( '#lib-index' ).on( 'click', 'a', function() {
-	var $this = $( this );
-//	if ( !$this.hasClass( 'wh' ) ) return
+$( '.index' ).on( 'click', 'a', function() {
+	var index = $( this ).find( 'wh' ).text()[ 0 ];
+	if ( !index ) return
 	
-	var index = $this.text();
 	if ( index === '#' ) {
-		$( 'html, body' ).scrollTop( 0 );
-		return
+		var scrollT = 0;
+	} else {
+		if ( G.library ) {
+			var el = G.mode === 'album' ? '.coverart' : '#lib-list li';
+		} else {
+			var el = '#pl-savedlist li';
+		}
+		var scrollT = $( el +'[data-index='+ index +']' ).offset().top;
 	}
-	
-	var album = $( '#lib-list .coverart' ).length;
-	var $el = album ? $( '.coverart[data-index='+ index +']' ) : $( '#lib-list li[data-index='+ index +']' );
-	$( 'html, body' ).scrollTop( $el.offset().top - ( G.bars ? 80 : 40 ) );
+	$( 'html, body' ).scrollTop( scrollT - ( G.bars ? 80 : 40 ) );
 } );
 // PLAYLIST /////////////////////////////////////////////////////////////////////////////////////
 $( '#button-playlist' ).click( function() {
@@ -1938,19 +1940,6 @@ $( '#pl-savedlist' ).on( 'click', 'li', function( e ) {
 		renderSavedPlaylist( $this.find( '.plname' ).text() );
 		if ( pladd ) playlistInsertTarget();
 	}
-} );
-$( '#pl-index' ).on( 'click', 'a', function() {
-	var $this = $( this );
-	if ( !$this.hasClass( 'wh' ) ) return
-	
-	var index = $this.text();
-	if ( index === '#' ) {
-		$( 'html, body' ).scrollTop( 0 );
-		return
-	}
-	
-	var offsettop = $( '#pl-savedlist li[data-index='+ index +']' ).offset().top;
-	$( 'html, body' ).scrollTop( offsettop - ( G.bars ? 80 : 40 ) );
 } );
 
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
