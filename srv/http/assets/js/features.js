@@ -202,7 +202,7 @@ $( '#setting-localbrowser' ).click( function( e ) {
 		, content     : localbrowserinfo
 		, preshow     : function() {
 			$( '#infoTextBox1' ).val( G.zoom );
-			$( '#infoTextBox' ).val( G.screenoff );
+			$( '#infoTextBox' ).val( G.screenoff / 60 );
 			$( 'input[name=inforadio]' ).val( [ G.rotate ] );
 			$( '#infoCheckBox input:eq( 0 )' ).prop( 'checked', G.cursor );
 			if ( G.lcd ) $( '#infoRadio' ).after( '<gr>(Rotate GPIO LCD: Reboot required.)</gr>' );
@@ -216,21 +216,23 @@ $( '#setting-localbrowser' ).click( function( e ) {
 		, ok          : function() {
 			var cursor    = $( '#infoCheckBox input:eq( 0 )' ).prop( 'checked' );
 			var rotate    = $( 'input[name=inforadio]:checked' ).val();
-			var screenoff = $( '#infoTextBox' ).val();
+			var screenoff = $( '#infoTextBox' ).val() * 60;
 			var zoom = parseFloat( $( '#infoTextBox1' ).val() ) || 1;
-			G.zoom      = zoom < 2 ? ( zoom < 0.5 ? 0.5 : zoom ) : 2;
-			if ( cursor == G.cursor && rotate == G.rotate && screenoff == G.screenoff && zoom == G.zoom ) return
-			
-			if ( screenoff != G.screenoff && cursor == G.cursor && rotate == G.rotate && zoom == G.zoom ) {
-				G.screenoff = screenoff;
-				notify( 'Chromium - Browser on RPi', 'Change ...', 'chromium blink' );
-				bash( [ 'screenoff', ( screenoff * 60 ) ], resetLocal );
-				return
-			}
-			
-			if ( rotate != G.rotate && cursor == G.cursor && screenoff == G.screenoff && zoom == G.zoom ) {
+			G.zoom = zoom < 2 ? ( zoom < 0.5 ? 0.5 : zoom ) : 2;
+			if ( rotate !== G.rotate ) {
 				G.rotate = rotate;
-				notify( 'Chromium - Browser on RPi', 'Change ...', 'chromium blink' );
+			} else {
+				rotate = ''
+			}
+			if ( screenoff !== G.screenoff ) {
+				G.screenoff = screenoff;
+			} else {
+				screenoff = ''
+			}
+			if ( cursor === G.cursor && rotate === '' && screenoff === '' && zoom === G.zoom ) return
+			
+			notify( 'Chromium - Browser on RPi', 'Change ...', 'chromium blink' );
+			if ( rotate !== '' && cursor === G.cursor && screenoff === '' && zoom === G.zoom ) { // rotate only
 				if ( G.lcd ) {
 					var degree = { CW: 0, NORMAL: 90, CCW: 180, UD: 270 }
 					bash( [ 'rotatelcd', degree[ rotate ] ], resetLocal );
@@ -240,12 +242,14 @@ $( '#setting-localbrowser' ).click( function( e ) {
 				return
 			}
 			
-			G.cursor    = cursor;
-			G.rotate    = rotate;
-			G.screenoff = screenoff;
-			G.zoom      = zoom;
-			notify( 'Chromium - Browser on RPi', 'Change ...', 'chromium blink' );
-			bash( [ 'localbrowserset', rotate, cursor, ( screenoff * 60 ), zoom ], function() {
+			if ( screenoff !== '' && cursor === G.cursor && rotate === '' && zoom === G.zoom ) { // screenoff only
+				bash( [ 'screenoff', screenoff ], resetLocal );
+				return
+			}
+			
+			G.cursor = cursor;
+			G.zoom = zoom;
+			bash( [ 'localbrowserset', rotate, screenoff, cursor, zoom ], function() {
 				resetLocal( 7000 );
 			} );
 		}

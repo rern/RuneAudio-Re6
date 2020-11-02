@@ -270,7 +270,7 @@ $( '#wlan' ).click( function() {
 } );
 $( '#lcd' ).click( function() {
 	G.lcd = $( this ).prop( 'checked' );
-	rebootText( G.lcd ? 'Enable' : 'Disable', 'LCD HAT display' );
+	rebootText( G.lcd ? 'Enable' : 'Disable', 'GPIO LCD display' );
 	notify( 'LCD HAT display', G.bluetooth, 'gear' );
 	bash( [ 'lcd', G.lcd, G.reboot.join( '\n' ) ], resetLocal );
 } );

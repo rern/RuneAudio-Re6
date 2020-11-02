@@ -641,10 +641,6 @@ svg path.st1 {
 	height: 100%;
 	touch-action: manipulation; /* fix: Unable to preventDefault inside passive event listener */
 }
-#page-library,
-#plag-playlist {
-	overflow-y: auto;
-}
 #page-playback {
 	padding: 120px 0 60px;
 }
@@ -2190,10 +2186,6 @@ li.active .li1 bl {
 	display: block;
 	padding: 5px 10px 0 0;
 }
-#pl-list .li1,
-#pl-list .li2 {
-	margin-left: 50px;
-}
 #pl-list .li1 a {
 	display: inline-block;
 	vertical-align: middle;
@@ -2704,7 +2696,6 @@ li.active .li2 bl {
 @media( max-width: 480px ) and ( max-height: 320px ) {
 	#page-playback {
 		--scale: 0.6;
-		max-height: 100%;
 		padding: 30px 0 0 !important;
 	}
 	#sampling,

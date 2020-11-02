@@ -34,7 +34,7 @@ rotate() {
 			UD )  matrix='-1 0 1 0 -1 1 0 0 1';;
 		esac
 		sed -e "s/ROTATION_SETTING/$rotate/
-		" -e "s/MATRIX_SETTING/$matrix/" /etc/X11/xinit/rotateconf | tee $rotateconf $path-rotatefile
+		" -e "s/MATRIX_SETTING/$matrix/" $rotateconf | tee $rotateconf $path-rotatefile
 	fi
 	ln -sf /srv/http/assets/img/{$rotate,splash}.png
 }
@@ -126,24 +126,26 @@ localbrowser )
 	if [[ ${args[1]} == true ]]; then
 		enable localbrowser localbrowser
 		systemctl disable getty@tty1
-		sed -i 's/\(console=\).*/\1tty3 plymouth.enable=0 quiet loglevel=0 logo.nologo vt.global_cursor_default=0/' /boot/cmdline.txt
+		sed -i 's/tty1/tty3/' /boot/cmdline.txt
 	else
 		disable localbrowser localbrowser
 		systemctl enable getty@tty1
-		sed -i 's/\(console=\).*/\1tty1/' /boot/cmdline.txt
+		sed -i 's/tty3/tty1/' /boot/cmdline.txt
 		/srv/http/bash/ply-image /srv/http/assets/img/splash.png
 	fi
 	pushRefresh
 	;;
 localbrowserset )
 	rotate=${args[1]}
-	cursor=${args[2]}
-	screenoff=${args[3]}
+	screenoff=${args[2]}
+	cursor=${args[3]}
 	zoom=${args[4]}
 	path=$dirsystem/localbrowser
 	
-	rotate $rotate
-	screenoff $screenoff
+	if [[ -n $rotate ]]; then
+		[[ $rotate =~ ^(0|90|180|270)$ ]] && rotatelcd $rotate || rotate $rotate
+	fi
+	[[ -n $screenoff ]] && screenoff $screenoff
 		
 	if [[ $cursor == true ]]; then
 		touch $path-cursor
