@@ -66,7 +66,7 @@ case 'list':
 	} );
 	$html = '';
 	foreach( $array as $each ) {
-		$index = mb_substr( $each->sort, 0, 1, 'UTF-8' );
+		$index = strtoupper( mb_substr( $each->sort, 0, 1, 'UTF-8' ) );
 		$indexes[] = $index;
 		$html.= '<li class="pl-folder" data-index="'.$index.'">'
 					.'<i class="fa fa-list-ul pl-icon" data-target="#menu-playlist">'
