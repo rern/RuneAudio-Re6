@@ -302,9 +302,6 @@ pre {
 	-ms-overflow-style: none;
 	-webkit-overflow-scrolling: touch; /* ios momentum scroll */
 }
-pre::-webkit-scrollbar {
-	width: 0;
-}
 code {
 	font-family: 'Inconsolata';
 	font-size: 14px;

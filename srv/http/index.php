@@ -42,9 +42,6 @@ $desktop = isset( $_SERVER[ 'HTTP_USER_AGENT' ] )
 	<?php if ( $localhost ) { ?> 
 <link rel="stylesheet" href="/assets/css/simple-keyboard.min.<?=$time?>.css">
 <link rel="stylesheet" href="/assets/css/keyboard.<?=$time?>.css">
-<style>
-	body::-webkit-scrollbar { display: none; }
-</style>
 	<?php } ?>
 <link rel="stylesheet" href="/assets/css/info.<?=$time?>.css">
 <link rel="stylesheet" href="/assets/css/roundslider.min.<?=$time?>.css">

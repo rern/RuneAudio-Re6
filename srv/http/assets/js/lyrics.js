@@ -173,7 +173,7 @@ getLyrics = function() {
 	banner( 'Lyrics', 'Fetch ...', 'search blink', 20000 );
 }
 lyricsShow = function( data ) {
-	lyrics = data;
+	currentlyrics = data;
 	var lyricshtml = data.replace( /\n/g, '<br>' ) +'<br><br><br>·&emsp;·&emsp;·';
 	$( '#lyricstitle' ).text( lyricsTitle );
 	$( '#lyricsartist' ).text( lyricsArtist );
