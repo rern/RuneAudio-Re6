@@ -126,11 +126,11 @@ localbrowser )
 	if [[ ${args[1]} == true ]]; then
 		enable localbrowser localbrowser
 		systemctl disable getty@tty1
-		sed -i 's/\(console=\).*/\1tty3 plymouth.enable=0 quiet loglevel=0 logo.nologo vt.global_cursor_default=0/' /boot/cmdline.txt
+		sed -i 's/tty1/tty3/' /boot/cmdline.txt
 	else
 		disable localbrowser localbrowser
 		systemctl enable getty@tty1
-		sed -i 's/\(console=\).*/\1tty1/' /boot/cmdline.txt
+		sed -i 's/tty3/tty1/' /boot/cmdline.txt
 		/srv/http/bash/ply-image /srv/http/assets/img/splash.png
 	fi
 	pushRefresh
