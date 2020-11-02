@@ -34,7 +34,7 @@ rotate() {
 			UD )  matrix='-1 0 1 0 -1 1 0 0 1';;
 		esac
 		sed -e "s/ROTATION_SETTING/$rotate/
-		" -e "s/MATRIX_SETTING/$matrix/" /etc/X11/xinit/rotateconf | tee $rotateconf $path-rotatefile
+		" -e "s/MATRIX_SETTING/$matrix/" $rotateconf | tee $rotateconf $path-rotatefile
 	fi
 	ln -sf /srv/http/assets/img/{$rotate,splash}.png
 }
@@ -137,13 +137,15 @@ localbrowser )
 	;;
 localbrowserset )
 	rotate=${args[1]}
-	cursor=${args[2]}
-	screenoff=${args[3]}
+	screenoff=${args[2]}
+	cursor=${args[3]}
 	zoom=${args[4]}
 	path=$dirsystem/localbrowser
 	
-	rotate $rotate
-	screenoff $screenoff
+	if [[ -n $rotate ]]; then
+		[[ $rotate =~ ^(0|90|180|270)$ ]] && rotatelcd $rotate || rotate $rotate
+	fi
+	[[ -n $screenoff ]] && screenoff $screenoff
 		
 	if [[ $cursor == true ]]; then
 		touch $path-cursor

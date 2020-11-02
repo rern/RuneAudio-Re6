@@ -46,7 +46,7 @@ fi
 xinitrc=/etc/X11/xinit/xinitrc
 if [[ -e $xinitrc ]]; then
 	if [[ $lcd == true ]]; then
-		rotate=$( grep rotate /boot/config.txt | sed 's/.*rotate=\(.*\)/\1/' )
+		rotate=$( grep :rotate= /boot/config.txt | cut -d= -f3 )
 		case $rotate in
 			0 )   rotate=CW ;;
 			90 )  rotate=NORMAL ;;
@@ -55,13 +55,13 @@ if [[ -e $xinitrc ]]; then
 		esac
 	else
 		file='/etc/X11/xorg.conf.d/99-raspi-rotate.conf'
-		[[ -e $file ]] && rotate=$( grep rotate $file | cut -d'"' -f4 ) || rotate=NORMAL
+		[[ -e $file ]] && rotate=$( grep rotate $file 2> /dev/null | cut -d'"' -f4 ) || rotate=NORMAL
 	fi
 	data+='
 	, "cursor"          : '$( grep -q 'cursor yes' $xinitrc && echo true || echo false )'
 	, "localbrowser"    : '$( systemctl -q is-enabled localbrowser && echo true || echo false )'
 	, "rotate"          : "'$rotate'"
-	, "screenoff"       : '$(( $( grep 'xset dpms .*' $xinitrc | cut -d' ' -f5 ) / 60 ))'
+	, "screenoff"       : '$(( $( grep 'xset dpms .*' $xinitrc | cut -d' ' -f5 ) ))'
 	, "zoom"            : '$( grep factor $xinitrc | cut -d'=' -f3 )
 fi
 
