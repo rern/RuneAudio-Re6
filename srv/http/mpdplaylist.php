@@ -1,4 +1,6 @@
 <?php
+include '/srv/http/indexbar.php';
+
 $cmd = $_POST[ 'cmd' ] ?? $argv[ 1 ];
 // current, delete, edit, get, list, load, save
 switch( $cmd ) {
@@ -73,14 +75,7 @@ case 'list':
 					.'<span class="plname">'.$each->name.'</span>'
 			 	.'</li>';
 	}
-	$indexes = array_keys( array_flip( $indexes ) );
-	$indexarray = range( 'A', 'Z' );
-	$indexbar = '<a class="wh">#</a>';
-	foreach( $indexarray as $i => $char ) {
-		$white = in_array( $char, $indexes ) ? 'wh' : '';
-		$half = $i % 2 ? ' half' : '';
-		$indexbar.= '<a class="'.$white.$half.'">'.$char."</a>\n";
-	}
+	$indexbar = indexbar( array_keys( array_flip( $indexes ) ) );
 	$counthtml = '&emsp;<span class="pl-title">PLAYLISTS</span>&emsp;'
 				.'<whl id="pl-savedlist-count">'.number_format( $count ).'</whl>'
 				.'<i class="fa fa-file-playlist"></i>';
@@ -88,6 +83,7 @@ case 'list':
 		  'html'      => $html
 		, 'index'     => $indexbar
 		, 'counthtml' => $counthtml
+		, 'indexes'   => $indexes
 	] );
 	break;
 case 'load': // load saved playlist to current

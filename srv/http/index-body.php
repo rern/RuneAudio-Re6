@@ -376,7 +376,8 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	</div>
 	<div id="lib-mode-list" class="list" data-count="<?=$counts->song?>"><?=$modehtml?></div>
 	<ul id="lib-list" class="list"></ul>
-	<div id="lib-index" class="hide"></div>
+	<div id="lib-index" class="index index0"></div>
+	<div id="lib-index1" class="index index1"></div>
 </div>
 
 <div id="page-playlist" class="page hide">
@@ -407,7 +408,8 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	</div>
 	<ul id="pl-list" class="list playlist"></ul>
 	<ul id="pl-savedlist" class="list hide"></ul>
-	<div id="pl-index" class="hide"></div>
+	<div id="pl-index" class="index index0"></div>
+	<div id="pl-index1" class="index index1"></div>
 </div>
 
 <?=$menu?>

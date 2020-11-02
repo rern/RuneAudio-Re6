@@ -937,7 +937,7 @@ function renderLibraryList( data ) {
 			if ( data.modetitle === 'ALBUM' ) htmlpath += '&ensp;<i id="button-coverart" class="fa fa-coverart hidden"></i>';
 		}
 		if ( G.mode === 'webradio' ) {
-			htmlpath = '<i class="fa fa-webradio"></i> <span id="mode-title"><n>WEBRADIO</n></span> <i class="button-webradio-new fa fa-plus-circle"></i>';
+			htmlpath += ' <i class="button-webradio-new fa fa-plus-circle"></i>';
 			$( '#button-lib-search' ).addClass( 'hide' );
 		}
 	} else { // dir breadcrumbs
@@ -989,12 +989,12 @@ function renderLibraryList( data ) {
 			.toggleClass( 'bars-on', G.bars );
 		if ( 'index' in data ) {
 			$( '#lib-list' ).css( 'width', '' );
-			$( '#lib-index' )
-				.html( data.index )
-				.removeClass( 'hide' );
+			$( '#lib-index' ).html( data.index[ 0 ] )
+			$( '#lib-index1' ).html( data.index[ 1 ] )
+			$( '#lib-index, #lib-index1' ).removeClass( 'hide' );
 		} else {
 			$( '#lib-list' ).css( 'width', '100%' );
-			$( '#lib-index' ).addClass( 'hide' );
+			$( '#lib-index, #lib-index1' ).addClass( 'hide' );
 		}
 		if ( $( '#liimg' ).length ) {
 			$( '#liimg' ).on( 'load', function() {
@@ -1279,8 +1279,8 @@ function renderPlaylistList() {
 		$( '#pl-savedlist' ).html( data.html +'<p></p>' ).promise().done( function() {
 			$( '.list p' ).toggleClass( 'bars-on', G.bars );
 			$( '#pl-savedlist' ).css( 'width', '' );
-			$( '#pl-index' ).html( data.index );
-			$( '#pl-index' ).removeClass( 'hide' );
+			$( '#pl-index' ).html( data.index[ 0 ] );
+			$( '#pl-index1' ).html( data.index[ 1 ] );
 			$( 'html, body' ).scrollTop( 0 );
 			loader( 'hide' );
 			$( 'body' ).on( 'DOMSubtreeModified', '#pl-savedlist', function() {
@@ -1300,7 +1300,7 @@ function renderSavedPlaylist( name ) {
 		$( '#pl-savedlist' ).html( data.html +'<p></p>' ).promise().done( function() {
 			$( '.list p' ).toggleClass( 'bars-on', G.bars );
 			$( '#pl-savedlist' ).css( 'width', '100%' );
-			$( '#pl-index' ).addClass( 'hide' );
+			$( '#pl-index, #pl-index1' ).addClass( 'hide' );
 			$( 'html, body' ).scrollTop( 0 );
 			loader( 'hide' );
 		} );

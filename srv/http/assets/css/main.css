@@ -1523,9 +1523,6 @@ svg path.st1 {
 	scrollbar-width: none;
 	-ms-overflow-style: none;
 }
-.lyricstext::-webkit-scrollbar {
-	width: 0;
-}
 #lyricstextoverlay {
 	width: 100%;
 	padding-left: 15px;
@@ -1872,8 +1869,7 @@ input[type=text] {
 	font-size: 24px;
 	color: var( --cw );
 }
-#lib-index,
-#pl-index {
+.index {
 	position: fixed;
 	right: 0;
 	width: 38px;
@@ -1885,12 +1881,13 @@ input[type=text] {
 	background: var( --cga );
 	z-index: 5;
 }
-#lib-index.bars-off,
-#pl-index.bars-off {
+.index1 {
+	display: none;
+}
+.index.bars-off {
 	padding: 60px 0 20px 0 !important;
 }
-#lib-index a,
-#pl-index a {
+.index a {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -2444,8 +2441,13 @@ li.active .li2 bl {
 	}
 }
 @media(max-height: 590px) {
-	.half {
+	.index0 {
 		display: none !important;
+	}
+	.index1 {
+		display: flex;
+		padding-top: 50px;
+		line-height: calc( 100vh / 17 );
 	}
 	#infoicon.barsalways {
 		display: none;

@@ -1598,7 +1598,7 @@ $( '#lib-list' ).on( 'taphold', '.licoverimg',  function() {
 } );
 $( '#lib-index' ).on( 'click', 'a', function() {
 	var $this = $( this );
-	if ( !$this.hasClass( 'wh' ) ) return
+//	if ( !$this.hasClass( 'wh' ) ) return
 	
 	var index = $this.text();
 	if ( index === '#' ) {
@@ -1606,12 +1606,9 @@ $( '#lib-index' ).on( 'click', 'a', function() {
 		return
 	}
 	
-	if ( $( '#lib-list .coverart' ).length ) {
-		var offsettop = $( '.coverart[data-index='+ index +']' ).offset().top;
-	} else {
-		var offsettop = $( '#lib-list li[data-index='+ index +']' ).offset().top;
-	}
-	$( 'html, body' ).scrollTop( offsettop - ( G.bars ? 80 : 40 ) );
+	var album = $( '#lib-list .coverart' ).length;
+	var $el = album ? $( '.coverart[data-index='+ index +']' ) : $( '#lib-list li[data-index='+ index +']' );
+	$( 'html, body' ).scrollTop( $el.offset().top - ( G.bars ? 80 : 40 ) );
 } );
 // PLAYLIST /////////////////////////////////////////////////////////////////////////////////////
 $( '#button-playlist' ).click( function() {
