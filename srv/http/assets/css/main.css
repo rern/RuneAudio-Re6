@@ -2709,10 +2709,6 @@ li.active .li2 bl {
 		padding-top: 30px !important;
 		overflow: hidden;
 	}
-	#page-library,
-	#page-playlist {
-		overflow-y: auto;
-	}
 	#sampling,
 	#time-knob,
 	#volume-knob,
