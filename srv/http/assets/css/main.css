@@ -639,11 +639,8 @@ svg path.st1 {
 }
 .page {
 	height: 100%;
-	touch-action: manipulation; /* fix: Unable to preventDefault inside passive event listener */
-}
-#page-library,
-#plag-playlist {
 	overflow-y: auto;
+	touch-action: manipulation; /* fix: Unable to preventDefault inside passive event listener */
 }
 #page-playback {
 	padding: 120px 0 60px;
@@ -2189,10 +2186,6 @@ li.active .li1 bl {
 #pl-savedlist .li1 {
 	display: block;
 	padding: 5px 10px 0 0;
-}
-#pl-list .li1,
-#pl-list .li2 {
-	margin-left: 50px;
 }
 #pl-list .li1 a {
 	display: inline-block;
