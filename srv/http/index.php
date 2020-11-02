@@ -20,7 +20,7 @@ $desktop = isset( $_SERVER[ 'HTTP_USER_AGENT' ] )
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="msapplication-tap-highlight" content="no" />
-<title>RuneAudio+R</title>
+<title>R+R</title>
 <link rel="apple-touch-icon" sizes="152x152" href="/assets/img/apple-touch-icon-152x152.<?=$time?>.png">
 <link rel="apple-touch-icon" sizes="167x167" href="/assets/img/apple-touch-icon-167x167.<?=$time?>.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/apple-touch-icon-180x180.<?=$time?>.png">
