@@ -115,6 +115,9 @@ hr {
 	max-width: 768px;
 	padding: 60px 55px 100px 55px;
 }
+.container.progress {
+	padding-top: 0;
+}
 svg {
 	-webkit-filter: drop-shadow( 1px 1px 1px #000000 );
 	filter: drop-shadow( 1px 1px 1px #000000 );
@@ -190,15 +193,19 @@ svg path.st1 {
 }
 #close {
 	float: right;
-	font-size: 2em !important;
+	font-size: 28px;
 	color: var( --cm );
+	cursor: pointer;
 }
-#closeprogress {
-	margin-top: 0;
-}
-#issues {
-	float: right;
-	margin-top: 3px;
+heading {
+	display: inline-block;
+	margin: 20px 0 10px 0;
+	padding-bottom: 5px;
+	width: 100%;
+	line-height: 35px;
+	font-size: 24px;
+	font-weight: 300;
+	border-bottom: 1px solid var( --cg );
 }
 #list {
 	padding-left: 25px;

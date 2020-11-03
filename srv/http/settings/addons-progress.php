@@ -61,12 +61,8 @@ if ( $branch !== 'master' ) $installurl = str_replace( 'raw/master', 'raw/'.$bra
 <body>
 
 <div id="splash" class="hide"><svg viewBox="0 0 480.2 144.2"><?=$logo?></svg></div>
-<div class="container">
-	<h1>
-		<i class="fa fa-jigsaw gr"></i>&ensp;<span><?=$heading?></span>
-		<i class="close-root fa fa-times"></i>
-	</h1>
-	<p class="bl"></p>
+<div class="container progress">
+	<heading>Addons Progress<i id="close" class="fa fa-times"></i></heading>
 	<p id="wait">
 		<w><?=$title?></w><br>
 		<i class="fa fa-gear fa-spin"></i>Please wait until finished ...
@@ -76,7 +72,7 @@ if ( $branch !== 'master' ) $installurl = str_replace( 'raw/master', 'raw/'.$bra
 <script src="/assets/js/info.<?=$time?>.js"></script>
 <script src="/assets/js/banner.<?=$time?>.js"></script>
 <script>
-$( '.close-root' ).click( function() { 
+$( '#close' ).click( function() { 
 	if ( $( '#wait' ).length ) {
 		$.post( 'cmd.php', {
 			  cmd : 'sh'
