@@ -66,14 +66,13 @@ var stopwatch = '<span class="stopwatch">'
 				+'<i class="fa fa-stopwatch-i"></i>'
 				+'<i class="fa fa-stopwatch-o"></i>'
 				+'</span>';
-var timer = false; // for 'setInterval' status check
 // get mpd status with passive.js on pushstream connect
 displayGet( function( data ) {
 	G.display = data;
 	G.bars = data.bars;
 	$.event.special.tap.emitTapOnTaphold = false; // suppress tap on taphold
 	$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
-	$.event.special.tap.tapholdThreshold = 1000;
+//	$.event.special.tap.tapholdThreshold = G.status.lcd && G.localhost ? 3000 : 1000; // set after get status in $( '#coverart' ).one( 'load'...
 	$( '#swipebar, .page' ).on( 'swipeleft swiperight', function( e ) {
 		if ( G.bars || !G.status.mpd || G.swipepl || G.drag ) return
 		
@@ -99,6 +98,7 @@ $( '#coverart' ).one( 'load', function() {
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 	if ( G.status.playlistlength ) $( '#coverart' ).removeClass( 'hide' );
 	G.lazyload = new LazyLoad( { elements_selector: '.lazy' } );
+	$.event.special.tap.tapholdThreshold = 3000;
 } ).on( 'load', function() {
 	var covervu = $( '#coverart' ).attr( 'src' ).split( '/' ).pop().slice( 0, 2 ) === 'vu';
 	$( '#divcover, #coverart' ).toggleClass( 'vu', covervu );
