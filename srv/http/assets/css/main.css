@@ -2716,4 +2716,6 @@ li.active .li2 bl {
 	#volume-knob,
 	#guide-lyrics { display: none; }
 	#coverart-block { margin-bottom : 0; }
+	#divcover .edit,
+	#divcover .cover-save { top: 0; }
 }
