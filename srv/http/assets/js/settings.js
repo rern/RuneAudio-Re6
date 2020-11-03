@@ -108,7 +108,7 @@ onVisibilityChange( function( visible ) {
 	if ( visible ) {
 		refreshData();
 	} else {
-		if ( page === 'network' ) {
+		if ( page === 'networks' ) {
 			clearInterval( intervalscan );
 		} else if ( page === 'system' ) {
 			clearInterval( intervalcputime );
@@ -156,7 +156,7 @@ $( '#close' ).click( function() {
 			}
 		} );
 	} else {
-		if ( page === 'network' && $( '#listinterfaces li' ).hasClass( 'bt' ) ) bash( 'bluetoothctl scan off' );
+		if ( page === 'networks' && $( '#listinterfaces li' ).hasClass( 'bt' ) ) bash( 'bluetoothctl scan off' );
 		location.href = '/';
 	}
 } );

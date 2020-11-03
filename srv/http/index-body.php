@@ -197,7 +197,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 <?php } else { ?>
 	<a id="mpd" class="settings"><i class="fa fa-mpd"></i>MPD</a>
 <?php } ?>
-	<a id="network" class="settings"><i class="fa fa-network"></i>Network</a>
+	<a id="networks" class="settings"><i class="fa fa-network"></i>Networks</a>
 	<a id="sources" class="settings sub"><i class="fa fa-folder-cascade"></i>Sources</a>
 		<i id="update" class="fa fa-refresh-library submenu"></i>
 	<a id="system" class="settings sub"><i class="fa fa-plus-r"></i>System</a>

@@ -43,7 +43,7 @@ $sudo = '/usr/bin/sudo /usr/bin';
 $icon = [
 	  'features' => 'sliders'
 	, 'mpd'      => 'mpd'
-	, 'network'  => 'network'
+	, 'networks' => 'networks'
 	, 'sources'  => 'folder-cascade'
 	, 'system'   => 'gear'
 ];
@@ -72,7 +72,7 @@ include "settings/$page.php";
 <script src="/assets/js/<?=$page?>.<?=$time?>.js"></script>
 	<?php	if ( $page === 'mpd' || $page === 'system' ) { ?>
 <script src="/assets/js/plugin/jquery.selectric.min.<?=$time?>.js"></script>
-	<?php	} else if ( $page === 'network' ) { ?>
+	<?php	} else if ( $page === 'networks' ) { ?>
 <script src="/assets/js/plugin/qrcode.min.<?=$time?>.js"></script>
 	<?php	}
 		  } ?>

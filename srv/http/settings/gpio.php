@@ -3,7 +3,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>R+R GPIO</title>
+	<title>R+R GPIO Relays</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -88,14 +88,15 @@ function opttime( $n, $minimum = 1 ) {
 
 <body>
 <div class="head">
-	<i class="page-icon fa fa-gpio"></i><span class="title">GPIO</span><a href="/"><i id="close" class="fa fa-times"></i></a><i id="help" class="fa fa-question-circle"></i>
+	<i class="page-icon fa fa-gpio"></i><span class="title">GPIO Relays</span><a href="/"><i id="close" class="fa fa-times"></i></a><i id="help" class="fa fa-question-circle"></i>
 </div>
 
 <div class="container">
 
-<heading>Settings</heading>
+<br>
 <span class="help-block hide">
-	Control <wh>GPIO</wh> connected relay module for power on /off equipments in sequence. 
+	Control <wh>GPIO</wh> connected relay module for power on /off equipments in sequence.
+	<br>&nbsp
 </span>
 
 <form id="gpioform">
@@ -144,7 +145,7 @@ function opttime( $n, $minimum = 1 ) {
 <script src="/assets/js/plugin/jquery-2.2.4.min.<?=$time?>.js"></script>
 <script src="/assets/js/plugin/jquery.selectric.min.<?=$time?>.js"></script>
 <script src="/assets/js/info.<?=$time?>.js"></script>
-<script src="/assets/js/gpiosettings.<?=$time?>.js"></script>
+<script src="/assets/js/gpio.<?=$time?>.js"></script>
 
 </body>
 </html>
