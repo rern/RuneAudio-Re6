@@ -11,7 +11,7 @@ $branch = $sh[ 2 ];
 $addon = $addons[ $alias ];
 if ( $alias !== 'cove' ) {
 	$heading = 'Addons Progress';
-	$href = '/addons.php';
+	$href = '/settings/addons.php';
 	$title = preg_replace( '/\**$/', '', $addon[ 'title' ] );
 } else {
 	$heading = 'CoverArt Thumbnails';

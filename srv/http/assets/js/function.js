@@ -38,12 +38,12 @@ function addonsdl( exit ) {
 				, message : 'Addons Menu cannot be updated.'
 						   +'<br>Root partition has <wh>less than 1 MB free space</wh>.'
 				, ok      : function() {
-					location.href = 'addons.php';
+					location.href = '/settings/addons.php';
 				}
 			} );
 			break;
 		default:
-			location.href = 'addons.php';
+			location.href = '/settings/addons.php';
 	}
 }
 function bookmarkThumbReplace( $this, newimg ) {
@@ -1583,7 +1583,7 @@ function switchPage( page ) {
 	}
 }
 function thumbUpdate( path ) {
-	var form = '<form id="formtemp" action="addons-progress.php" method="post">'
+	var form = '<form id="formtemp" action="/settings/addons-progress.php" method="post">'
 					+'<input type="hidden" name="sh[]" value="cove">'
 					+'<input type="hidden" name="sh[]" value="Update">'
 					+'<input type="hidden" name="sh[]" value="master">'

@@ -450,7 +450,7 @@ $( '#addons' ).click( function () {
 				}
 			} );
 		} else {
-			location.href = 'addons.php';
+			location.href = '/settings/addons.php';
 		}
 	} );
 	loader( 'show' );
