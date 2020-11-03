@@ -127,10 +127,8 @@ var cmdphp = 'cmd.php';
 var dirsystem = '/srv/http/data/system';
 var filereboot = '/srv/http/data/shm/reboot';
 
-if ( page === 'credits' ) {
-	showContent();
-	getReset();
-}
+document.title = 'R+R '+ ( page === 'mpd' ? 'MPD' : page.charAt( 0 ).toUpperCase() + page.slice( 1 ) );
+
 $( '#close' ).click( function() {
 	if ( page === 'system' || page === 'features' ) {
 		getReset( function() {
