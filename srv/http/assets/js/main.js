@@ -129,7 +129,7 @@ $( '#button-settings, #badge' ).click( function() {
 	$( '.contextmenu' ).addClass( 'hide' );
 } );
 $( '.settings' ).click( function() {
-	location.href = 'index-settings.php?p='+ this.id;
+	location.href = 'settings.php?p='+ this.id;
 } );
 $( '#snapclient' ).click( function() {
 	bash( '/srv/http/bash/snapcast.sh '+ ( G.status.snapclient ? 'stop' : 'start' ), function( data ) {
@@ -1157,7 +1157,7 @@ $( '.mode' ).click( function() {
 			webRadioNew();
 		} else {
 			loader( 'show' );
-			location.href = 'index-settings.php?p=sources';
+			location.href = 'settings.php?p=sources';
 		}
 		return
 	}

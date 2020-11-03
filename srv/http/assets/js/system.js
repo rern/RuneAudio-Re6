@@ -182,7 +182,7 @@ $( '#timezone, #i2smodule' ).selectric( { maxHeight: 400 } );
 $( '.selectric-input' ).prop( 'readonly', 1 ); // fix - suppress screen keyboard
 
 $( '.container' ).on( 'click', '.settings', function() {
-	location.href = 'index-settings.php?p='+ $( this ).data( 'setting' );
+	location.href = 'settings.php?p='+ $( this ).data( 'setting' );
 } );
 $( 'body' ).on( 'click touchstart', function( e ) {
 	if ( !$( e.target ).closest( '.i2s' ).length && $( '#i2smodule option:selected' ).val() === 'none' ) {
