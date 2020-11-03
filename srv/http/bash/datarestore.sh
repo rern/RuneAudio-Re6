@@ -38,7 +38,7 @@ fi
 # chromium
 if [[ -e /usr/bin/chromium ]]; then
 	[[ -e $dirsystem/xinitrc ]] && cp -f $dirsystem/xinitrc /etc/X11/xinit/xinitrc
-	[[ -e $dirsystem/rotatefile ]] && cp $dirsystem/rotatefile /etc/X11/xorg.conf.d/99-raspi-rotate.conf
+	[[ -e $dirsystem/rotatefile ]] && cp -f $dirsystem/rotatefile /etc/X11/xorg.conf.d/99-raspi-rotate.conf
 	[[ -e $dirsystem/calibration ]] && cp -f $dirsystem/calibration /etc/X11/xorg.conf.d/99-calibration.conf
 	if [[ ! -e $dirsystem/localbrowser ]]; then
 		sed -i 's/\(console=\).*/\1tty1/' /boot/cmdline.txt
