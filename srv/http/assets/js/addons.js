@@ -19,7 +19,7 @@ function postcmd() {
 }
 //---------------------------------------------------------------------------
 data = {}
-$( '.close-root' ).click( function() {
+$( '#close' ).click( function() {
 	location.href = '/';
 } );
 // revision show/hide
@@ -31,12 +31,11 @@ $( '.revision' ).click( function(e) {
 // sroll up click
 $( '#list li' ).click( function() {
 	var alias = this.getAttribute( 'alias' );
-	document.getElementById( alias ).scrollIntoView( true );
-	window.scrollBy( 0, -10 );
+	$( 'html, body' ).scrollTop( $( '#'+ alias ).offset().top - 50 );
 } );
 // sroll top
 $( 'legend' ).click( function() {
-	window.scrollTo( 0, 0 );
+	$( 'html, body' ).scrollTop( 0 );
 } );
 
 // branch test
