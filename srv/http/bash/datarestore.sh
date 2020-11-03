@@ -37,13 +37,10 @@ if [[ $( cat $dirsystem/hostname ) != RuneAudio ]]; then
 fi
 # chromium
 if [[ -e /usr/bin/chromium ]]; then
-	file=$dirsystem/localbrowser
-	[[ -e $file-cursor ]] && sed -i -e "s/\(-use_cursor \).*/\1yes \&/" /etc/X11/xinit/xinitrc
-	[[ -e $file-rotatefile ]] && cp $file-rotatefile /etc/X11/xorg.conf.d/99-raspi-rotate.conf
-	screenoff=$( cat $file-screenoff )
-	[[ -e $file-screenoff ]] && sed -i 's/\(xset dpms \).*/\1'$screenoff $screenoff $screenoff' \&/' /etc/X11/xinit/xinitrc
-	[[ -e $file-zoom ]] && sed -i 's/\(factor=.*\)/\1'$( cat $file-zoom )'/' /etc/X11/xinit/xinitrc
-	if [[ ! -e $file ]]; then
+	[[ -e $dirsystem/xinitrc ]] && cp -f $dirsystem/xinitrc /etc/X11/xinit/xinitrc
+	[[ -e $dirsystem/rotatefile ]] && cp $dirsystem/rotatefile /etc/X11/xorg.conf.d/99-raspi-rotate.conf
+	[[ -e $dirsystem/calibration ]] && cp -f $dirsystem/calibration /etc/X11/xorg.conf.d/99-calibration.conf
+	if [[ ! -e $dirsystem/localbrowser ]]; then
 		sed -i 's/\(console=\).*/\1tty1/' /boot/cmdline.txt
 		enable=' getty@tty1'
 		disable+=' localbrowser'
