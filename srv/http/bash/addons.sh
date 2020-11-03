@@ -114,7 +114,8 @@ getinstallzip() {
 	mkdir -p $tmpdir
 	bsdtar -tf $branch.zip | cut -d/ -f2- | grep / | grep -v '/$' | sed 's|^|/|' # list files
 	bsdtar -xf $branch.zip --strip 1 -C $tmpdir
-	rm $branch.zip $tmpdir/* &> /dev/null
+	rm $branch.zip $tmpdir/* /srv/http/* &> /dev/null
+	rm -rf /srv/http/{assets,bash,settings}
 	cp -rp $tmpdir/* /
 	rm -r $tmpdir
 	chown -R http:http /srv/http
