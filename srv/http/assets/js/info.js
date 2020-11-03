@@ -107,6 +107,7 @@ infocontenthtml = heredoc( function() { /*
 			</div>
 			<p id="infoFooter" class="infomessage hide"></p>
 */ } );
+var infoscroll = 0;
 
 $( 'body' ).prepend( containerhtml );
 
@@ -151,15 +152,15 @@ function infoReset() {
 	$( '#infoOk, #infoFileLabel' ).removeClass( 'disabled' );
 	$( '.extrabtn, #infoContent hr' ).remove();
 //	$( '#loader' ).addClass( 'hide' ); // for 'X' click
-	if ( G.infoscroll ) {
-		$( 'html, body' ).scrollTop( G.infoscroll );
-		G.infoscroll = 0;
+	if ( infoscroll ) {
+		$( 'html, body' ).scrollTop( infoscroll );
+		infoscroll = 0;
 	}
 }
 
 function info( O ) {
 	infoReset();
-	G.infoscroll = $( window ).scrollTop();
+	infoscroll = $( window ).scrollTop();
 	setTimeout( function() { // fix: wait for infoReset() on 2nd info
 	///////////////////////////////////////////////////////////////////
 	// simple use as info( 'message' )
