@@ -850,6 +850,9 @@ $( '#volume-text' ).click( function() {
 	$( '#volume-bar' ).width( val +'%' );
 	$( '#volume-text' ).text( val );
 } );
+$( '#i-mute' ).click( function() {
+	$( '#volmute' ).click();
+} );
 $( '#divcover' ).on( 'click', '.edit, .cover-save', function( e ) {
 	var $this = $( e.target );
 	if ( $this.hasClass( 'licover-cover' ) ) {

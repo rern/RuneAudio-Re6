@@ -727,7 +727,8 @@ function muteColor( volumemute ) {
 	$volumehandle.addClass( 'bgr' );
 	$( '#volmute' ).addClass( 'active' )
 		.find( 'i' ).removeClass( 'fa-volume' ).addClass( 'fa-mute' );
-	if ( !G.display.volume ) $( '#'+ ( G.display.time ? 'ti' : 'i' ) +'-mute' ).removeClass( 'hide' );
+	var prefix = G.display.time && window.innerWidth > 613 ? 'ti' : 'i';
+	if ( !G.display.volume ) $( '#'+ prefix +'-mute' ).removeClass( 'hide' );
 }
 function orderLibrary() {
 	if ( G.display.order ) {
@@ -1012,7 +1013,7 @@ function renderLibraryList( data ) {
 function renderPlayback() {
 	clearIntervalAll();
 	var status = G.status;
-	var wide = window.innerWidth > 613;
+	var displaytime = G.display.time && window.innerWidth > 613;
 	// song and album before update for song/album change detection
 	var previousartist = $( '#artist' ).text();
 	var prevtitle = $( '#song' ).text();
@@ -1070,7 +1071,7 @@ function renderPlayback() {
 		if ( status.state === 'play' ) {
 			if ( !status.Title ) $( '#song' ).html( blinkdot );
 			$( '#elapsed' ).html( status.state === 'play' ? blinkdot : '' );
-			if ( G.display.time && wide ) {
+			if ( displaytime ) {
 				if ( G.display.radioelapsed || G.localhost ) {
 					G.intElapsed = setInterval( function() {
 						G.status.elapsed++;
@@ -1112,7 +1113,7 @@ function renderPlayback() {
 	if ( status.state === 'stop' ) {
 		if ( status.upnp ) $( '#sampling' ).empty();
 		$( '#song' ).removeClass( 'gr' );
-		if ( G.display.time && wide ) {
+		if ( displaytime ) {
 			$( '#time' ).roundSlider( 'setValue', 0 );
 			$( '#elapsed' )
 				.text( timehms )
@@ -1131,7 +1132,7 @@ function renderPlayback() {
 	var position = Math.round( G.status.elapsed / time * 1000 );
 	// pause ////////////////////
 	if ( status.state === 'pause' ) {
-		if ( G.display.time && wide ) {
+		if ( displaytime ) {
 			$( '#time' ).roundSlider( 'setValue', position );
 			$( '#elapsed' ).text( elapsedhms ).addClass( 'bl' );
 			$( '#total' ).addClass( 'wh' );
@@ -1143,7 +1144,7 @@ function renderPlayback() {
 	}
 	
 	// play ////////////////////
-	if ( G.display.time && wide ) {
+	if ( displaytime ) {
 		if ( G.status.mpd && G.status.elapsed ) $( '#elapsed' ).text( second2HMS( G.status.elapsed ) );
 		G.intElapsed = setInterval( function() {
 			G.status.elapsed++;
@@ -1407,7 +1408,8 @@ function setButtonOptions() {
 	$( '#gpio .fa-gpio' ).toggleClass( 'on', G.status.gpioon );
 	$( '#snapclient' ).toggleClass( 'on', G.status.snapclient );
 	$( '#modeicon i, #timeicon i' ).addClass( 'hide' );
-	var prefix = G.display.time ? 'ti' : 'i';
+	var displaytime = G.display.time && window.innerWidth > 613;
+	var prefix = displaytime ? 'ti' : 'i';
 	$( '#'+ prefix +'-gpio' ).toggleClass( 'hide', !G.status.gpioon );
 	if ( !G.status.mpd ) return
 	
@@ -1422,7 +1424,7 @@ function setButtonOptions() {
 	}
 	[ 'consume', 'librandom' ].forEach( function( option ) {
 		$( '#button-pl-'+ option ).toggleClass( 'bl', G.status[ option ] );
-		if ( G.display.time ) {
+		if ( displaytime ) {
 			$( '#i-'+ option ).addClass( 'hide' );
 			$( '#ti-'+ option ).toggleClass( 'hide', !G.status[ option ] );
 		} else {
@@ -1431,7 +1433,7 @@ function setButtonOptions() {
 		}
 	} );
 	if ( !G.display.bar ) {
-		if ( G.display.time ) {
+		if ( displaytime ) {
 			$( '#i-addons' ).addClass( 'hide' );
 			$( '#ti-addons' ).toggleClass( 'hide', !$( '#badge' ).length );
 		} else {
@@ -1440,7 +1442,7 @@ function setButtonOptions() {
 		}
 	}
 	setButtonUpdating();
-	if ( !G.display.volume && G.status.volumemute ) $( '#'+ ( G.display.time ? 'ti' : 'i' ) +'-mute' ).removeClass( 'hide' );
+	if ( !G.display.volume && G.status.volumemute ) $( '#'+ prefix +'-mute' ).removeClass( 'hide' );
 }
 function setButtonUpdating() {
 	var $elupdate = $( '#tab-library, #button-library, #i-update, #ti-update' );
