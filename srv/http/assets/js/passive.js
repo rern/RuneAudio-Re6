@@ -457,7 +457,6 @@ function psVolume( data ) {
 		$( '#vol-group .btn, .volmap' ).toggleClass( 'disabled', data.disable );
 		return
 	}
-	
 	clearTimeout( G.debounce );
 	G.debounce = setTimeout( function() {
 		var type = data.type;
@@ -468,10 +467,10 @@ function psVolume( data ) {
 			$volumeRS.setValue( 0 );
 			muteColor( val );
 		} else {
-			if ( type === 'unmute' ) unmuteColor();
 			G.status.volume = val;
 			G.status.volumemute = 0;
 			$volumeRS.setValue( val );
+			unmuteColor();
 		}
 		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 	}, G.debouncems );
