@@ -277,6 +277,7 @@ function displayGet( callback ) {
 	}, 'json' );
 }
 function displayPlayback() {
+	var wide = window.innerWidth > 613;
 	$( '#time-knob' ).toggleClass( 'hide', !G.display.time );
 	$( '#coverart-block' )
 		.toggleClass( 'hide', !G.display.cover )
@@ -301,12 +302,9 @@ function displayPlayback() {
 		$( '#volume-knob' ).css( 'margin-left', '' );
 	}
 	$( '#play-group, #vol-group' ).toggleClass( 'hide', !G.status.mpd || !G.display.buttons );
-	if ( G.display.time ) {
+	if ( G.display.time && wide ) {
 		$( '#time' ).roundSlider( G.status.webradio || !G.status.mpd || !G.status.playlistlength ? 'disable' : 'enable' );
-		$( '#time-bar, #time-band' ).addClass( 'hide' );
 		$( '#progress' ).empty();
-	} else {
-		$( '#time-bar, #time-band' ).toggleClass( 'hide', !G.display.progressbar || G.status.webradio );
 	}
 	$( '.volumeband' ).toggleClass( 'hide', G.display.volume );
 	$( '#time, #volume, .timemap, .covermap, .volmap, .volumeband' ).toggleClass( 'disabled', !G.status.mpd );
@@ -1014,6 +1012,7 @@ function renderLibraryList( data ) {
 function renderPlayback() {
 	clearIntervalAll();
 	var status = G.status;
+	var wide = window.innerWidth > 613;
 	// song and album before update for song/album change detection
 	var previousartist = $( '#artist' ).text();
 	var prevtitle = $( '#song' ).text();
@@ -1072,7 +1071,7 @@ function renderPlayback() {
 		if ( status.state === 'play' ) {
 			if ( !status.Title ) $( '#song' ).html( blinkdot );
 			$( '#elapsed' ).html( status.state === 'play' ? blinkdot : '' );
-			if ( G.display.time ) {
+			if ( G.display.time && wide ) {
 				if ( G.display.radioelapsed || G.localhost ) {
 					G.intElapsed = setInterval( function() {
 						G.status.elapsed++;
@@ -1114,7 +1113,7 @@ function renderPlayback() {
 	if ( status.state === 'stop' ) {
 		if ( status.upnp ) $( '#sampling' ).empty();
 		$( '#song' ).removeClass( 'gr' );
-		if ( G.display.time ) {
+		if ( G.display.time && wide ) {
 			$( '#time' ).roundSlider( 'setValue', 0 );
 			$( '#elapsed' )
 				.text( timehms )
@@ -1133,7 +1132,7 @@ function renderPlayback() {
 	var position = Math.round( G.status.elapsed / time * 1000 );
 	// pause ////////////////////
 	if ( status.state === 'pause' ) {
-		if ( G.display.time ) {
+		if ( G.display.time && wide ) {
 			$( '#time' ).roundSlider( 'setValue', position );
 			$( '#elapsed' ).text( elapsedhms ).addClass( 'bl' );
 			$( '#total' ).addClass( 'wh' );
@@ -1145,7 +1144,7 @@ function renderPlayback() {
 	}
 	
 	// play ////////////////////
-	if ( G.display.time ) {
+	if ( G.display.time && wide ) {
 		if ( G.status.mpd && G.status.elapsed ) $( '#elapsed' ).text( second2HMS( G.status.elapsed ) );
 		G.intElapsed = setInterval( function() {
 			G.status.elapsed++;

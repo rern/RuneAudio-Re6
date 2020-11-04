@@ -495,7 +495,6 @@ svg path.st1 {
 #bar-top,
 #bar-bottom,
 .swipe,
-#volbar,
 #swipebar {
 	position: fixed;
 	width: 100%;
@@ -503,29 +502,16 @@ svg path.st1 {
 	background: var( --cg );
 	z-index: 105;
 }
-#volbar {
+#swipebar {
 	z-index: 104;
 }
 #bar-bottom,
 #swipebar {
 	bottom: 0;
 }
-#volbar {
-	display: none;
-	top: 0;
-}
-#volbarM {
-	width: 100%;
-}
-#volbarL,
 #swipeL {
 	left: 0;
 }
-#volbarR,
-#swipeR {
-	right: 0;
-}
-#volbar,
 #swipebar {
 	text-align: center;
 	background: var( --cga );
@@ -2468,6 +2454,9 @@ li.active .li2 bl {
 @media( max-width: 700px ) {
 	#pl-count .title { display: none; }
 }
+@media( max-width: 614px ) {
+	#time-knob { display: none; }
+}
 @media( max-width: 500px ) {
 	#pl-count,
 	#pl-path { display: none; }
@@ -2589,9 +2578,6 @@ li.active .li2 bl {
 	}
 }
 @media( orientation: portrait ) and ( max-width: 540px ) {
-	#volbar {
-		display: block;
-	}
 	#playback-row {
 		margin-top: 20px;
 	}

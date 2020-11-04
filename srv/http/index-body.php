@@ -237,11 +237,6 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 </div>
 
 <div id="page-playback" class="page">
-	<div id="volbar" class="transparent">
-		<i id="volbarL" class="swipe fa fa-minus fa-2x"></i>
-		<i id="volbarM" class="fa fa-volume fa-2x"></i>
-		<i id="volbarR" class="swipe fa fa-plus fa-2x"></i>
-	</div>
 	<div class="emptyadd hide"><i class="fa fa-plus-circle"></i></div>
 	<i id="guide-bio" class="map guide fa fa-bio"></i>
 	<i id="guide-lyrics" class="map guide fa fa-lyrics"></i>
@@ -312,7 +307,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 		</div>
 		<div id="coverart-block">
 			<div id="divcover" class="cover">
-				<div id="time-bar" class="hide"></div>
+				<div id="time-bar"></div>
 				<div id="time-band" class="band transparent"></div>
 				
 				<img id="coverart" class="cover">
