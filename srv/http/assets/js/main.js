@@ -807,11 +807,7 @@ $( '#volume-band' ).on( 'touchstart mousedown', function( e ) {
 	G.drag = 0;
 	var pageX = 'pageX' in e ? e.pageX : e.originalEvent.changedTouches[ 0 ].pageX;
 	volumeSet( pageX );
-	G.volumebar = setTimeout( function() {
-		$( '#volume-bar, #volume-text' ).addClass( 'hide' );
-		$( '#page-playback' ).css( 'margin-top', '' );
-		$( '.volumeband' ).addClass( 'transparent' );
-	}, 3000 );
+	volumebarTimeout();
 } ).on( 'click', function( e ) {
 	if ( G.status.volumenone ) return
 	
@@ -819,11 +815,7 @@ $( '#volume-band' ).on( 'touchstart mousedown', function( e ) {
 		$( '#volume-text' ).text( G.status.volume );
 		$( '#volume-bar, #volume-text' ).removeClass( 'hide' );
 		$( '#volume-band-dn, #volume-band-up' ).removeClass( 'transparent' );
-		G.volumebar = setTimeout( function() {
-			$( '#volume-bar, #volume-text' ).addClass( 'hide' );
-			$( '#page-playback' ).css( 'margin-top', '' );
-			$( '.volumeband' ).addClass( 'transparent' );
-		}, 3000 );
+		volumebarTimeout();
 	} else {
 		G.drag = 0;
 		var pageX = 'pageX' in e ? e.pageX : e.originalEvent.changedTouches[ 0 ].pageX;
@@ -851,6 +843,12 @@ $( '#volume-band-dn, #volume-band-up' ).click( function() {
 	$( '#volume-text' ).text( barW );
 	$( '#volume-bar' ).css( 'width', barW +'%' );
 	$( '#vol'+ updn ).click();
+} );
+$( '#volume-text' ).click( function() {
+	$( '#volmute' ).click();
+	var val = G.status.volumemute || 0;
+	$( '#volume-bar' ).width( val +'%' );
+	$( '#volume-text' ).text( val );
 } );
 $( '#divcover' ).on( 'click', '.edit, .cover-save', function( e ) {
 	var $this = $( e.target );

@@ -131,6 +131,7 @@ li:not( .licover ),
 #time-band,
 #volume-band,
 #volume-bar-dn,
-#volume-bar-up {
+#volume-bar-up,
+#volume-text {
 	cursor: pointer;
 }

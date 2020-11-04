@@ -1596,6 +1596,13 @@ function unmuteColor() {
 	$( '#volmute' ).removeClass( 'active' )
 		.find( 'i' ).removeClass( 'fa-mute' ).addClass( 'fa-volume' );
 }
+function volumebarTimeout() {
+	G.volumebar = setTimeout( function() {
+		$( '#volume-bar, #volume-text' ).addClass( 'hide' );
+		$( '#page-playback' ).css( 'margin-top', '' );
+		$( '.volumeband' ).addClass( 'transparent' );
+	}, 3000 );
+}
 function volumeSet( pageX ) {
 	var $volumeband = $( '#volume-band' );
 	var posX = pageX - $volumeband.offset().left;

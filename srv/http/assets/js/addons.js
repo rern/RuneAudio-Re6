@@ -8,7 +8,7 @@ function sendcommand() {
 }
 // post submit with temporary form
 function postcmd() {
-	var form = '<form id="formtemp" action="addons-progress.php" method="post">';
+	var form = '<form id="formtemp" action="/settings/addons-progress.php" method="post">';
 	var optL = opt.length;
 	for ( i = 0; i < optL; i++ ) { // [ branch, alias, type, opt1, opt2, ... ]
 		form += '<input type="hidden" name="sh[]" value="'+ opt[ i ] +'">'

@@ -464,17 +464,16 @@ function psVolume( data ) {
 		var val = data.val;
 		if ( type === 'mute' ) {
 			G.status.volume = 0;
+			G.status.volumemute = val;
 			$volumeRS.setValue( 0 );
+			muteColor( val );
 		} else {
+			if ( type === 'unmute' ) unmuteColor();
 			G.status.volume = val;
+			G.status.volumemute = 0;
 			$volumeRS.setValue( val );
 		}
 		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
-		if ( type === 'mute' ) {
-			muteColor( val );
-		} else if ( type === 'unmute' ) {
-			unmuteColor();
-		}
 	}, G.debouncems );
 }
 function psVolumeNone( data ) {

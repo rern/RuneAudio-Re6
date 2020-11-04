@@ -868,6 +868,7 @@ svg path.st1 {
 	font-size: 18px;
 	font-weight: 300;
 	background: #000000;
+	z-index: 102;
 }
 #time-band,
 #volume-band {

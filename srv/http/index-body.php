@@ -323,11 +323,11 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 					<i id="coverB" class="map covermap r3 c2 wl hs fa fa-stop"></i>
 					<i id="coverBR" class="map covermap r3 c3 ws hs fa fa-repeat"></i>
 				</div>
-				<div id="volume-text" class="hide"></div>
 				<div id="volume-bar" class="hide"></div>
 				<i id="volume-band" class="volumeband band fa fa-volume transparent"></i>
 				<i id="volume-band-dn" class="volumeband band fa fa-minus transparent"></i>
 				<i id="volume-band-up" class="volumeband band fa fa-plus transparent"></i>
+				<div id="volume-text" class="hide"></div>
 			</div>
 		</div>
 		<div id="volume-knob">
