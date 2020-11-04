@@ -1616,6 +1616,7 @@ function volumeSet( pageX ) {
 	if ( G.drag ) $( '#volume-bar' ).css( 'width', vol +'%' );
 	$( '#volume-text' ).text( vol );
 	clearTimeout( G.debounce );
+	$( '#i-mute, #ti-mute' ).addClass( 'hide' );
 	G.debounce = setTimeout( function() {
 		if ( !G.drag ) $( '#volume-bar' ).animate( { width: vol +'%' }, 600 );
 		G.local = 1;
