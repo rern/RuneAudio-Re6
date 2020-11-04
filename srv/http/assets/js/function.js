@@ -1603,7 +1603,7 @@ function volColorUnmute() {
 function volumebarTimeout() {
 	G.volumebar = setTimeout( function() {
 		$( '#volume-bar, #volume-text' ).addClass( 'hide' );
-		$( '#page-playback' ).css( 'margin-top', '' );
+		$( '#page-playback' ).css( { height: '', 'margin-top': '' } );
 		$( '.volumeband' ).addClass( 'transparent' );
 	}, 3000 );
 }

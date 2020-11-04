@@ -663,16 +663,21 @@ $( '#coverTL, #timeTL' ).tap( function() {
 	if ( G.status.mpd && !G.status.playlistlength ) return
 	
 	if ( window.innerWidth < 614 ) {
+		if ( G.display.volume  || window.innerHeight > 600 ) return
+		
 		var top = $( '#page-playback' ).css( 'margin-top' );
 		if ( top === '0px' ) {
 			setTimeout( function() {
 				$( '#volume-band' ).click();
-				$( '#page-playback' ).css( 'margin-top', -$( '#coverart' ).offset().top );
+				$( '#page-playback' ).css( {
+						'margin-top' : -$( '#coverart' ).offset().top
+						, height     : '110%'
+					} );
 				$( '.volumeband, #volume-bar' ).removeClass( 'hide' );
 				$( '#volume-band-dn, #volume-band-up' ).removeClass( 'transparent' );
-			}, 100 );
+			}, 300 );
 		} else {
-			$( '#page-playback' ).css( 'margin-top', '' );
+			$( '#page-playback' ).css( { height: '', 'margin-top': '' } );
 			$( '.volumeband' ).addClass( 'transparent' );
 		}
 		return
