@@ -465,12 +465,12 @@ function psVolume( data ) {
 			G.status.volume = 0;
 			G.status.volumemute = val;
 			$volumeRS.setValue( 0 );
-			muteColor( val );
+			volColorMute( val );
 		} else {
 			G.status.volume = val;
 			G.status.volumemute = 0;
 			$volumeRS.setValue( val );
-			unmuteColor();
+			volColorUnmute();
 		}
 		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 	}, G.debouncems );
