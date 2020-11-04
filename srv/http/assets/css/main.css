@@ -503,6 +503,9 @@ svg path.st1 {
 	background: var( --cg );
 	z-index: 105;
 }
+#volbar {
+	z-index: 104;
+}
 #bar-bottom,
 #swipebar {
 	bottom: 0;
@@ -2669,11 +2672,6 @@ li.active .li2 bl {
 		width: 36px;
 	}
 }
-@media( orientation: portrait ) and ( max-width: 350px ) {
-	#button-pl-crop {
-		display: none;
-	}
-}
 @media( orientation: portrait ) and ( max-width: 330px ) {
 	#playback-controls i {
 		margin: 0;
@@ -2681,10 +2679,12 @@ li.active .li2 bl {
 	#button-pl-shuffle {
 		display: none;
 	}
-	.infocol {
-		width: 140px;
+	#infoOverlay {
+		transform: scale( 0.9 );
+		width: 110%;
+		left: -5%;
 	}
-	n { display: none }
+	n { display: none; }
 }
 @media( orientation: portrait ) and ( max-width: 280px ) {
 	#sampling {

@@ -276,7 +276,7 @@ $( '#displaylibrary, #displaylibrary2' ).click( function() {
 	} );
 } );
 var chkplayback = {
-	  bars         : '_Top-Bottom <n>bars</n>'
+	  bars         : '_Top-Bottom bars'
 	, barsalways   : 'Bars always on'
 	, time         : '_Time'
 	, radioelapsed : 'WebRadio time'
