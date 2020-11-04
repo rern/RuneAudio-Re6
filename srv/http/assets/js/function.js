@@ -723,11 +723,11 @@ function mpcSeekBar( pageX, set ) {
 function muteColor( volumemute ) {
 	$volumetooltip
 		.text( volumemute )
-		.addClass( 'bl' )
-//		.css( 'margin-left', '-23px' ); // fix - posistion
+		.addClass( 'bl' );
 	$volumehandle.addClass( 'bgr' );
 	$( '#volmute' ).addClass( 'active' )
 		.find( 'i' ).removeClass( 'fa-volume' ).addClass( 'fa-mute' );
+	if ( !G.display.volume ) $( '#'+ ( G.display.time ? 'ti' : 'i' ) +'-mute' ).removeClass( 'hide' );
 }
 function orderLibrary() {
 	if ( G.display.order ) {
@@ -1440,6 +1440,7 @@ function setButtonOptions() {
 		}
 	}
 	setButtonUpdating();
+	if ( !G.display.volume && G.status.volumemute ) $( '#'+ ( G.display.time ? 'ti' : 'i' ) +'-mute' ).removeClass( 'hide' );
 }
 function setButtonUpdating() {
 	var $elupdate = $( '#tab-library, #button-library, #i-update, #ti-update' );
@@ -1595,6 +1596,7 @@ function unmuteColor() {
 	$volumehandle.removeClass( 'bgr' );
 	$( '#volmute' ).removeClass( 'active' )
 		.find( 'i' ).removeClass( 'fa-mute' ).addClass( 'fa-volume' );
+	$( '#i-mute, #ti-mute' ).addClass( 'hide' );
 }
 function volumebarTimeout() {
 	G.volumebar = setTimeout( function() {
