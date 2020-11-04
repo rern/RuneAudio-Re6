@@ -21,7 +21,7 @@
 	<link rel="stylesheet" href="/assets/css/selectric.<?=$time?>.css">
 	<link rel="stylesheet" href="/assets/css/info.<?=$time?>.css">
 	<link rel="stylesheet" href="/assets/css/gpiosettings.<?=$time?>.css">
-	<link rel="icon" type="image/png" href="/assets/img/favicon.<?=$time?>.png" sizes="192x192">
+	<link rel="icon" type="image/png" href="/assets/img/favicon.<?=$time?>.svg" sizes="192x192">
 </head>
 
 <?php

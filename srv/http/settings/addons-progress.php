@@ -44,7 +44,7 @@ if ( $branch !== 'master' ) $installurl = str_replace( 'raw/master', 'raw/'.$bra
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
 	<meta name="msapplication-tap-highlight" content="no">
-	<link rel="icon" href="/assets/img/favicon.<?=$time?>.png">
+	<link rel="icon" href="/assets/img/favicon.<?=$time?>.svg">
 	<style>
 		@font-face {
 			font-family: enhance;
