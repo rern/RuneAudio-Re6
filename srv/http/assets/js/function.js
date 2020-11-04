@@ -1023,9 +1023,8 @@ function renderPlayback() {
 			$volumeRS.setValue( status.volume );
 			$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 			status.volumemute != 0 ? muteColor( status.volumemute ) : unmuteColor();
-		} else {
-			$( '#volume-bar' ).css( 'width', status.volume +'%' );
 		}
+		$( '#volume-bar' ).css( 'width', status.volume +'%' );
 	}
 	// empty queue
 	if ( !status.playlistlength && G.status.mpd && status.state === 'stop' ) {

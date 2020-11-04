@@ -2595,10 +2595,10 @@ li.active .li2 bl {
 		display: inline;
 	}
 	#volume-band-dn {
-		left: -20px
+		left: 0;
 	}
 	#volume-band-up {
-		right: -20px
+		right: 0;
 	}
 }
 @media( orientation: portrait ) and ( max-width: 480px ) {
