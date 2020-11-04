@@ -264,6 +264,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 				<i id="i-repeat1" class="fa fa-repeat-single hide"></i>
 				<i id="i-consume" class="fa fa-flash hide"></i>
 				<i id="i-librandom" class="fa fa-dice hide"></i>
+				<i id="i-mute" class="fa fa-mute hide"></i>
 				<i id="i-update" class="fa fa-library blink hide"></i>
 				<i id="i-addons" class="fa fa-plus-r hide"></i>
 				<i id="i-gpio" class="fa fa-gpio hide"></i>
@@ -280,6 +281,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 				<i id="ti-repeat1" class="fa fa-repeat-single hide"></i>
 				<i id="ti-consume" class="fa fa-flash hide"></i>
 				<i id="ti-librandom" class="fa fa-dice hide"></i>
+				<i id="ti-mute" class="fa fa-mute hide"></i>
 				<i id="ti-update" class="fa fa-library blink hide"></i>
 				<i id="ti-plus-r" class="fa fa-plus-r hide"></i>
 				<i id="ti-gpio" class="fa fa-gpio hide"></i>
