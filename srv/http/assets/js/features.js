@@ -218,7 +218,7 @@ $( '#setting-localbrowser' ).click( function( e ) {
 			var rotate    = $( 'input[name=inforadio]:checked' ).val();
 			var screenoff = $( '#infoTextBox' ).val() * 60;
 			var zoom = parseFloat( $( '#infoTextBox1' ).val() ) || 1;
-			G.zoom = zoom < 2 ? ( zoom < 0.5 ? 0.5 : zoom ) : 2;
+			zoom = zoom < 2 ? ( zoom < 0.5 ? 0.5 : zoom ) : 2;
 			if ( rotate !== G.rotate ) {
 				G.rotate = rotate;
 			} else {
