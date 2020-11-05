@@ -83,7 +83,6 @@ body {
 	font-weight: normal;
 	color: var( --cw );
 	background-color: #000;
-	overflow: hidden;
 }
 :focus,
 :active,
