@@ -8,8 +8,10 @@ installstart "$1"
 
 getinstallzip
 
-[[ -e /usr/bin/upmpdcli ]] && pacman -R --noconfirm libnpupnp libupnpp upmpdcli
-pacman -Sy --noconfirm libnpupnp libupnpp upmpdcli
+if [[ -e /usr/bin/upmpdcli ]]; then
+	pacman -R --noconfirm libnpupnp libupnpp upmpdcli
+	pacman -Sy --noconfirm libnpupnp libupnpp upmpdcli
+fi
 
 installfinish
 

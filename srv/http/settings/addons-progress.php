@@ -84,8 +84,8 @@ $( '#close' ).click( function() {
 		location.href = '<?=$href?>';
 	}
 } );
-setInterval( function() {
-	var scroll = $( 'pre' ).scrollTop( 10000 );
+var scroll = setInterval( function() {
+	$( 'pre' ).scrollTop( 10000 );
 }, 200 );
 // js for '<pre>' must be here before start stdout
 // php 'flush' loop waits for all outputs before going to next lines
