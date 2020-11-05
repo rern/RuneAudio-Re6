@@ -306,10 +306,9 @@ function displayPlayback() {
 		$( '#time' ).roundSlider( G.status.webradio || !G.status.mpd || !G.status.playlistlength ? 'disable' : 'enable' );
 		$( '#progress' ).empty();
 	}
-	$( '#time-band' ).toggleClass( 'hide', !G.status.playlistlength || !G.status.mpd || G.status.webradio );
-	$( '#volume-band' ).toggleClass( 'hide', !G.status.mpd );
-	$( '.volumeband' ).toggleClass( 'hide', G.display.volume );
+	$( '#time-band' ).toggleClass( 'disabled', !G.status.playlistlength || !G.status.mpd || G.status.webradio );
 	$( '#time, #volume, .timemap, .covermap, .volmap, .volumeband' ).toggleClass( 'disabled', !G.status.mpd );
+	$( '.volumeband' ).toggleClass( 'hide', G.display.volume );
 	$( '.covermap.r1, #coverB' ).removeClass( 'disabled' );
 	$( '#timemap' ).toggleClass( 'hide', G.display.cover );
 	displayTopBottom();
