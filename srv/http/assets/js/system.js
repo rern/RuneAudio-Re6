@@ -96,7 +96,7 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 			+'Output Device<br>'
 			+'Kernel<br>'
 			+'<span class="settings" data-setting="mpd">MPD<i class="fa fa-gear"></i></span><br>'
-			+'<span class="settings" data-setting="network">Network<i class="fa fa-gear"></i></span>';
+			+'<span class="settings" data-setting="networks">Network<i class="fa fa-gear"></i></span>';
 		var statuslabel =
 			 'CPU Load<br>'
 			+'CPU Temperatue<br>'
@@ -172,6 +172,9 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		if ( !$( '#codeifconfig' ).hasClass( 'hide' ) ) getIfconfig();
 		if ( !$( '#codejournalctl' ).hasClass( 'hide' ) ) getJournalctl();
 		if ( !$( '#codeconfigtxt' ).hasClass( 'hide' ) ) getConfigtxt();
+		[ 'ifconfig', 'journalctl', 'configtxt' ].forEach( function( service ) {
+			if ( !$( '#code'+ service ).hasClass( 'hide' ) ) getStatus( service );
+		} );
 		resetLocal();
 		showContent();
 	}, 'json' );

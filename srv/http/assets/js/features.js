@@ -1,18 +1,12 @@
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-function getStatus( service ) {
-	var $code = $( '#code'+ service );
-	if ( service === 'mpdscribble' ) service += '@mpd';
-	bash( 'systemctl status '+ service, function( status ) {
-		if ( service === 'spotifyd' ) status = status.replace( /.*Authenticated as.*\n|.*Country:.*\n/g, '' );
-		$code
-			.html( statusColor( status ) )
-			.removeClass( 'hide' );
-	} );
-}
 function getStatusRefresh( service ) {
 	service !== 'localbrowser' ? resetLocal() : resetLocal( 7000 );
-	if ( !$( '#code'+ service ).hasClass( 'hide' ) ) getStatus( service );
+	if ( $( '#code'+ service ).hasClass( 'hide' ) ) return
+	
+	setTimeout( function() {
+		getStatus( service );
+	}, 1000 );
 }
 refreshData = function() { // system page: use resetLocal() to aviod delay
 	bash( '/srv/http/bash/features-data.sh', function( list ) {
@@ -50,6 +44,9 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		$( '#autoplay' ).prop( 'checked', G.autoplay );
 		$( '#accesspoint' ).prop( 'checked', G.hostapd );
 		$( '#setting-accesspoint' ).toggleClass( 'hide', !G.hostapd );
+		[ 'shareport-sync', 'spotifyd', 'upmpdcli', 'snapserver', 'localbrowser', 'samba', 'mpdscribble', 'hostapd' ].forEach( function( service ) {
+			if ( !$( '#code'+ service ).hasClass( 'hide' ) ) getStatus( service );
+		} );
 		resetLocal();
 		showContent();
 	}, 'json' );

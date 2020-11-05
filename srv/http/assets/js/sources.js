@@ -215,7 +215,7 @@ $( '#list' ).on( 'click', 'li', function() {
 			if ( list.length ) {
 				var html = '';
 				$.each( list, function( i, val ) {
-					html += '<li data-mount="//'+ val.ip +'/'+ val.share +'"><i class="fa fa-network"></i><gr>'+ val.host +'<grn>&ensp;&bull;&ensp;</grn>//'+ val.ip +'/'+ val.share +'</li>';
+					html += '<li data-mount="//'+ val.ip +'/'+ val.share +'"><i class="fa fa-networks"></i><gr>'+ val.host +'<grn>&ensp;&bull;&ensp;</grn>//'+ val.ip +'/'+ val.share +'</li>';
 				} );
 			} else {
 				var html = '<li><i class="fa fa-info-circle"></i><gr>No shares available</gr></li>';

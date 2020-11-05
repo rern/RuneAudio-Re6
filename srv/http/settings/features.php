@@ -115,7 +115,7 @@
 		  if ( file_exists( '/usr/bin/smbd' ) ) { ?>
 <div class="col-l double status" data-service="smb">
 	<a>File Sharing
-	<br><gr>Samba<?=$code?></gr></a><i class="fa fa-network fa-lg"></i>
+	<br><gr>Samba<?=$code?></gr></a><i class="fa fa-networks fa-lg"></i>
 </div>
 <div class="col-r">
 	<input id="samba" type="checkbox">

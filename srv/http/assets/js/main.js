@@ -184,7 +184,7 @@ $( '.pkg' ).click( function( e ) {
 var chklibrary = {
 	  sd             : '_<i class="fa fa-microsd"></i>SD'
 	, usb            : '<i class="fa fa-usbdrive"></i>USB'
-	, nas            : '_<i class="fa fa-network"></i>Network'
+	, nas            : '_<i class="fa fa-networks"></i>Network'
 	, webradio       : '<i class="fa fa-webradio"></i>WebRadio'
 	, album          : '_<i class="fa fa-album"></i>Album'
 	, artist         : '<i class="fa fa-artist"></i>Artist'

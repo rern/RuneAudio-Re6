@@ -28,6 +28,16 @@ function getReset( callback ) {
 		if ( callback ) callback();
 	}, 'json' );
 }
+function getStatus( service ) {
+	var $code = $( '#code'+ service );
+	if ( service === 'mpdscribble' ) service += '@mpd';
+	bash( 'systemctl status '+ service, function( status ) {
+		if ( service === 'spotifyd' ) status = status.replace( /.*Authenticated as.*\n|.*Country:.*\n/g, '' );
+		$code
+			.html( statusColor( status ) )
+			.removeClass( 'hide' );
+	} );
+}
 function resetLocal( ms ) {
 	local = 0;
 	setTimeout( function() {
