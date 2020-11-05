@@ -616,7 +616,7 @@ function infoUpdate( path ) {
 		, ok       : function() {
 			var wav = $( '#infoCheckBox input' ).prop( 'checked' );
 			if ( path || $( '#infoRadio input:checked' ).val() == 1 ) {
-				if ( path ) G.list.li.find( '.lib-icon' ).addClass( 'blink' );
+				if ( path && !G.localhost ) G.list.li.find( '.lib-icon' ).addClass( 'blink' );
 				bash( [ 'mpcupdate', wav, path ] );
 			} else {
 				bash( [ 'mpcupdate', wav, 'rescan' ] );
@@ -1440,7 +1440,7 @@ function setButtonUpdating() {
 	$( '#i-update, #ti-update' ).addClass( 'hide' );
 	if ( G.status.updating_db ) {
 		if ( G.bars ) {
-			$( '#tab-library, #button-library' ).addClass( 'blink' );
+			if ( !G.localhost ) $( '#tab-library, #button-library' ).addClass( 'blink' );
 		} else {
 			$( '#'+ ( G.display.time ? 'ti' : 'i' ) +'-update' ).removeClass( 'hide' );
 		}
