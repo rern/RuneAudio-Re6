@@ -903,10 +903,16 @@ svg path.st1 {
 #controls-cover.notime.novolume {
 	width: 50vh;
 }
+#qrip {
+	position: absolute;
+	width: 100%;
+	color: var( --cg60 );
+}
 #qrwebui svg {
 	fill: var( --cg60 );
 	background: #000000;
 }
+
 #coverart,
 .licover img {
 	border: 1px solid hsl(0,0%,15%);

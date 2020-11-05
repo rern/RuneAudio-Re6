@@ -313,6 +313,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 				<div id="time-band" class="band transparent"></div>
 				
 				<img id="coverart" class="cover">
+				<div id="qrip"></div>
 				<div id="qrwebui"></div>
 				<div id="covermap">
 					<i id="coverTL" class="map covermap r1 c1 ws hs fa fa-scale-dn"></i>

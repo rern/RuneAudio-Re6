@@ -1188,13 +1188,13 @@ function renderPlaybackBlank() {
 	$( '.cover-save' ).remove();
 	bash( "ip r | awk '/default/ {print $9}'", function( ip ) {
 		if ( ip ) {
-			$( '#sampling' ).html( 'http://'+ ip );
-			var qrweb = new QRCode( {
+			$( '#qrip' ).text( 'http://'+ ip );
+			var qr = new QRCode( {
 				  msg : 'http://'+ ip
 				, dim : 230
 				, pad : 10
 			} );
-			$( '#qrwebui' ).html( qrweb );
+			$( '#qrwebui' ).html( qr );
 			$( '#coverTR' ).toggleClass( 'blankTR', !G.bars );
 			$( '#coverart' )
 				.attr( 'src', coverrune )
