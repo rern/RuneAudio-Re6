@@ -169,9 +169,7 @@ statusbootlog )
 	if [[ -e $filebootlog ]]; then
 		cat $filebootlog
 	else
-		log=$( journalctl -b | sed -n '1,/Startup finished.*kernel/ p' )
-		finish=$( sed 's/.*\(Startup.*\)/\1/' <<< ${log##*$'\n'} )
-		echo "$finish<hr>$log" | tee $filebootlog
+		journalctl -b | sed -n '1,/Startup finished.*kernel/ p' | tee $filebootlog
 	fi
 	;;
 statusonboard )
