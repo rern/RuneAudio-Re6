@@ -172,9 +172,6 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		if ( !$( '#codeifconfig' ).hasClass( 'hide' ) ) getIfconfig();
 		if ( !$( '#codejournalctl' ).hasClass( 'hide' ) ) getJournalctl();
 		if ( !$( '#codeconfigtxt' ).hasClass( 'hide' ) ) getConfigtxt();
-		[ 'ifconfig', 'journalctl', 'configtxt' ].forEach( function( service ) {
-			if ( !$( '#code'+ service ).hasClass( 'hide' ) ) getStatus( service );
-		} );
 		resetLocal();
 		showContent();
 	}, 'json' );
