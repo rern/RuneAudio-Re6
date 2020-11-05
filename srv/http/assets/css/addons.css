@@ -113,7 +113,7 @@ hr {
 }
 .container {
 	max-width: 768px;
-	padding: 60px 55px 0 55px;
+	padding: 50px 55px 0 55px;
 }
 .container.progress {
 	padding-top: 0;
