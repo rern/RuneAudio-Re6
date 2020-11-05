@@ -65,7 +65,7 @@ if ( $branch !== 'master' ) $installurl = str_replace( 'raw/master', 'raw/'.$bra
 	<heading>Addons Progress<i id="close" class="fa fa-times"></i></heading>
 	<p id="wait">
 		<w><?=$title?></w><br>
-		<i class="fa fa-gear fa-spin"></i>Please wait until finished ...
+		<i class="fa fa-gear blink"></i>Please wait until finished ...
 	</p>
 	
 <script src="/assets/js/plugin/jquery-2.2.4.min.<?=$time?>.js"></script>
@@ -212,6 +212,9 @@ info( {
 	  icon    : 'jigsaw'
 	, title   : '<?=$title?>'
 	, message : '<?=$postinfo?>'
+	, ok      : function() {
+		$( 'pre' ).scrollTop( 10000 );
+	}
 } );
 $( '#wait' ).remove();
 clearInterval( scroll );
