@@ -208,15 +208,13 @@ pclose( $popencmd );
 </div>
 
 <script>
-$( '#wait' ).remove();
 info( {
 	  icon    : 'jigsaw'
 	, title   : '<?=$title?>'
 	, message : '<?=$postinfo?>'
 } );
-setTimeout( function() {
-	clearInterval( scroll );
-}, 1000 );
+$( '#wait' ).remove();
+clearInterval( scroll );
 </script>
 
 </body>
