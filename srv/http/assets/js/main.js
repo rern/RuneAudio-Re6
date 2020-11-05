@@ -117,7 +117,7 @@ $( '#coverart' ).one( 'load', function() {
 	$( this ).attr( 'src', coverart );
 } );
 // COMMON /////////////////////////////////////////////////////////////////////////////////////
-$( '#button-settings, #badge' ).click( function() {
+$( '#button-settings, #badge, #qrsettings' ).click( function() {
 	var $settings = $( '#settings' );
 	if ( $settings.hasClass( 'hide' ) ) {
 		$settings

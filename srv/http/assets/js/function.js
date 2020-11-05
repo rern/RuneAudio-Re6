@@ -1196,7 +1196,7 @@ function renderPlaybackBlank() {
 				, pad : 10
 			} );
 			$( '#qrwebui' ).html( qr );
-			$( '#coverTR' ).toggleClass( 'blankTR', !G.bars );
+			$( '#qrsettings' ).toggleClass( 'hide', G.bars );
 			$( '#coverart' )
 				.attr( 'src', coverrune )
 				.addClass( 'hide' );

@@ -908,6 +908,13 @@ svg path.st1 {
 	width: 100%;
 	color: var( --cg60 );
 }
+#qrsettings {
+	font-size: 30px;
+	position: absolute;
+	display: block;
+	right: 13px;
+	top: 25px;
+}
 #qrwebui svg {
 	fill: var( --cg60 );
 	background: #000000;
@@ -1153,10 +1160,6 @@ svg path.st1 {
 #timeB,
 #volB {
 	top: 150px;
-}
-.blankTR {
-	background: none;
-	opacity: 1;
 }
 #page-playback .btn-group i {
 	height: 40px;
