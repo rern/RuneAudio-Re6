@@ -84,18 +84,9 @@ $( '#close' ).click( function() {
 		location.href = '<?=$href?>';
 	}
 } );
-setTimeout( function() {
-	pre = document.getElementsByTagName( 'pre' )[ 0 ];
-	var h0 = pre.scrollHeight;
-	var h1;
-	intscroll = setInterval( function() {
-		h1 = pre.scrollHeight;
-		if ( h1 > h0 ) {
-			pre.scrollTop = pre.scrollHeight;
-			h0 = h1;
-		}
-	}, 500 );
-}, 1000 );
+setInterval( function() {
+	$( 'pre' ).scrollTop( 10000 );
+}, 200 );
 // js for '<pre>' must be here before start stdout
 // php 'flush' loop waits for all outputs before going to next lines
 // but must 'setTimeout()' for '<pre>' to load to fix 'undefined'
@@ -217,10 +208,7 @@ pclose( $popencmd );
 </div>
 
 <script>
-clearInterval( intscroll );
-pre.scrollTop = pre.scrollHeight;
 $( '#wait' ).remove();
-$( '#hidescrollv' ).css( 'max-height', ( $( '#hidescrollv' ).height() + 30 ) +'px' );
 info( {
 	  icon    : 'addons'
 	, title   : '<?=$title?>'
