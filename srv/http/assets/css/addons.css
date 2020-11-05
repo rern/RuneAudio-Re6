@@ -128,7 +128,7 @@ svg path.st0 {
 svg path.st1 {
 	fill: var( --cw );
 }
-#splash {
+#loader {
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -137,12 +137,13 @@ svg path.st1 {
 	text-align: center;
 	width: 100%;
 	height: 100%;
-	z-index: 100;
-	background: #000000;
+	z-index: 110; /* #banner > #loader > # #keyboard > #infoOverlay */
+	background: rgba(0, 0, 0, 0.8);
 }
-#splash svg {
+#loader svg {
 	margin-top: 40vh;
 	width: 250px;
+	animation: blinkopaque 1.5s linear infinite;
 }
 @media (min-width: 992px) {
 	.container {

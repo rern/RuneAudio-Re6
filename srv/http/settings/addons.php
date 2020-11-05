@@ -1,4 +1,6 @@
 <?php
+include '../logosvg.php';
+
 $time = time();
 $sudo = '/usr/bin/sudo /usr/bin/';
 $diraddons = '/srv/http/data/addons';
@@ -30,6 +32,7 @@ $addons = json_decode( file_get_contents( $diraddons.'/addons-list.json' ), true
 	<link rel="stylesheet" href="/assets/css/selectric.<?=$time?>.css">
 </head>
 <body>
+<div id="loader" class="hide"><svg viewBox="0 0 480.2 144.2"><?=$logo?></svg></div>
 <div class="head">
 	<i class="page-icon fa fa-jigsaw"></i><span class="title">ADDONS</span><a href="/"><i id="close" class="fa fa-times"></i></a>
 </div>
