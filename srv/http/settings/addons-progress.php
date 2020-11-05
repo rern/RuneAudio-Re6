@@ -213,10 +213,10 @@ info( {
 	  icon    : 'jigsaw'
 	, title   : '<?=$title?>'
 	, message : '<?=$postinfo?>'
-	, ok      : function() {
-		clearInterval( scroll );
-	}
 } );
+setTimeout( function() {
+	clearInterval( scroll );
+}, 1000 );
 </script>
 
 </body>
