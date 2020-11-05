@@ -334,7 +334,7 @@ function displayTopBottom() {
 		G.bars = true;
 		$( '#bar-top, #bar-bottom' ).removeClass( 'hide' );
 		$( '#page-playback' ).removeClass ( 'barshidden' );
-		$( '#page-playback, #infoicon' ).addClass( 'barsalways' );
+		$( '#page-playback, #infoicon, .emptyadd' ).addClass( 'barsalways' );
 		$( '.list, #lib-index, #pl-index' ).removeClass( 'bars-off' );
 		$( '.content-top' ).css( 'top', '40px' );
 		$( '.emptyadd' ).css( 'top', '' );

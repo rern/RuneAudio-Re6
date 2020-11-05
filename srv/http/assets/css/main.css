@@ -906,6 +906,7 @@ svg path.st1 {
 #qrip {
 	position: absolute;
 	width: 100%;
+	top: 25px;
 	color: var( --cg60 );
 }
 #qrsettings {
@@ -2440,6 +2441,9 @@ li.active .li2 bl {
 	}
 }
 @media(max-height: 590px) {
+	.emptyadd.barsalways {
+		top: 90px;
+	}
 	.index0 {
 		display: none !important;
 	}
