@@ -210,7 +210,7 @@ pclose( $popencmd );
 <script>
 $( '#wait' ).remove();
 info( {
-	  icon    : 'addons'
+	  icon    : 'jigsaw'
 	, title   : '<?=$title?>'
 	, message : '<?=$postinfo?>'
 } );
