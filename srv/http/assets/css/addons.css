@@ -367,7 +367,7 @@ a:hover {
 	color: var( --cw );
 }
 #bottom {
-	min-height: calc( 100vh - 360px );
+	min-height: calc( 100vh - 250px );
 }
 #list,
 #list li {
