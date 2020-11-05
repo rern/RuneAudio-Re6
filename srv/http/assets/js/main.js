@@ -719,9 +719,11 @@ $( '#coverT, #timeT' ).tap( function() {
 	G.guide = !$( this ).hasClass( 'mapshow' );
 	if ( $( this ).hasClass( 'mapshow' ) ) {
 		hideGuide();
+		$( '#coverTR' ).toggleClass( 'empty', !G.bars );
 		return
 	}
 	
+	$( '#coverTR' ).removeClass( 'empty' );
 	$( '.covermap, .guide' ).addClass( 'mapshow' );
 	$( '.guide' ).toggleClass( 'hide', !G.status.playlistlength && G.status.mpd );
 	$( '#guide-artist, #guide-bio, #guide-album' ).toggleClass( 'hide', G.status.webradio || !G.status.playlistlength );

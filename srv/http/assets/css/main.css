@@ -909,13 +909,6 @@ svg path.st1 {
 	top: 25px;
 	color: var( --cg60 );
 }
-#qrsettings {
-	font-size: 30px;
-	position: absolute;
-	display: block;
-	right: 13px;
-	top: 25px;
-}
 #qrwebui svg {
 	fill: var( --cg60 );
 	background: #000000;
@@ -1026,6 +1019,10 @@ svg path.st1 {
 	opacity: 0;
 }
 .map.mapshow {
+	opacity: 0.8;
+}
+#coverTR.empty {
+	background: none;
 	opacity: 0.8;
 }
 .guide {
