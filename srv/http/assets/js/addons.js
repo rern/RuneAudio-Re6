@@ -96,7 +96,7 @@ $( '.boxed-group .btn' ).on( 'taphold', function () {
 	opt = [ alias, type, 'master' ];
 	if ( $this.attr( 'warning' ) ) {
 		info( {
-			  icon    : 'addons'
+			  icon    : 'jigsaw'
 			, title   : title
 			, message : $( this ).attr( 'warning' )
 		} );
