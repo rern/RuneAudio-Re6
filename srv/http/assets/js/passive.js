@@ -457,24 +457,22 @@ function psVolume( data ) {
 		$( '#vol-group .btn, .volmap' ).toggleClass( 'disabled', data.disable );
 		return
 	}
-	
 	clearTimeout( G.debounce );
 	G.debounce = setTimeout( function() {
 		var type = data.type;
 		var val = data.val;
 		if ( type === 'mute' ) {
 			G.status.volume = 0;
+			G.status.volumemute = val;
 			$volumeRS.setValue( 0 );
+			volColorMute( val );
 		} else {
 			G.status.volume = val;
+			G.status.volumemute = 0;
 			$volumeRS.setValue( val );
+			volColorUnmute();
 		}
 		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
-		if ( type === 'mute' ) {
-			muteColor( val );
-		} else if ( type === 'unmute' ) {
-			unmuteColor();
-		}
 	}, G.debouncems );
 }
 function psVolumeNone( data ) {

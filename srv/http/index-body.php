@@ -197,7 +197,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 <?php } else { ?>
 	<a id="mpd" class="settings"><i class="fa fa-mpd"></i>MPD</a>
 <?php } ?>
-	<a id="network" class="settings"><i class="fa fa-network"></i>Network</a>
+	<a id="networks" class="settings"><i class="fa fa-network"></i>Networks</a>
 	<a id="sources" class="settings sub"><i class="fa fa-folder-cascade"></i>Sources</a>
 		<i id="update" class="fa fa-refresh-library submenu"></i>
 	<a id="system" class="settings sub"><i class="fa fa-plus-r"></i>System</a>
@@ -237,11 +237,6 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 </div>
 
 <div id="page-playback" class="page">
-	<div id="volbar" class="transparent">
-		<i id="volbarL" class="swipe fa fa-minus fa-2x"></i>
-		<i id="volbarM" class="fa fa-volume fa-2x"></i>
-		<i id="volbarR" class="swipe fa fa-plus fa-2x"></i>
-	</div>
 	<div class="emptyadd hide"><i class="fa fa-plus-circle"></i></div>
 	<i id="guide-bio" class="map guide fa fa-bio"></i>
 	<i id="guide-lyrics" class="map guide fa fa-lyrics"></i>
@@ -269,6 +264,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 				<i id="i-repeat1" class="fa fa-repeat-single hide"></i>
 				<i id="i-consume" class="fa fa-flash hide"></i>
 				<i id="i-librandom" class="fa fa-dice hide"></i>
+				<i id="i-mute" class="fa fa-mute hide"></i>
 				<i id="i-update" class="fa fa-library blink hide"></i>
 				<i id="i-addons" class="fa fa-plus-r hide"></i>
 				<i id="i-gpio" class="fa fa-gpio hide"></i>
@@ -285,6 +281,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 				<i id="ti-repeat1" class="fa fa-repeat-single hide"></i>
 				<i id="ti-consume" class="fa fa-flash hide"></i>
 				<i id="ti-librandom" class="fa fa-dice hide"></i>
+				<i id="ti-mute" class="fa fa-mute hide"></i>
 				<i id="ti-update" class="fa fa-library blink hide"></i>
 				<i id="ti-plus-r" class="fa fa-plus-r hide"></i>
 				<i id="ti-gpio" class="fa fa-gpio hide"></i>
@@ -312,10 +309,11 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 		</div>
 		<div id="coverart-block">
 			<div id="divcover" class="cover">
-				<div id="time-bar" class="hide"></div>
+				<div id="time-bar"></div>
 				<div id="time-band" class="band transparent"></div>
 				
 				<img id="coverart" class="cover">
+				<div id="qrip"></div>
 				<div id="qrwebui"></div>
 				<div id="covermap">
 					<i id="coverTL" class="map covermap r1 c1 ws hs fa fa-scale-dn"></i>
@@ -328,11 +326,11 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 					<i id="coverB" class="map covermap r3 c2 wl hs fa fa-stop"></i>
 					<i id="coverBR" class="map covermap r3 c3 ws hs fa fa-repeat"></i>
 				</div>
-				<div id="volume-text" class="hide"></div>
 				<div id="volume-bar" class="hide"></div>
 				<i id="volume-band" class="volumeband band fa fa-volume transparent"></i>
 				<i id="volume-band-dn" class="volumeband band fa fa-minus transparent"></i>
 				<i id="volume-band-up" class="volumeband band fa fa-plus transparent"></i>
+				<div id="volume-text" class="hide"></div>
 			</div>
 		</div>
 		<div id="volume-knob">
@@ -376,7 +374,8 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	</div>
 	<div id="lib-mode-list" class="list" data-count="<?=$counts->song?>"><?=$modehtml?></div>
 	<ul id="lib-list" class="list"></ul>
-	<div id="lib-index" class="hide"></div>
+	<div id="lib-index" class="index index0"></div>
+	<div id="lib-index1" class="index index1"></div>
 </div>
 
 <div id="page-playlist" class="page hide">
@@ -407,7 +406,8 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	</div>
 	<ul id="pl-list" class="list playlist"></ul>
 	<ul id="pl-savedlist" class="list hide"></ul>
-	<div id="pl-index" class="hide"></div>
+	<div id="pl-index" class="index index0"></div>
+	<div id="pl-index1" class="index index1"></div>
 </div>
 
 <?=$menu?>

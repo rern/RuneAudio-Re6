@@ -495,7 +495,6 @@ svg path.st1 {
 #bar-top,
 #bar-bottom,
 .swipe,
-#volbar,
 #swipebar {
 	position: fixed;
 	width: 100%;
@@ -503,26 +502,16 @@ svg path.st1 {
 	background: var( --cg );
 	z-index: 105;
 }
+#swipebar {
+	z-index: 104;
+}
 #bar-bottom,
 #swipebar {
 	bottom: 0;
 }
-#volbar {
-	display: none;
-	top: 0;
-}
-#volbarM {
-	width: 100%;
-}
-#volbarL,
 #swipeL {
 	left: 0;
 }
-#volbarR,
-#swipeR {
-	right: 0;
-}
-#volbar,
 #swipebar {
 	text-align: center;
 	background: var( --cga );
@@ -879,6 +868,7 @@ svg path.st1 {
 	font-size: 18px;
 	font-weight: 300;
 	background: #000000;
+	z-index: 102;
 }
 #time-band,
 #volume-band {
@@ -913,10 +903,16 @@ svg path.st1 {
 #controls-cover.notime.novolume {
 	width: 50vh;
 }
+#qrip {
+	position: absolute;
+	width: 100%;
+	color: var( --cg60 );
+}
 #qrwebui svg {
 	fill: var( --cg60 );
 	background: #000000;
 }
+
 #coverart,
 .licover img {
 	border: 1px solid hsl(0,0%,15%);
@@ -1523,9 +1519,6 @@ svg path.st1 {
 	scrollbar-width: none;
 	-ms-overflow-style: none;
 }
-.lyricstext::-webkit-scrollbar {
-	width: 0;
-}
 #lyricstextoverlay {
 	width: 100%;
 	padding-left: 15px;
@@ -1872,8 +1865,7 @@ input[type=text] {
 	font-size: 24px;
 	color: var( --cw );
 }
-#lib-index,
-#pl-index {
+.index {
 	position: fixed;
 	right: 0;
 	width: 38px;
@@ -1885,12 +1877,13 @@ input[type=text] {
 	background: var( --cga );
 	z-index: 5;
 }
-#lib-index.bars-off,
-#pl-index.bars-off {
+.index1 {
+	display: none;
+}
+.index.bars-off {
 	padding: 60px 0 20px 0 !important;
 }
-#lib-index a,
-#pl-index a {
+.index a {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -2444,8 +2437,13 @@ li.active .li2 bl {
 	}
 }
 @media(max-height: 590px) {
-	.half {
+	.index0 {
 		display: none !important;
+	}
+	.index1 {
+		display: flex;
+		padding-top: 50px;
+		line-height: calc( 100vh / 17 );
 	}
 	#infoicon.barsalways {
 		display: none;
@@ -2462,6 +2460,9 @@ li.active .li2 bl {
 }
 @media( max-width: 700px ) {
 	#pl-count .title { display: none; }
+}
+@media( max-width: 614px ) {
+	#time-knob { display: none; }
 }
 @media( max-width: 500px ) {
 	#pl-count,
@@ -2584,9 +2585,6 @@ li.active .li2 bl {
 	}
 }
 @media( orientation: portrait ) and ( max-width: 540px ) {
-	#volbar {
-		display: block;
-	}
 	#playback-row {
 		margin-top: 20px;
 	}
@@ -2604,10 +2602,10 @@ li.active .li2 bl {
 		display: inline;
 	}
 	#volume-band-dn {
-		left: -20px
+		left: 0;
 	}
 	#volume-band-up {
-		right: -20px
+		right: 0;
 	}
 }
 @media( orientation: portrait ) and ( max-width: 480px ) {
@@ -2667,11 +2665,6 @@ li.active .li2 bl {
 		width: 36px;
 	}
 }
-@media( orientation: portrait ) and ( max-width: 350px ) {
-	#button-pl-crop {
-		display: none;
-	}
-}
 @media( orientation: portrait ) and ( max-width: 330px ) {
 	#playback-controls i {
 		margin: 0;
@@ -2679,10 +2672,12 @@ li.active .li2 bl {
 	#button-pl-shuffle {
 		display: none;
 	}
-	.infocol {
-		width: 140px;
+	#infoOverlay {
+		transform: scale( 0.9 );
+		width: 110%;
+		left: -5%;
 	}
-	n { display: none }
+	n { display: none; }
 }
 @media( orientation: portrait ) and ( max-width: 280px ) {
 	#sampling {
@@ -2714,4 +2709,6 @@ li.active .li2 bl {
 	#volume-knob,
 	#guide-lyrics { display: none; }
 	#coverart-block { margin-bottom : 0; }
+	#divcover .edit,
+	#divcover .cover-save { top: 0; }
 }

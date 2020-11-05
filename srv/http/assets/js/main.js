@@ -66,9 +66,8 @@ var stopwatch = '<span class="stopwatch">'
 				+'<i class="fa fa-stopwatch-i"></i>'
 				+'<i class="fa fa-stopwatch-o"></i>'
 				+'</span>';
-var timer = false; // for 'setInterval' status check
-// get mpd status with passive.js on pushstream connect
-displayGet( function( data ) {
+
+displayGet( function( data ) { // get mpd status with passive.js on pushstream connect
 	G.display = data;
 	G.bars = data.bars;
 	$.event.special.tap.emitTapOnTaphold = false; // suppress tap on taphold
@@ -130,7 +129,7 @@ $( '#button-settings, #badge' ).click( function() {
 	$( '.contextmenu' ).addClass( 'hide' );
 } );
 $( '.settings' ).click( function() {
-	location.href = 'index-settings.php?p='+ this.id;
+	location.href = 'settings.php?p='+ this.id;
 } );
 $( '#snapclient' ).click( function() {
 	bash( '/srv/http/bash/snapcast.sh '+ ( G.status.snapclient ? 'stop' : 'start' ), function( data ) {
@@ -277,7 +276,7 @@ $( '#displaylibrary, #displaylibrary2' ).click( function() {
 	} );
 } );
 var chkplayback = {
-	  bars         : '_Top-Bottom <n>bars</n>'
+	  bars         : '_Top-Bottom bars'
 	, barsalways   : 'Bars always on'
 	, time         : '_Time'
 	, radioelapsed : 'WebRadio time'
@@ -451,7 +450,7 @@ $( '#addons' ).click( function () {
 				}
 			} );
 		} else {
-			location.href = 'addons.php';
+			location.href = '/settings/addons.php';
 		}
 	} );
 	loader( 'show' );
@@ -495,15 +494,6 @@ $( '#tab-playlist' ).click( function() {
 		if ( !G.savedlist && !G.savedplaylist ) G.status.playlistlength ? getPlaylist() : renderPlaylist( -1 );
 		if ( G.color ) $( '#colorcancel' ).click();
 	}
-} );
-$( '#volbarM' ).click( function( e ) {
-	$( '#volmute' ).click();
-} );
-$( '#volbarL' ).click( function( e ) {
-	$( '#voldn' ).click();
-} );
-$( '#volbarR' ).click( function( e ) {
-	$( '#volup' ).click();
 } );
 $( '#swipebar' ).tap( function( e ) {
 	if ( !G.swipe && e.target.id !== 'swipeL' && e.target.id !== 'swipeR' ) $( '#button-settings' ).click();
@@ -650,7 +640,7 @@ $( '#volume' ).roundSlider( {
 	}
 	, start           : function( e ) { // on 'start drag'
 		// restore handle color immediately on start drag
-		if ( e.value === 0 ) unmuteColor(); // value before 'start drag'
+		if ( e.value === 0 ) volColorUnmute(); // value before 'start drag'
 		$( '.map' ).removeClass( 'mapshow' );
 	}
 } );
@@ -671,6 +661,27 @@ $( '#volup, #voldn' ).click( function() {
 } );
 $( '#coverTL, #timeTL' ).tap( function() {
 	if ( G.status.mpd && !G.status.playlistlength ) return
+	
+	if ( window.innerWidth < 614 ) {
+		if ( G.display.volume  || window.innerHeight > 600 ) return
+		
+		var top = $( '#page-playback' ).css( 'margin-top' );
+		if ( top === '0px' ) {
+			setTimeout( function() {
+				$( '#volume-band' ).click();
+				$( '#page-playback' ).css( {
+						'margin-top' : -$( '#coverart' ).offset().top
+						, height     : '110%'
+					} );
+				$( '.volumeband, #volume-bar' ).removeClass( 'hide' );
+				$( '#volume-band-dn, #volume-band-up' ).removeClass( 'transparent' );
+			}, 300 );
+		} else {
+			$( '#page-playback' ).css( { height: '', 'margin-top': '' } );
+			$( '.volumeband' ).addClass( 'transparent' );
+		}
+		return
+	}
 	
 	var list = [ 'bars', 'time', 'cover', 'coversmall', 'volume', 'buttons', 'progressbar' ];
 	if ( 'coverTL' in G ) {
@@ -717,7 +728,7 @@ $( '#coverT, #timeT' ).tap( function() {
 	$( '#volume-text' ).addClass( 'hide' );
 	$( '.timemap' ).toggleClass( 'mapshow', !G.display.cover );
 	$( '.volmap' ).toggleClass( 'mapshow', !G.display.volumenone && G.display.volume );
-	$( '#volbar, #swipebar' ).toggleClass( 'transparent', G.bars );
+	$( '#swipebar' ).toggleClass( 'transparent', G.bars );
 	if ( G.display.time || ( G.display.volume && !G.display.volumenone ) ) {
 		$( '#coverTL' )
 			.removeClass( 'fa-scale-dn' )
@@ -738,7 +749,7 @@ $( '#coverT, #timeT' ).tap( function() {
 			$( '#volume-bar' ).removeClass( 'hide' );
 		}
 	}
-	$( '#volbar, #swipebar' ).toggleClass( 'hide', !G.status.mpd );
+	$( '#swipebar' ).toggleClass( 'hide', !G.status.mpd );
 	$( '.edit' ).remove();
 	$( '#coverart' ).css( 'opacity', '' );
 	$( '.cover-save' ).css( 'z-index', 100 );
@@ -803,18 +814,15 @@ $( '#volume-band' ).on( 'touchstart mousedown', function( e ) {
 	G.drag = 0;
 	var pageX = 'pageX' in e ? e.pageX : e.originalEvent.changedTouches[ 0 ].pageX;
 	volumeSet( pageX );
-	G.volumebar = setTimeout( function() {
-		$( '#volume-bar, #volume-text' ).addClass( 'hide' );
-	}, 3000 );
+	volumebarTimeout();
 } ).on( 'click', function( e ) {
 	if ( G.status.volumenone ) return
 	
 	if ( $( '#volume-bar' ).hasClass( 'hide' ) ) {
 		$( '#volume-text' ).text( G.status.volume );
 		$( '#volume-bar, #volume-text' ).removeClass( 'hide' );
-		G.volumebar = setTimeout( function() {
-			$( '#volume-bar, #volume-text' ).addClass( 'hide' );
-		}, 3000 );
+		$( '#volume-band-dn, #volume-band-up' ).removeClass( 'transparent' );
+		volumebarTimeout();
 	} else {
 		G.drag = 0;
 		var pageX = 'pageX' in e ? e.pageX : e.originalEvent.changedTouches[ 0 ].pageX;
@@ -842,6 +850,16 @@ $( '#volume-band-dn, #volume-band-up' ).click( function() {
 	$( '#volume-text' ).text( barW );
 	$( '#volume-bar' ).css( 'width', barW +'%' );
 	$( '#vol'+ updn ).click();
+} );
+$( '#volume-text' ).tap( function() {
+	$( '#volmute' ).click();
+	var val = G.status.volumemute || 0;
+	$( '#volume-bar' ).width( val +'%' );
+	$( '#volume-text' ).text( val );
+} );
+$( '#i-mute' ).click( function() {
+	$( '#volmute' ).click();
+	$( '#volume-bar' ).width( G.status.volumemute +'%' );
 } );
 $( '#divcover' ).on( 'click', '.edit, .cover-save', function( e ) {
 	var $this = $( e.target );
@@ -1158,7 +1176,7 @@ $( '.mode' ).click( function() {
 			webRadioNew();
 		} else {
 			loader( 'show' );
-			location.href = 'index-settings.php?p=sources';
+			location.href = 'settings.php?p=sources';
 		}
 		return
 	}
@@ -1185,7 +1203,7 @@ $( '.mode' ).click( function() {
 	}
 	list( query, function( data ) {
 		data.path = path;
-		data.modetitle = path;
+		data.modetitle = G.mode === 'webradio' ? '<n>'+ path +'</n>' : path;
 		renderLibraryList( data );
 	}, 'json' );
 	query.path = path;
@@ -1596,22 +1614,21 @@ $( '#lib-list' ).on( 'taphold', '.licoverimg',  function() {
 	query.modetitle = modetitle;
 	G.query.push( query );
 } );
-$( '#lib-index' ).on( 'click', 'a', function() {
-	var $this = $( this );
-	if ( !$this.hasClass( 'wh' ) ) return
+$( '.index' ).on( 'click', 'a', function() {
+	var index = $( this ).find( 'wh' ).text()[ 0 ];
+	if ( !index ) return
 	
-	var index = $this.text();
 	if ( index === '#' ) {
-		$( 'html, body' ).scrollTop( 0 );
-		return
-	}
-	
-	if ( $( '#lib-list .coverart' ).length ) {
-		var offsettop = $( '.coverart[data-index='+ index +']' ).offset().top;
+		var scrollT = 0;
 	} else {
-		var offsettop = $( '#lib-list li[data-index='+ index +']' ).offset().top;
+		if ( G.library ) {
+			var el = G.mode === 'album' ? '.coverart' : '#lib-list li';
+		} else {
+			var el = '#pl-savedlist li';
+		}
+		var scrollT = $( el +'[data-index='+ index +']' ).offset().top;
 	}
-	$( 'html, body' ).scrollTop( offsettop - ( G.bars ? 80 : 40 ) );
+	$( 'html, body' ).scrollTop( scrollT - ( G.bars ? 80 : 40 ) );
 } );
 // PLAYLIST /////////////////////////////////////////////////////////////////////////////////////
 $( '#button-playlist' ).click( function() {
@@ -1941,19 +1958,6 @@ $( '#pl-savedlist' ).on( 'click', 'li', function( e ) {
 		renderSavedPlaylist( $this.find( '.plname' ).text() );
 		if ( pladd ) playlistInsertTarget();
 	}
-} );
-$( '#pl-index' ).on( 'click', 'a', function() {
-	var $this = $( this );
-	if ( !$this.hasClass( 'wh' ) ) return
-	
-	var index = $this.text();
-	if ( index === '#' ) {
-		$( 'html, body' ).scrollTop( 0 );
-		return
-	}
-	
-	var offsettop = $( '#pl-savedlist li[data-index='+ index +']' ).offset().top;
-	$( 'html, body' ).scrollTop( offsettop - ( G.bars ? 80 : 40 ) );
 } );
 
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

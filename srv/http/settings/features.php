@@ -131,7 +131,7 @@
 	<?php }
 		  if ( file_exists( '/srv/http/data/system/gpio.json' ) ) { ?>
 <div class="col-l double">
-	<a>GPIO Relay
+	<a>GPIO Relays
 	<br><gr>RPI.GPIO</gr></a><i class="fa fa-gpio fa-lg"></i>
 </div>
 <div class="col-r">

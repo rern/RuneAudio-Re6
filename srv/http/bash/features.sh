@@ -26,7 +26,7 @@ rotate() {
 	rotate=$1
 	rotateconf=/etc/X11/xorg.conf.d/99-raspi-rotate.conf
 	if [[ $rotate == NORMAL ]]; then
-		rm -f $rotateconf $path-rotatefile
+		rm -f $rotateconf $dirsystem/rotatefile
 	else
 		case $rotate in
 			CW )  matrix='0 1 0 -1 0 1 0 0 1';;
@@ -34,7 +34,7 @@ rotate() {
 			UD )  matrix='-1 0 1 0 -1 1 0 0 1';;
 		esac
 		sed -e "s/ROTATION_SETTING/$rotate/
-		" -e "s/MATRIX_SETTING/$matrix/" $rotateconf | tee $rotateconf $path-rotatefile
+		" -e "s/MATRIX_SETTING/$matrix/" $rotateconf | tee $rotateconf $dirsystem/rotatefile
 	fi
 	ln -sf /srv/http/assets/img/{$rotate,splash}.png
 }
@@ -55,15 +55,14 @@ xset s off\
 xset -dpms
 ' /etc/X11/xinit/xinitrc
 		DISPLAY=:0 xset dpms 0 0 0
-		rm $path-screenoff
 	else
 		sed -i -e '/xset/ d
 ' -e "/export DISPLAY/ a\
 xset dpms $sec $sec $sec
 " /etc/X11/xinit/xinitrc
 		DISPLAY=:0 xset dpms $sec $sec $sec
-		echo $sec > $path-screenoff
 	fi
+	cp /etc/X11/xinit/xinitrc $dirsystem/xinitrc
 	pushRefresh
 }
 
@@ -146,18 +145,11 @@ localbrowserset )
 		[[ $rotate =~ ^(0|90|180|270)$ ]] && rotatelcd $rotate || rotate $rotate
 	fi
 	[[ -n $screenoff ]] && screenoff $screenoff
-		
-	if [[ $cursor == true ]]; then
-		touch $path-cursor
-		cursor=yes
-	else
-		rm -f $path-cursor
-		cursor=no
-	fi
-	[[ $zoom != 1 ]] && echo $zoom > $path-zoom || rm $path-zoom
+	[[ $cursor == true ]] && cursor=yes && cursor=no
 	sed -i -e 's/\(-use_cursor \).*/\1'$cursor' \&/
 ' -e 's/\(factor=\).*/\1'$zoom'/
 ' /etc/X11/xinit/xinitrc
+	cp /etc/X11/xinit/xinitrc $dirsystem/xinitrc
 	systemctl restart localbrowser
 	pushRefresh
 	;;

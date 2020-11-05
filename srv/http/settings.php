@@ -11,7 +11,6 @@ include 'logosvg.php';
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>RuneAudio Settings</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -35,7 +34,7 @@ include 'logosvg.php';
 	<link rel="stylesheet" href="/assets/css/info.<?=$time?>.css">
 	<link rel="stylesheet" href="/assets/css/settings.<?=$time?>.css">
 	<link rel="stylesheet" href="/assets/css/banner.<?=$time?>.css">
-	<link rel="icon" type="image/png" href="/assets/img/favicon-192x192.<?=$time?>.png" sizes="192x192">
+	<link rel="icon" type="image/png" href="/assets/img/favicon.<?=$time?>.svg" sizes="192x192">
 </head>
 <body>
 <?php
@@ -44,7 +43,7 @@ $sudo = '/usr/bin/sudo /usr/bin';
 $icon = [
 	  'features' => 'sliders'
 	, 'mpd'      => 'mpd'
-	, 'network'  => 'network'
+	, 'networks' => 'networks'
 	, 'sources'  => 'folder-cascade'
 	, 'system'   => 'gear'
 ];
@@ -73,7 +72,7 @@ include "settings/$page.php";
 <script src="/assets/js/<?=$page?>.<?=$time?>.js"></script>
 	<?php	if ( $page === 'mpd' || $page === 'system' ) { ?>
 <script src="/assets/js/plugin/jquery.selectric.min.<?=$time?>.js"></script>
-	<?php	} else if ( $page === 'network' ) { ?>
+	<?php	} else if ( $page === 'networks' ) { ?>
 <script src="/assets/js/plugin/qrcode.min.<?=$time?>.js"></script>
 	<?php	}
 		  } ?>

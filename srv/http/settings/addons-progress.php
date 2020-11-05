@@ -11,7 +11,7 @@ $branch = $sh[ 2 ];
 $addon = $addons[ $alias ];
 if ( $alias !== 'cove' ) {
 	$heading = 'Addons Progress';
-	$href = '/addons.php';
+	$href = '/settings/addons.php';
 	$title = preg_replace( '/\**$/', '', $addon[ 'title' ] );
 } else {
 	$heading = 'CoverArt Thumbnails';
@@ -39,12 +39,12 @@ if ( $branch !== 'master' ) $installurl = str_replace( 'raw/master', 'raw/'.$bra
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Rune Addons</title>
+	<title>R+R Addons</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
 	<meta name="msapplication-tap-highlight" content="no">
-	<link rel="icon" href="/assets/img/addons/addons.<?=$time?>.png">
+	<link rel="icon" href="/assets/img/favicon.<?=$time?>.svg">
 	<style>
 		@font-face {
 			font-family: enhance;
@@ -61,12 +61,8 @@ if ( $branch !== 'master' ) $installurl = str_replace( 'raw/master', 'raw/'.$bra
 <body>
 
 <div id="splash" class="hide"><svg viewBox="0 0 480.2 144.2"><?=$logo?></svg></div>
-<div class="container">
-	<h1>
-		<i class="fa fa-jigsaw gr"></i>&ensp;<span><?=$heading?></span>
-		<i class="close-root fa fa-times"></i>
-	</h1>
-	<p class="bl"></p>
+<div class="container progress">
+	<heading>Addons Progress<i id="close" class="fa fa-times"></i></heading>
 	<p id="wait">
 		<w><?=$title?></w><br>
 		<i class="fa fa-gear fa-spin"></i>Please wait until finished ...
@@ -76,7 +72,7 @@ if ( $branch !== 'master' ) $installurl = str_replace( 'raw/master', 'raw/'.$bra
 <script src="/assets/js/info.<?=$time?>.js"></script>
 <script src="/assets/js/banner.<?=$time?>.js"></script>
 <script>
-$( '.close-root' ).click( function() { 
+$( '#close' ).click( function() { 
 	if ( $( '#wait' ).length ) {
 		$.post( 'cmd.php', {
 			  cmd : 'sh'
@@ -88,18 +84,9 @@ $( '.close-root' ).click( function() {
 		location.href = '<?=$href?>';
 	}
 } );
-setTimeout( function() {
-	pre = document.getElementsByTagName( 'pre' )[ 0 ];
-	var h0 = pre.scrollHeight;
-	var h1;
-	intscroll = setInterval( function() {
-		h1 = pre.scrollHeight;
-		if ( h1 > h0 ) {
-			pre.scrollTop = pre.scrollHeight;
-			h0 = h1;
-		}
-	}, 500 );
-}, 1000 );
+setInterval( function() {
+	$( 'pre' ).scrollTop( 10000 );
+}, 200 );
 // js for '<pre>' must be here before start stdout
 // php 'flush' loop waits for all outputs before going to next lines
 // but must 'setTimeout()' for '<pre>' to load to fix 'undefined'
@@ -221,12 +208,9 @@ pclose( $popencmd );
 </div>
 
 <script>
-clearInterval( intscroll );
-pre.scrollTop = pre.scrollHeight;
 $( '#wait' ).remove();
-$( '#hidescrollv' ).css( 'max-height', ( $( '#hidescrollv' ).height() + 30 ) +'px' );
 info( {
-	  icon    : 'addons'
+	  icon    : 'jigsaw'
 	, title   : '<?=$title?>'
 	, message : '<?=$postinfo?>'
 } );

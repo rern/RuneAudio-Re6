@@ -107,6 +107,7 @@ infocontenthtml = heredoc( function() { /*
 			</div>
 			<p id="infoFooter" class="infomessage hide"></p>
 */ } );
+var infoscroll = 0;
 
 $( 'body' ).prepend( containerhtml );
 
@@ -151,10 +152,15 @@ function infoReset() {
 	$( '#infoOk, #infoFileLabel' ).removeClass( 'disabled' );
 	$( '.extrabtn, #infoContent hr' ).remove();
 //	$( '#loader' ).addClass( 'hide' ); // for 'X' click
+	if ( infoscroll ) {
+		$( 'html, body' ).scrollTop( infoscroll );
+		infoscroll = 0;
+	}
 }
 
 function info( O ) {
 	infoReset();
+	infoscroll = $( window ).scrollTop();
 	setTimeout( function() { // fix: wait for infoReset() on 2nd info
 	///////////////////////////////////////////////////////////////////
 	// simple use as info( 'message' )
@@ -430,6 +436,7 @@ function alignVertical() { // make infoBox scrollable
 			  'margin-top' : top +'px'
 			, 'visibility' : 'visible'
 		} );
+		$( 'html, body' ).scrollTop( 0 );
 	}, 0 );
 }
 function checkRequired() {

@@ -17,13 +17,12 @@
 # check addons updates
 # continue mpd update if pending
 
-dirdata=/srv/http/data
-dirmpd=$dirdata/mpd
-dirsystem=$dirdata/system
-playerfile=$dirdata/shm/player
-
-echo '"mpd":true,"airplay":false,"snapclient":false,"spotify":false,"upnp":false' > $playerfile
-touch $playerfile-mpd
+# 1st boot only --------------------------------------------------------------
+if [[ -e /boot/lcd ]]; then
+	mv /boot/lcd{,0}
+	/srv/http/bash/system.sh lcd$'\n'true
+	shutdown -r now
+fi
 
 if [[ -e /boot/wifi ]]; then
 	ssid=$( grep '^ESSID' /boot/wifi | cut -d'"' -f2 )
@@ -36,6 +35,15 @@ if [[ -e /boot/wifi ]]; then
 fi
 
 [[ -e /boot/x.sh ]] && /boot/x.sh
+# ----------------------------------------------------------------------------
+
+dirdata=/srv/http/data
+dirmpd=$dirdata/mpd
+dirsystem=$dirdata/system
+playerfile=$dirdata/shm/player
+
+echo '"mpd":true,"airplay":false,"snapclient":false,"spotify":false,"upnp":false' > $playerfile
+touch $playerfile-mpd
 
 [[ -e $dirsystem/onboard-wlan ]] && ifconfig wlan0 up || rmmod brcmfmac
 

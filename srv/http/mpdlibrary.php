@@ -33,6 +33,7 @@ search
 			track list: mpc search -f %*% any $keyword
 */
 include '/srv/http/bash/cmd-listsort.php';
+include '/srv/http/indexbar.php';
 
 $mode = $_POST[ 'mode' ] ?? null;
 $string = $_POST[ 'string' ] ?? null;
@@ -40,8 +41,6 @@ $string = escape( $string );
 $formatall = [ 'album', 'albumartist', 'artist', 'composer', 'date', 'file', 'genre', 'time', 'title', 'track' ];
 $f = $_POST[ 'format' ] ?? $formatall;
 $format = '%'.implode( '%^^%', $f ).'%';
-$indexarray = range( 'A', 'Z' );
-$indexbar = '<a class="wh">#</a>';
 $modes = [ 'album' => 0, 'albumartist' => 1, 'artist' => 2, 'composer' => 3, 'date' => 4, 'genre' => 5 ];
 
 switch( $_POST[ 'query' ] ) {
@@ -133,12 +132,7 @@ case 'ls':
 					.'<span class="single">'.$each->dir.'</span>'
 					.'</li>';
 		}
-		$indexes = array_keys( array_flip( $indexes ) );
-		foreach( $indexarray as $i => $char ) {
-			$white = in_array( $char, $indexes ) ? 'wh' : '';
-			$half = $i % 2 ? ' half' : '';
-			$indexbar.= '<a class="'.$white.$half.'">'.$char."</a>\n";
-		}
+		$indexbar = indexbar( array_keys( array_flip( $indexes ) ) );
 		$array = [ 'html' => $html, 'index' => $indexbar ];
 	} else {
 		$f = $formatall; // set format for directory with files only - track list
@@ -260,12 +254,7 @@ case 'webradio':
 					.'<span class="li2">'.$each->url.'</span>'
 				.'</li>';
 	}
-	$indexes = array_keys( array_flip( $indexes ) );
-	foreach( $indexarray as $i => $char ) {
-		$white = in_array( $char, $indexes ) ? 'wh' : '';
-		$half = $i % 2 ? ' half' : '';
-		$indexbar.= '<a class="'.$white.$half.'">'.$char."</a>\n";
-	}
+	$indexbar = indexbar( array_keys( array_flip( $indexes ) ) );
 	$array = [ 'html' => $html, 'index' => $indexbar ];
 	break;
 }
@@ -377,14 +366,7 @@ function htmlList( $mode, $lists ) { // non-file 'list' command
 					</div>';
 		}
 	}
-	$indexes = array_keys( array_flip( $indexes ) ); // faster than array_unique
-	$indexarray = range( 'A', 'Z' );
-	$indexbar = '<a class="wh">#</a>';
-	foreach( $indexarray as $i => $char ) {
-		$white = in_array( $char, $indexes ) ? 'wh' : '';
-		$half = $i % 2 ? ' half' : '';
-		$indexbar.= '<a class="'.$white.$half.'">'.$char."</a>\n";
-	}
+	$indexbar = indexbar( array_keys( array_flip( $indexes ) ) ); // faster than array_unique
 	return [ 'html' => $html, 'index' => $indexbar ];
 }
 function htmlTracks( $lists, $f, $filemode = '', $string = '' ) { // track list - no sort ($string: cuefile or search)

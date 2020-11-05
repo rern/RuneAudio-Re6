@@ -290,7 +290,7 @@ $( '#gpio' ).click( function() {
 	bash( [ 'gpio', G.gpio ], resetLocal );
 } );
 $( '#setting-gpio' ).click( function() {
-	location.href = 'gpiosettings.php';
+	location.href = '/settings/gpio.php';
 } );
 $( '#mpdscribble' ).click( function() {
 	var mpdscribble = $( this ).prop( 'checked' );

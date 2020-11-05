@@ -22,7 +22,7 @@ function connect( data ) { // [ ssid, dhcp, wpa, password, hidden, ip, gw ]
 	var ip = data[ 5 ];
 	if ( ip ) {
 		$( '#loader' ).removeClass( 'hide' );
-		location.href = 'http://'+ ip +'/index-settings.php?p=network';
+		location.href = 'http://'+ ip +'/settings.php?p=network';
 		var text = ip.slice( -5 ) === 'local' ? 'Change URL to ' : 'Change IP to ';
 		notify( ssid, text + ip, 'wifi-3' );
 	} else {
@@ -57,7 +57,7 @@ function editLAN( data ) {
 		, button       : function() {
 			notify( 'LAN IP Address', 'Change URL to '+ G.hostname +'.local ...', 'lan' );
 			$( '#loader' ).removeClass( 'hide' );
-			location.href = 'http://'+ G.hostname +'.local/index-settings.php?p=network';
+			location.href = 'http://'+ G.hostname +'.local/settings.php?p=network';
 			bash( [ 'editlan' ] );
 		}
 		, ok           : function() {
@@ -177,7 +177,7 @@ function editWiFiSet( ssid, data ) {
 			$( '#infoX' ).click();
 			$( '#loader' ).removeClass( 'hide' );
 			notify( ssid, 'DHCP ...', 'wifi-3' );
-			location.href = 'http://'+ G.hostname +'.local/index-settings.php?p=network';
+			location.href = 'http://'+ G.hostname +'.local/settings.php?p=network';
 			bash( [ 'editwifidhcp', ssid ] );
 		} );
 	}
@@ -515,7 +515,7 @@ $( '#listbtscan' ).on( 'click', 'li', function( e ) {
 	}
 } );
 $( '#setting-accesspoint' ).click( function() {
-	location.href = 'index-settings.php?p=features';
+	location.href = 'settings.php?p=features';
 } );
 
 } );

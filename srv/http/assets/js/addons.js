@@ -8,7 +8,7 @@ function sendcommand() {
 }
 // post submit with temporary form
 function postcmd() {
-	var form = '<form id="formtemp" action="addons-progress.php" method="post">';
+	var form = '<form id="formtemp" action="/settings/addons-progress.php" method="post">';
 	var optL = opt.length;
 	for ( i = 0; i < optL; i++ ) { // [ branch, alias, type, opt1, opt2, ... ]
 		form += '<input type="hidden" name="sh[]" value="'+ opt[ i ] +'">'
@@ -19,7 +19,7 @@ function postcmd() {
 }
 //---------------------------------------------------------------------------
 data = {}
-$( '.close-root' ).click( function() {
+$( '#close' ).click( function() {
 	location.href = '/';
 } );
 // revision show/hide
@@ -31,18 +31,17 @@ $( '.revision' ).click( function(e) {
 // sroll up click
 $( '#list li' ).click( function() {
 	var alias = this.getAttribute( 'alias' );
-	document.getElementById( alias ).scrollIntoView( true );
-	window.scrollBy( 0, -10 );
+	$( 'html, body' ).scrollTop( $( '#'+ alias ).offset().top - 50 );
 } );
 // sroll top
 $( 'legend' ).click( function() {
-	window.scrollTo( 0, 0 );
+	$( 'html, body' ).scrollTop( 0 );
 } );
 
 // branch test
 function branchtest( alias, type, message, install ) {
 	info( {
-		  icon      : 'addons'
+		  icon      : 'jigsaw'
 		, title     : title
 		, message   : message
 		, textlabel : 'Tree #/Branch'
@@ -68,7 +67,7 @@ $( '.boxed-group .btn' ).on( 'taphold', function () {
 	rollback = addons[ alias ].rollback || '';
 	if ( rollback ) {
 		info( {
-			  icon      : 'addons'
+			  icon      : 'jigsaw'
 			, title     : title
 			, message   : 'Upgrade / Downgrade ?'
 			, radiohtml : '<label><input type="radio" name="inforadio" value="1" checked>&ensp;Rollback to previous version</label><br>'
@@ -97,7 +96,7 @@ $( '.boxed-group .btn' ).on( 'taphold', function () {
 	opt = [ alias, type, 'master' ];
 	if ( $this.attr( 'warning' ) ) {
 		info( {
-			  icon    : 'addons'
+			  icon    : 'jigsaw'
 			, title   : title
 			, message : $( this ).attr( 'warning' )
 		} );
@@ -110,7 +109,7 @@ $( '.boxed-group .btn' ).on( 'taphold', function () {
 		getoptions();
 	} else {
 		info( {
-			  icon    : 'addons'
+			  icon    : 'jigsaw'
 			, title   : title
 			, message : type +'?'
 			, ok      : function () {
@@ -133,7 +132,7 @@ function getoptions() {
 // -------------------------------------------------------------------------------------------------
 		case 'wait': // only 1 'Ok' = continue
 			info( {
-				  icon    : 'addons'
+				  icon    : 'jigsaw'
 				, title   : title
 				, message : option[ oj ]
 				, oklabel : 'Continue'
@@ -143,7 +142,7 @@ function getoptions() {
 // -------------------------------------------------------------------------------------------------
 		case 'confirm': // 'Cancel' = close
 			info( {
-				  icon    : 'addons'
+				  icon    : 'jigsaw'
 				, title   : title
 				, message : option[ oj ]
 				, oklabel : 'Continue'
@@ -154,7 +153,7 @@ function getoptions() {
 		case 'yesno': // 'Cancel' = 0
 			var ojson = option[ oj ];
 			info( {
-				  icon        : 'addons'
+				  icon        : 'jigsaw'
 				, title       : title
 				, message     : ojson.message
 				, buttonlabel : 'No'
@@ -171,7 +170,7 @@ function getoptions() {
 // -------------------------------------------------------------------------------------------------
 		case 'skip': // 'Cancel' = continue, 'Ok' = skip options
 			info( {
-				  icon        : 'addons'
+				  icon        : 'jigsaw'
 				, title       : title
 				, message     : option[ oj ]
 				, cancellabel : 'No'
@@ -184,7 +183,7 @@ function getoptions() {
 		case 'text':
 			var ojson = option[ oj ];
 			info( {
-				  icon      : 'addons'
+				  icon      : 'jigsaw'
 				, title     : title
 				, message   : ojson.message
 				, textlabel : ojson.label
@@ -204,7 +203,7 @@ function getoptions() {
 		case 'password':
 			ojson = option[ oj ];
 			info( {
-				  icon          : 'addons'
+				  icon          : 'jigsaw'
 				, title         : title
 				, message       : ojson.message
 				, passwordlabel : ojson.label
@@ -233,7 +232,7 @@ function getoptions() {
 		case 'radio': // single value
 			ojson = option[ oj ];
 			info( {
-				  icon    : 'addons'
+				  icon    : 'jigsaw'
 				, title   : title
 				, message : ojson.message
 				, radio   : ojson.list
@@ -247,7 +246,7 @@ function getoptions() {
 			$( '#infoRadio input' ).change( function() { // cutom value
 				if ( $( this ).val() === '?' ) {
 					info( {
-						  icon      : 'addons'
+						  icon      : 'jigsaw'
 						, title     : title
 						, message   : ojson.message
 						, textlabel : 'Custom'
@@ -263,7 +262,7 @@ function getoptions() {
 		case 'select': // long single value
 			ojson = option[ oj ];
 			info( {
-				  icon        : 'addons'
+				  icon        : 'jigsaw'
 				, title       : title
 				, message     : ojson.message
 				, selectlabel : ojson.label
@@ -281,7 +280,7 @@ function getoptions() {
 			$( '#infoSelectBox' ).change( function() { // cutom value
 				if ( $( '#infoSelectBox :selected' ).val() === '?' ) {
 					info( {
-						  icon      : 'addons'
+						  icon      : 'jigsaw'
 						, title     : title
 						, message   : ojson.message
 						, textlabel : 'Custom'
@@ -298,7 +297,7 @@ function getoptions() {
 		case 'checkbox': // multiple values
 			ojson = option[ oj ];
 			info( {
-				  icon     : 'addons'
+				  icon     : 'jigsaw'
 				, title    : title
 				, message  : ojson.message
 				, checkbox : ojson.list

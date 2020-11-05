@@ -20,11 +20,11 @@ $desktop = isset( $_SERVER[ 'HTTP_USER_AGENT' ] )
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="msapplication-tap-highlight" content="no" />
-<title>RuneAudio+R</title>
+<title>R+R</title>
 <link rel="apple-touch-icon" sizes="152x152" href="/assets/img/apple-touch-icon-152x152.<?=$time?>.png">
 <link rel="apple-touch-icon" sizes="167x167" href="/assets/img/apple-touch-icon-167x167.<?=$time?>.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/apple-touch-icon-180x180.<?=$time?>.png">
-<link rel="icon" type="image/png" href="/assets/img/favicon-192x192.<?=$time?>.png" sizes="192x192">
+<link rel="icon" type="image/png" href="/assets/img/favicon.<?=$time?>.svg" sizes="192x192">
 <meta name="apple-mobile-web-app-title" content="RuneAudio">
 <meta name="msapplication-TileColor" content="#000000">
 <meta name="msapplication-TileImage" content="/assets/img/mstile-144x144.<?=$time?>.png">
@@ -42,9 +42,6 @@ $desktop = isset( $_SERVER[ 'HTTP_USER_AGENT' ] )
 	<?php if ( $localhost ) { ?> 
 <link rel="stylesheet" href="/assets/css/simple-keyboard.min.<?=$time?>.css">
 <link rel="stylesheet" href="/assets/css/keyboard.<?=$time?>.css">
-<style>
-	body::-webkit-scrollbar { display: none; }
-</style>
 	<?php } ?>
 <link rel="stylesheet" href="/assets/css/info.<?=$time?>.css">
 <link rel="stylesheet" href="/assets/css/roundslider.min.<?=$time?>.css">
