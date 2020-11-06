@@ -1,13 +1,5 @@
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-function getStatusRefresh( service ) {
-	service !== 'localbrowser' ? resetLocal() : resetLocal( 7000 );
-	if ( $( '#code'+ service ).hasClass( 'hide' ) ) return
-	
-	setTimeout( function() {
-		getStatus( service );
-	}, 1000 );
-}
 refreshData = function() { // system page: use resetLocal() to aviod delay
 	bash( '/srv/http/bash/features-data.sh', function( list ) {
 		G = list;
@@ -17,8 +9,8 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		$( '#setting-spotify' ).toggleClass( 'hide', !G.spotify );
 		$( '#upnp' ).prop( 'checked', G.upnp );
 //		$( '#setting-upnp' ).toggleClass( 'hide', !G.upnp );
-		$( '#localbrowser' ).prop( 'checked', G.localbrowser );
-		$( '#setting-localbrowser' ).toggleClass( 'hide', !G.localbrowser );
+		$( '#chromium' ).prop( 'checked', G.chromium );
+		$( '#setting-chromium' ).toggleClass( 'hide', !G.chromium );
 		$( '#samba' ).prop( 'checked', G.samba );
 		$( '#setting-samba' ).toggleClass( 'hide', !G.samba );
 		$( '#snapcast' ).prop( 'checked', G.snapcast );
@@ -35,8 +27,8 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		$( '#ip' ).text( G.streamingip +':8000' );
 		$( '#gpio' ).prop( 'checked', G.gpio );
 		$( '#setting-gpio' ).toggleClass( 'hide', !G.gpio );
-		$( '#mpdscribble' ).prop( 'checked', G.mpdscribble );
-		$( '#setting-mpdscribble' ).toggleClass( 'hide', !G.mpdscribble );
+		$( '#scrobbler' ).prop( 'checked', G.scrobbler );
+		$( '#setting-scrobbler' ).toggleClass( 'hide', !G.scrobbler );
 		$( '#login' ).prop( 'checked', G.login );
 		$( '#setting-login' ).toggleClass( 'hide', !G.login );
 		$( '#avahi' ).prop( 'checked', G.avahi );
@@ -44,8 +36,8 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		$( '#autoplay' ).prop( 'checked', G.autoplay );
 		$( '#accesspoint' ).prop( 'checked', G.hostapd );
 		$( '#setting-accesspoint' ).toggleClass( 'hide', !G.hostapd );
-		[ 'shareport-sync', 'spotifyd', 'upmpdcli', 'snapserver', 'localbrowser', 'samba', 'mpdscribble', 'hostapd' ].forEach( function( service ) {
-			if ( !$( '#code'+ service ).hasClass( 'hide' ) ) getStatus( service );
+		services.forEach( function( id ) {
+			codeToggle( id, 'status' );
 		} );
 		resetLocal();
 		showContent();
@@ -53,26 +45,16 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 }
 refreshData();
 //---------------------------------------------------------------------------------------
-$( '.status' ).click( function() {
-	$this = $( this );
-	var service = $this.data( 'service' );
-	$code = $( '#code'+ service );
-	if ( $code.hasClass( 'hide' ) ) {
-		getStatus( service );
-	} else {
-		$code.addClass( 'hide' );
-	}
-} );
 $( '#airplay' ).click( function( e ) {
 	G.airplay = $( this ).prop( 'checked' );
 	notify( 'AirPlay Renderer', G.airplay, 'airplay' );
-	bash( [ 'airplay', G.airplay ], getStatusRefresh( 'shairport-sync' ) );
+	bash( [ 'airplay', G.airplay ], codeToggle( 'shairport-sync', 'status' ) );
 } );
 $( '#snapclient' ).click( function( e ) {
 	G.snapclient = $( this ).prop( 'checked' );
 	$( '#setting-snapclient' ).toggleClass( 'hide', !G.snapclient );
 	notify( 'SnapClient Renderer', G.snapclient, 'snapcast' );
-	bash( [ 'snapclient', G.snapclient ], getStatusRefresh( 'snapclient' ) );
+	bash( [ 'snapclient', G.snapclient ], codeToggle( 'snapclient', 'status' ) );
 } );
 $( '#setting-snapclient' ).click( function() {
 	info( {
@@ -98,7 +80,7 @@ $( '#spotify' ).click( function() {
 	G.spotify = $( this ).prop( 'checked' );
 	$( '#setting-spotify' ).toggleClass( 'hide', !G.spotify );
 	notify( 'Spotify Connect', G.spotify, 'spotify' );
-	bash( [ 'spotify', G.spotify ], getStatusRefresh( 'spotifyd' ) );
+	bash( [ 'spotify', G.spotify ], codeToggle( 'spotifyd', 'status' ) );
 } );
 $( '#setting-spotify' ).click( function() {
 	$.post( cmdphp, {
@@ -140,7 +122,7 @@ $( '#setting-spotify' ).click( function() {
 $( '#upnp' ).click( function( e ) {
 	G.upnp = $( this ).prop( 'checked' );
 	notify( 'UPnP Renderer', G.upnp, 'upnp fa-s' );
-	bash( [ 'upnp', G.upnp ], getStatusRefresh( 'upmpdcli' ) );
+	bash( [ 'upnp', G.upnp ], codeToggle( 'upmpdcli', 'status' ) );
 } );
 $( '#snapcast' ).click( function( e ) {
 	G.snapcast = $( this ).prop( 'checked' );
@@ -151,18 +133,18 @@ $( '#snapcast' ).click( function( e ) {
 		$( '#divsnapclient' ).removeClass( 'hide' );
 	}
 	notify( 'Snapcast - Sync Streaming Server', G.snapcast, 'snapcast' );
-	bash( [ 'snapcast', G.snapcast ], getStatusRefresh( 'snapserver' ) );
+	bash( [ 'snapcast', G.snapcast ], codeToggle( 'snapserver', 'status' ) );
 } );
 $( '#streaming' ).click( function( e ) {
 	G.streaming = $( this ).prop( 'checked' );
 	notify( 'HTTP Streaming', G.streaming, 'mpd' );
 	bash( [ 'streaming', G.streaming ], resetLocal );
 } );
-$( '#localbrowser' ).click( function( e ) {
+$( '#chromium' ).click( function( e ) {
 	G.localbrowser = $( this ).prop( 'checked' );
-	$( '#setting-localbrowser' ).toggleClass( 'hide', !G.localbrowser );
+	$( '#setting-chromium' ).toggleClass( 'hide', !G.localbrowser );
 	notify( 'Chromium - Browser on RPi', G.localbrowser, 'chromium blink' );
-	bash( [ 'localbrowser', G.localbrowser ], getStatusRefresh( 'localbrowser' ) );
+	bash( [ 'localbrowser', G.localbrowser ], codeToggle( 'localbrowser', 'status' ) );
 } );
 var localbrowserinfo = heredoc( function() { /*
 	<div id="infoText" class="infocontent">
@@ -192,7 +174,7 @@ var localbrowserinfo = heredoc( function() { /*
 		<label><input type="checkbox">&ensp;Mouse pointer</label><br>
 	</div>
 */ } );
-$( '#setting-localbrowser' ).click( function( e ) {
+$( '#setting-chromium' ).click( function( e ) {
 	info( {
 		  icon        : 'chromium'
 		, title       : 'Browser on RPi'
@@ -256,7 +238,7 @@ $( '#samba' ).click( function( e ) {
 	G.samba = $( this ).prop( 'checked' );
 	$( '#setting-samba' ).toggleClass( 'hide', !G.samba );
 	notify( 'Samba - File Sharing', G.samba, 'network blink' );
-	bash( [ 'samba', G.samba ], getStatusRefresh( 'smb' ) );
+	bash( [ 'samba', G.samba ], codeToggle( 'smb', 'status' ) );
 } );
 $( '#setting-samba' ).click( function() {
 	info( {
@@ -289,20 +271,20 @@ $( '#gpio' ).click( function() {
 $( '#setting-gpio' ).click( function() {
 	location.href = '/settings/gpio.php';
 } );
-$( '#mpdscribble' ).click( function() {
+$( '#scrobbler' ).click( function() {
 	var mpdscribble = $( this ).prop( 'checked' );
 	if ( mpdscribble && !G.mpdscribbleuser ) {
-		$( '#setting-mpdscribble' ).click();
+		$( '#setting-scrobbler' ).click();
 	} else {
 		notify( 'Scrobbler', mpdscribble, 'lastfm' );
 		bash( [ 'mpdscribble', mpdscribble ], function( std ) {
 			G.mpdscribble = std != -1 ? true : false;
-			$( '#setting-mpdscribble' ).toggleClass( 'hide', !G.mpdscribble );
-			getStatusRefresh( 'mpdscribble' );
+			$( '#setting-scrobbler' ).toggleClass( 'hide', !G.mpdscribble );
+			codeToggle( 'mpdscribble', 'status' );
 		} );
 	}
 } );
-$( '#setting-mpdscribble' ).click( function() {
+$( '#setting-scrobbler' ).click( function() {
 	info( {
 		  icon          : 'lastfm'
 		, title         : 'Scrobbler'

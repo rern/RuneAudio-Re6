@@ -1,37 +1,5 @@
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-function getAplay() {
-	bash( 'aplay -l', function( status ) {
-		$( '#codeaplay' )
-			.html( status )
-			.removeClass( 'hide' );
-	} );
-}
-function getAmixer() {
-	var card = $( '#audiooutput option:selected' ).data( 'card' );
-	bash( 'amixer -c '+ card, function( status ) {
-		$( '#codeamixer' )
-			.html( status || '(none)' )
-			.removeClass( 'hide' );
-	} );
-}
-function getMpdconf() {
-	bash( 'cat /etc/mpd.conf', function( status ) {
-		$( '#codempdconf' )
-			.html( status )
-			.removeClass( 'hide' );
-		setTimeout( function() {
-			$( '#codempdconf' ).scrollTop( $( '#codempdconf' ).height() );
-		}, 100 );
-	} );
-}
-function getStatus() {
-	bash( 'systemctl status mpd', function( status ) {
-		$( '#codestatus' )
-			.html( statusColor( status ) )
-			.removeClass( 'hide' );
-	} );
-}
 function setMixerType( mixertype ) {
 	var $output = $( '#audiooutput option:selected' );
 	var name = $output.text();
@@ -92,6 +60,7 @@ refreshData = function() {
 			$( '#hwmixertxt' ).hide();
 		}
 		var $selected = $( '#audiooutput option:selected' );
+		cmd.amixer = 'amixer -c '+ $( '#audiooutput option:selected' ).data( 'card' );
 		$( '#mixertype' ).html( mixerhtml ).val( $selected.data( 'mixertype' ) );
 		$( '#audiooutput, #mixertype' ).selectric( 'refresh' );
 		if ( $( '#mixertype' ).val() === 'hardware' && $selected.data( 'mixercount' ) > 1 ) {
@@ -124,10 +93,9 @@ refreshData = function() {
 		$( '#bufferoutput' ).prop( 'checked', G.bufferoutput > 8192 );
 		$( '#setting-bufferoutput' ).toggleClass( 'hide', G.bufferoutput === '' );
 		$( '#ffmpeg' ).prop( 'checked', G.ffmpeg );
-		if ( !$( '#codeaplay' ).hasClass( 'hide' ) ) getAplay();
-		if ( !$( '#codeamixer' ).hasClass( 'hide' ) ) getAmixer();
-		if ( !$( '#codestatus' ).hasClass( 'hide' ) ) getStatus();
-		if ( !$( '#codempdconf' ).hasClass( 'hide' ) ) getMpdconf();
+		[ 'aplay', 'amixer', 'mpdconf', 'mpdstatus' ].forEach( function( id ) {
+			codeToggle( id, 'status' );
+		} );
 		resetLocal();
 		showContent();
 	}, 'json' );
@@ -145,7 +113,8 @@ $( '#audiooutput' ).on( 'selectric-change', function() {
 	var $selected = $( this ).find( ':selected' );
 	G.audiooutput = $selected.text();
 	G.audioaplayname = $selected.val();
-	var card = $selected.data( 'card' );
+	card = $selected.data( 'card' );
+	cmd.amixer = 'amixer -c '+ card;
 	var hwmixer = $selected.data( 'hwmixer' );
 	notify( 'Audio Output Device', 'Change ...', 'mpd' );
 	bash( [ 'audiooutput', G.audioaplayname, card, G.audiooutput, hwmixer ], refreshData );
@@ -207,12 +176,6 @@ $( '#setting-mixertype' ).click( function() { // hardware mixer
 			}
 		} );
 	}, 'json' );
-} );
-$( '#aplay' ).click( function( e ) {
-	codeToggle( e.target, this.id, getAplay );
-} );
-$( '#amixer' ).click( function( e ) {
-	codeToggle( e.target, this.id, getAmixer );
 } );
 $( '#novolume' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
@@ -406,12 +369,7 @@ $( '#ffmpeg' ).click( function() {
 	notify( 'FFmpeg Decoder', G.ffmpeg, 'mpd' );
 	bash( [ 'ffmpeg', G.ffmpeg ], refreshData );
 } );
-$( '#status' ).click( function( e ) {
-	if ( $( e.target ).hasClass( 'help' ) || $( e.target ).hasClass( 'fa-reboot' ) ) return
-	
-	codeToggle( e.target, this.id, getStatus );
-} );
-$( '#restart' ).click( function( e ) {
+$( '#mpdrestart' ).click( function() {
 	$this = $( this );
 	info( {
 		  icon    : 'mpd'
@@ -422,9 +380,6 @@ $( '#restart' ).click( function( e ) {
 			bash( '/srv/http/bash/mpd-conf.sh', refreshData );
 		}
 	} );
-} );
-$( '#mpdconf' ).click( function( e ) {
-	codeToggle( e.target, this.id, getMpdconf );
 } );
 
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

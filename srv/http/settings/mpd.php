@@ -146,12 +146,12 @@
 </div>
 
 <div>
-<heading id="status" class="status">Status<i class="fa fa-code"></i><i id="restart" class="fa fa-reboot"></i><?=$help?></heading>
+<heading id="mpd" class="status">Status<i class="fa fa-code"></i><i id="mpdrestart" class="fa fa-reboot"></i><?=$help?></heading>
 <span class="help-block hide">
 	<code>systemctl status mpd mpdidle</code>
 	<br><i class="fa fa-reboot"></i>&ensp;Restart MPD
 </span>
-<pre id="codestatus" class="hide"></pre>
+<pre id="codempd" class="hide"></pre>
 </div>
 
 <div>

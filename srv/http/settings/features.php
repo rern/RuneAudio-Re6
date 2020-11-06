@@ -2,7 +2,7 @@
 <div>
 <heading>Renderers<?=$help?></heading>
 	<?php if ( file_exists( '/usr/bin/shairport-sync' ) ) { ?>
-<div class="col-l double status" data-service="shairport-sync">
+<div id="shairport-sync" class="col-l double status">
 	<a>AirPlay
 	<br><gr>Shairport-sync<?=$code?></gr></a><i class="fa fa-airplay fa-lg"></i>
 </div>
@@ -34,7 +34,7 @@
 </div>
 	<?php }
 		  if ( file_exists( '/usr/bin/spotifyd' ) ) { ?>
-<div class="col-l double status" data-service="spotifyd">
+<div id="spotifyd" class="col-l double status">
 	<a>Spotify
 	<br><gr>Spotifyd<?=$code?></gr></a><i class="fa fa-spotify fa-lg"></i>
 </div>
@@ -50,7 +50,7 @@
 <pre id="codespotifyd" class="hide"></pre>
 	<?php }
 		  if ( file_exists( '/usr/bin/upmpdcli' ) ) { ?>
-<div class="col-l double status" data-service="upmpdcli">
+<div id="upmpdcli" class="col-l double status">
 	<a>UPnP
 	<br><gr>upmpdcli<?=$code?></gr></a><i class="fa fa-upnp fa-lg"></i>
 </div>
@@ -78,7 +78,7 @@
 	<span class="help-block hide">Asynchronous streaming for browsers via <code id="ip"></code> (Latency - several seconds)</span>
 </div>
 	<?php if ( file_exists( '/usr/bin/snapserver' ) ) { ?>
-<div class="col-l double status" data-service="snapserver">
+<div id="snapserver" class="col-l double status">
 	<a>Synchronous
 	<br><gr>Snapcast<?=$code?></gr></a><i class="fa fa-snapcast fa-lg"></i>
 </div>
@@ -98,14 +98,14 @@
 <div>
 <heading>Features<?=$help?></heading>
 	<?php if ( file_exists( '/usr/bin/chromium' ) ) { ?>
-<div class="col-l double status" data-service="localbrowser">
+<div id="localbrowser" class="col-l double status">
 	<a>Browser on RPi
 	<br><gr>Chromium<?=$code?></gr></a><i class="fa fa-chromium fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="localbrowser" type="checkbox">
-	<div class="switchlabel" for="localbrowser"></div>
-	<i id="setting-localbrowser" class="setting fa fa-gear"></i>
+	<input id="chromium" type="checkbox">
+	<div class="switchlabel" for="chromium"></div>
+	<i id="setting-chromium" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
 		<a href="https://github.com/chromium/chromium">Chromium</a> - Browser on RPi connected screen. (Overscan change needs reboot.)
 	</span>
@@ -113,7 +113,7 @@
 <pre id="codelocalbrowser" class="hide"></pre>
 	<?php } 
 		  if ( file_exists( '/usr/bin/smbd' ) ) { ?>
-<div class="col-l double status" data-service="smb">
+<div id="smb" class="col-l double status">
 	<a>File Sharing
 	<br><gr>Samba<?=$code?></gr></a><i class="fa fa-networks fa-lg"></i>
 </div>
@@ -143,14 +143,14 @@
 	</span>
 </div>
 	<?php } ?>
-<div class="col-l double status" data-service="mpdscribble">
+<div id="mpdscribble" class="col-l double status">
 	<a>Last.fm Scrobbler
 	<br><gr>mpdscribble<?=$code?></gr></a><i class="fa fa-lastfm fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="mpdscribble" type="checkbox">
-	<div class="switchlabel" for="mpdscribble"></div>
-	<i id="setting-mpdscribble" class="setting fa fa-gear"></i>
+	<input id="scrobbler" type="checkbox">
+	<div class="switchlabel" for="scrobbler"></div>
+	<i id="setting-scrobbler" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
 		<a href="https://github.com/MusicPlayerDaemon/mpdscribble">mpdscribble</a> - Automatically send listened music data to Last.fm for tracking.
 	</span>
@@ -175,7 +175,7 @@
 	<div class="switchlabel" for="autoplay"></div>
 	<span class="help-block hide">Start playing automatically after boot.</span>
 </div>
-<div class="col-l double status" data-service="hostapd">
+<div id="hostapd" class="col-l double status">
 	<a>RPi Access Point
 	<br><gr>hostapd<?=$code?></gr></a><i class="fa fa-wifi-3 fa-lg"></i>
 </div>

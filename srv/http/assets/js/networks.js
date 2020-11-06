@@ -182,13 +182,6 @@ function editWiFiSet( ssid, data ) {
 		} );
 	}
 }
-function getNetctl() {
-	bash( [ 'statusnetctl' ], function( data ) {
-		$( '#codenetctl' )
-			.html( data )
-			.removeClass( 'hide' );
-	} );
-}
 function infoAccesspoint() {
 	info( {
 		  icon    : 'wifi-3'
@@ -327,7 +320,7 @@ function nicsStatus() {
 		
 		renderQR();
 		bannerHide();
-		if ( !$( '#codenetctl' ).hasClass( 'hide' ) ) getNetctl();
+		codeToggle( 'netctl', 'status' );
 		showContent();
 	}, 'json' );
 }
@@ -458,9 +451,6 @@ $( '#listwlscan' ).on( 'click', 'li', function() {
 	} else {
 		infoConnect( $this );
 	}
-} );
-$( '#netctl' ).click( function( e ) {
-	codeToggle( e.target, this.id, getNetctl );
 } );
 $( '#listbt' ).on( 'click', 'li', function() {
 	var $this = $( this );
