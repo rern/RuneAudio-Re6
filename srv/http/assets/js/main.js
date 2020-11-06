@@ -117,7 +117,7 @@ $( '#coverart' ).one( 'load', function() {
 	$( this ).attr( 'src', coverart );
 } );
 // COMMON /////////////////////////////////////////////////////////////////////////////////////
-$( '#button-settings, #badge' ).click( function() {
+$( '#button-settings, #badge, #qrsettings' ).click( function() {
 	var $settings = $( '#settings' );
 	if ( $settings.hasClass( 'hide' ) ) {
 		$settings
@@ -184,7 +184,7 @@ $( '.pkg' ).click( function( e ) {
 var chklibrary = {
 	  sd             : '_<i class="fa fa-microsd"></i>SD'
 	, usb            : '<i class="fa fa-usbdrive"></i>USB'
-	, nas            : '_<i class="fa fa-network"></i>Network'
+	, nas            : '_<i class="fa fa-networks"></i>Network'
 	, webradio       : '<i class="fa fa-webradio"></i>WebRadio'
 	, album          : '_<i class="fa fa-album"></i>Album'
 	, artist         : '<i class="fa fa-artist"></i>Artist'
@@ -719,9 +719,11 @@ $( '#coverT, #timeT' ).tap( function() {
 	G.guide = !$( this ).hasClass( 'mapshow' );
 	if ( $( this ).hasClass( 'mapshow' ) ) {
 		hideGuide();
+		$( '#coverTR' ).toggleClass( 'empty', !G.bars );
 		return
 	}
 	
+	$( '#coverTR' ).removeClass( 'empty' );
 	$( '.covermap, .guide' ).addClass( 'mapshow' );
 	$( '.guide' ).toggleClass( 'hide', !G.status.playlistlength && G.status.mpd );
 	$( '#guide-artist, #guide-bio, #guide-album' ).toggleClass( 'hide', G.status.webradio || !G.status.playlistlength );

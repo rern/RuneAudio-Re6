@@ -11,7 +11,7 @@ data+='
 	, "hostname"        : "'$( hostname )'"
 	, "lcd"             : '$lcd'
 	, "login"           : '$( [[ -e $dirsystem/login ]] && echo true || echo false )'
-	, "mpdscribble"     : '$( systemctl -q is-active mpdscribble@mpd && echo true || echo false )'
+	, "scrobbler"       : '$( systemctl -q is-active mpdscribble@mpd && echo true || echo false )'
 	, "mpdscribbleuser" : "'$( grep ^username /etc/mpdscribble.conf | cut -d' ' -f3- )'"
 	, "passworddefault" : '$( grep -q '$2a$12$rNJSBU0FOJM/jP98tA.J7uzFWAnpbXFYx5q1pmNhPnXnUu3L1Zz6W' $dirsystem/password && echo true || echo false )'
 	, "reboot"          : "'$( cat /srv/http/data/shm/reboot 2> /dev/null )'"
@@ -59,7 +59,7 @@ if [[ -e $xinitrc ]]; then
 	fi
 	data+='
 	, "cursor"          : '$( grep -q 'cursor yes' $xinitrc && echo true || echo false )'
-	, "localbrowser"    : '$( systemctl -q is-enabled localbrowser && echo true || echo false )'
+	, "chromium"        : '$( systemctl -q is-enabled localbrowser && echo true || echo false )'
 	, "rotate"          : "'$rotate'"
 	, "screenoff"       : '$(( $( grep 'xset dpms .*' $xinitrc | cut -d' ' -f5 ) ))'
 	, "zoom"            : '$( grep factor $xinitrc | cut -d'=' -f3 )

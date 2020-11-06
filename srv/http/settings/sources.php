@@ -1,5 +1,5 @@
 <div>
-<heading class="noline">Devices<i id="addnas" class="fa fa-plus-circle"></i>&emsp;<i id="refreshing" class="fa fa-network blink hide"></i><?=$help?></heading>
+<heading class="noline">Devices<i id="addnas" class="fa fa-plus-circle"></i>&emsp;<i id="refreshing" class="fa fa-networks blink hide"></i><?=$help?></heading>
 <ul id="list" class="entries" data-uid="<?=( exec( "$sudo/id -u mpd" ) )?>" data-gid="<?=( exec( "$sudo/id -g mpd" ) )?>"></ul>
 <p class="brhalf"></p>
 <span class="help-block hide">

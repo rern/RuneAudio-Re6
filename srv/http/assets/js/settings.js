@@ -11,13 +11,59 @@ function bash( command, callback, json ) {
 		, json || null
 	);
 }
+var cmd = {
+	  aplay        : 'aplay -l'
+	, bluetoothctl : 'systemctl -q is-active bluetooth && bluetoothctl show'
+	, configtxt    : 'cat /boot/config.txt'
+	, fstab        : 'cat /etc/fstab'
+	, ifconfig     : 'ifconfig wlan0'
+	, journalctl   : '/srv/http/bash/system.sh statusbootlog'
+	, mpdconf      : 'cat /etc/mpd.conf'
+	, mount        : 'mount | grep " / \\|MPD"'
+	, netctl       : '/srv/http/bash/system.sh statusnetctl'
+}
+var services = [ 'hostapd', 'localbrowser', 'mpd', 'mpdscribble', 'shairport-sync', 'smb', 'snapserver', 'spotifyd', 'upmpdcli' ];
+function codeToggle( id, target ) {
+	resetLocal();
+	if ( $( target ).hasClass( 'help' ) || target.id === 'mpdrestart' ) return // question icon
+	
+	var $el = $( '#code'+ id );
+	if ( target === 'status' && $el.hasClass( 'hide' ) ) return
+	
+	if ( target === 'status' || $el.hasClass( 'hide' ) ) {
+		if ( services.indexOf( id ) !== -1 ) {
+			if ( id === 'mpdscribble' ) id+= '@mpd';
+			var command = 'systemctl status '+ id;
+			var systemctl = 1;
+		} else {
+			var command = cmd[ id ];
+			var systemctl = 0;
+		}
+		var delay = target === 'status' ? 1000 : 0;
+		setTimeout( function() {
+			bash( command, function( status ) {
+				if ( systemctl ) var status = status
+								.replace( /(active \(running\))/, '<grn>$1</grn>' )
+								.replace( /(inactive \(dead\))/, '<red>$1</red>' )
+								.replace( /(failed)/, '<red>$1</red>' );
+				$el
+					.html( status )
+					.removeClass( 'hide' );
+				if ( id === 'mpdconf' ) {
+					setTimeout( function() {
+						$( '#codempdconf' ).scrollTop( $( '#codempdconf' ).height() );
+					}, 100 );
+				}
+			} );
+		}, delay );
+	} else {
+		$el.addClass( 'hide' );
+	}
+}
 function notify( title, message, icon ) {
 	local = 1;
 	if ( typeof message === 'boolean' || typeof message === 'number' ) var message = message ? 'Enable ...' : 'Disable ...';
 	banner( title, message, icon +' blink', -1 );
-}
-function codeToggle( target, id, fn ) {
-	if ( !$( target ).hasClass( 'help' ) ) $( '#code'+ id ).hasClass( 'hide' ) ? fn() : $( '#code'+ id ).addClass( 'hide' );
 }
 function getReset( callback ) {
 	$.post( cmdphp, {
@@ -41,11 +87,6 @@ function showContent() {
 		$( '#loader' ).addClass( 'hide' );
 		$( '.head, .container' ).removeClass( 'hide' );
 	}, 300 );
-}
-function statusColor( status ) {
-	return status
-				.replace( /(active \(running\))/, '<grn>$1</grn>' )
-				.replace( /(inactive \(dead\))/, '<red>$1</red>' );
 }
 var pushstream = new PushStream( { modes: 'websocket' } );
 var streams = [ 'refresh', 'reload', 'restore', ];
@@ -176,3 +217,7 @@ $( '.help' ).click( function() {
 	$( this ).parent().parent().find( '.help-block' ).toggleClass( 'hide' );
 	$( '#help' ).toggleClass( 'blue', $( '.help-block:not(.hide)' ).length !== 0 );
 } );
+$( '.status' ).click( function( e ) {
+	codeToggle( this.id, e.target );
+} );
+

@@ -16,6 +16,7 @@ function postcmd() {
 	form += '</form>';
 	$( 'body' ).append( form );
 	$( '#formtemp' ).submit();
+	$( '#loader' ).removeClass( 'hide' );
 }
 //---------------------------------------------------------------------------
 data = {}

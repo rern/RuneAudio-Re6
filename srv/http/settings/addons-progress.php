@@ -1,6 +1,6 @@
 <?php
 ignore_user_abort( TRUE ); // for 'connection_status()' to work
-include 'logosvg.php';
+include '../logosvg.php';
 $addons = json_decode( file_get_contents( '/srv/http/data/addons/addons-list.json' ), true );
 $time = time();
 
@@ -60,12 +60,12 @@ if ( $branch !== 'master' ) $installurl = str_replace( 'raw/master', 'raw/'.$bra
 </head>
 <body>
 
-<div id="splash" class="hide"><svg viewBox="0 0 480.2 144.2"><?=$logo?></svg></div>
+<div id="loader" class="hide"><svg viewBox="0 0 480.2 144.2"><?=$logo?></svg></div>
 <div class="container progress">
 	<heading>Addons Progress<i id="close" class="fa fa-times"></i></heading>
 	<p id="wait">
 		<w><?=$title?></w><br>
-		<i class="fa fa-gear fa-spin"></i>Please wait until finished ...
+		<i class="fa fa-gear blink"></i>Please wait until finished ...
 	</p>
 	
 <script src="/assets/js/plugin/jquery-2.2.4.min.<?=$time?>.js"></script>
@@ -84,7 +84,7 @@ $( '#close' ).click( function() {
 		location.href = '<?=$href?>';
 	}
 } );
-setInterval( function() {
+var scroll = setInterval( function() {
 	$( 'pre' ).scrollTop( 10000 );
 }, 200 );
 // js for '<pre>' must be here before start stdout
@@ -208,12 +208,16 @@ pclose( $popencmd );
 </div>
 
 <script>
-$( '#wait' ).remove();
 info( {
 	  icon    : 'jigsaw'
 	, title   : '<?=$title?>'
 	, message : '<?=$postinfo?>'
+	, ok      : function() {
+		$( 'pre' ).scrollTop( 10000 );
+	}
 } );
+$( '#wait' ).remove();
+clearInterval( scroll );
 </script>
 
 </body>

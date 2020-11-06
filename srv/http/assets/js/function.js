@@ -334,7 +334,7 @@ function displayTopBottom() {
 		G.bars = true;
 		$( '#bar-top, #bar-bottom' ).removeClass( 'hide' );
 		$( '#page-playback' ).removeClass ( 'barshidden' );
-		$( '#page-playback, #infoicon' ).addClass( 'barsalways' );
+		$( '#page-playback, #infoicon, .emptyadd' ).addClass( 'barsalways' );
 		$( '.list, #lib-index, #pl-index' ).removeClass( 'bars-off' );
 		$( '.content-top' ).css( 'top', '40px' );
 		$( '.emptyadd' ).css( 'top', '' );
@@ -616,7 +616,7 @@ function infoUpdate( path ) {
 		, ok       : function() {
 			var wav = $( '#infoCheckBox input' ).prop( 'checked' );
 			if ( path || $( '#infoRadio input:checked' ).val() == 1 ) {
-				if ( path ) G.list.li.find( '.lib-icon' ).addClass( 'blink' );
+				if ( path && !G.localhost ) G.list.li.find( '.lib-icon' ).addClass( 'blink' );
 				bash( [ 'mpcupdate', wav, path ] );
 			} else {
 				bash( [ 'mpcupdate', wav, 'rescan' ] );
@@ -1196,7 +1196,7 @@ function renderPlaybackBlank() {
 				, pad : 10
 			} );
 			$( '#qrwebui' ).html( qr );
-			$( '#coverTR' ).toggleClass( 'blankTR', !G.bars );
+			$( '#coverTR' ).toggleClass( 'empty', !G.bars );
 			$( '#coverart' )
 				.attr( 'src', coverrune )
 				.addClass( 'hide' );
@@ -1440,7 +1440,7 @@ function setButtonUpdating() {
 	$( '#i-update, #ti-update' ).addClass( 'hide' );
 	if ( G.status.updating_db ) {
 		if ( G.bars ) {
-			$( '#tab-library, #button-library' ).addClass( 'blink' );
+			if ( !G.localhost ) $( '#tab-library, #button-library' ).addClass( 'blink' );
 		} else {
 			$( '#'+ ( G.display.time ? 'ti' : 'i' ) +'-update' ).removeClass( 'hide' );
 		}

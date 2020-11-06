@@ -1,19 +1,5 @@
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-function getMounts() {
-	bash( 'mount | grep " / \\|MPD"', function( status ) {
-		$( '#codemount' )
-			.html( status )
-			.removeClass( 'hide' );
-	} );
-}
-function getFstab() {
-	bash( 'cat /etc/fstab', function( status ) {
-		$( '#codefstab' )
-			.html( status )
-			.removeClass( 'hide' );
-	} );
-}
 function infoMount( formdata, cifs ) {
 	info( {
 		  icon    : 'network'
@@ -103,8 +89,9 @@ refreshData = function() {
 		} );
 		$( '#list' ).html( html );
 		$( '#refreshing' ).addClass( 'hide' );
-		if ( !$( '#codemount' ).hasClass( 'hide' ) ) getMounts();
-		if ( !$( '#codefstab' ).hasClass( 'hide' ) ) getFstab();
+		[ 'fstab', 'mount' ].forEach( function( id ) {
+			codeToggle( id, 'status' );
+		} );
 		resetLocal();
 		showContent();
 	}, 'json' );
@@ -215,7 +202,7 @@ $( '#list' ).on( 'click', 'li', function() {
 			if ( list.length ) {
 				var html = '';
 				$.each( list, function( i, val ) {
-					html += '<li data-mount="//'+ val.ip +'/'+ val.share +'"><i class="fa fa-network"></i><gr>'+ val.host +'<grn>&ensp;&bull;&ensp;</grn>//'+ val.ip +'/'+ val.share +'</li>';
+					html += '<li data-mount="//'+ val.ip +'/'+ val.share +'"><i class="fa fa-networks"></i><gr>'+ val.host +'<grn>&ensp;&bull;&ensp;</grn>//'+ val.ip +'/'+ val.share +'</li>';
 				} );
 			} else {
 				var html = '<li><i class="fa fa-info-circle"></i><gr>No shares available</gr></li>';
@@ -241,11 +228,5 @@ $( '#refreshshares' ).click( function() {
 		.html( '<li><i class="fa fa-search"></i></li>' )
 		.click();
 } );*/
-$( '#mount' ).click( function( e ) {
-	codeToggle( e.target, this.id, getMounts );
-} );
-$( '#fstab' ).click( function( e ) {
-	codeToggle( e.target, this.id, getFstab );
-} );
 
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

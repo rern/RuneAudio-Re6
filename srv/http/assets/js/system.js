@@ -1,59 +1,5 @@
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-function getAplay() {
-	bash( 'aplay -l', function( status ) {
-		$( '#codeaplay' )
-			.html( status )
-			.removeClass( 'hide' );
-	} );
-}
-function getBluetoothctl() {
-	bash( 'systemctl -q is-active bluetooth && bluetoothctl show', function( status ) {
-		$( '#codebluetoothctl' )
-			.html( status )
-			.removeClass( 'hide' );
-	} );
-}
-function getConfigtxt() {
-	bash( 'cat /boot/config.txt', function( status ) {
-		setTimeout( function() {
-		$( '#codeconfigtxt' )
-			.html( status )
-			.removeClass( 'hide' );
-		}, 1000 );
-	} );
-}
-function getIfconfig() {
-	bash( 'ifconfig wlan0', function( status ) {
-		$( '#codeifconfig' )
-			.html( status )
-			.removeClass( 'hide' );
-	} );
-}
-function getIwregget() {
-	bash( 'iw reg get', function( status ) {
-		$( '#codeiwregget' )
-			.html( status )
-			.removeClass( 'hide' );
-	} );
-}
-function getJournalctl() {
-	if ( $( '#codejournalctl' ).text() ) {
-		$( '#codejournalctl' ).removeClass( 'hide' );
-	} else {
-		bash( [ 'statusbootlog' ], function( data ) {
-			$( '#codejournalctl' )
-				.html( data )
-				.removeClass( 'hide' );
-			$( '#journalctlicon' )
-				.removeClass( 'fa-refresh blink' )
-				.addClass( 'fa-code' );
-		} );
-		$( '#journalctlicon' )
-			.removeClass( 'fa-code' )
-			.addClass( 'fa-refresh blink' );
-	}
-}
 function rebootText( enable, device ) {
 	G.reboot = G.reboot.filter( function( el ) {
 		return el.indexOf( device ) === -1
@@ -96,7 +42,7 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 			+'Output Device<br>'
 			+'Kernel<br>'
 			+'<span class="settings" data-setting="mpd">MPD<i class="fa fa-gear"></i></span><br>'
-			+'<span class="settings" data-setting="network">Network<i class="fa fa-gear"></i></span>';
+			+'<span class="settings" data-setting="networks">Network<i class="fa fa-gear"></i></span>';
 		var statuslabel =
 			 'CPU Load<br>'
 			+'CPU Temperatue<br>'
@@ -169,9 +115,9 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		$( '#timezone' )
 			.val( G.timezone )
 			.selectric( 'refresh' );
-		if ( !$( '#codeifconfig' ).hasClass( 'hide' ) ) getIfconfig();
-		if ( !$( '#codejournalctl' ).hasClass( 'hide' ) ) getJournalctl();
-		if ( !$( '#codeconfigtxt' ).hasClass( 'hide' ) ) getConfigtxt();
+		[ 'ifconfig', 'configtxt', 'journalctl' ].forEach( function( id ) {
+			codeToggle( id, 'status' );
+		} );
 		resetLocal();
 		showContent();
 	}, 'json' );
@@ -238,9 +184,6 @@ $( '#onboardaudio' ).click( function() {
 		bash( [ 'onboardaudio', G.onboardaudio, G.reboot.join( '\n' ) ], resetLocal );
 	}
 } );
-$( '#aplay' ).click( function( e ) {
-	codeToggle( e.target, this.id, getAplay );
-} );
 $( '#bluetooth' ).click( function() {
 	G.bluetooth = $( this ).prop( 'checked' );
 	rebootText( G.bluetooth ? 'Enable' : 'Disable', 'on-board Bluetooth' );
@@ -259,9 +202,6 @@ $( '#setting-bluetooth' ).click( function() {
 			bash( [ 'btdiscoverable', ( G.btdiscoverable ? 'yes' : 'no' ) ], resetLocal( 3000 ) );
 		}
 	} );
-} );
-$( '#bluetoothctl' ).click( function( e ) {
-	codeToggle( e.target, this.id, getBluetoothctl );
 } );
 $( '#wlan' ).click( function() {
 	G.wlan = $( this ).prop( 'checked' );
@@ -286,9 +226,6 @@ $( '#setting-lcd' ).click( function() {
 			bash( [ 'lcdcalibrate' ] );
 		}
 	} );
-} );
-$( '#ifconfig' ).click( function( e ) {
-	codeToggle( e.target, this.id, getIfconfig );
 } );
 $( '#i2smodulesw' ).click( function() {
 	// delay to show switch sliding
@@ -332,7 +269,7 @@ $( '#i2smodule' ).on( 'selectric-change', function() {
 	}
 	bash( [ 'i2smodule', G.audioaplayname, G.audiooutput, G.reboot.join( '\n' ) ], function() {
 			resetLocal();
-			getConfigtxt();
+			codeToggle( 'configtxt' );
 		} );
 	$( '#output' ).text( G.audiooutput );
 } );
@@ -456,12 +393,6 @@ $( '#setting-regional' ).click( function() {
 $( '#timezone' ).on( 'selectric-change', function( e ) {
 	G.timezone = $( this ).val();
 	bash( [ 'timezone', G.timezone ] );
-} );
-$( '#journalctl' ).click( function( e ) {
-	codeToggle( e.target, this.id, getJournalctl );
-} );
-$( '#configtxt' ).click( function( e ) {
-	codeToggle( e.target, this.id, getConfigtxt );
 } );
 $( '#backuprestore' ).click( function( e ) {
 	if ( $( e.target ).hasClass( 'help' ) ) return

@@ -320,9 +320,9 @@ function psMpdUpdate( data ) {
 		if ( G.localhost ) return
 		
 		if ( G.bars ) {
-			$( '#tab-library, #button-library' ).addClass( 'blink' );
+			if ( !G.localhost ) $( '#tab-library, #button-library' ).addClass( 'blink' );
 		} else {
-			$( '#button-library' ).addClass( 'blink' );
+			if ( !G.localhost ) $( '#button-library' ).addClass( 'blink' );
 			$( '#'+ ( G.display.time ? 'ti' : 'i' ) +'-update' ).removeClass( 'hide' );
 		}
 	} else {
