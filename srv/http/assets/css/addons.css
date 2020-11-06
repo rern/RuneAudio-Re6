@@ -271,6 +271,13 @@ legend .fa-arrow-up {
 .detailtext code {
 	padding: 3px;
 }
+.info {
+	display: inline-block;
+}
+i.info {
+	width: 30px;
+	vertical-align: 7px;
+}
 pre {
 	display: block;
 	max-height: calc(100vh - 160px);
