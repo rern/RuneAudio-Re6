@@ -23,6 +23,7 @@ var cmd = {
 }
 var services = [ 'hostapd', 'localbrowser', 'mpdscribble', 'shairport-sync', 'smb', 'snapserver', 'spotifyd', 'upmpdcli' ];
 function codeToggle( id, target ) {
+	resetLocal();
 	if ( $( target ).hasClass( 'help' ) || target.id === 'mpdrestart' ) return // question icon
 	
 	var $el = $( '#code'+ id );
@@ -47,7 +48,6 @@ function codeToggle( id, target ) {
 				$el
 					.html( status )
 					.removeClass( 'hide' );
-				bannerHide();
 				if ( id === 'mpdconf' ) {
 					setTimeout( function() {
 						$( '#codempdconf' ).scrollTop( $( '#codempdconf' ).height() );
