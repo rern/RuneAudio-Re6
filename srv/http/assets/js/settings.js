@@ -18,10 +18,9 @@ var cmd = {
 	, ifconfig     : 'ifconfig wlan0'
 	, journalctl   : '/srv/http/bash/system.sh statusbootlog'
 	, mpdconf      : 'cat /etc/mpd.conf'
-	, mpd          : 'systemctl status mpd mpdidle'
 	, netctl       : '/srv/http/bash/system.sh statusnetctl'
 }
-var services = [ 'hostapd', 'localbrowser', 'mpdscribble', 'shairport-sync', 'smb', 'snapserver', 'spotifyd', 'upmpdcli' ];
+var services = [ 'hostapd', 'localbrowser', 'mpd', 'mpdscribble', 'shairport-sync', 'smb', 'snapserver', 'spotifyd', 'upmpdcli' ];
 function codeToggle( id, target ) {
 	resetLocal();
 	if ( $( target ).hasClass( 'help' ) || target.id === 'mpdrestart' ) return // question icon
