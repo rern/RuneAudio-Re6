@@ -213,7 +213,7 @@ hr {
 	color: var( --cw );
 }
 .infoinput {
-	margin: 3px 5px 2px 0 !important;
+	margin: 3px 0 2px 0 !important;
 	height: 36px !important;
 	padding: 0 10px;
 	color: var( --cw );
@@ -238,10 +238,10 @@ hr {
 }
 .eye {
 	position: absolute;
-	width: 30px;
+	width: 25px;
 	padding-top: 9px;
 	line-height: 24px !important;
-	text-align: center;
+	text-align: right;
 	cursor: pointer;
 }
 .eyeactive {
