@@ -15,9 +15,11 @@ var cmd = {
 	  aplay        : 'aplay -l'
 	, bluetoothctl : 'systemctl -q is-active bluetooth && bluetoothctl show'
 	, configtxt    : 'cat /boot/config.txt'
+	, fstab        : 'cat /etc/fstab'
 	, ifconfig     : 'ifconfig wlan0'
 	, journalctl   : '/srv/http/bash/system.sh statusbootlog'
 	, mpdconf      : 'cat /etc/mpd.conf'
+	, mount        : 'mount | grep " / \\|MPD"'
 	, netctl       : '/srv/http/bash/system.sh statusnetctl'
 }
 var services = [ 'hostapd', 'localbrowser', 'mpd', 'mpdscribble', 'shairport-sync', 'smb', 'snapserver', 'spotifyd', 'upmpdcli' ];
