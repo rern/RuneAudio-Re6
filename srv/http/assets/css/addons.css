@@ -125,8 +125,7 @@ svg path.st1 {
 }
 @media (min-width: 992px) {
 	.container {
-		width: 970px;
-		max-width: calc( 100% - 70px );
+		width: calc( 100% - 70px );
 	}
 }
 @media (min-width: 768px) {
