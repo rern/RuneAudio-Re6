@@ -173,14 +173,13 @@ addonslist )
 	;;
 addonsupdate )
 	[[ -z ${args[1]} ]] && wget https://github.com/rern/RuneAudio_Addons/raw/master/addons-list.json -qO $diraddons/addons-list.json
-	installed=$( find "$diraddons" -type f ! -name "addons*" )
-	jsonfile=$diraddons/addons-list.json
+	installed=$( ls "$diraddons" | grep -v addons-list )
 	count=0
 	for file in $installed; do
 		verinstalled=$( cat $file )
 		if (( ${#verinstalled} > 1 )); then
 			addon=$( basename $file )
-			verlist=$( jq -r .$addon.version $jsonfile )
+			verlist=$( jq -r .$addon.version $diraddons/addons-list.json )
 			[[ $verinstalled != $verlist ]] && (( count++ ))
 		fi
 	done
