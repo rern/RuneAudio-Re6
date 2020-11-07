@@ -907,7 +907,7 @@ svg path.st1 {
 	position: absolute;
 	width: 100%;
 	top: 25px;
-	color: var( --cg60 );
+	font-size: 16px;
 }
 #qrwebui svg {
 	fill: var( --cg60 );
