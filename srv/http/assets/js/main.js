@@ -724,7 +724,7 @@ $( '#coverT, #timeT' ).tap( function() {
 	G.guide = !$( this ).hasClass( 'mapshow' );
 	if ( $( this ).hasClass( 'mapshow' ) ) {
 		hideGuide();
-		$( '#coverTR' ).toggleClass( 'empty', !G.bars );
+		$( '#coverTR' ).toggleClass( 'empty', !G.bars && !G.status.playlistlength );
 		return
 	}
 	
