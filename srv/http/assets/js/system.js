@@ -62,8 +62,8 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 				}
 			} )
 		}
-		G.sources.pop(); // filter only mounts
-		G.sources.pop(); // filter only mounts
+		G.sources.pop(); // remove autoupdate
+		G.sources.pop(); // remove reboot
 		systemlabel += '<span class="settings" data-setting="sources">Sources<i class="fa fa-gear"></i></span>';
 		var sourcelist = '';
 		$.each( G.sources, function( i, val ) {
