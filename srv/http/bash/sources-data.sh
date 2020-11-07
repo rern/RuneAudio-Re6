@@ -10,7 +10,7 @@ if [[ -n $dftarget ]]; then
 		
 		case ${line:0:12} in
 			/ )            icon=microsd;;
-			/mnt/MPD/NAS ) icon=network;;
+			/mnt/MPD/NAS ) icon=networks;;
 			/mnt/MPD/USB ) icon=usbdrive;;
 		esac
 		data+='{"icon":"'$icon'","mountpoint":"'${line//\"/\\\"}'","mounted":true,"source":"'${source//\"/\\\"}'","size":"'$size'"},'
