@@ -17,6 +17,7 @@ mount )
 	source=${args[3]}
 	cifsnfs=${args[4]}
 	options=${args[5]}
+	update=${args[6]}
 
 	! ping -c 1 -w 1 $ip &> /dev/null && echo 'IP not found.' && exit
 
@@ -39,6 +40,7 @@ mount )
 	mountpoint=${mountpoint// /\\040}
 	echo "$source  $mountpoint  $cifsnfs  $options  0  0" | tee -a /etc/fstab > "/srv/http/data/system/fstab-$name" && echo 0
 	/srv/http/bash/sources-update.sh "$mountpoint"
+	[[ $update == true ]] && mpc update NAS
 	pushRefresh
 	;;
 remount )

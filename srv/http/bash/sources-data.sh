@@ -41,6 +41,6 @@ if [[ -n $targets ]]; then
 	done
 fi
 
-data+='"'$( cat /srv/http/data/shm/reboot 2> /dev/null )'"'
-
+data+='"'$( cat /srv/http/data/shm/reboot 2> /dev/null )'",'
+data+=$( grep -q "auto_update.*yes" /etc/mpd.conf && echo true || echo false )
 echo [${data}]
