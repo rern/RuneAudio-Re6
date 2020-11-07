@@ -198,6 +198,7 @@ pre {
 }
 w, wh, .wh { color: var( --cw ) !important; }
 bl, .bl, .blue { color: var( --cm ) !important; }
+bll { color: var( --cml ) !important; }
 gr, .gr, grl { color: var( --cg60 ) !important; }
 red, .red { color: #f00; }
 grn, .green { color: #0f0; }
