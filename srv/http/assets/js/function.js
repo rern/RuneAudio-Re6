@@ -1189,7 +1189,7 @@ function renderPlaybackBlank() {
 	$( '.cover-save' ).remove();
 	bash( "ip r | awk '/default/ {print $9}'", function( ip ) {
 		if ( ip ) {
-			$( '#qrip' ).text( 'http://'+ ip );
+			$( '#qrip' ).html( '<gr>http://</gr>'+ ip );
 			var qr = new QRCode( {
 				  msg : 'http://'+ ip
 				, dim : 230
