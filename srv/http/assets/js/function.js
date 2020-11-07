@@ -284,8 +284,8 @@ function displayPlayback() {
 		.toggleClass( 'coversmall', G.display.coversmall );
 	$( '#coverart' ).css( 'width', G.display.coversmall ? '230px' : '' );
 	if ( G.display.volumenone || G.status.lcd ) G.display.volume = false;
-	$( '#volume-knob' ).toggleClass( 'hide', G.display.volume === 0 );
-	var column = ( G.display.time ? 1 : 0 ) + ( G.display.cover ? 1 : 0 ) + G.display.volume;
+	$( '#volume-knob' ).toggleClass( 'hide', G.display.volume );
+	var column = ( G.display.time ? 1 : 0 ) + ( G.display.cover ? 1 : 0 ) + ( G.display.volume ? 1 : 0 );
 	var $elements = $( '#time-knob, #coverart-block, #volume-knob, #play-group, #vol-group' );
 	if ( column === 2 ) {
 		$elements.css( 'width', '' );
