@@ -322,7 +322,7 @@ function displaySave( page ) {
 function displayTopBottom() {
 	if ( !$( '#bio' ).hasClass( 'hide' ) ) return
 	
-	if ( !G.display.bars || ( G.screenS && !G.display.barsalways ) ) {
+	if ( !G.display.bars || !G.display.barsalways || ( G.localhost && G.status.lcd ) ) {
 		G.bars = false;
 		$( '#bar-top, #bar-bottom' ).addClass( 'hide' );
 		$( '#page-playback' ).addClass ( 'barshidden' );

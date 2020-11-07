@@ -77,7 +77,6 @@
 .fa-music:before { content: "\f54C" }
 .fa-mute:before { content: "\f517" }
 .fa-nas:before { content: "\f551" }
-.fa-network:before { content: "\f551" }
 .fa-networks:before { content: "\f551" }
 .fa-next:before { content: "\f505" }
 .fa-output:before { content: "\f52B" }
@@ -513,6 +512,7 @@ svg path.st1 {
 	left: 0;
 }
 #swipebar {
+	font-size: 28px;
 	text-align: center;
 	background: var( --cga );
 	touch-action: manipulation; /* fix: Unable to preventDefault inside passive event listener */
@@ -2716,4 +2716,8 @@ li.active .li2 bl {
 	#coverart-block { margin-bottom : 0; }
 	#divcover .edit,
 	#divcover .cover-save { top: 0; }
+	#swipebar { 
+		height: 30px;
+		font-size: 22px;
+	}
 }
