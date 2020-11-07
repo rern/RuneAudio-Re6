@@ -65,8 +65,12 @@ foreach( $arrayalias as $alias ) {
 			$taphold = '';
 			$hide = '';
 		}
-		$warning = ' warning="'.$addon[ 'warning' ].'"' ?? '';
-		if ( $version == $versioninstalled ) {
+		if ( isset( $addon[ 'verify' ] ) ) {
+			$notverify = exec( $addon[ 'verify' ] ) ? $addon[ 'notverify' ] : '';
+		}
+		if ( $notverify ) {
+			$btnin = '<i class="fa fa-info-circle fa-lg gr info"></i><div class="info">'.$notverify.'</div>';
+		} else if ( $version == $versioninstalled ) {
 			$icon = $nouninstall ? '<i class="fa fa-folder-refresh"></i>' : '';
 			// !!! mobile browsers: <button>s submit 'formtemp' with 'get' > 'failed', use <a> instead
 			$btnin = '<a class="btn btn-default disabled"'.$taphold.'>'.$icon.$buttonlabel.'</a>';
@@ -75,7 +79,7 @@ foreach( $arrayalias as $alias ) {
 			$update = 1;
 			$installed = ' class="installed update"';
 			$check = '<grn class="blink">&bull;</grn> ';
-			$btnin = '<a class="btn btn-primary" '.$warning.'><i class="fa fa-folder-refresh"></i>Update</a>';
+			$btnin = '<a class="btn btn-primary"><i class="fa fa-folder-refresh"></i>Update</a>';
 		}
 		$btnunattr = isset( $addon[ 'rollback' ] ) ? ' rollback="'.$addon[ 'rollback' ].'"' : '';
 		$btnun = '<a class="btn btn-primary red'.$hide.'" '.$btnunattr.'><i class="fa fa-minus-circle"></i>Uninstall</a>';

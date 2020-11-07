@@ -442,7 +442,6 @@ svg path.st1 {
 	position: fixed;
 	float: right;
 	display: block;
-	top: 40px;
 	left: auto;
 	right: 0px;
 	width: 180px;
@@ -906,8 +905,8 @@ svg path.st1 {
 #qrip {
 	position: absolute;
 	width: 100%;
-	top: 25px;
-	color: var( --cg60 );
+	bottom: 25px;
+	font-size: 16px;
 }
 #qrwebui svg {
 	fill: var( --cg60 );

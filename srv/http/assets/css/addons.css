@@ -123,17 +123,6 @@ svg path.st1 {
 	width: 250px;
 	animation: blinkopaque 1.5s linear infinite;
 }
-@media (min-width: 992px) {
-	.container {
-		width: 970px;
-		max-width: calc( 100% - 70px );
-	}
-}
-@media (min-width: 768px) {
-	.container {
-		width: unset;
-	}
-}
 @media(max-width: 540px) {
 	.container {
 		padding: 0 10px 15px 10px;
@@ -270,6 +259,13 @@ legend .fa-arrow-up {
 }
 .detailtext code {
 	padding: 3px;
+}
+.info {
+	display: inline-block;
+}
+i.info {
+	width: 30px;
+	vertical-align: 7px;
 }
 pre {
 	display: block;
