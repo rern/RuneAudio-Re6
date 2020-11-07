@@ -1025,8 +1025,8 @@ function renderPlayback() {
 	}
 	
 	$( '.emptyadd' ).addClass( 'hide' );
-	$( '#coverTR' ).removeClass( 'blankTR' );
-	$( '#qrwebui' ).empty();
+	$( '#coverTR' ).removeClass( 'empty' );
+	$( '#qrwebui, #qrip' ).empty();
 	$( '#coverart' ).removeClass( 'hide' );
 	$( '.playback-controls' ).css( 'visibility', 'visible' );
 	$( '#artist, #song, #album' ).css( 'width', '' );
