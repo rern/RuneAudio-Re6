@@ -76,7 +76,7 @@ $( '#close' ).click( function() {
 	if ( [ 'localhost', '127.0.0.1' ].indexOf( location.hostname ) !== -1 ) {
 		location.href = '<?=$href?>';
 	} else {
-		$.post( 'cmd.php', {
+		$.post( '../cmd.php', {
 			  cmd  : 'bash'
 			, bash : 'curl -s -X POST http://127.0.0.1/pub?id=reload -d 1'
 		}, function() {
