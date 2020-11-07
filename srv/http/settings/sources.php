@@ -14,11 +14,11 @@ $gid = exec( "$sudo/id -g mpd" );
 	<br> &emsp; <gr>(If mount failed, try in termenal to see errors.)</gr>
 	<br>#1: <code>mkdir -p "/mnt/MPD/NAS/<bll>NAME</bll>"</code>
 	<br>#2: (in one single line)
-	<br> &emsp; - CIFS:
+	<br> &emsp; CIFS:
 	<br> &emsp; <code>mount -t cifs "//<bll>IP</bll>/<bll>SHARE</bll>" "/mnt/MPD/NAS/<bll>NAME</bll>" -o noauto,username=<bll>USER</bll>,password=<bll>PASSWORD</bll>,uid=<?=$uid?>,gid=<?=$gid?>,iocharset=utf8</code>
-	<br> &emsp; - NFS:
+	<br> &emsp; NFS:
 	<br> &emsp; <code>mount -t nfs "<bll>IP</bll>:/<bll>SHARE</bll>" "/mnt/MPD/NAS/<bll>NAME</bll>" -o defaults,noauto,bg,soft,timeo=5</code>
-	<br>#3: If options required, append #2 with <code><bll>,OPTIONS</bll></code>
+	<br>#3: If options required, append #2 with <code>,<bll>OPTIONS</bll></code>
 </span>
 </div>
 
