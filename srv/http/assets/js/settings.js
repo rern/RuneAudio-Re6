@@ -24,7 +24,7 @@ var cmd = {
 }
 var services = [ 'hostapd', 'localbrowser', 'mpd', 'mpdscribble', 'shairport-sync', 'smb', 'snapserver', 'spotifyd', 'upmpdcli' ];
 function codeToggle( id, target ) {
-	resetLocal();
+	id === 'localbrowser' ? resetLocal( 7000 ) : resetLocal();
 	if ( $( target ).hasClass( 'help' ) || target.id === 'mpdrestart' ) return // question icon
 	
 	var $el = $( '#code'+ id );
