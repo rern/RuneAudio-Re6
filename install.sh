@@ -16,5 +16,3 @@ fi
 grep -q upnpicon.png /etc/upmpdcli.conf.pacsave 2> /dev/null && mv -f /etc/upmpdcli.conf{.pacsave,}
 
 installfinish
-
-restartlocalbrowser
