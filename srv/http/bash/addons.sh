@@ -189,12 +189,6 @@ uninstallfinish() {
 	rm $diraddons/$alias &> /dev/null
 	[[ $type != Update ]] && title -l '=' "$bar Done."
 }
-restartlocalbrowser() {
-	if systemctl -q is-active localbrowser; then
-		title -nt "$bar Restart local browser ..."
-		systemctl restart localbrowser
-	fi
-}
 ## restart nginx seamlessly without dropping client connections
 restartnginx() {
 	kill -s USR2 $( cat /run/nginx.pid )         # spawn new nginx master-worker set
