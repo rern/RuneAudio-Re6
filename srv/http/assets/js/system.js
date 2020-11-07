@@ -34,6 +34,7 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 	bash( '/srv/http/bash/system-data.sh', function( list ) {
 		G = list;
 		G.reboot = list.reboot ? list.reboot.split( '\n' ) : [];
+		G.sources.pop(); // remove 'autoupdate' from sources-data.sh
 		G.sources.pop(); // remove 'reboot' from sources-data.sh
 		var systemlabel =
 			 'RuneAudio<br>'
