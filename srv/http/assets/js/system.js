@@ -63,15 +63,15 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 			} )
 		}
 		G.sources = G.sources.slice( 0, 2 ); // filter only mounts
-		if ( G.sources.length ) {
-			systemlabel += '<span class="settings" data-setting="sources">Sources<i class="fa fa-gear"></i></span>';
-			var sourcelist = '';
-			$.each( G.sources, function( i, val ) {
+		systemlabel += '<span class="settings" data-setting="sources">Sources<i class="fa fa-gear"></i></span>';
+		var sourcelist = '';
+		$.each( G.sources, function( i, val ) {
+			if ( val ) {
 				sourcelist += '<i class="fa fa-'+ val.icon +' gr"></i>&ensp;'+ val.mountpoint.replace( '/mnt/MPD/USB/', '' );
 				sourcelist += ( val.size ? bullet + val.size : '' ) +'<br>';
 				systemlabel += '<br>';
-			} );
-		}
+			}
+		} );
 		$( '#systemlabel' ).html( systemlabel );
 		var mpdstats = '';
 		if ( G.mpdstats ) {
