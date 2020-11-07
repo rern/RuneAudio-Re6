@@ -10,6 +10,7 @@ function infoMount( formdata, cifs ) {
 			if ( $.isEmptyObject( formdata ) ) {
 				$( '#infoRadio input' ).eq( 0 ).prop( 'checked', 1 );
 				$( '#infotextbox input:eq( 1 )' ).val( '192.168.1.' );
+				$( '#infoCheckBox input' ).prop( 'checked', true );
 			} else {
 				if ( formdata.protocol === 'cifs' ) {
 					$( '#infoRadio input' ).eq( 0 ).prop( 'checked', 1 );
@@ -23,7 +24,9 @@ function infoMount( formdata, cifs ) {
 				$( '#infotextbox input:eq( 1 )' ).val( formdata.ip );
 				$( '#infotextbox input:eq( 2 )' ).val( formdata.directory );
 				$( '#infotextbox input:eq( 5 )' ).val( formdata.options );
+				$( '#infoCheckBox input' ).prop( 'checked', formdata.update );
 			}
+			if ( G.autoupdate ) $( '#infoCheckBox' ).addClass( 'hide' );
 			if ( cifs ) $( '#infoRadio' ).hide();
 		}
 		, ok      : function() {
@@ -45,8 +48,9 @@ function infoMount( formdata, cifs ) {
 				options += data.options ? ','+ data.options : '';
 				var device = data.ip +':/'+ directory;
 			}
+			var update = !G.autoupdate && data.update || false;
 			notify( 'Network Mount', 'Mount ...', 'network' );
-			bash( [ 'mount', mountpoint, data.ip, device, data.protocol, options ], function( std ) {
+			bash( [ 'mount', mountpoint, data.ip, device, data.protocol, options, update ], function( std ) {
 				if ( std !== 0 ) {
 					formdata = data;
 					info( {
@@ -71,6 +75,7 @@ function infoMount( formdata, cifs ) {
 refreshData = function() {
 	$( '#refreshing' ).removeClass( 'hide' );
 	bash( '/srv/http/bash/sources-data.sh', function( list ) {
+		G.autoupdate = list.pop();
 		reboot = list.pop();
 		G.reboot = reboot ? reboot.split( '\n' ) : [];
 		var html = '';
@@ -125,6 +130,9 @@ var html = heredoc( function() { /*
 				<input type="password" class="infoinput" name="password"><i class="eye fa fa-eye fa-lg"></i>
 				</div>
 				<input type="text" class="infoinput" name="options" spellcheck="false">
+			</div>
+			<div id="infoCheckBox" class="infocontent infocheckbox infohtml">
+				<px40/><label><input type="checkbox" name="update" value="true" checked>&ensp;Update Library on mount</label>
 			</div>
 		</div>
 	</form>
