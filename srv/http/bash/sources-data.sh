@@ -36,7 +36,7 @@ if [[ -n $targets ]]; then
 		mountpoint=${target//\\040/ }  # \040 > space
 		if ! df --output=target | grep -q "$mountpoint"; then
 			source=$( grep "${mountpoint// /.040}" /etc/fstab | awk '{print $1}' | sed 's/\\040/ /g' )
-			data+='{"icon":"network","mountpoint":"'${mountpoint//\"/\\\"}'","mounted":false,"source":"'${source//\"/\\\"}'"},'
+			data+='{"icon":"networks","mountpoint":"'${mountpoint//\"/\\\"}'","mounted":false,"source":"'${source//\"/\\\"}'"},'
 		fi
 	done
 fi
