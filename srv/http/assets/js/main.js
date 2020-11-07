@@ -669,7 +669,7 @@ $( '#coverTL, #timeTL' ).tap( function() {
 	if ( G.status.mpd && !G.status.playlistlength ) return
 	
 	if ( window.innerWidth < 614 ) {
-		if ( G.display.volume ) return
+		if ( !$( '#volume-knob' ).is( ':hidden' ) ) return
 		
 		var top = $( '#page-playback' ).css( 'margin-top' );
 		if ( top === '0px' ) {
