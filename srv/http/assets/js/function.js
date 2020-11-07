@@ -1202,8 +1202,10 @@ function renderPlaybackBlank() {
 				.addClass( 'hide' );
 		} else {
 			$( '#coverart' ).attr( 'src', coverrune );
-			$( '#page-playback .emptyadd' ).html( '<i class="fa fa-gear"></i>' );
-			$( '#sampling' ).html( 'Network not connected - Click&ensp;<i class="fa fa-gear"></i>&ensp;to setup' );
+			$( '#page-playback .emptyadd' ).html( '<i id="emptysettings" class="fa fa-gear"></i>' );
+			$( '#sampling' )
+				.css( 'display', 'block' )
+				.html( 'Network not connected - Click&ensp;<i class="fa fa-gear"></i>&ensp;to setup' );
 		}
 	} );
 }

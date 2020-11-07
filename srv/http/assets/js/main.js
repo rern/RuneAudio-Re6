@@ -117,12 +117,14 @@ $( '#coverart' ).one( 'load', function() {
 	$( this ).attr( 'src', coverart );
 } );
 // COMMON /////////////////////////////////////////////////////////////////////////////////////
-$( '#button-settings, #badge, #qrsettings' ).click( function() {
+$( '#button-settings, #badge' ).click( function() {
 	var $settings = $( '#settings' );
 	if ( $settings.hasClass( 'hide' ) ) {
-		$settings
-			.removeClass( 'hide' )
-			.css( 'top', ( G.bars ? '40px' : 0 ) );
+		setTimeout( function() {
+			$settings
+				.css( 'top', ( G.bars ? '40px' : 0 ) )
+				.removeClass( 'hide' );
+		}, 100 );
 	} else {
 		$settings.addClass( 'hide' );
 	}
@@ -565,7 +567,11 @@ $( '#info' ).click( function() {
 	if ( G.localhost ) scrollLongText();
 } );
 $( '.emptyadd' ).click( function( e ) {
-	$( '#tab-library' ).click();
+	if ( $( e.target ).hasClass( 'fa-plus-circle' ) ) {
+		$( '#tab-library' ).click();
+	} else {
+		$( '#button-settings' ).click();
+	}
 } );
 $( '#artist, #guide-bio' ).click( function() {
 	if ( G.status.webradio ) return
