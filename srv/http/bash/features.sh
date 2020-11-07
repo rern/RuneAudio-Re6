@@ -145,7 +145,7 @@ localbrowserset )
 		[[ $rotate =~ ^(0|90|180|270)$ ]] && rotatelcd $rotate || rotate $rotate
 	fi
 	[[ -n $screenoff ]] && screenoff $screenoff
-	[[ $cursor == true ]] && cursor=yes && cursor=no
+	[[ $cursor == true ]] && cursor=yes || cursor=no
 	sed -i -e 's/\(-use_cursor \).*/\1'$cursor' \&/
 ' -e 's/\(factor=\).*/\1'$zoom'/
 ' /etc/X11/xinit/xinitrc
