@@ -34,8 +34,6 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 	bash( '/srv/http/bash/system-data.sh', function( list ) {
 		G = list;
 		G.reboot = list.reboot ? list.reboot.split( '\n' ) : [];
-		G.sources.pop(); // remove 'autoupdate' from sources-data.sh
-		G.sources.pop(); // remove 'reboot' from sources-data.sh
 		var systemlabel =
 			 'RuneAudio<br>'
 			+'Hardware<br>'
@@ -64,6 +62,7 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 				}
 			} )
 		}
+		G.sources = G.sources.slice( 0, 2 ); // filter only mounts
 		if ( G.sources.length ) {
 			systemlabel += '<span class="settings" data-setting="sources">Sources<i class="fa fa-gear"></i></span>';
 			var sourcelist = '';
