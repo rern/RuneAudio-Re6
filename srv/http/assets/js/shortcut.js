@@ -60,6 +60,8 @@ $( document ).keydown( function( e ) {
 		} else {
 			var $index = $( '#pl-index' );
 		}
+		if ( $index.find( '.indexed' ).length === 1 ) return
+		
 		var $indexedbgr = $index.find( '.indexed.bgr' );
 		if ( $indexedbgr.length ) {
 			$indexedbgr.removeClass( 'bgr' );
