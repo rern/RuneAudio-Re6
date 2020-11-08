@@ -441,6 +441,7 @@ $( '#colorpicker' ).click( function( e ) {
 	if ( e.target.id === 'colorpicker' ) $( '#colorcancel' ).click();
 } );
 $( '#addons' ).click( function () {
+	banner( 'Addons Database', 'Download ...', 'jigsaw blink', -1 );
 	bash( [ 'addonslist' ], function( std ) {
 		if ( std == -1 ) {
 			info( {
