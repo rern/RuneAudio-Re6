@@ -740,7 +740,7 @@ $( '#coverT, #timeT' ).tap( function() {
 	$( '.timemap' ).toggleClass( 'mapshow', !G.display.cover );
 	$( '.volmap' ).toggleClass( 'mapshow', !G.display.volumenone && G.display.volume );
 	$( '#swipebar' ).toggleClass( 'transparent', G.bars );
-	if ( window.innerWidth < 614 && $( '#volume-knob' ).is( ':hidden' ) ) {
+	if ( window.innerWidth < 614 && !G.display.volume ) {
 		$( '#coverTL' )
 				.removeClass( 'fa-scale-dn' )
 				.addClass( 'fa-volume' );
