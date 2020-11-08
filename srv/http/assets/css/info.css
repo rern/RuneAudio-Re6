@@ -363,10 +363,8 @@ px100 { width: 100px }
 		color: var( --cma );
 	}
 	input[type=checkbox].active,
-	input[type=radio].active {
-		border: 2px solid var( --cw ) !important;
-	}
+	input[type=radio].active,
 	.infobtn.active {
-		border: 1px solid var( --cg60 ) !important;
+		border: 2px solid var( --cw ) !important;
 	}
 }
