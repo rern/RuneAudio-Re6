@@ -3,15 +3,41 @@ $( document ).keydown( function( e ) {
 	if ( !$( '#infoOverlay' ).hasClass( 'hide' ) ) return
 	
 	var key = e.key;
-
-	if ( [ 'ArrowUp', 'ArrowDown' ].indexOf( key ) !== -1 ) e.preventDefault();
 	
-	if ( !$( '#settings' ).hasClass( 'hide' ) && key === 'Enter' ) {
-		var $menu = $( '#settings' ).find( 'a.active' );
-		if ( !$menu.length ) $menu = $( '#settings' ).find( '.submenu.active' );
-		var href = $menu.prop( 'href' );
-		href ? location.href = href : $menu.click();
-		return
+	if ( [ 'ArrowUp', 'ArrowDown' ].indexOf( key ) !== -1 ) {
+		e.preventDefault();
+		var $index = G.library ? $( '#lib-index' ) : $( '#pl-index' );
+		var $indexedbgr = $index.find( '.indexed.bgr' );
+		if ( $indexedbgr.length ) {
+			$indexedbgr.removeClass( 'bgr' );
+			if ( key === 'ArrowUp' ) {
+				if ( $indexedbgr.index() ) {
+					$indexedbgr.prevAll( '.indexed' ).eq( 0 ).addClass( 'bgr' );
+				} else {
+					$index.find( '.indexed:last' ).addClass( 'bgr' );
+				}
+			} else {
+				if ( $indexedbgr.index() !== $index.find( '.indexed' ).length ) {
+					$indexedbgr.nextAll( '.indexed' ).eq( 0 ).addClass( 'bgr' );
+				} else {
+					$index.find( 'a:eq( 0 )' ).addClass( 'bgr' );
+				}
+			}
+			return
+		}
+	}
+	
+	if ( key === 'Enter' ) {
+		if ( !$( '#settings' ).hasClass( 'hide' ) ) {
+			var $menu = $( '#settings' ).find( 'a.active' );
+			if ( !$menu.length ) $menu = $( '#settings' ).find( '.submenu.active' );
+			var href = $menu.prop( 'href' );
+			href ? location.href = href : $menu.click();
+			return
+		} else if ( $( '.indexed.bgr' ).length ) {
+			$( '.indexed.bgr' ).click();
+			return
+		}
 	}
 	
 	if ( key === 'Escape' ) {
@@ -20,6 +46,17 @@ $( document ).keydown( function( e ) {
 			if ( typeof colorpicker !== 'undefined' ) $( '#colorcancel' ).click();
 		} else {
 			$( '#button-settings' ).click();
+		}
+		return
+	}
+		
+	if ( key === 'Control' ) {
+		var $index = G.library ? $( '#lib-index' ) : $( '#pl-index' );
+		var $indexedbgr = $index.find( '.indexed.bgr' );
+		if ( $indexedbgr.length ) {
+			$indexedbgr.removeClass( 'bgr' );
+		} else {
+			$index.find( 'a:eq( 0 )' ).addClass( 'bgr' );
 		}
 		return
 	}

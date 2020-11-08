@@ -24,6 +24,7 @@ var G = {
 	, savedlist     : 0
 	, savedplaylist : 0
 	, scale         : 1
+	, screenS       : window.innerHeight < 590 || window.innerWidth < 500
 	, scrollspeed   : 80 // pixel/s
 	, scrolltop     : {}
 	, similarpl     : -1
@@ -543,10 +544,12 @@ $( '#page-library' ).tap( function( e ) {
 } );
 $( '#page-library, #page-playback, #page-playlist' ).click( function( e ) {
 	if ( [ 'coverTR', 'timeTR' ].indexOf( e.target.id ) === -1 ) $( '#settings' ).addClass( 'hide' );
+	$( '.indexed' ).removeClass( 'bgr' );
 } );
 $( '#bar-top, #bar-bottom' ).click( function() {
 	if ( G.guide ) hideGuide();
 	if ( !$( '#colorpicker' ).hasClass( 'hide' ) ) $( '#colorcancel' ).click();
+	$( '.indexed' ).removeClass( 'bgr' );
 } );
 $( '#settings' ).click( function() {
 	$( this ).addClass( 'hide' )
@@ -724,7 +727,7 @@ $( '#coverT, #timeT' ).tap( function() {
 	G.guide = !$( this ).hasClass( 'mapshow' );
 	if ( $( this ).hasClass( 'mapshow' ) ) {
 		hideGuide();
-		$( '#coverTR' ).toggleClass( 'empty', !G.bars && !G.status.playlistlength );
+		$( '#coverTR' ).toggleClass( 'empty', !G.bars );
 		return
 	}
 	
