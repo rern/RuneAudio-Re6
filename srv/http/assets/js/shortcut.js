@@ -39,7 +39,8 @@ $( document ).keydown( function( e ) {
 		, MediaTrackNext     : 'next'
 	}
 	if ( ( key === ' ' && e.target.localName !== 'input' ) || key === 'MediaPlayPause' ) {
-		$( '#'+ ( G.status.state === 'play' ? 'pause' : 'play' ) ).click();
+		var btn = G.status.state === 'play' ? ( G.status.webradio ? 'stop' : 'pause' ) : 'play';
+		$( '#'+ btn ).click();
 		e.preventDefault();
 		return
 		
