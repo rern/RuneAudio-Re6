@@ -165,7 +165,7 @@ addonslist )
 	bash=$( jq -r .push.bash $diraddons/addons-list.json ) # check condition - wget if necessary
 	if [[ -n $bash ]]; then
 		eval "$bash"
-		[[ $? != 0 ]] && exit 
+		[[ $? != 0 ]] && exit
 	fi
 	
 	url=$( jq -r .push.url $diraddons/addons-list.json )
@@ -175,10 +175,9 @@ addonsupdate )
 	[[ -z ${args[1]} ]] && wget https://github.com/rern/RuneAudio_Addons/raw/master/addons-list.json -qO $diraddons/addons-list.json
 	installed=$( ls "$diraddons" | grep -v addons-list )
 	count=0
-	for file in $installed; do
-		verinstalled=$( cat $file )
+	for addon in $installed; do
+		verinstalled=$( cat $diraddons/$addon )
 		if (( ${#verinstalled} > 1 )); then
-			addon=$( basename $file )
 			verlist=$( jq -r .$addon.version $diraddons/addons-list.json )
 			[[ $verinstalled != $verlist ]] && (( count++ ))
 		fi
