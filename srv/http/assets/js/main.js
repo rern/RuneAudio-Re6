@@ -441,6 +441,7 @@ $( '#colorpicker' ).click( function( e ) {
 	if ( e.target.id === 'colorpicker' ) $( '#colorcancel' ).click();
 } );
 $( '#addons' ).click( function () {
+	banner( 'Addons Database', 'Download ...', 'jigsaw blink', -1 );
 	bash( [ 'addonslist' ], function( std ) {
 		if ( std == -1 ) {
 			info( {
@@ -544,10 +545,12 @@ $( '#page-library' ).tap( function( e ) {
 } );
 $( '#page-library, #page-playback, #page-playlist' ).click( function( e ) {
 	if ( [ 'coverTR', 'timeTR' ].indexOf( e.target.id ) === -1 ) $( '#settings' ).addClass( 'hide' );
+	$( '.indexed' ).removeClass( 'bgr' );
 } );
 $( '#bar-top, #bar-bottom' ).click( function() {
 	if ( G.guide ) hideGuide();
 	if ( !$( '#colorpicker' ).hasClass( 'hide' ) ) $( '#colorcancel' ).click();
+	$( '.indexed' ).removeClass( 'bgr' );
 } );
 $( '#settings' ).click( function() {
 	$( this ).addClass( 'hide' )
