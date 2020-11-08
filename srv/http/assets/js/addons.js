@@ -17,6 +17,7 @@ function postcmd() {
 	$( 'body' ).append( form );
 	$( '#formtemp' ).submit();
 	$( '#loader' ).removeClass( 'hide' );
+	banner( 'Addons', 'Download files ...', 'jigsaw blink', -1 );
 }
 //---------------------------------------------------------------------------
 data = {}
