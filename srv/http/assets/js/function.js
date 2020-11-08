@@ -322,7 +322,7 @@ function displaySave( page ) {
 function displayTopBottom() {
 	if ( !$( '#bio' ).hasClass( 'hide' ) ) return
 	
-	if ( !G.display.bars || !G.display.barsalways || ( G.localhost && G.status.lcd ) ) {
+	if ( !G.display.bars || ( G.screenS && !G.display.barsalways ) ) {
 		G.bars = false;
 		$( '#bar-top, #bar-bottom' ).addClass( 'hide' );
 		$( '#page-playback' ).addClass ( 'barshidden' );
@@ -1590,7 +1590,7 @@ function volColorMute( volumemute ) {
 	$volumetooltip
 		.text( volumemute )
 		.addClass( 'bl' );
-	$volumehandle.addClass( 'bgr' );
+	$volumehandle.addClass( 'bgr60' );
 	$( '#volmute' ).addClass( 'active' )
 		.find( 'i' ).removeClass( 'fa-volume' ).addClass( 'fa-mute' );
 	var prefix = G.display.time && window.innerWidth > 613 ? 'ti' : 'i';
@@ -1598,7 +1598,7 @@ function volColorMute( volumemute ) {
 }
 function volColorUnmute() {
 	$volumetooltip.removeClass( 'bl' );
-	$volumehandle.removeClass( 'bgr' );
+	$volumehandle.removeClass( 'bgr60' );
 	$( '#volmute' ).removeClass( 'active' )
 		.find( 'i' ).removeClass( 'fa-mute' ).addClass( 'fa-volume' );
 	$( '#i-mute, #ti-mute' ).addClass( 'hide' );
