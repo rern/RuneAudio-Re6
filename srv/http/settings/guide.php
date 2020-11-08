@@ -23,7 +23,7 @@ include 'logosvg.php';
 	</style>
 	<link rel="stylesheet" href="/assets/css/colors.<?=$time?>.css">
 	<link rel="stylesheet" href="/assets/css/settings.<?=$time?>.css">
-	<link rel="icon" type="image/png" href="/assets/img/favicon-192x192.<?=$time?>.svg" sizes="192x192">
+	<link rel="icon" type="image/png" href="/assets/img/favicon.<?=$time?>.svg" sizes="192x192">
 </head>
 <body style="height: 100%">
 <div class="head" style="top: 0">
@@ -44,8 +44,8 @@ include 'logosvg.php';
 <script>
 var nlibrary = 21;
 var nplaylist = 38;
-var nsettings = 44;
-var ntotal = 54;
+var nsettings = 45;
+var ntotal = 55;
 var n = 1;
 $.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
 $( '#count' ).text( n +'/'+ ntotal );

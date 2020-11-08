@@ -28,7 +28,6 @@
 .mode:hover {
 	background: var( --cga );
 }
-.index li:hover,
 .menu a:hover,
 .submenu:hover,
 #bar-bottom a:hover,
@@ -37,6 +36,7 @@
 #playback-row .btn:hover {
 	background-color: var( --cgl ) !important;
 }
+.index a:hover,
 .fa-arrow-left:hover,
 #button-lib-search:hover,
 #lib-search-btn:hover,
@@ -56,7 +56,6 @@
 #playback-row .btn.active:active:hover {
 	background-color: var( --cma ) !important;
 }
-.index li:active:hover,
 .fa-arrow-left:active:hover,
 .menu a:active:hover,
 .submenu:active:hover,

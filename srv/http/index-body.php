@@ -450,9 +450,9 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	<div id="lyricsfade"></div>
 </div>
 <div id="swipebar" class="transparent">
-	<i id="swipeL" class="swipe fa fa-left fa-2x"></i>
-	<i class="fa fa-reload fa-2x"></i><i class="fa fa-swipe fa-2x"></i><i class="fa fa-gear fa-2x"></i>
-	<i id="swipeR" class="swipe fa fa-right fa-2x"></i>
+	<i id="swipeL" class="swipe fa fa-left"></i>
+	<i class="fa fa-reload"></i><i class="fa fa-swipe"></i><i class="fa fa-gear"></i>
+	<i id="swipeR" class="swipe fa fa-right"></i>
 </div>
 <div id="bar-bottom" class="hide">
 	<i id="tab-library" class="fa fa-library"></i>

@@ -77,6 +77,7 @@
 .fa-music:before { content: "\f54C" }
 .fa-mute:before { content: "\f517" }
 .fa-nas:before { content: "\f551" }
+.fa-network:before { content: "\f551" }
 .fa-networks:before { content: "\f551" }
 .fa-next:before { content: "\f505" }
 .fa-output:before { content: "\f52B" }
@@ -298,7 +299,8 @@ whl, grl,
 .liinfo {
 	font-weight: 300;
 }
-.bgr { background-color: var( --cg60 ) !important; }
+.bgr { background-color: var( --cg ) !important; }
+.bgr60 { background-color: var( --cg60 ) !important; }
 .px175 {
 	display: inline-block;
 	width: 175px;

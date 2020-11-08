@@ -1,19 +1,51 @@
 // keyboard controls
 $( document ).keydown( function( e ) {
-	if ( !$( '#infoOverlay' ).hasClass( 'hide' ) ) return
+	if ( G.local || !$( '#infoOverlay' ).hasClass( 'hide' ) ) return
 	
 	var key = e.key;
-
-	if ( [ 'ArrowUp', 'ArrowDown' ].indexOf( key ) !== -1 ) e.preventDefault();
 	
-	if ( !$( '#settings' ).hasClass( 'hide' ) && key === 'Enter' ) {
-		var $menu = $( '#settings' ).find( 'a.active' );
-		if ( !$menu.length ) $menu = $( '#settings' ).find( '.submenu.active' );
-		var href = $menu.prop( 'href' );
-		href ? location.href = href : $menu.click();
-		return
+	if ( [ 'ArrowUp', 'ArrowDown' ].indexOf( key ) !== -1 ) {
+		e.preventDefault();
+		if ( G.library ) {
+			var $index = $( '#lib-index1' ).css( 'display' ) === 'none' ? $( '#lib-index' ) : $( '#lib-index1' );
+		} else {
+			var $index = $( '#pl-index' );
+		}
+		var $indexedbgr = $index.find( '.indexed.bgr' );
+		if ( $indexedbgr.length ) {
+			if ( key === 'ArrowUp' ) {
+				if ( $indexedbgr.index() ) {
+					$indexedbgr.prevAll( '.indexed' ).eq( 0 ).addClass( 'bgr' );
+				} else {
+					$index.find( '.indexed:last' ).addClass( 'bgr' );
+				}
+			} else {
+				if ( $indexedbgr.index() !== $index.find( '.indexed:last' ).index() ) {
+					$indexedbgr.nextAll( '.indexed' ).eq( 0 ).addClass( 'bgr' );
+				} else {
+					$index.find( 'a:eq( 0 )' ).addClass( 'bgr' );
+				}
+			}
+			$indexedbgr.removeClass( 'bgr' );
+			return
+		}
 	}
 	
+	if ( key === 'Enter' ) {
+		if ( !$( '#settings' ).hasClass( 'hide' ) ) {
+			var $menu = $( '#settings' ).find( 'a.active' );
+			if ( !$menu.length ) $menu = $( '#settings' ).find( '.submenu.active' );
+			var href = $menu.prop( 'href' );
+			href ? location.href = href : $menu.click();
+			return
+		} else if ( $( '.indexed.bgr' ).length ) {
+			$( '.indexed.bgr' ).click();
+			return
+		}
+	}
+	
+	if ( !$( '#colorpicker' ).hasClass( 'hide' ) ) return
+
 	if ( key === 'Escape' ) {
 		if ( $( '.menu:not(.hide)' ).length ) {
 			$( '.menu' ).addClass( 'hide' );
@@ -23,9 +55,24 @@ $( document ).keydown( function( e ) {
 		}
 		return
 	}
-	
-	if ( $( '#infoOverlay' ).css( 'display' ) === 'block' || !$( '#colorpicker' ).hasClass( 'hide' ) ) return
 		
+	if ( key === 'Control' ) {
+		if ( G.library ) {
+			var $index = $( '#lib-index1' ).css( 'display' ) === 'none' ? $( '#lib-index' ) : $( '#lib-index1' );
+		} else {
+			var $index = $( '#pl-index' );
+		}
+		if ( $index.find( '.indexed' ).length === 1 ) return
+		
+		var $indexedbgr = $index.find( '.indexed.bgr' );
+		if ( $indexedbgr.length ) {
+			$indexedbgr.removeClass( 'bgr' );
+		} else {
+			$index.find( 'a:eq( 0 )' ).addClass( 'bgr' );
+		}
+		return
+	}
+			
 	var keyevent = {
 		  AudioVolumeDown    : 'voldn'
 		, AudioVolumeMute    : 'volmute'
@@ -39,7 +86,8 @@ $( document ).keydown( function( e ) {
 		, MediaTrackNext     : 'next'
 	}
 	if ( ( key === ' ' && e.target.localName !== 'input' ) || key === 'MediaPlayPause' ) {
-		$( '#'+ ( G.status.state === 'play' ? 'pause' : 'play' ) ).click();
+		var btn = G.status.state === 'play' ? ( G.status.webradio ? 'stop' : 'pause' ) : 'play';
+		$( '#'+ btn ).click();
 		e.preventDefault();
 		return
 		
@@ -213,6 +261,8 @@ $( document ).keydown( function( e ) {
 				$( '#pl-list li.updn' ).length ? $( '#pl-list li.updn .pl-icon' ).click() : $( '#pl-list li.active .pl-icon' ).click();
 			} else if ( key === 'Enter' ) {
 				$( '#pl-list li.updn' ).click();
+			} else if ( key === 'Delete' ) {
+				$( '#button-pl-clear' ).click();
 			}
 		}
 	}
