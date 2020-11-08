@@ -116,7 +116,26 @@ $( '#infoOverlay' ).keydown( function( e ) {
 		if ( e.key == 'Enter' && !$( '#infoOk' ).hasClass( 'disabled' ) ) {
 			$( '#infoOk' ).click();
 		} else if ( e.key === 'Escape' ) {
+			local(); // suppress settings
 			$( '#infoCancel' ).click();
+		} else {
+			var $btn = $( '.infobtn:not( .hide )' );
+			if ( $btn.length === 1 ) return
+			
+			$btnactive = $( '.infobtn.active' );
+			if ( !$btnactive.length ) {
+				$btn.eq( 0 ).addClass( 'active' );
+			} else {
+				if ( e.key === 'ArrowLeft' ) {
+					var $next = $btnactive.prev( '.infobtn:not( .hide )' );
+				} else if ( e.key === 'ArrowRight' ) {
+					var $next = $btnactive.next( '.infobtn:not( .hide )' );
+				}
+				if ( $next.length ) {
+					$btnactive.removeClass( 'active' );
+					$next.eq( 0 ).addClass( 'active' );
+				}
+			}
 		}
 	}
 } );
@@ -144,7 +163,7 @@ function infoReset() {
 	$( '.infomessage, .infoinput' ).css( 'text-align', '' );
 	$( '#infoBox, .infolabel, .infoinput' ).css( 'width', '' );
 	$( '#infoMessage, .infolabel' ).off( 'click' );
-	$( '.filebtn, .infobtn' ).css( 'background', '' ).off( 'click' );
+	$( '.filebtn, .infobtn' ).removeClass( 'active' ).css( 'background', '' ).off( 'click' );
 	$( '#infoIcon' ).removeAttr( 'class' ).empty();
 	$( '#infoFileBox' ).val( '' ).removeAttr( 'accept' );
 	$( '#infoFilename' ).empty();

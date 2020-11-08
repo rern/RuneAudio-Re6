@@ -362,10 +362,7 @@ px100 { width: 100px }
 	#infoX:active {
 		color: var( --cma );
 	}
-	.infobtn-primary:active {
-		background-color: var( --cma );
-	}
-	.infobtn-default:active {
-		background-color: var( --cga )
+	.infobtn.active {
+		border: 1px solid var( --cg60 );
 	}
 }

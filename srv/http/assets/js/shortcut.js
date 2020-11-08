@@ -1,6 +1,6 @@
 // keyboard controls
 $( document ).keydown( function( e ) {
-	if ( !$( '#infoOverlay' ).hasClass( 'hide' ) ) return
+	if ( G.local || !$( '#infoOverlay' ).hasClass( 'hide' ) ) return
 	
 	var key = e.key;
 	
@@ -44,6 +44,8 @@ $( document ).keydown( function( e ) {
 		}
 	}
 	
+	if ( !$( '#colorpicker' ).hasClass( 'hide' ) ) return
+
 	if ( key === 'Escape' ) {
 		if ( $( '.menu:not(.hide)' ).length ) {
 			$( '.menu' ).addClass( 'hide' );
@@ -70,9 +72,7 @@ $( document ).keydown( function( e ) {
 		}
 		return
 	}
-	
-	if ( $( '#infoOverlay' ).css( 'display' ) === 'block' || !$( '#colorpicker' ).hasClass( 'hide' ) ) return
-		
+			
 	var keyevent = {
 		  AudioVolumeDown    : 'voldn'
 		, AudioVolumeMute    : 'volmute'
@@ -261,6 +261,8 @@ $( document ).keydown( function( e ) {
 				$( '#pl-list li.updn' ).length ? $( '#pl-list li.updn .pl-icon' ).click() : $( '#pl-list li.active .pl-icon' ).click();
 			} else if ( key === 'Enter' ) {
 				$( '#pl-list li.updn' ).click();
+			} else if ( key === 'Delete' ) {
+				$( '#button-pl-clear' ).click();
 			}
 		}
 	}
