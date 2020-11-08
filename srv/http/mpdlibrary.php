@@ -325,13 +325,7 @@ function htmlFind( $mode, $lists, $f ) { // non-file 'find' command
 				.'</li>';
 	}
 	$indexes = array_keys( array_flip( $indexes ) );
-	$indexarray = range( 'A', 'Z' );
-	$indexbar = '<a class="wh">#</a>';
-	foreach( $indexarray as $i => $char ) {
-		$white = in_array( $char, $indexes ) ? 'wh' : '';
-		$half = $i % 2 ? ' half' : '';
-		$indexbar.= '<a class="'.$white.$half.'">'.$char."</a>\n";
-	}
+	$indexbar = indexbar( array_keys( array_flip( $indexes ) ) );
 	return [ 'html' => $html, 'index' => $indexbar ];
 }
 function htmlList( $mode, $lists ) { // non-file 'list' command
