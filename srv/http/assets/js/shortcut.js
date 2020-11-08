@@ -6,10 +6,13 @@ $( document ).keydown( function( e ) {
 	
 	if ( [ 'ArrowUp', 'ArrowDown' ].indexOf( key ) !== -1 ) {
 		e.preventDefault();
-		var $index = G.library ? $( '#lib-index' ) : $( '#pl-index' );
+		if ( G.library ) {
+			var $index = $( '#lib-index1' ).css( 'display' ) === 'none' ? $( '#lib-index' ) : $( '#lib-index1' );
+		} else {
+			var $index = $( '#pl-index' );
+		}
 		var $indexedbgr = $index.find( '.indexed.bgr' );
 		if ( $indexedbgr.length ) {
-			$indexedbgr.removeClass( 'bgr' );
 			if ( key === 'ArrowUp' ) {
 				if ( $indexedbgr.index() ) {
 					$indexedbgr.prevAll( '.indexed' ).eq( 0 ).addClass( 'bgr' );
@@ -17,12 +20,13 @@ $( document ).keydown( function( e ) {
 					$index.find( '.indexed:last' ).addClass( 'bgr' );
 				}
 			} else {
-				if ( $indexedbgr.index() !== $index.find( '.indexed' ).length ) {
+				if ( $indexedbgr.index() !== $index.find( '.indexed:last' ).index() ) {
 					$indexedbgr.nextAll( '.indexed' ).eq( 0 ).addClass( 'bgr' );
 				} else {
 					$index.find( 'a:eq( 0 )' ).addClass( 'bgr' );
 				}
 			}
+			$indexedbgr.removeClass( 'bgr' );
 			return
 		}
 	}
@@ -51,7 +55,11 @@ $( document ).keydown( function( e ) {
 	}
 		
 	if ( key === 'Control' ) {
-		var $index = G.library ? $( '#lib-index' ) : $( '#pl-index' );
+		if ( G.library ) {
+			var $index = $( '#lib-index1' ).css( 'display' ) === 'none' ? $( '#lib-index' ) : $( '#lib-index1' );
+		} else {
+			var $index = $( '#pl-index' );
+		}
 		var $indexedbgr = $index.find( '.indexed.bgr' );
 		if ( $indexedbgr.length ) {
 			$indexedbgr.removeClass( 'bgr' );
