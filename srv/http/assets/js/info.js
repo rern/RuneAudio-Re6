@@ -112,23 +112,57 @@ var infoscroll = 0;
 $( 'body' ).prepend( containerhtml );
 
 $( '#infoOverlay' ).keydown( function( e ) {
+	var key = e.key;
+	
 	if ( $( '#infoOverlay' ).is( ':visible' ) ) {
-		if ( e.key == 'Enter' && !$( '#infoOk' ).hasClass( 'disabled' ) ) {
+		if ( key == 'Enter' && !$( '#infoOk' ).hasClass( 'disabled' ) ) {
 			$( '#infoOk' ).click();
-		} else if ( e.key === 'Escape' ) {
+		} else if ( e.keyCode === 32 && $( '.infocheckbox input.active' ).length ) {
+			e.preventDefault();
+			$( '.infocheckbox input.active' ).click();
+		} else if ( key === 'Escape' ) {
 			local(); // suppress settings
 			$( '#infoCancel' ).click();
-		} else {
+		} else if ( [ 'ArrowUp', 'ArrowDown' ].indexOf( key ) !== -1 ) {
+			e.preventDefault();
+			if ( $( '#infoCheckBox' ).hasClass( 'hide' ) && $( '#infoRadio' ).hasClass( 'hide' ) ) return
+			
+			var $el = $( '.infocheckbox input:not(:disabled)' );
+			if ( $el.length === 1 ) return
+			
+			var $elactive = $( '.infocheckbox input.active' );
+			if ( !$elactive.length ) {
+				$el.eq( 0 ).addClass( 'active' );
+			} else {
+				var ellast = $el.length - 1;
+				var elindex;
+				$.each( $el, function( i, el ) {
+					if ( $( el ).hasClass( 'active' ) ) {
+						elindex = i;
+						return false
+					}
+				} );
+				if ( key === 'ArrowUp' ) {
+					var i = elindex !== 0 ? elindex - 1 : ellast;
+					var $next = $el.eq( i );
+				} else {
+					var i = elindex !== ellast ? elindex + 1 : 0;
+					var $next = $el.eq( i );
+				}
+				$elactive.removeClass( 'active' );
+				$next.addClass( 'active' );
+			}
+		} else if ( [ 'ArrowLeft', 'ArrowRight' ].indexOf( key ) !== -1 ) {
 			var $btn = $( '.infobtn:not( .hide )' );
 			if ( $btn.length === 1 ) return
 			
-			$btnactive = $( '.infobtn.active' );
+			var $btnactive = $( '.infobtn.active' );
 			if ( !$btnactive.length ) {
 				$btn.eq( 0 ).addClass( 'active' );
 			} else {
-				if ( e.key === 'ArrowLeft' ) {
+				if ( key === 'ArrowLeft' ) {
 					var $next = $btnactive.prev( '.infobtn:not( .hide )' );
-				} else if ( e.key === 'ArrowRight' ) {
+				} else {
 					var $next = $btnactive.next( '.infobtn:not( .hide )' );
 				}
 				if ( $next.length ) {

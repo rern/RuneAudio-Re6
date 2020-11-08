@@ -362,7 +362,11 @@ px100 { width: 100px }
 	#infoX:active {
 		color: var( --cma );
 	}
+	input[type=checkbox].active,
+	input[type=radio].active {
+		border: 2px solid var( --cw ) !important;
+	}
 	.infobtn.active {
-		border: 1px solid var( --cg60 );
+		border: 1px solid var( --cg60 ) !important;
 	}
 }
