@@ -27,6 +27,7 @@ $addons = json_decode( file_get_contents( $diraddons.'/addons-list.json' ), true
 	</style>
 	<link rel="stylesheet" href="/assets/css/colors.<?=$time?>.css">
 	<link rel="stylesheet" href="/assets/css/info.<?=$time?>.css">
+	<link rel="stylesheet" href="/assets/css/banner.<?=$time?>.css">
 	<link rel="stylesheet" href="/assets/css/addons.<?=$time?>.css">
 	<link rel="icon" href="/assets/img/favicon.<?=$time?>.svg">
 	<link rel="stylesheet" href="/assets/css/selectric.<?=$time?>.css">
@@ -171,6 +172,7 @@ if ( file_exists( $restartfile ) ) {
 <script src="/assets/js/plugin/jquery.mobile.custom.min.<?=$time?>.js"></script>
 <script src="/assets/js/plugin/jquery.selectric.min.<?=$time?>.js"></script>
 <script src="/assets/js/info.<?=$time?>.js"></script>
+<script src="/assets/js/banner.<?=$time?>.js"></script>
 <script src="/assets/js/addons.<?=$time?>.js"></script>
 <script>
 var addons = <?=json_encode( $addonslist )?>;
