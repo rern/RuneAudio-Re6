@@ -1003,7 +1003,6 @@ function renderLibraryList( data ) {
 }
 function renderPlayback() {
 	clearIntervalAll();
-	var status = G.status;
 	var displaytime = G.display.time && window.innerWidth > 613;
 	// song and album before update for song/album change detection
 	var previousartist = $( '#artist' ).text();
@@ -1012,14 +1011,14 @@ function renderPlayback() {
 	// volume
 	if ( !G.display.volumenone ) {
 		if ( G.display.volume ) {
-			$volumeRS.setValue( status.volume );
+			$volumeRS.setValue( G.status.volume );
 			$volumehandle.rsRotate( - $volumeRS._handle1.angle );
-			status.volumemute != 0 ? volColorMute( status.volumemute ) : volColorUnmute();
+			status.volumemute != 0 ? volColorMute( G.status.volumemute ) : volColorUnmute();
 		}
-		$( '#volume-bar' ).css( 'width', status.volume +'%' );
+		$( '#volume-bar' ).css( 'width', G.status.volume +'%' );
 	}
 	// empty queue
-	if ( !status.playlistlength && G.status.mpd && status.state === 'stop' ) {
+	if ( !G.status.playlistlength && G.status.mpd && G.status.state === 'stop' ) {
 		renderPlaybackBlank();
 		return
 	}
@@ -1030,38 +1029,38 @@ function renderPlayback() {
 	$( '#coverart' ).removeClass( 'hide' );
 	$( '.playback-controls' ).css( 'visibility', 'visible' );
 	$( '#artist, #song, #album' ).css( 'width', '' );
-	$( '#artist' ).text( status.Artist );
+	$( '#artist' ).text( G.status.Artist );
 	$( '#song' )
-		.text( status.Title )
+		.text( G.status.Title )
 		.toggleClass( 'gr', G.status.state === 'pause' );
 	$( '#album' )
-		.toggleClass( 'albumradio', status.webradio )
-		.text( status.Album ).promise().done( function() {
+		.toggleClass( 'albumradio', G.status.webradio )
+		.text( G.status.Album ).promise().done( function() {
 		scrollLongText();
 	} );
 	[ 'airplay', 'snapclient', 'spotify', 'upnp', 'webradio' ].forEach( function( el ) {
-		$( '#i-'+ el ).toggleClass( 'hide', !status[ el ] );
+		$( '#i-'+ el ).toggleClass( 'hide', !G.status[ el ] );
 	} );
 	var radiosampling = '';
-	if ( status.webradio ) radiosampling = status.sampling ? ' &bull; Radio' : 'Radio';
-	$( '#sampling' ).html( status.sampling + radiosampling );
+	if ( G.status.webradio ) radiosampling = G.status.sampling ? ' &bull; Radio' : 'Radio';
+	$( '#sampling' ).html( G.status.sampling + radiosampling );
 	if ( !G.coversave ) $( '.cover-save' ).remove();
 	// webradio ////////////////////////////////////////
-	if ( status.webradio ) {
+	if ( G.status.webradio ) {
 		G.coversave = 0;
 		$( '.cover-save' ).remove();
-		if ( !status.Title || status.Title !== prevtitle ) {
-			if ( status.coverart ) {
-				var coverart = status.coverart;
+		if ( !G.status.Title || G.status.Title !== prevtitle ) {
+			if ( G.status.coverart ) {
+				var coverart = G.status.coverart;
 			} else {
-				var coverart = status.coverartradio || ( status.state === 'stop' ? vustop : vu );
+				var coverart = G.status.coverartradio || ( G.status.state === 'stop' ? vustop : vu );
 			}
 			$( '#coverart' ).attr( 'src', coverart );
 		}
 		$( '#time' ).roundSlider( 'setValue', 0 );
-		if ( status.state === 'play' ) {
-			if ( !status.Title ) $( '#song' ).html( blinkdot );
-			$( '#elapsed' ).html( status.state === 'play' ? blinkdot : '' );
+		if ( G.status.state === 'play' ) {
+			if ( !G.status.Title ) $( '#song' ).html( blinkdot );
+			$( '#elapsed' ).html( G.status.state === 'play' ? blinkdot : '' );
 			if ( displaytime ) {
 				if ( G.display.radioelapsed || G.localhost ) {
 					G.intElapsed = setInterval( function() {
@@ -1092,17 +1091,17 @@ function renderPlayback() {
 	}
 	
 	// others ////////////////////////////////////////
-	if ( status.Artist !== previousartist || status.Album !== previousalbum || status.airplay ) {
+	if ( G.status.Artist !== previousartist || G.status.Album !== previousalbum || G.status.airplay ) {
 		G.coversave = 0;
-		$( '#coverart' ).attr( 'src', status.coverart || coverrune );
+		$( '#coverart' ).attr( 'src', G.status.coverart || coverrune );
 	}
 	// time
-	time = 'Time' in status ? status.Time : '';
+	time = 'Time' in G.status ? G.status.Time : '';
 	var timehms = time ? second2HMS( time ) : '';
 	$( '#total' ).text( timehms );
 	// stop ////////////////////
-	if ( status.state === 'stop' ) {
-		if ( status.upnp ) $( '#sampling' ).empty();
+	if ( G.status.state === 'stop' ) {
+		if ( G.status.upnp ) $( '#sampling' ).empty();
 		$( '#song' ).removeClass( 'gr' );
 		if ( displaytime ) {
 			$( '#time' ).roundSlider( 'setValue', 0 );
@@ -1118,11 +1117,11 @@ function renderPlayback() {
 	}
 	
 	$( '#elapsed, #total' ).removeClass( 'bl gr wh' );
-	$( '#song' ).toggleClass( 'gr', status.state === 'pause' );
+	$( '#song' ).toggleClass( 'gr', G.status.state === 'pause' );
 	var elapsedhms = second2HMS( G.status.elapsed );
 	var position = Math.round( G.status.elapsed / time * 1000 );
 	// pause ////////////////////
-	if ( status.state === 'pause' ) {
+	if ( G.status.state === 'pause' ) {
 		if ( displaytime ) {
 			$( '#time' ).roundSlider( 'setValue', position );
 			$( '#elapsed' ).text( elapsedhms ).addClass( 'bl' );
@@ -1139,7 +1138,7 @@ function renderPlayback() {
 		if ( G.status.mpd && G.status.elapsed ) $( '#elapsed' ).text( second2HMS( G.status.elapsed ) );
 		G.intElapsed = setInterval( function() {
 			G.status.elapsed++;
-			if ( G.status.elapsed === status.Time ) {
+			if ( G.status.elapsed === G.status.Time ) {
 				G.status.elapsed = 0;
 				clearIntervalAll();
 				$( '#elapsed' ).empty();
@@ -1163,7 +1162,7 @@ function renderPlayback() {
 	} else {
 		G.intElapsed = setInterval( function() {
 			G.status.elapsed++;
-			if ( G.status.elapsed === status.Time ) {
+			if ( G.status.elapsed === G.status.Time ) {
 				G.status.elapsed = 0;
 				clearIntervalAll();
 				$( '#time-bar' ).css( 'width', 0 );
