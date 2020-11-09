@@ -2720,4 +2720,8 @@ li.active .li2 bl {
 	#coverart-block { margin-bottom : 0; }
 	#divcover .edit,
 	#divcover .cover-save { top: 0; }
+	#swipebar {
+		height: 30px;
+		font-size: 22px;
+	}
 }
