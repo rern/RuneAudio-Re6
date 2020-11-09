@@ -33,7 +33,7 @@ window.addEventListener( 'orientationchange', function() {
 						renderPlayback();
 					}
 				} );
-			} else if ( G.status.state === 'pause' ) {
+			} else {
 				renderPlayback();
 			}
 			displayPlayback();
