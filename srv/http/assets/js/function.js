@@ -306,6 +306,7 @@ function displayPlayback() {
 		$( '#time' ).roundSlider( G.status.webradio || !G.status.mpd || !G.status.playlistlength ? 'disable' : 'enable' );
 		$( '#progress' ).empty();
 	}
+	$( '#time-bar' ).toggleClass( 'hide', $( '#time-knob' ).is( ':visible' ) );
 	$( '#time-band' ).toggleClass( 'disabled', !G.status.playlistlength || !G.status.mpd || G.status.webradio );
 	$( '#time, #volume, .timemap, .covermap, .volmap, .volumeband' ).toggleClass( 'disabled', !G.status.mpd );
 	$( '.volumeband' ).toggleClass( 'hide', G.display.volume );

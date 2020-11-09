@@ -24,9 +24,19 @@ window.addEventListener( 'orientationchange', function() {
 	if ( G.playback ) $( '#page-playback' ).addClass( 'hide' );
 	setTimeout( function() {
 		if ( G.playback ) {
-			displayPlayback();
 			setTimeout( scrollLongText, 300 );
 			$( '#page-playback' ).removeClass( 'hide' );
+			if ( G.status.state === 'play' ) {
+				bash( "mpc | awk '/^.playing/ {print $3}' | cut -d/ -f1", function( HMS ) {
+					if ( HMS ) {
+						G.status.elapsed = HMS2Second( HMS );
+						renderPlayback();
+					}
+				} );
+			} else if ( G.status.state === 'pause' ) {
+				renderPlayback();
+			}
+			displayPlayback();
 		} else if ( G.library ) {
 			if ( G.librarylist || G.savedlist ) {
 				if ( $( '.licover' ).length ) {
