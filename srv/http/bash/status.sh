@@ -222,12 +222,6 @@ else
 	systemctl stop radiowatchdog
 fi
 
-if [[ $1 == statusonly && $ext != Radio ]]; then
-# >>>>>>>>>>
-	echo {$status}
-	exit
-fi
-
 samplingLine() {
 	bitdepth=$1
 	samplerate=$2
