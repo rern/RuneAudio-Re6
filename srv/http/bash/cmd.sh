@@ -352,6 +352,9 @@ lyrics )
 		fi
 	fi
 	;;
+mpcelapsed )
+	mpc | awk '/^\[playing\]/ {print $3}' | cut -d/ -f1
+	;;
 mpcoption )
 	option=${args[1]}
 	onoff=${args[2]}
