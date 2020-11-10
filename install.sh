@@ -8,6 +8,8 @@ installstart "$1"
 
 getinstallzip
 
+mv /srv/http/data/system/{gpio,relays} &> /dev/null
+
 if [[ $( upmpdcli -v 2> /dev/null | cut -d' ' -f2 ) == 1.4.14 ]]; then
 	pacman -R --noconfirm libnpupnp libupnpp upmpdcli
 	pacman -Sy --noconfirm libnpupnp libupnpp upmpdcli

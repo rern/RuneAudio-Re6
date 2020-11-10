@@ -128,20 +128,6 @@
 	</span>
 </div>
 <pre id="codesmb" class="hide"></pre>
-	<?php }
-		  if ( file_exists( '/srv/http/data/system/gpio.json' ) ) { ?>
-<div class="col-l double">
-	<a>GPIO Relays
-	<br><gr>RPI.GPIO</gr></a><i class="fa fa-gpio fa-lg"></i>
-</div>
-<div class="col-r">
-	<input id="gpio" type="checkbox">
-	<div class="switchlabel" for="gpio"></div>
-	<i id="setting-gpio" class="setting fa fa-gear"></i>
-	<span class="help-block hide">
-		<a href="https://github.com/rern/RuneUI_GPIO/blob/master/README.md">RuneUI - GPIO</a> - Control GPIO-connected relay module for power on / off equipments.
-	</span>
-</div>
 	<?php } ?>
 <div id="mpdscribble" class="col-l double status">
 	<a>Last.fm Scrobbler

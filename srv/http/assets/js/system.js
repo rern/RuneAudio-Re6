@@ -110,6 +110,10 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		$( '#wlan' ).prop( 'checked', G.wlan );
 		$( '#lcd' ).prop( 'checked', G.lcd );
 		$( '#setting-lcd' ).toggleClass( 'hide', !G.lcd );
+		$( '#lcdchar' ).prop( 'checked', G.lcdchar );
+		$( '#setting-lcdchar' ).toggleClass( 'hide', !G.lcdchar );
+		$( '#relays' ).prop( 'checked', G.relays );
+		$( '#setting-relays' ).toggleClass( 'hide', !G.relays );
 		$( '#hostname' ).val( G.hostname );
 		$( '#timezone' )
 			.val( G.timezone )
@@ -155,76 +159,6 @@ $( '#refresh' ).click( function( e ) {
 		}, 10000 );
 		banner( 'System Status', 'Refresh every 10 seconds.<br>Click again to stop.', 'sliders', 10000 );
 	}
-} );
-$( '#onboardaudio' ).click( function() {
-	if ( $( '#i2smodule' ).val() === 'none' ) {
-		info( {
-			  icon    : 'volume'
-			, title   : 'On-board Audio'
-			, message : 'No I²S Module installed.'
-						+'<br>On-board audio cannot be disabled.'
-		} );
-		$( this ).prop( 'checked', true )
-		return
-	}
-	
-	var onboardaudio = $( this ).prop( 'checked' );
-	if ( !onboardaudio && G.audioaplayname.slice( 0, 7 ) === 'bcm2835' ) {
-		info( {
-			  icon    : 'volume'
-			, title   : 'On-board Audio'
-			, message : 'On-board audio is currently in used.'
-		} );
-		$( '#onboardaudio' ).prop( 'checked', 1 );
-	} else {
-		G.onboardaudio = onboardaudio;
-		rebootText( onboardaudio ? 'Enable' : 'Disable', 'on-board audio' );
-		local = 1;
-		bash( [ 'onboardaudio', G.onboardaudio, G.reboot.join( '\n' ) ], resetLocal );
-	}
-} );
-$( '#bluetooth' ).click( function() {
-	G.bluetooth = $( this ).prop( 'checked' );
-	rebootText( G.bluetooth ? 'Enable' : 'Disable', 'on-board Bluetooth' );
-	notify( 'On-board Bluetooth', G.bluetooth, 'bluetooth' );
-	bash( [ 'bluetooth', G.bluetooth, G.reboot.join( '\n' ) ], resetLocal );
-} );
-$( '#setting-bluetooth' ).click( function() {
-	info( {
-		  icon     : 'bluetooth'
-		, title    : 'On-board Bluetooth'
-		, checkbox : { Discoverable: 1 }
-		, checked  : ( G.btdiscoverable ? 0 : 1 )
-		, ok       : function() {
-			G.btdiscoverable = $( '#infoCheckBox input' ).prop( 'checked' );
-			notify( 'Bluetooth Discoverable', G.btdiscoverable, 'bluetooth' );
-			bash( [ 'btdiscoverable', ( G.btdiscoverable ? 'yes' : 'no' ) ], resetLocal( 3000 ) );
-		}
-	} );
-} );
-$( '#wlan' ).click( function() {
-	G.wlan = $( this ).prop( 'checked' );
-	notify( 'On-board Wi-Fi', G.wlan, 'wifi-3' );
-	bash( [ 'wlan', G.wlan ], resetLocal );
-} );
-$( '#lcd' ).click( function() {
-	G.lcd = $( this ).prop( 'checked' );
-	rebootText( G.lcd ? 'Enable' : G.lcd, 'GPIO LCD display' );
-	notify( 'GPIO LCD display', G.lcd, 'gear' );
-	bash( [ 'lcd', G.lcd, G.reboot.join( '\n' ) ], resetLocal );
-} );
-$( '#setting-lcd' ).click( function() {
-	info( {
-		  icon        : 'edit'
-		, title       : 'GPIO LCD Display'
-		, message     : 'Calibrate touchscreen?'
-						+'<br>(Get stylus ready.)'
-		, oklabel     : 'Start'
-		, ok          : function() {
-			notify( 'Calibrate Touchscreen ...', 'Start ...', 'edit' );
-			bash( [ 'lcdcalibrate' ] );
-		}
-	} );
 } );
 $( '#i2smodulesw' ).click( function() {
 	// delay to show switch sliding
@@ -352,6 +286,103 @@ $( '#setting-soundprofile' ).click( function() {
 			}
 		}
 	} );
+} );
+$( '#onboardaudio' ).click( function() {
+	if ( $( '#i2smodule' ).val() === 'none' ) {
+		info( {
+			  icon    : 'volume'
+			, title   : 'On-board Audio'
+			, message : 'No I²S Module installed.'
+						+'<br>On-board audio cannot be disabled.'
+		} );
+		$( this ).prop( 'checked', true )
+		return
+	}
+	
+	var onboardaudio = $( this ).prop( 'checked' );
+	if ( !onboardaudio && G.audioaplayname.slice( 0, 7 ) === 'bcm2835' ) {
+		info( {
+			  icon    : 'volume'
+			, title   : 'On-board Audio'
+			, message : 'On-board audio is currently in used.'
+		} );
+		$( '#onboardaudio' ).prop( 'checked', 1 );
+	} else {
+		G.onboardaudio = onboardaudio;
+		rebootText( onboardaudio ? 'Enable' : 'Disable', 'on-board audio' );
+		local = 1;
+		bash( [ 'onboardaudio', G.onboardaudio, G.reboot.join( '\n' ) ], resetLocal );
+	}
+} );
+$( '#bluetooth' ).click( function() {
+	G.bluetooth = $( this ).prop( 'checked' );
+	rebootText( G.bluetooth ? 'Enable' : 'Disable', 'on-board Bluetooth' );
+	notify( 'On-board Bluetooth', G.bluetooth, 'bluetooth' );
+	bash( [ 'bluetooth', G.bluetooth, G.reboot.join( '\n' ) ], resetLocal );
+} );
+$( '#setting-bluetooth' ).click( function() {
+	info( {
+		  icon     : 'bluetooth'
+		, title    : 'On-board Bluetooth'
+		, checkbox : { Discoverable: 1 }
+		, checked  : ( G.btdiscoverable ? 0 : 1 )
+		, ok       : function() {
+			G.btdiscoverable = $( '#infoCheckBox input' ).prop( 'checked' );
+			notify( 'Bluetooth Discoverable', G.btdiscoverable, 'bluetooth' );
+			bash( [ 'btdiscoverable', ( G.btdiscoverable ? 'yes' : 'no' ) ], resetLocal( 3000 ) );
+		}
+	} );
+} );
+$( '#wlan' ).click( function() {
+	G.wlan = $( this ).prop( 'checked' );
+	notify( 'On-board Wi-Fi', G.wlan, 'wifi-3' );
+	bash( [ 'wlan', G.wlan ], resetLocal );
+} );
+$( '#lcd' ).click( function() {
+	G.lcd = $( this ).prop( 'checked' );
+	rebootText( G.lcd ? 'Enable' : G.lcd, 'GPIO 3.5" LCD' );
+	notify( 'GPIO 3.5" LCD', G.lcd, 'gear' );
+	bash( [ 'lcd', G.lcd, G.reboot.join( '\n' ) ], resetLocal );
+} );
+$( '#setting-lcd' ).click( function() {
+	info( {
+		  icon        : 'edit'
+		, title       : 'GPIO 3.5" LCD'
+		, message     : 'Calibrate touchscreen?'
+						+'<br>(Get stylus ready.)'
+		, oklabel     : 'Start'
+		, ok          : function() {
+			notify( 'Calibrate Touchscreen', 'Start ...', 'edit' );
+			bash( [ 'lcdcalibrate' ] );
+		}
+	} );
+} );
+$( '#lcdchar' ).click( function() {
+	G.lcdchar = $( this ).prop( 'checked' );
+	rebootText( G.lcdchar ? 'Enable' : G.lcdchar, 'GPIO Character LCD' );
+	notify( 'GPIO Character LCD', G.lcdchar, 'gear' );
+	bash( [ 'lcdchar', G.lcdchar, G.reboot.join( '\n' ) ], resetLocal );
+} );
+$( '#setting-lcdchar' ).click( function() {
+	info( {
+		  icon        : 'gear'
+		, title       : 'GPIO Character LCD'
+		, message     : 'Calibrate touchscreen?'
+						+'<br>(Get stylus ready.)'
+		, ok          : function() {
+			notify( 'GPIO Character LCD', 'Change ...', 'gear' );
+			bash( [ 'lcdcharset' ] );
+		}
+	} );
+} );
+$( '#relays' ).click( function() {
+	G.relays = $( this ).prop( 'checked' );
+	$( '#setting-relays' ).toggleClass( 'hide', !G.relays );
+	notify( 'GPIO Relay', G.relays, 'gpio blink' );
+	bash( [ 'relays', G.relays ], resetLocal );
+} );
+$( '#setting-relays' ).click( function() {
+	location.href = '/settings/relays.php';
 } );
 $( '#hostname' ).click( function() {
 	info( {

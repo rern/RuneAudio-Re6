@@ -113,14 +113,6 @@ autoplay )
 	[[ ${args[1]} == true ]] && touch $dirsystem/autoplay || rm $dirsystem/autoplay
 	pushRefresh
 	;;
-gpio )
-	enable=${args[1]}
-	if [[ $enable == true ]]; then
-		touch $dirsystem/gpio
-	else
-		rm $dirsystem/gpio
-	fi
-	;;
 localbrowser )
 	if [[ ${args[1]} == true ]]; then
 		enable localbrowser localbrowser

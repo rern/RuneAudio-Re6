@@ -115,12 +115,34 @@ i2c-dev
 		sed -i 's/fb1/fb0/' /etc/X11/xorg.conf.d/99-fbturbo.conf
 		rm $dirsystem/lcd
 	fi
+	pushRefresh
 	;;
 lcdcalibrate )
 	touch /srv/http/data/shm/calibrate
 	degree=$( grep rotate /boot/config.txt | cut -d= -f3 )
 	cp -f /etc/X11/{lcd$degree,xorg.conf.d/99-calibration.conf}
 	systemctl restart localbrowser
+	;;
+lcdchar )
+	enable=${args[1]}
+	if [[ $enable == true ]]; then
+		touch $dirsystem/lcdchar
+	else
+		rm $dirsystem/lcdchar
+	fi
+	pushRefresh
+	;;
+lcdcharset )
+	address=${args[1]}
+	chip=${args[2]}
+	cols=${args[3]}
+	rows=${args[4]}
+	sed -i -e "s/^\(address = \).*/\1$address
+" -e "s/^\(chip = \).*/\1'$chip'
+" -e "s/^\(cols = \).*/\1$cols
+" -e "s/^\(rows = \).*/\1$rows
+" /srv/http/bash/lcdchar.py
+	pushRefresh
 	;;
 onboardaudio )
 	if [[ ${args[1]} == true ]]; then
@@ -142,6 +164,15 @@ regional )
 	iw reg set $regdom
 	[[ $ntp == pool.ntp.org ]] && rm $dirsystem/ntp || echo $ntp > $dirsystem/ntp
 	[[ $regdom == 00 ]] && rm $dirsystem/wlanregdom || echo $regdom > $dirsystem/wlanregdom
+	pushRefresh
+	;;
+relays )
+	enable=${args[1]}
+	if [[ $enable == true ]]; then
+		touch $dirsystem/relays
+	else
+		rm $dirsystem/relays
+	fi
 	pushRefresh
 	;;
 soundprofile )
