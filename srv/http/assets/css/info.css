@@ -195,9 +195,6 @@ hr {
 	line-height: 40px;
 	text-align: right;
 }
-#infoSelectLabel {
-	margin-right: 10px !important;
-}
 .infotextbox,
 #infotextbox {
 	display: inline-block;

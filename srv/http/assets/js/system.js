@@ -111,7 +111,7 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		$( '#lcd' ).prop( 'checked', G.lcd );
 		$( '#setting-lcd' ).toggleClass( 'hide', !G.lcd );
 		$( '#lcdchar' ).prop( 'checked', G.lcdchar );
-		$( '#setting-lcdchar' ).toggleClass( 'hide', !G.lcdchar );
+//		$( '#setting-lcdchar' ).toggleClass( 'hide', !G.lcdchar );
 		$( '#relays' ).prop( 'checked', G.relays );
 		$( '#setting-relays' ).toggleClass( 'hide', !G.relays );
 		$( '#hostname' ).val( G.hostname );
@@ -365,24 +365,24 @@ $( '#lcdchar' ).click( function() {
 } );
 var html = heredoc( function() { /*
 	<div id="infoRadio" class="infocontent infohtml">
-		<px50/>Size&emsp;<label><input type="radio" name="cols" value="16"> 16x2</label>&ensp;
-		<label><input type="radio" name="cols" value="20"> 20x4</label>&ensp;
-		<label><input type="radio" name="cols" value="40"> 40x4</label>&emsp;
+		<px50/>Size&emsp;<label><input type="radio" value="16"> 16x2</label>&ensp;
+		<label><input type="radio" value="20"> 20x4</label>&ensp;
+		<label><input type="radio" value="40"> 40x4</label>
 	</div>
 	<div id="infoRadio1" class="infocontent infohtml">
-		Interface&emsp;<label><input type="radio" name="interface" value="i2c"> I&#178;C</label>&ensp;<px20/>
-		<label><input type="radio" name="interface" value="gpio"> GPIO</label><px70/>
+		&emsp;Interface&emsp;<label><input type="radio" value="true"> I&#178;C</label>&ensp;<px20/>
+		<label><input type="radio" value="false"> GPIO</label><px70/>
 	</div>
 	<div id="divi2c">
 		<br>
-		<px20/><a id="infoSelectLabel" class="infolabel">Expander</a>
+		<px20/>&nbsp;<a id="infoSelectLabel" class="infolabel">Expander</a>
 		<select class="infohtml" id="infoSelectBox">
 			<option value="PCF8574">PCF8574</option>
 			<option value="MCP23008">MCP23008</option>
 			<option value="MCP23017">MCP23017</option>
 		</select><br>
 		<div id="infotextlabel"><a class="infolabel">Address</a></div>
-		<input id="infoTextBox" type="text" class="infoinput" name="address" spellcheck="false">
+		<input id="infoTextBox" type="text" class="infoinput" spellcheck="false">
 	</div>
 */ } );
 $( '#setting-lcdchar' ).click( function() {
@@ -394,28 +394,34 @@ $( '#setting-lcdchar' ).click( function() {
 		, preshow : function() {
 			var settings = G.lcdcharset.split( ' ' );
 			if (  settings.length > 1 ) {
-				var interface = 'i2c';
-				var cols = settings[ 2 ];
-				$( '#infoSelectBox option[value='+ settings[ 0 ] +']' ).prop( 'selected', 1 );
-				$( '#infoTextBox' ).val( settings[ 0 ] );
+				G.i2c = true;
+				G.i2ccols = settings[ 0 ];
+				G.i2caddress = settings[ 1 ];
+				G.i2cchip = settings[ 2 ];
+				$( '#infoSelectBox option[value='+ G.i2cchip +']' ).prop( 'selected', 1 );
+				$( '#infoTextBox' ).val( G.i2caddress );
 			} else {
-				var interface = 'gpio';
-				var type = settings;
+				G.i2c = false;
+				G.i2ccols = settings;
 				$( '#divi2c' ).hide();
 			}
-			$( '#infoRadio input[value='+ cols +']' ).prop( 'checked', 1 )
-			$( '#infoRadio1 input[value='+ interface +']' ).prop( 'checked', 1 )
+			$( '#infoRadio input[value='+ G.i2ccols +']' ).prop( 'checked', 1 )
+			$( '#infoRadio1 input[value='+ G.i2c +']' ).prop( 'checked', 1 )
 			$( '#infoSelectBox' ).selectric();
 			$( '#infoRadio1' ).click( function() {
-				$( '#divi2c' ).toggleClass( 'hide', $( '#infoRadio1  input:checked' ).val() === 'gpio' );
+				$( '#divi2c' ).toggleClass( 'hide', $( '#infoRadio1 input:checked' ).val() );
 			} );
 		}
 		, ok      : function() {
-			var args = $( '#infoRadio input:checked' ).val();
-			var i2c = $( '#infoRadio1 input:checked' ).val();
-			if ( $( '#infoRadio1 input:checked' ).val() === 'i2c' ) {
-				args += "$'\n'"+ $( '#infoSelectBox').val();
-				args += "$'\n'"+ $( '#infoTextBox').val();
+			var cols = $( '#infoRadio input:checked' ).val();
+			var chip = $( '#infoSelectBox').val();
+			var address = $( '#infoTextBox').val();
+			if ( cols === G.i2ccols && chip === G.i2cchip && address === G.i2caddress ) return
+			
+			var args = cols;
+			if ( $( '#infoRadio1 input:checked' ).val() ) {
+				args += "$'\n'"+ chip;
+				args += "$'\n'"+ address;
 			}
 			notify( 'GPIO Character LCD', 'Change ...', 'gear' );
 			bash( [ 'lcdcharset', args ] );
