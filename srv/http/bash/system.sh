@@ -136,7 +136,7 @@ lcdcharset )
 	address=${args[1]}
 	chip=${args[2]}
 	cols=${args[3]}
-	rows=${args[4]}
+	[[ $cols == 16 ]] && rows=2 || rows=4
 	sed -i -e "s/^\(address = \).*/\1$address
 " -e "s/^\(chip = \).*/\1'$chip'
 " -e "s/^\(cols = \).*/\1$cols

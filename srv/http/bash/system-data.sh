@@ -73,7 +73,7 @@ dirsystem=/srv/http/data/system
 version=$( cat $dirsystem/version )
 soundprofile=$( cat $dirsystem/soundprofile )
 snaplatency=$( grep OPTS= /etc/default/snapclient | sed 's/.*latency=\(.*\)"/\1/' )
-lcdcharset=$( grep '^address\|^chip\|^cols\|^rows' /srv/http/bash/lcdchar.py | cut -d' ' -f3 | tr -d "'" )
+lcdcharset=$( grep '^address\|^chip\|^cols' /srv/http/bash/lcdchar.py | cut -d' ' -f3 | tr -d "'" )
 [[ -z $snaplatency ]] && snaplatency=0
 
 data+='

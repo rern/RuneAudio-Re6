@@ -111,7 +111,7 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		$( '#lcd' ).prop( 'checked', G.lcd );
 		$( '#setting-lcd' ).toggleClass( 'hide', !G.lcd );
 		$( '#lcdchar' ).prop( 'checked', G.lcdchar );
-		$( '#setting-lcdchar' ).toggleClass( 'hide', !G.lcdchar );
+//		$( '#setting-lcdchar' ).toggleClass( 'hide', !G.lcdchar );
 		$( '#relays' ).prop( 'checked', G.relays );
 		$( '#setting-relays' ).toggleClass( 'hide', !G.relays );
 		$( '#hostname' ).val( G.hostname );
@@ -363,15 +363,59 @@ $( '#lcdchar' ).click( function() {
 	notify( 'GPIO Character LCD', G.lcdchar, 'gear' );
 	bash( [ 'lcdchar', G.lcdchar, G.reboot.join( '\n' ) ], resetLocal );
 } );
+var html = heredoc( function() { /*
+	<form id="formlcdchar">
+		<div id="infoRadio" class="infocontent infohtml">
+			<px50/>Size&emsp;<label><input type="radio" name="cols" value="16"> 16x2</label>&ensp;
+			<label><input type="radio" name="cols" value="20"> 20x4</label>&ensp;
+			<label><input type="radio" name="cols" value="40"> 40x4</label>&emsp;
+		</div>
+		<div id="infoRadio1" class="infocontent infohtml">
+			Interface&emsp;<label><input type="radio" name="interface" value="i2c"> I&#178;C</label>&ensp;<px20/>
+			<label><input type="radio" name="interface" value="gpio"> GPIO</label><px70/>
+		</div>
+		<div id="divi2c">
+			<br>
+			<px20/><a id="infoSelectLabel" class="infolabel">Expander</a>
+			<select class="infohtml" id="infoSelectBox">
+				<option value="PCF8574">PCF8574</option>
+				<option value="MCP23008">MCP23008</option>
+				<option value="MCP23017">MCP23017</option>
+			</select><br>
+			<div id="infotextlabel"><a class="infolabel">Address</a></div>
+			<input id="infoTextBox" type="text" class="infoinput" name="address" spellcheck="false">
+		</div>
+	</form>
+*/ } );
 $( '#setting-lcdchar' ).click( function() {
 	info( {
-		  icon        : 'gear'
-		, title       : 'GPIO Character LCD'
-		, message     : 'Calibrate touchscreen?'
-						+'<br>(Get stylus ready.)'
-		, ok          : function() {
+		  icon    : 'gear'
+		, title   : 'GPIO Character LCD'
+		, content : html
+		, boxwidth : 200
+		, preshow : function() {
+			var settings = G.lcdcharset.split( ' ' );
+			if (  settings.length > 1 ) {
+				var interface = 'i2c';
+				var cols = settings[ 2 ];
+				$( '#infoSelectBox option[value='+ settings[ 0 ] +']' ).prop( 'selected', 1 );
+				$( '#infoTextBox' ).val( settings[ 0 ] );
+			} else {
+				var interface = 'gpio';
+				var type = settings;
+				$( '#divi2c' ).hide();
+			}
+			$( '#infoRadio input[value='+ cols +']' ).prop( 'checked', 1 )
+			$( '#infoRadio1 input[value='+ interface +']' ).prop( 'checked', 1 )
+			$( '#infoSelectBox' ).selectric();
+			$( '#infoRadio1' ).click( function() {
+				console.log($( '#infoRadio1  input:checked' ).val())
+				$( '#divi2c' ).toggleClass( 'hide', $( '#infoRadio1  input:checked' ).val() === 'gpio' );
+			} );
+		}
+		, ok      : function() {
 			notify( 'GPIO Character LCD', 'Change ...', 'gear' );
-			bash( [ 'lcdcharset' ] );
+			bash( [ 'lcdcharset', '' ] );
 		}
 	} );
 } );
