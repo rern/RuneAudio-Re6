@@ -211,7 +211,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 <?php } else { ?>
 	<a id="power"><i class="fa fa-power"></i>Power</a>
 <?php }
-	  if ( file_exists( $dirsystem.'gpio' ) ) { ?>
+	  if ( file_exists( $dirsystem.'relays' ) ) { ?>
 	<a id="gpio"><i class="fa fa-gpio"></i>GPIO</a>
 <?php }
 	  if ( file_exists( '/srv/http/aria2' ) ) {

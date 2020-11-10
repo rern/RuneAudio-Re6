@@ -16,6 +16,7 @@ var cmd = {
 	, bluetoothctl : 'systemctl -q is-active bluetooth && bluetoothctl show'
 	, configtxt    : 'cat /boot/config.txt'
 	, fstab        : 'cat /etc/fstab'
+	, i2cdetect    : 'i2cdetect -y 1'
 	, ifconfig     : 'ifconfig wlan0'
 	, journalctl   : '/srv/http/bash/system.sh statusbootlog'
 	, mpdconf      : 'cat /etc/mpd.conf'
@@ -36,7 +37,7 @@ function codeToggle( id, target ) {
 			var command = 'systemctl status '+ id;
 			var systemctl = 1;
 		} else {
-			var command = cmd[ id ];
+			var command = cmd[ id ] +' 2> /dev/null';
 			var systemctl = 0;
 		}
 		var delay = target === 'status' ? 1000 : 0;
