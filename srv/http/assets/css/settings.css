@@ -197,6 +197,11 @@ pre {
 	margin-bottom: 20px;
 	color: var( --cg75 );
 }
+.help-block .fa {
+	width: 20px;
+	line-height: 16px;
+	font-size: 16px !important;
+}
 w, wh, .wh { color: var( --cw ) !important; }
 bl, .bl, .blue { color: var( --cm ) !important; }
 bll { color: var( --cml ) !important; }
