@@ -28,7 +28,8 @@ mpc idleloop | while read changed; do
 				if [[ -z $current || $current != $currentprev ]]; then
 					killall status-coverartonline.sh &> /dev/null # kill if still running
 					if [[ ! -e $dirtmp/player-snapclient ]]; then
-						pushstream mpdplayer "$( /srv/http/bash/status.sh )"
+						status=$( /srv/http/bash/status.sh )
+						pushstream mpdplayer "$status"
 						if [[ -e /srv/http/data/system/librandom ]]; then
 							counts=$( mpc | awk '/\[playing\]/ {print $2}' | tr -d '#' )
 							pos=${counts/\/*}
@@ -39,6 +40,11 @@ mpc idleloop | while read changed; do
 								(( $left == 0 )) && /srv/http/bash/cmd.sh randomfile
 								touch $flagpl
 							fi
+						fi
+						if [[ -e /srv/http/data/system/lcdchar ]]; then
+							killall lcdchar.py &> /dev/null
+							readarray -t data <<< "$( echo "$status" | jq -r '.Artist, .Title, .Album, .elapsed, .Time, .state' )"
+							/srv/http/bash/lcdchar.py "${data[@]}"
 						fi
 					else
 						sed -i '/^$/d' $snapclientfile # remove blank lines
