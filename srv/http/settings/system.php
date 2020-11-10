@@ -120,8 +120,8 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 </div>
 
 <div>
-<heading>GPIO LCD Display<?=$help?></heading>
-<div class="col-l">Enable</div>
+<heading>GPIO Devices<?=$help?></heading>
+<div class="col-l">3.5" LCD</div>
 <div class="col-r">
 	<input id="lcd" type="checkbox">
 	<div class="switchlabel" for="lcd"></div>
@@ -129,6 +129,26 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<span class="help-block hide">
 		For 3.5" 480x320 GPIO LCD display only.
 	<br><i class="fa fa-gear"></i>&ensp;Calibrate touchscreen precision.
+	</span>
+</div>
+<div id="i2cdetect" class="col-l icon status">Character LCD <i class="fa fa-code code"></i></div>
+<div class="col-r">
+	<input id="lcdchar" type="checkbox">
+	<div class="switchlabel" for="lcdchar"></div>
+	<i id="setting-lcdchar" class="setting fa fa-gear"></i>
+	<span class="help-block hide">
+		Support 16x2, 20x4 and 40x4 LCD modules.
+		<br><i class="fa fa-code code"></i> Detect I&#178;C address.
+	</span>
+</div>
+<pre id="codei2cdetect" class="hide"></pre>
+<div class="col-l">Relays</div>
+<div class="col-r">
+	<input id="relays" type="checkbox">
+	<div class="switchlabel" for="relays"></div>
+	<i id="setting-relays" class="setting fa fa-gear"></i>
+	<span class="help-block hide">
+		<a href="https://github.com/rern/RuneUI_GPIO/blob/master/README.md">RuneUI - GPIO</a> - Control GPIO-connected relay module for power on / off equipments.
 	</span>
 </div>
 </div>
