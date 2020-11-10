@@ -126,22 +126,30 @@ lcdcalibrate )
 lcdchar )
 	enable=${args[1]}
 	if [[ $enable == true ]]; then
-		touch $dirsystem/lcdchar
+		touch $dirsystem/lcdchar*
 	else
-		rm $dirsystem/lcdchar
+		rm $dirsystem/lcdchar*
 	fi
 	pushRefresh
 	;;
 lcdcharset )
-	address=${args[1]}
+	cols=${args[1]}
 	chip=${args[2]}
-	cols=${args[3]}
+	address=${args[3]}
 	[[ $cols == 16 ]] && rows=2 || rows=4
-	sed -i -e "s/^\(address = \).*/\1$address
+	if [[ -n $chip ]]; then
+		sed -i -e "s/^\(address = \).*/\1$address
 " -e "s/^\(chip = \).*/\1'$chip'
 " -e "s/^\(cols = \).*/\1$cols
 " -e "s/^\(rows = \).*/\1$rows
 " /srv/http/bash/lcdchar.py
+		touch $dirsystem/lcdchar
+	else
+		sed -i "s/^\(cols = \).*/\1$cols
+" -e "s/^\(rows = \).*/\1$rows
+" /srv/http/bash/lcdchargpio.py
+		touch $dirsystem/lcdchargpio
+	fi
 	pushRefresh
 	;;
 onboardaudio )
