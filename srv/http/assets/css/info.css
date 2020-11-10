@@ -303,8 +303,9 @@ hr {
 #infoSelect .selectric {
 	margin-top: 10px;
 }
-#infoSelect .selectric,
-#infoSelect .selectric-items li {
+#infoContent .selectric,
+#infoContent .selectric .label,
+#infoContent .selectric-items li {
 	text-align: left;
 }
 #infoRadio i {
