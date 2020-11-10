@@ -363,7 +363,7 @@ $( '#lcdchar' ).click( function() {
 	notify( 'GPIO Character LCD', G.lcdchar, 'gear' );
 	bash( [ 'lcdchar', G.lcdchar, G.reboot.join( '\n' ) ], resetLocal );
 } );
-var html = heredoc( function() { /*
+var content = heredoc( function() { /*
 	<div id="infoRadio" class="infocontent infohtml">
 		<px50/>Size&emsp;<label><input type="radio" value="16"> 16x2</label>&ensp;
 		<label><input type="radio" value="20"> 20x4</label>&ensp;
@@ -389,7 +389,7 @@ $( '#setting-lcdchar' ).click( function() {
 	info( {
 		  icon    : 'gear'
 		, title   : 'GPIO Character LCD'
-		, content : html
+		, content : content
 		, boxwidth : 200
 		, preshow : function() {
 			var settings = G.lcdcharset.split( ' ' );
