@@ -37,7 +37,7 @@ function codeToggle( id, target ) {
 			var command = 'systemctl status '+ id;
 			var systemctl = 1;
 		} else {
-			var command = cmd[ id ];
+			var command = cmd[ id ] +' 2> /dev/null';
 			var systemctl = 0;
 		}
 		var delay = target === 'status' ? 1000 : 0;
