@@ -111,7 +111,7 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		$( '#lcd' ).prop( 'checked', G.lcd );
 		$( '#setting-lcd' ).toggleClass( 'hide', !G.lcd );
 		$( '#lcdchar' ).prop( 'checked', G.lcdchar );
-//		$( '#setting-lcdchar' ).toggleClass( 'hide', !G.lcdchar );
+		$( '#setting-lcdchar' ).toggleClass( 'hide', !G.lcdchar );
 		$( '#relays' ).prop( 'checked', G.relays );
 		$( '#setting-relays' ).toggleClass( 'hide', !G.relays );
 		$( '#hostname' ).val( G.hostname );
