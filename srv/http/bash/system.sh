@@ -126,9 +126,9 @@ lcdcalibrate )
 lcdchar )
 	enable=${args[1]}
 	if [[ $enable == true ]]; then
-		touch $dirsystem/lcdchar*
+		touch $dirsystem/lcdchar
 	else
-		rm $dirsystem/lcdchar*
+		rm $dirsystem/lcdchar
 	fi
 	pushRefresh
 	;;
@@ -142,13 +142,15 @@ lcdcharset )
 " -e "s/^\(chip = \).*/\1'$chip'
 " -e "s/^\(cols = \).*/\1$cols
 " -e "s/^\(rows = \).*/\1$rows
-" /srv/http/bash/lcdchar.py
-		touch $dirsystem/lcdchar
+" -e '/i2c_expander/ s/^#//
+' -e '/numbering_mode/ s/^/#/
+' /srv/http/bash/lcdchar.py
 	else
 		sed -i "s/^\(cols = \).*/\1$cols
 " -e "s/^\(rows = \).*/\1$rows
-" /srv/http/bash/lcdchargpio.py
-		touch $dirsystem/lcdchargpio
+" -e '/i2c_expander/ s/^/#/
+' -e '/numbering_mode/ s/^#//
+' /srv/http/bash/lcdchargpio.py
 	fi
 	pushRefresh
 	;;

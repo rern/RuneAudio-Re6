@@ -9,9 +9,6 @@ pushstream() {
 	[[ -z $3 ]] && ip=127.0.0.1 || ip=$3
 	curl -s -X POST http://$ip/pub?id=$1 -d "$2"
 }
-getlines() {
-	lines=$( echo "$1"  | jq -r '.Album, .Title, .Artist' | tr '\n' '^' | head -c -1 | sed 's/\^/\\r\\n/g' )
-}
 
 dirtmp=/srv/http/data/shm
 flag=$dirtmp/flag
@@ -45,11 +42,12 @@ mpc idleloop | while read changed; do
 							fi
 						fi
 						if [[ -e /srv/http/data/system/lcdchar ]]; then
-							getlines "$status"
+							lines=$( echo "$1" \
+										| jq -r '.Album, .Title, .Artist' 
+										| tr '\n' '^' \
+										| head -c -1 \
+										| sed 's/\^/\\r\\n/g' )
 							/srv/http/bash/lcdchar.py $lines
-						elif [[ -e /srv/http/data/system/lcdchargpio ]]; then
-							getlines "$status"
-							/srv/http/bash/lcdchargpio.py $lines
 						fi
 					else
 						sed -i '/^$/d' $snapclientfile # remove blank lines
