@@ -195,9 +195,6 @@ hr {
 	line-height: 40px;
 	text-align: right;
 }
-#infoSelectLabel {
-	margin-right: 10px !important;
-}
 .infotextbox,
 #infotextbox {
 	display: inline-block;
@@ -236,7 +233,8 @@ hr {
 #infoText input[type=password] {
 	display: inline-block;
 }
-.eye {
+.eye,
+.suffix {
 	position: absolute;
 	width: 25px;
 	padding-top: 9px;
@@ -246,6 +244,10 @@ hr {
 }
 .eyeactive {
 	color: var( --cm );
+}
+.suffix {
+	margin-left: 10px;
+	text-align: left;
 }
 .infohtml {
 	display: table;
@@ -303,8 +305,9 @@ hr {
 #infoSelect .selectric {
 	margin-top: 10px;
 }
-#infoSelect .selectric,
-#infoSelect .selectric-items li {
+#infoContent .selectric,
+#infoContent .selectric .label,
+#infoContent .selectric-items li {
 	text-align: left;
 }
 #infoRadio i {

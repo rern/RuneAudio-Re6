@@ -194,7 +194,7 @@ function infoReset() {
 	$( '#infoContent' ).html( infocontenthtml );
 	$( '#infoX' ).removeClass( 'hide' );
 	$( '.infocontent, .infomessage, .infolabel, .infoinput, .infohtml, .filebtn, .infobtn, #infoFile' ).addClass( 'hide' );
-	$( '.infomessage, .infoinput' ).css( 'text-align', '' );
+	$( '.infomessage, .infoinput, #infoFooter' ).css( 'text-align', '' );
 	$( '#infoBox, .infolabel, .infoinput' ).css( 'width', '' );
 	$( '#infoMessage, .infolabel' ).off( 'click' );
 	$( '.filebtn, .infobtn' ).removeClass( 'active' ).css( 'background', '' ).off( 'click' );
@@ -300,11 +300,15 @@ function info( O ) {
 		if ( 'message' in O && O.message ) $( '#infoMessage' ).html( O.message ).removeClass( 'hide' );
 		if ( 'msgalign' in O ) $( '#infoMessage' ).css( 'text-align', O.msgalign );
 		if ( 'msghr' in O ) $( '#infoMessage' ).after( '<hr>' );
-		if ( 'footer' in O && O.footer ) $( '#infoFooter' ).html( O.footer ).removeClass( 'hide' );
+		if ( 'footer' in O && O.footer ) {
+			$( '#infoFooter' ).html( O.footer ).removeClass( 'hide' );
+			if ( 'footalign' in O ) $( '#infoFooter' ).css( 'text-align', O.footalign );
+		}
 		// inputs
 		if ( 'textlabel' in O || 'textvalue' in O ) {
 			textlabel = 'textlabel' in O ? O.textlabel : '';
 			textvalue = 'textvalue' in O ? O.textvalue : '';
+			textsuffix = 'textsuffix' in O ? O.textsuffix : '';
 			if ( typeof textlabel !== 'object' ) textlabel = [ textlabel ];
 			if ( 'textvalue' in O ) {
 				if ( typeof textvalue !== 'object' ) textvalue = [ textvalue ];
@@ -319,10 +323,9 @@ function info( O ) {
 				var labeltext = textlabel[ i ] || '';
 				labelhtml += '<a class="infolabel">'+ labeltext +'</a>';
 				boxhtml += '<input type="text" class="infoinput input" id="infoTextBox'+ iid +'"';
-				if ( textvalue.length ) {
-					boxhtml += textvalue[ i ] ? ' value="'+ textvalue[ i ].toString().replace( /"/g, '&quot;' ) +'"' : '';
-				}
+				if ( textvalue.length ) boxhtml += textvalue[ i ] ? ' value="'+ textvalue[ i ].toString().replace( /"/g, '&quot;' ) +'"' : '';
 				boxhtml += ' spellcheck="false">';
+				if ( textsuffix.length ) boxhtml += textsuffix[ i ] ? '<gr class="suffix">'+ textsuffix[ i ] +'</gr>' : '';
 			}
 			$( '#infotextlabel' ).html( labelhtml );
 			$( '#infotextbox' ).html( boxhtml );
@@ -466,6 +469,7 @@ function info( O ) {
 		} );
 		var boxW = O.boxwidth !== 'max' ? O.boxwidth : calcW - 70 - labelW;
 		$( '#infotextbox, .infoinput' ).css( 'width', boxW +'px' );
+		$( '.selectric' ).css( 'width', boxW - 5 +'px' );
 	}
 	if ( 'buttonwidth' in O ) {
 		var widest = 0;
