@@ -233,8 +233,7 @@ hr {
 #infoText input[type=password] {
 	display: inline-block;
 }
-.eye,
-.suffix {
+.eye {
 	position: absolute;
 	width: 25px;
 	padding-top: 9px;
@@ -247,8 +246,6 @@ hr {
 }
 .suffix {
 	margin-left: 10px;
-	text-align: left;
-	width: auto;
 }
 .infohtml {
 	display: table;
