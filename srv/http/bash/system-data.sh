@@ -73,6 +73,7 @@ dirsystem=/srv/http/data/system
 version=$( cat $dirsystem/version )
 soundprofile=$( cat $dirsystem/soundprofile )
 snaplatency=$( grep OPTS= /etc/default/snapclient | sed 's/.*latency=\(.*\)"/\1/' )
+lcdcharset=$( grep '^address\|^chip\|^cols' /srv/http/bash/lcdchar.py | cut -d' ' -f3 | tr -d "'" )
 [[ -z $snaplatency ]] && snaplatency=0
 
 data+='
@@ -83,12 +84,15 @@ data+='
 	, "ip"              : "'${iplist:1}'"
 	, "kernel"          : "'$( uname -r )'"
 	, "lcd"             : '$( grep -q dtoverlay=tft35a /boot/config.txt && echo true || echo false )'
+	, "lcdchar"         : '$( [[ -e $dirsystem/lcdchar ]] && echo true || echo false )'
+	, "lcdcharset"      : "'$lcdcharset'"
 	, "mpd"             : "'$( pacman -Q mpd 2> /dev/null |  cut -d' ' -f2 )'"
 	, "mpdstats"        : "'$( jq '.song, .album, .artist' /srv/http/data/mpd/counts 2> /dev/null )'"
 	, "ntp"             : "'$( grep '^NTP' /etc/systemd/timesyncd.conf | cut -d= -f2 )'"
 	, "onboardaudio"    : '$( grep -q 'dtparam=audio=on' /boot/config.txt && echo true || echo false )'
 	, "reboot"          : "'$( cat /srv/http/data/shm/reboot 2> /dev/null )'"
 	, "regdom"          : "'$( cat /etc/conf.d/wireless-regdom | cut -d'"' -f2 )'"
+	, "relays"          : '$( [[ -e $dirsystem/relays ]] && echo true || echo false )'
 	, "soc"             : "'$soc'"
 	, "soundprofile"    : "'$soundprofile'"
 	, "soundprofileval" : "'$( /srv/http/bash/cmd-soundprofile.sh getvalue )'"

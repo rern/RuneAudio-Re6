@@ -7,7 +7,6 @@ lcd=$( grep -q dtoverlay=tft35a /boot/config.txt && echo true || echo false )
 
 data+='
 	  "autoplay"        : '$( [[ -e $dirsystem/autoplay ]] && echo true || echo false )'
-	, "gpio"            : '$( [[ -e $dirsystem/gpio ]] && echo true || echo false )'
 	, "hostname"        : "'$( hostname )'"
 	, "lcd"             : '$lcd'
 	, "login"           : '$( [[ -e $dirsystem/login ]] && echo true || echo false )'

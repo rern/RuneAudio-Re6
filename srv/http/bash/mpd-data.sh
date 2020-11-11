@@ -39,8 +39,10 @@ data='
 	, "ffmpeg"         : '$( grep -A1 ffmpeg /etc/mpd.conf | grep -q yes && echo true || echo false )'
 	, "mixertype"      : "'$( grep mixer_type /etc/mpd.conf | cut -d'"' -f2 )'"
 	, "normalization"  : '$( grep -q 'volume_normalization.*yes' /etc/mpd.conf && echo true || echo false )'
-	, "reboot"          : "'$( cat /srv/http/data/shm/reboot 2> /dev/null )'"
+	, "reboot"         : "'$( cat /srv/http/data/shm/reboot 2> /dev/null )'"
 	, "replaygain"     : "'$( grep replaygain /etc/mpd.conf | cut -d'"' -f2 )'"
 	, "usbdac"         : "'$( cat /srv/http/data/shm/usbdac 2> /dev/null )'"
+	, "soxr"           : '$( grep -q "quality.*custom" /etc/mpd.conf && echo true || echo false )'
+	, "soxrset"        : "'$( grep -v 'quality\|}' /srv/http/data/system/mpd-soxrset | cut -d'"' -f2 )'"
 '
 echo {$data}

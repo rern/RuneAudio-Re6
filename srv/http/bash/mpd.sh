@@ -202,5 +202,31 @@ replaygain )
 	restartMPD
 	pushRefresh
 	;;
+soxr )
+	sed -i '/quality/,/}/ d' /etc/mpd.conf
+	if [[ ${args[1]} == true ]]; then
+		sed -i "/soxr/ r $dirsystem/mpd-soxrset" /etc/mpd.conf
+	else
+		sed -i '/soxr/ a\
+	quality        "very high"\
+}
+' /etc/mpd.conf
+	fi
+	restartMPD
+	;;
+soxrset )
+	sed -i -e 's/\(threads\s*"\).*/\1'${args[1]}'"/
+' -e 's/\(precision\s*"\).*/\1'${args[2]}'"/
+' -e 's/\(phase_response\s*"\).*/\1'${args[3]}'"/
+' -e 's/\(passband_end\s*"\).*/\1'${args[4]}'"/
+' -e 's/\(stopband_begin\s*"\).*/\1'${args[5]}'"/
+' -e 's/\(attenuation\s*"\).*/\1'${args[6]}'"/
+' -e 's/\(flags\s*"\).*/\1'${args[7]}'"/
+' $dirsystem/mpd-soxrset
+		sed -i -e '/quality/,/}/ d
+' -e "/soxr/ r $dirsystem/mpd-soxrset
+" /etc/mpd.conf
+	restartMPD
+	;;
 
 esac

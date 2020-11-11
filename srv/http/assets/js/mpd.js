@@ -93,6 +93,8 @@ refreshData = function() {
 		$( '#bufferoutput' ).prop( 'checked', G.bufferoutput > 8192 );
 		$( '#setting-bufferoutput' ).toggleClass( 'hide', G.bufferoutput === '' );
 		$( '#ffmpeg' ).prop( 'checked', G.ffmpeg );
+		$( '#soxr' ).prop( 'checked', G.soxr );
+		$( '#setting-soxr' ).toggleClass( 'hide', !G.soxr );
 		[ 'aplay', 'amixer', 'mpdconf', 'mpdstatus' ].forEach( function( id ) {
 			codeToggle( id, 'status' );
 		} );
@@ -368,6 +370,41 @@ $( '#ffmpeg' ).click( function() {
 	G.ffmpeg = $( this ).prop( 'checked' );
 	notify( 'FFmpeg Decoder', G.ffmpeg, 'mpd' );
 	bash( [ 'ffmpeg', G.ffmpeg ], refreshData );
+} );
+$( '#soxr' ).click( function() {
+	G.soxr = $( this ).prop( 'checked' );
+	notify( 'Custom SoX Resampler', G.soxr, 'mpd' );
+	bash( [ 'soxr', G.soxr ], refreshData );
+} );
+$( '#setting-soxr' ).click( function() {
+	info( {
+		  icon       : 'mpd'
+		, title      : 'Custom SoX Resampler'
+		, textlabel  : [
+			  'Threads'
+			, 'Precision <gr>(bit)</gr>'
+			, 'Phase Response'
+			, 'Passband End <gr>(%)</gr>'
+			, 'Stopband Begin <gr>(%)</gr>'
+			, 'Attenuation  <gr>(dB)</gr>'
+			, 'Flags'
+		]
+		, textvalue  : G.soxrset.split( ' ' )
+		, textsuffix : [ 1, 20, 50, 95, 100, 0, 0 ]
+		, boxwidth   : 80
+		, footer     : '(default)&emsp;'
+		, footalign  : 'right'
+		, ok         : function() {
+			var args = [ 'soxrset' ];
+			for ( i = 0; i < 7; i++ ) {
+				if ( i === 0 ) i = '';
+				args.push( Number( $( '#infoTextBox'+ i ).val() ) );
+			}
+			if ( args.toString().replace( /,/g, ' ' ) === 'soxrset '+ G.soxrset ) return
+			
+			bash( args, refreshData );
+		}
+	} );
 } );
 $( '#mpdrestart' ).click( function() {
 	$this = $( this );

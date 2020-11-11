@@ -25,8 +25,6 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		}
 		$( '#streaming' ).prop( 'checked', G.streaming );
 		$( '#ip' ).text( G.streamingip +':8000' );
-		$( '#gpio' ).prop( 'checked', G.gpio );
-		$( '#setting-gpio' ).toggleClass( 'hide', !G.gpio );
 		$( '#scrobbler' ).prop( 'checked', G.scrobbler );
 		$( '#setting-scrobbler' ).toggleClass( 'hide', !G.scrobbler );
 		$( '#login' ).prop( 'checked', G.login );
@@ -261,15 +259,6 @@ $( '#setting-samba' ).click( function() {
 			}
 		}
 	} );
-} );
-$( '#gpio' ).click( function() {
-	G.gpio = $( this ).prop( 'checked' );
-	$( '#setting-gpio' ).toggleClass( 'hide', !G.gpio );
-	notify( 'GPIO Relay', G.gpio, 'gpio blink' );
-	bash( [ 'gpio', G.gpio ], resetLocal );
-} );
-$( '#setting-gpio' ).click( function() {
-	location.href = '/settings/gpio.php';
 } );
 $( '#scrobbler' ).click( function() {
 	var mpdscribble = $( this ).prop( 'checked' );

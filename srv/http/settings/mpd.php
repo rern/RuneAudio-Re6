@@ -119,7 +119,6 @@
 		<br>Increase to fix missing Album list with large Library.
 	</span>
 </div>
-	<?php if ( file_exists( '/usr/bin/ffmpeg' ) ) { ?>
 <div class="col-l">FFmpeg Decoder</div>
 <div class="col-r">
 	<input id="ffmpeg" type="checkbox">
@@ -142,7 +141,13 @@
 		</div>
 	</span>
 </div>
-	<?php } ?>
+<div class="col-l">Custom SoXR</div>
+<div class="col-r">
+	<input id="soxr" type="checkbox">
+	<div class="switchlabel" for="soxr"></div>
+	<i id="setting-soxr" class="setting fa fa-gear"></i>
+	<span class="help-block hide">SoX Resampler custom settings.</span>
+</div>
 </div>
 
 <div>
