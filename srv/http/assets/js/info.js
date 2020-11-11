@@ -20,6 +20,7 @@ info( {                                     // default
 	
 	textlabel     : [ 'LABEL', ... ]        // (blank)        (label array input label)
 	textvalue     : [ 'VALUE', ... ]        // (blank)        (pre-filled array input value)
+	textsuffix    : [ 'LABEL', ... ]        // (blank)        (inputbox suffix array)
 	textrequired  : [ N, ... ]              // (none)         (required fields disable ok button if blank)
 	textalign     : 'CSS'                   // 'left'         (input text alignment)
 	
@@ -48,7 +49,8 @@ info( {                                     // default
 	checked       : [ N, ... ]              // (none)         (pre-select array input indexes - single can be  N)
 	checkboxhr    : 1                       // (none)         (horizontal line after)
 	
-	footer........: 'FOOTER'                // (blank)        (footer above buttons)
+	footer        : 'FOOTER'                // (blank)        (footer above buttons)
+	footalign     : 'CSS'                   // (blank)        (footer text alignment)
 	oklabel       : 'LABEL'                 // 'OK'           (ok button label)
 	okcolor       : 'COLOR'                 // '#0095d8'      (ok button color)
 	ok            : FUNCTION                // (reset)        (ok click function)
