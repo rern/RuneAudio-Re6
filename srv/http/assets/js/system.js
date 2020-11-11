@@ -363,15 +363,15 @@ $( '#lcdchar' ).click( function() {
 	notify( 'GPIO Character LCD', G.lcdchar, 'gear' );
 	bash( [ 'lcdchar', G.lcdchar, G.reboot.join( '\n' ) ], resetLocal );
 } );
-var content = heredoc( function() { /*
+var infolcdchar = heredoc( function() { /*
 	<div id="infoRadio" class="infocontent infohtml">
-		<px50/>Size&emsp;<label><input type="radio" value="16"> 16x2</label>&ensp;
-		<label><input type="radio" value="20"> 20x4</label>&ensp;
-		<label><input type="radio" value="40"> 40x4</label>
+		<px50/>Size&emsp;<label><input type="radio" name="size" value="16"> 16x2</label>&ensp;
+		<label><input type="radio" name="size" value="20"> 20x4</label>&ensp;
+		<label><input type="radio" name="size" value="40"> 40x4</label>
 	</div>
 	<div id="infoRadio1" class="infocontent infohtml">
-		&emsp;Interface&emsp;<label><input type="radio" value="true"> I&#178;C</label>&ensp;<px20/>
-		<label><input type="radio" value="false"> GPIO</label><px70/>
+		&emsp;Interface&emsp;<label><input type="radio" name="interface" value="i2c"> I&#178;C</label>&ensp;<px20/>
+		<label><input type="radio" name="interface" value="gpio"> GPIO</label><px70/>
 	</div>
 	<div id="divi2c">
 		<br>
@@ -389,19 +389,19 @@ $( '#setting-lcdchar' ).click( function() {
 	info( {
 		  icon    : 'gear'
 		, title   : 'GPIO Character LCD'
-		, content : content
+		, content : infolcdchar
 		, boxwidth : 200
 		, preshow : function() {
 			var settings = G.lcdcharset.split( ' ' );
 			if (  settings.length > 1 ) {
-				G.i2c = true;
+				G.i2c = 'i2c';
 				G.i2ccols = settings[ 0 ];
 				G.i2caddress = settings[ 1 ];
 				G.i2cchip = settings[ 2 ];
 				$( '#infoSelectBox option[value='+ G.i2cchip +']' ).prop( 'selected', 1 );
 				$( '#infoTextBox' ).val( G.i2caddress );
 			} else {
-				G.i2c = false;
+				G.i2c = 'gpio';
 				G.i2ccols = settings;
 				$( '#divi2c' ).hide();
 			}
@@ -409,7 +409,7 @@ $( '#setting-lcdchar' ).click( function() {
 			$( '#infoRadio1 input[value='+ G.i2c +']' ).prop( 'checked', 1 )
 			$( '#infoSelectBox' ).selectric();
 			$( '#infoRadio1' ).click( function() {
-				$( '#divi2c' ).toggleClass( 'hide', $( '#infoRadio1 input:checked' ).val() );
+				$( '#divi2c' ).toggleClass( 'hide', $( '#infoRadio1 input:checked' ).val() === 'gpio' );
 			} );
 		}
 		, ok      : function() {
