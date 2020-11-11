@@ -127,18 +127,7 @@
 			<code>ffmpeg "yes"</code>
 		<br>Should be disabled if not used for faster Sources update.
 		<br>Decoder for audio filetypes:
-		<div style="margin-left: 20px">
-			<?php
-				$types = shell_exec(
-					'types=$( /usr/bin/mpd -V | awk \'/\[ffmpeg/ {$1=""; print}\' )'
-						.'; for index in {a..z}'
-						.'; do types=$( sed "s/ \($index\)/\n\1/" <<<"$types" )'
-						.'; done'
-						.'; echo "$types" | sort'
-				);
-				echo str_replace( "\n", '<br>', $types );
-			?>
-		</div>
+		<div style="margin-left: 20px"><?=( shell_exec( '/srv/http/bash/mpd.sh filetype' ) )?></div>
 	</span>
 </div>
 <div class="col-l">Custom SoXR</div>

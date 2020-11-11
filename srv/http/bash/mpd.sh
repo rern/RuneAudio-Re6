@@ -133,6 +133,14 @@ ffmpeg )
 	restartMPD
 	pushRefresh
 	;;
+filetype )
+	type=$( mpd -V | grep '\[ffmpeg' | sed 's/.*ffmpeg. //; s/ rtp.*//' | tr ' ' '\n' | sort )
+	for i in {a..z}; do
+		line=$( grep ^$i <<<"$type" | tr '\n' ' ' )
+		[[ -n $line ]] && list+=${line:0:-1}'<br>'
+	done
+	echo "${list:0:-4}"
+	;;
 mixerhw )
 	output=${args[1]}
 	mixer=${args[2]}
