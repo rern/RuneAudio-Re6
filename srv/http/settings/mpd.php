@@ -139,15 +139,15 @@
 			SoX Resampler custom settings:
 		<br>&bull; Precision - Conversion precision <code>16, 20, 24, 28 or 32</code> bits (20 = HQ)
 		<br>&bull; Phase Response <code>0-100</code> (50 = Linear)
-		<br>&bull; Passband End - 0dB point bandwidth to preserve <code>< Stopband Begin</code> % (Nyquist = 100)
+		<br>&bull; Passband End - 0dB point bandwidth to preserve <code>< Stopband Begin</code> % (100 = Nyquist)
 		<br>&bull; Stopband Begin - Aliasing/imaging control <code>> Passband End</code> %
 		<br>&bull; Attenuation - Lowers the source to prevent clipping <code>0-30</code> dB
-		<br>&bull; Flags - Bit fields: <code>0, 1, 2, 8, 16 or 32</code>
+		<br>&bull; Flags - Extra settings: <code>0, 1, 2, 8, 16 or 32</code>
 		<br> &emsp; 0 = Rolloff <= 0.01 dB
 		<br> &emsp; 1 = Rolloff <= 0.35 dB
 		<br> &emsp; 2 = Rolloff none - For Chebyshev bandwidth
-		<br> &emsp; 8 = High precision clock - Increase irrational ratio accuracy
-		<br> &emsp; 16 = Use double precision calcs even if precision <= 20
+		<br> &emsp; 8 = High precision - Increase irrational ratio accuracy
+		<br> &emsp; 16 = Double precision even if Precision <= 20
 		<br> &emsp; 32 = Variable-rate resampling
 	</span>
 </div>
