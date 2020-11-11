@@ -101,6 +101,7 @@ infocontenthtml = heredoc( function() { /*
 			<div id="infoText" class="infocontent hide">
 				<div id="infotextlabel"></div>
 				<div id="infotextbox"></div>
+				<div id="infotextsuffix"></div>
 			</div>
 			<div id="infoRadio" class="infocontent infocheckbox infohtml"></div>
 			<div id="infoCheckBox" class="infocontent infocheckbox infohtml"></div>
@@ -175,15 +176,15 @@ $( '#infoOverlay' ).keydown( function( e ) {
 		}
 	}
 } );
-$( '#infoContent' ).on( 'click', '.eye', function() {
+$( '#infoContent' ).on( 'click', '.fa-eye', function() {
 	$this = $( this );
-	$pwd = $this.prev();
+	$pwd = $( '#infoPasswordBox' );
 	if ( $pwd.prop( 'type' ) === 'text' ) {
 		$this.removeClass( 'eyeactive' );
-		$pwd.prop( 'type', 'password' );
+		$( '#infoPasswordBox' ).prop( 'type', 'password' );
 	} else {
 		$this.addClass( 'eyeactive' );
-		$pwd.prop( 'type', 'text' );
+		$( '#infoPasswordBox' ).prop( 'type', 'text' );
 	}
 } );
 
@@ -319,6 +320,7 @@ function info( O ) {
 			}
 			var labelhtml = '';
 			var boxhtml = '';
+			var suffixhtml = '';
 			var iL = textlabel.length > textvalue.length ? textlabel.length : textvalue.length;
 			for ( i = 0; i < iL; i++ ) {
 				var iid = i || '';
@@ -326,12 +328,13 @@ function info( O ) {
 				labelhtml += '<a class="infolabel">'+ labeltext +'</a>';
 				boxhtml += '<input type="text" class="infoinput input" id="infoTextBox'+ iid +'"';
 				if ( textvalue.length ) boxhtml += textvalue[ i ] !== '' ? ' value="'+ textvalue[ i ].toString().replace( /"/g, '&quot;' ) +'"' : '';
-				boxhtml += ' spellcheck="false">';
-				if ( textsuffix.length ) boxhtml += textsuffix[ i ] !== '' ? '<gr class="suffix">'+ textsuffix[ i ] +'</gr><br>' : '<br>';
+				boxhtml += ' spellcheck="false"><br>';
+				if ( textsuffix.length ) suffixhtml += textsuffix[ i ] !== '' ? '<gr>'+ textsuffix[ i ] +'</gr><br>' : '<br>';
 			}
 			if ( textsuffix.length ) $( '#infotextbox' ).css( 'width', 'fit-content' );
 			$( '#infotextlabel' ).html( labelhtml );
 			$( '#infotextbox' ).html( boxhtml );
+			$( '#infotextsuffix' ).html( suffixhtml );
 			$( '#infoText' ).removeClass( 'hide' );
 			if ( 'textalign' in O ) $( '.infoinput' ).css( 'text-align', O.textalign );
 			if ( 'textrequired' in O ) {
@@ -344,18 +347,9 @@ function info( O ) {
 			}
 		}
 		if ( 'passwordlabel' in O ) {
-			if ( typeof O.passwordlabel !== 'object' ) O.passwordlabel = [ O.passwordlabel ];
-			var labelhtml = '';
-			var boxhtml = '';
-			var iL = O.passwordlabel.length;
-			for ( i = 0; i < iL; i++ ) {
-				var iid = i || '';
-				var labeltext = O.passwordlabel[ i ] || '';
-				labelhtml += '<a class="infolabel">'+ labeltext +'</a>';
-				boxhtml += '<input type="password" class="infoinput" id="infoPasswordBox'+ iid +'"><i class="eye fa fa-eye fa-lg"></i><br>';
-			}
-			$( '#infotextlabel' ).append( labelhtml );
-			$( '#infotextbox' ).append( boxhtml );
+			$( '#infotextlabel' ).append( '<a class="infolabel">'+ O.passwordlabel +'</a>' );
+			$( '#infotextbox' ).append( '<input type="password" class="infoinput" id="infoPasswordBox">' );
+			$( '#infotextsuffix' ).append( '<i class="fa fa-eye fa-lg"></i>' );
 			$( '#infoText' ).removeClass( 'hide' );
 		}
 		if ( 'fileoklabel' in O ) {

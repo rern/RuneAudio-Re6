@@ -196,10 +196,15 @@ hr {
 	text-align: right;
 }
 .infotextbox,
+#infotextsuffix,
 #infotextbox {
 	display: inline-block;
 	width: min-content;
 	text-align: left;
+}
+#infotextsuffix {
+	margin-left: 5px;
+	line-height: 40px;
 }
 .infolabel {
 	display: block;
@@ -211,6 +216,7 @@ hr {
 }
 .infoinput {
 	margin: 2px 0 !important;
+	width: 230px;
 	height: 36px !important;
 	padding: 0 10px;
 	color: var( --cw );
@@ -243,9 +249,6 @@ hr {
 }
 .eyeactive {
 	color: var( --cm );
-}
-.suffix {
-	margin-left: 10px;
 }
 .infohtml {
 	display: table;
