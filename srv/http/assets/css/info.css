@@ -291,6 +291,9 @@ hr {
 #infoButtons {
 	padding: 10px 0 20px 0;
 }
+#infoContent .selectric-wrapper {
+	margin-bottom: 5px;
+}
 #infoSelect .selectric-wrapper {
 	width: auto;
 	max-width: 100%;
