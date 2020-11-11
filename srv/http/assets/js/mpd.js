@@ -394,6 +394,7 @@ $( '#setting-soxr' ).click( function() {
 		, buttonlabel : '<i class="fa fa-undo"></i>Default'
 		, buttoncolor : '#de810e'
 		, button      : function() {
+			notify( 'Custom SoX Resampler', 'Reset to default ...', 'mpd' );
 			bash( [ 'soxrset', 20, 50, 91.3, 100, 0, 0 ], refreshData );
 		}
 		, buttonwidth : 1
@@ -406,6 +407,7 @@ $( '#setting-soxr' ).click( function() {
 			if ( args.toString().replace( /,/g, ' ' ) === G.soxrset ) return
 			
 			args.unshift( 'soxrset' );
+			notify( 'Custom SoX Resampler', 'Change ...', 'mpd' );
 			bash( args, refreshData );
 		}
 	} );
