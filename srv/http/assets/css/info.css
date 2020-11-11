@@ -222,13 +222,16 @@ hr {
 	margin: 4px 0 !important;
 	width: 230px;
 	height: 36px !important;
-	padding: 0 10px;
+	padding: 10px;
 	color: var( --cw );
 	background-color: #000000;
 	border-radius: 5px;
 	border: 1px solid var( --cg );
 	font-size: 16px;
 	font-family: "Lato";
+}
+#infoPasswordBox {
+	margin-top: 0 !important;
 }
 .infoinput:focus {
 	outline: none;
