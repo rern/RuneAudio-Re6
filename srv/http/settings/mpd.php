@@ -139,7 +139,7 @@
 			SoX Resampler custom settings:
 		<br>&bull; Precision - Conversion precision <code>16, 20, 24, 28 or 32</code> bits (20 = HQ)
 		<br>&bull; Phase Response <code>0-100</code> (50 = Linear)
-		<br>&bull; Passband End - 0dB pt. bandwidth to preserve; nyquist=1 <code>90-91.3</code> %
+		<br>&bull; Passband End - 0dB point bandwidth to preserve <code>< Stopband Begin</code> % (Nyquist = 100)
 		<br>&bull; Stopband Begin - Aliasing/imaging control <code>> Passband End</code> %
 		<br>&bull; Attenuation - Lowers the source to prevent clipping <code>0-30</code> dB
 		<br>&bull; Flags - Bit fields: <code>0, 1, 2, 8, 16 or 32</code>
