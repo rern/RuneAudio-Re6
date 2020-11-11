@@ -219,8 +219,11 @@ $listruneos = [
 	, 'ply-image'                => 'https://chromium.googlesource.com/chromiumos/third_party/ply-image/+/refs/heads/master/README.chromium'
 	, 'Python'                   => 'https://www.python.org'
 	, 'raspi-rotate'             => 'https://github.com/colinleroy/raspi-rotate'
+	, 'RPi.GPIO'                 => 'https://sourceforge.net/projects/raspberry-gpio-python/'
+	, 'RPLCD'                    => 'https://github.com/dbrgn/RPLCD'
 	, 'Samba'                    => 'http://www.samba.org'
 	, 'Shairport-sync'           => 'https://github.com/mikebrady/shairport-sync'
+	, 'smbus2'                   => 'https://github.com/kplindegaard/smbus2'
 	, 'Snapcast'                 => 'https://github.com/badaix/snapcast'
 	, 'Spotifyd'                 => 'https://github.com/Spotifyd/spotifyd'
 	, 'Sudo'                     => 'https://www.sudo.ws/sudo'
@@ -235,8 +238,8 @@ foreach( $listruneos as $name => $link ) {
 	$runeoshtml.= '<a href="'.$link.'">'.$name.'</a><br>';
 }
 $listruneui = [
-	  'dragscroll'               => 'https://github.com/asvd/dragscroll'
-	, 'HTML5-Color-Picker'  => 'https://github.com/NC22/HTML5-Color-Picker'
+	  'HTML5-Color-Picker'  => 'https://github.com/NC22/HTML5-Color-Picker'
+	, 'Inconsolata font'    => 'https://www.levien.com/type/myfonts/inconsolata.html'
 	, 'jQuery'              => 'https://jquery.com/'
 	, 'jQuery Mobile'       => 'https://jquerymobile.com/'
 	, 'jQuery Selectric'    => 'https://github.com/lcdsantos/jQuery-Selectric'
