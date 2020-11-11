@@ -1014,7 +1014,7 @@ function renderPlayback() {
 		if ( G.display.volume ) {
 			$volumeRS.setValue( G.status.volume );
 			$volumehandle.rsRotate( - $volumeRS._handle1.angle );
-			status.volumemute != 0 ? volColorMute( G.status.volumemute ) : volColorUnmute();
+			G.status.volumemute != 0 ? volColorMute( G.status.volumemute ) : volColorUnmute();
 		}
 		$( '#volume-bar' ).css( 'width', G.status.volume +'%' );
 	}
