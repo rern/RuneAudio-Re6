@@ -327,8 +327,9 @@ function info( O ) {
 				boxhtml += '<input type="text" class="infoinput input" id="infoTextBox'+ iid +'"';
 				if ( textvalue.length ) boxhtml += textvalue[ i ] !== '' ? ' value="'+ textvalue[ i ].toString().replace( /"/g, '&quot;' ) +'"' : '';
 				boxhtml += ' spellcheck="false">';
-				if ( textsuffix.length ) boxhtml += textsuffix[ i ] !== '' ? '<gr class="suffix">'+ textsuffix[ i ] +'</gr>' : '';
+				if ( textsuffix.length ) boxhtml += textsuffix[ i ] !== '' ? '<gr class="suffix">'+ textsuffix[ i ] +'</gr><br>' : '<br>';
 			}
+			if ( textsuffix.length ) $( '#infotextbox' ).css( 'width', 'fit-content' );
 			$( '#infotextlabel' ).html( labelhtml );
 			$( '#infotextbox' ).html( boxhtml );
 			$( '#infoText' ).removeClass( 'hide' );
@@ -470,7 +471,7 @@ function info( O ) {
 			if ( thisW > labelW ) labelW = thisW;
 		} );
 		var boxW = O.boxwidth !== 'max' ? O.boxwidth : calcW - 70 - labelW;
-		$( '#infotextbox, .infoinput' ).css( 'width', boxW +'px' );
+		$( '.infoinput' ).css( 'width', boxW +'px' );
 		$( '#infoOverlay .selectric' ).css( 'width', boxW - 5 +'px' );
 	}
 	if ( 'buttonwidth' in O ) {
