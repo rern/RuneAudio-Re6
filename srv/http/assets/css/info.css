@@ -248,6 +248,7 @@ hr {
 .suffix {
 	margin-left: 10px;
 	text-align: left;
+	width: auto;
 }
 .infohtml {
 	display: table;

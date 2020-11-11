@@ -124,7 +124,7 @@
 	<input id="ffmpeg" type="checkbox">
 	<div class="switchlabel" for="ffmpeg"></div>
 	<span class="help-block hide">
-			<code>ffmpeg "yes"</code>
+			<code>enable "yes"</code>
 		<br>Should be disabled if not used for faster Sources update.
 		<br>Decoder for audio filetypes:
 		<div style="margin-left: 20px"><?=( shell_exec( '/srv/http/bash/mpd.sh filetype' ) )?></div>
@@ -136,19 +136,20 @@
 	<div class="switchlabel" for="soxr"></div>
 	<i id="setting-soxr" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
-			SoX Resampler custom settings:
-		<br>&bull; Precision - Number of used bits <code>16, 20, 24, 28 or 32</code> (20 = HQ)
-		<br>&bull; Phase Response <code>0-100</code> (0 = Minimum, 50 = Linear)
-		<br>&bull; Passband End - Original bandwidth of source used <code>90-99.7</code> %
-		<br>&bull; Stopband Begin <code>&gt;100</code> %
+			Default: <code>quality "very high"</code>
+		<br>SoX Resampler custom settings:
+		<br>&bull; Precision - Conversion precision <code>16, 20, 24, 28 or 32</code> bits (20 = HQ)
+		<br>&bull; Phase Response <code>0-100</code> (50 = Linear)
+		<br>&bull; Passband End - 0dB point bandwidth to preserve <code>1-100</code> % (100 = Nyquist)
+		<br>&bull; Stopband Begin - Aliasing/imaging control <code>100-150</code> %
 		<br>&bull; Attenuation - Lowers the source to prevent clipping <code>0-30</code> dB
-		<br>&bull; Flags - Bit fields:
-		<br> &emsp; 00 = ROLLOFF_SMALL 0.01 dB
-		<br> &emsp; 01 = ROLLOFF_MEDIUM 0.35 dB
-		<br> &emsp; 02 = ROLLOFF_NONE For Chebyshev bandwidth
-		<br> &emsp; 08 = HI_PREC_CLOCK Increase irrational ratio accuracy
-		<br> &emsp; 16 = DOUBLE_PRECISION Use D.P. calcs even if precision <= 20
-		<br> &emsp; 32 = SOXR_VR Variable-rate resampling
+		<br>&bull; Flags - Extra settings: <code>0, 1, 2, 8, 16 or 32</code>
+		<br> &emsp; 0 = Rolloff <= 0.01 dB
+		<br> &emsp; 1 = Rolloff <= 0.35 dB
+		<br> &emsp; 2 = Rolloff none - For Chebyshev bandwidth
+		<br> &emsp; 8 = High precision - Increase irrational ratio accuracy
+		<br> &emsp; 16 = Double precision even if Precision <= 20
+		<br> &emsp; 32 = Variable-rate resampling
 	</span>
 </div>
 </div>
