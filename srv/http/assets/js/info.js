@@ -195,7 +195,7 @@ function infoReset() {
 	$( '#infoX' ).removeClass( 'hide' );
 	$( '.infocontent, .infomessage, .infolabel, .infoinput, .infohtml, .filebtn, .infobtn, #infoFile' ).addClass( 'hide' );
 	$( '.infomessage, .infoinput, #infoFooter' ).css( 'text-align', '' );
-	$( '#infoBox, .infolabel, .infoinput' ).css( 'width', '' );
+	$( '#infoBox, .infolabel, #infotextbox, .infoinput, #infoOverlay .selectric' ).css( 'width', '' );
 	$( '#infoMessage, .infolabel' ).off( 'click' );
 	$( '.filebtn, .infobtn' ).removeClass( 'active' ).css( 'background', '' ).off( 'click' );
 	$( '#infoIcon' ).removeAttr( 'class' ).empty();
@@ -469,7 +469,7 @@ function info( O ) {
 		} );
 		var boxW = O.boxwidth !== 'max' ? O.boxwidth : calcW - 70 - labelW;
 		$( '#infotextbox, .infoinput' ).css( 'width', boxW +'px' );
-		$( '.selectric' ).css( 'width', boxW - 5 +'px' );
+		$( '#infoOverlay .selectric' ).css( 'width', boxW - 5 +'px' );
 	}
 	if ( 'buttonwidth' in O ) {
 		var widest = 0;
