@@ -86,6 +86,7 @@ if ls $file-* &> /dev/null; then
 	[[ -e $file-ffmpeg ]] &&        sed -i '/ffmpeg/ {n;s/\(enabled\s*"\).*/\1yes"/}' /etc/mpd.conf
 	[[ -e $file-normalization ]] && sed -i '/^user/ a\volume_normalization  "yes"' /etc/mpd.conf
 	[[ -e $file-replaygain ]] &&    sed -i 's/\(replaygain\s*\"\).*/\1'$( cat $dirsystem/mpd-replaygain )'"/' /etc/mpd.conf
+	[[ -e $file-soxr ]] &&          sed -i -e '/quality/,/}/ d' -e "/soxr/ r $file-soxrset" /etc/mpd.conf
 fi
 # mpdscribble
 file=$dirsystem/mpdscribble

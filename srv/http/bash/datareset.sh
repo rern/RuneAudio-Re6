@@ -142,6 +142,24 @@ echo '{
   },
   "timer": 5
 }' > $dirsystem/gpio.json
+# soxr
+sed -i -e '/quality/,/}/ d
+' -e '/soxr/ a\
+	quality        "very high"\
+}
+' /etc/mpd.conf
+cat <<[-]EOF > /srv/http/data/system/mpd-soxrset
+	quality        "custom"
+	threads        "1"
+	precision      "20"
+	phase_response "50"
+	passband_end   "95"
+	stopband_begin "100"
+	attenuation    "0"
+	flags          "0"
+}
+[-]EOF
+
 usermod -a -G root http # add user http to group root to allow /dev/gpiomem access
 
 # webradio default
