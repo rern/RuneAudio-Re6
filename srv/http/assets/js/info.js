@@ -323,9 +323,9 @@ function info( O ) {
 				var labeltext = textlabel[ i ] || '';
 				labelhtml += '<a class="infolabel">'+ labeltext +'</a>';
 				boxhtml += '<input type="text" class="infoinput input" id="infoTextBox'+ iid +'"';
-				if ( textvalue.length ) boxhtml += textvalue[ i ] ? ' value="'+ textvalue[ i ].toString().replace( /"/g, '&quot;' ) +'"' : '';
+				if ( textvalue.length ) boxhtml += textvalue[ i ] !== '' ? ' value="'+ textvalue[ i ].toString().replace( /"/g, '&quot;' ) +'"' : '';
 				boxhtml += ' spellcheck="false">';
-				if ( textsuffix.length ) boxhtml += textsuffix[ i ] ? '<gr class="suffix">'+ textsuffix[ i ] +'</gr>' : '';
+				if ( textsuffix.length ) boxhtml += textsuffix[ i ] !== '' ? '<gr class="suffix">'+ textsuffix[ i ] +'</gr>' : '';
 			}
 			$( '#infotextlabel' ).html( labelhtml );
 			$( '#infotextbox' ).html( boxhtml );
