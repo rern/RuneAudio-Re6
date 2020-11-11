@@ -11,7 +11,6 @@ getinstallzip
 file=/srv/http/data/system/mpd-soxrset
 [[ ! -e $file ]] && cat <<[-]EOF > $file
 	quality        "custom"
-	threads        "1"
 	precision      "20"
 	phase_response "50"
 	passband_end   "91.3"

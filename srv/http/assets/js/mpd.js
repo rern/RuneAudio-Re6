@@ -378,25 +378,28 @@ $( '#soxr' ).click( function() {
 } );
 $( '#setting-soxr' ).click( function() {
 	info( {
-		  icon       : 'mpd'
-		, title      : 'Custom SoX Resampler'
-		, textlabel  : [
-			  'Threads'
-			, 'Precision <gr>(bit)</gr>'
+		  icon        : 'mpd'
+		, title       : 'Custom SoX Resampler'
+		, textlabel   : [
+			  'Precision <gr>(bit)</gr>'
 			, 'Phase Response'
 			, 'Passband End <gr>(%)</gr>'
 			, 'Stopband Begin <gr>(%)</gr>'
 			, 'Attenuation  <gr>(dB)</gr>'
 			, 'Flags'
 		]
-		, textvalue  : G.soxrset.split( ' ' )
-		, textsuffix : [ 1, 20, 50, 91.3, 100, 0, 0 ]
-		, boxwidth   : 80
-		, footer     : '(default)&emsp;'
-		, footalign  : 'right'
-		, ok         : function() {
+		, textvalue   : G.soxrset.split( ' ' )
+		, textsuffix  : [ '16,20,24,28,32', '0-100', '0-100', '100-150', '0-30', '0,1,2,8,16,32' ]
+		, boxwidth    : 60
+		, buttonlabel : '<i class="fa fa-undo"></i>Default'
+		, buttoncolor : '#de810e'
+		, button      : function() {
+			bash( [ 'soxrset', 20, 50, 91.3, 100, 0, 0 ], refreshData );
+		}
+		, buttonwidth : 1
+		, ok          : function() {
 			var args = [];
-			for ( i = 0; i < 7; i++ ) {
+			for ( i = 0; i < 6; i++ ) {
 				if ( i === 0 ) i = '';
 				args.push( Number( $( '#infoTextBox'+ i ).val() ) );
 			}

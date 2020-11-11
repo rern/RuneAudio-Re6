@@ -150,7 +150,6 @@ sed -i -e '/quality/,/}/ d
 ' /etc/mpd.conf
 cat <<[-]EOF > /srv/http/data/system/mpd-soxrset
 	quality        "custom"
-	threads        "1"
 	precision      "20"
 	phase_response "50"
 	passband_end   "91.3"
