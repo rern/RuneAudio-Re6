@@ -465,8 +465,7 @@ function info( O ) {
 			if ( thisW > labelW ) labelW = thisW;
 		} );
 		var boxW = O.boxwidth !== 'max' ? O.boxwidth : calcW - 70 - labelW;
-		$( '.infoinput' ).css( 'width', boxW +'px' );
-		$( '#infoOverlay .selectric' ).css( 'width', boxW - 5 +'px' );
+		$( '.infoinput, #infoOverlay .selectric' ).css( 'width', boxW +'px' );
 	}
 	if ( 'buttonwidth' in O ) {
 		var widest = 0;

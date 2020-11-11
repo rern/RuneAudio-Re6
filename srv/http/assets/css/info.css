@@ -311,7 +311,13 @@ hr {
 #infoContent .selectric,
 #infoContent .selectric .label,
 #infoContent .selectric-items li {
+	height: 36px;
 	text-align: left;
+}
+#infoContent .selectric .label {
+	margin: 2px 0;
+	padding: 0 10px;
+	line-height: 38px;
 }
 #infoRadio i {
 	vertical-align: baseline !important;

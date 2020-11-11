@@ -375,14 +375,18 @@ var infolcdchar = heredoc( function() { /*
 	</div>
 	<div id="divi2c">
 		<br>
-		<px20/>&nbsp;<a id="infoSelectLabel" class="infolabel">Expander</a>
-		<select class="infohtml" id="infoSelectBox">
-			<option value="PCF8574">PCF8574</option>
-			<option value="MCP23008">MCP23008</option>
-			<option value="MCP23017">MCP23017</option>
-		</select><br>
-		<div id="infotextlabel"><a class="infolabel">Address</a></div>
-		<input id="infoTextBox" type="text" class="infoinput" spellcheck="false">
+		<div id="infotextlabel">
+			<a class="infolabel">Address</a>
+			<a class="infolabel">Expander</a>
+		</div>
+		<div id="infotextbox">
+			<input id="infoTextBox" type="text" class="infoinput" spellcheck="false">
+			<select class="infohtml" id="infoSelectBox">
+				<option value="PCF8574">PCF8574</option>
+				<option value="MCP23008">MCP23008</option>
+				<option value="MCP23017">MCP23017</option>
+			</select>
+		</div>
 	</div>
 */ } );
 $( '#setting-lcdchar' ).click( function() {
