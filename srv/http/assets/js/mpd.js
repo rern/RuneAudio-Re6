@@ -390,18 +390,19 @@ $( '#setting-soxr' ).click( function() {
 			, 'Flags'
 		]
 		, textvalue  : G.soxrset.split( ' ' )
-		, textsuffix : [ 1, 20, 50, 95, 100, 0, 0 ]
+		, textsuffix : [ 1, 20, 50, 91.3, 100, 0, 0 ]
 		, boxwidth   : 80
 		, footer     : '(default)&emsp;'
 		, footalign  : 'right'
 		, ok         : function() {
-			var args = [ 'soxrset' ];
+			var args = [];
 			for ( i = 0; i < 7; i++ ) {
 				if ( i === 0 ) i = '';
 				args.push( Number( $( '#infoTextBox'+ i ).val() ) );
 			}
-			if ( args.toString().replace( /,/g, ' ' ) === 'soxrset '+ G.soxrset ) return
+			if ( args.toString().replace( /,/g, ' ' ) === G.soxrset ) return
 			
+			args.unshift( 'soxrset' );
 			bash( args, refreshData );
 		}
 	} );
