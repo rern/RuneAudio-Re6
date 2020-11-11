@@ -210,7 +210,7 @@ hr {
 	color: var( --cw );
 }
 .infoinput {
-	margin: 3px 0 2px 0 !important;
+	margin: 2px 0 !important;
 	height: 36px !important;
 	padding: 0 10px;
 	color: var( --cw );
