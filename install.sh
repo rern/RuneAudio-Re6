@@ -14,7 +14,7 @@ file=/srv/http/data/system/mpd-soxrset
 	threads        "1"
 	precision      "20"
 	phase_response "50"
-	passband_end   "95"
+	passband_end   "91.3"
 	stopband_begin "100"
 	attenuation    "0"
 	flags          "0"
