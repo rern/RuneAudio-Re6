@@ -328,8 +328,8 @@ function info( O ) {
 				labelhtml += '<a class="infolabel">'+ labeltext +'</a>';
 				boxhtml += '<input type="text" class="infoinput input" id="infoTextBox'+ iid +'"';
 				if ( textvalue.length ) boxhtml += textvalue[ i ] !== '' ? ' value="'+ textvalue[ i ].toString().replace( /"/g, '&quot;' ) +'"' : '';
-				boxhtml += ' spellcheck="false"><br>';
-				if ( textsuffix.length ) suffixhtml += textsuffix[ i ] !== '' ? '<gr>'+ textsuffix[ i ] +'</gr><br>' : '<br>';
+				boxhtml += ' spellcheck="false">';
+				if ( textsuffix.length ) suffixhtml += textsuffix[ i ] !== '' ? '<gr>'+ textsuffix[ i ] +'</gr>' : '<gr>&nbsp;</gr>';
 			}
 			if ( textsuffix.length ) $( '#infotextbox' ).css( 'width', 'fit-content' );
 			$( '#infotextlabel' ).html( labelhtml );

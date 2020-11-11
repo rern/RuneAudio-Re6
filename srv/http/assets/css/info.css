@@ -206,6 +206,9 @@ hr {
 	margin-left: 5px;
 	line-height: 40px;
 }
+#infotextsuffix gr {
+	display: block;
+}
 .infolabel {
 	display: block;
 	text-align: right;
@@ -215,7 +218,8 @@ hr {
 	color: var( --cw );
 }
 .infoinput {
-	margin: 2px 0 !important;
+	display: block;
+	margin: 4px 0 !important;
 	width: 230px;
 	height: 36px !important;
 	padding: 0 10px;
@@ -238,14 +242,6 @@ hr {
 }
 #infoText input[type=password] {
 	display: inline-block;
-}
-.eye {
-	position: absolute;
-	width: 25px;
-	padding-top: 9px;
-	line-height: 24px !important;
-	text-align: right;
-	cursor: pointer;
 }
 .eyeactive {
 	color: var( --cm );
