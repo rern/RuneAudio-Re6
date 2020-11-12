@@ -384,15 +384,14 @@ $( '#soxr' ).click( function() {
 } );
 var soxrinfo = heredoc( function() { /*
 	<div id="infoText" class="infocontent">
-		<div id="infotextlabel">
+		<div class="infotextlabel">
 			<a class="infolabel">Precision <gr>(bit)</gr></a>
 			<a class="infolabel">Phase Response</a>
 			<a class="infolabel">Passband End <gr>(%)</gr></a>
 			<a class="infolabel">Stopband Begin <gr>(%)</gr></a>
 			<a class="infolabel">Attenuation <gr>(dB)</gr></a>
-			<a class="infolabel">Flags</a>
 		</div>
-		<div id="infotextbox" style="width: fit-content;">
+		<div class="infotextbox">
 			<select class="infohtml" id="infoSelectBox">
 				<option value="16">16</option>
 				<option value="20">20</option>
@@ -404,22 +403,28 @@ var soxrinfo = heredoc( function() { /*
 			<input type="text" class="infoinput input" id="infoTextBox2">
 			<input type="text" class="infoinput input" id="infoTextBox3">
 			<input type="text" class="infoinput input" id="infoTextBox4">
-			<select class="infohtml" id="infoSelectBox1">
-				<option value="0">0</option>
-				<option value="1">1</option>
-				<option value="2">2</option>
-				<option value="8">8</option>
-				<option value="16">16</option>
-				<option value="32">32</option>
-			</select>
 		</div>
 		<div id="infotextsuffix">
 			<gr>&nbsp;</gr>
 			<gr>0-100</gr>
 			<gr>0-100</gr>
-			<gr>100-150</gr>
+			<gr>100-150<px30/></gr>
 			<gr>0-30</gr>
-			<gr>&nbsp;</gr>
+		</div>
+		<div id="extra">
+			<div class="infotextlabel">
+				<a class="infolabel"><px50/> Extra Settings</a>
+			</div>
+			<div class="infotextbox">
+				<select class="infohtml" id="infoSelectBox1">
+					<option value="0">0 - Rolloff - Small</option>
+					<option value="1">1 - Rolloff - Medium</option>
+					<option value="2">2 - Rolloff - None</option>
+					<option value="8">8 - High precision</option>
+					<option value="16">16 - Double precision</option>
+					<option value="32">32 - Variable rate</option>
+				</select>
+			</div>
 		</div>
 	</div>
 */ } );
@@ -431,13 +436,16 @@ $( '#setting-soxr' ).click( function() {
 		, nofocus     : 1
 		, preshow     : function() {
 			var soxrset = G.soxrset.split( ' ' );
-			$( '#infoSelectBox option[value='+  soxrset[ 0 ] +']' ).prop( 'selected', 1 );
-			$( '#infoSelectBox1 option[value='+  soxrset[ 5 ] +']' ).prop( 'selected', 1 );
+			$( '#infoSelectBox option[value='+ soxrset[ 0 ] +']' ).prop( 'selected', 1 );
+			$( '#infoSelectBox1 option[value='+ soxrset[ 5 ] +']' ).prop( 'selected', 1 );
 			for ( i = 1; i < 5; i++ ) {
 				$( '#infoTextBox'+ i ).val( soxrset[ i ] );
 			}
 			$( '#infoSelectBox, #infoSelectBox1' ).selectric();
-			$( '#infotextbox .selectric-wrapper' ).width( 70 );
+			setTimeout( function() {
+			$( '#extra .selectric, #extra .selectric-wrapper' ).css( 'width', '185px' );
+			$( '#extra .selectric-items' ).css( 'min-width', '185px' );
+			}, 0 );
 		}
 		, boxwidth    : 70
 		, buttonlabel : '<i class="fa fa-undo"></i>Default'
