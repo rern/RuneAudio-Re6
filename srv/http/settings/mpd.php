@@ -144,12 +144,12 @@
 		<br>&bull; Stopband Begin - Aliasing/imaging control <code>100-150</code> %
 		<br>&bull; Attenuation - Lowers the source to prevent clipping <code>0-30</code> dB
 		<br>&bull; Flags - Extra settings: <code>0, 1, 2, 8, 16 or 32</code>
-		<br> &emsp; 0 = Rolloff <= 0.01 dB
-		<br> &emsp; 1 = Rolloff <= 0.35 dB
-		<br> &emsp; 2 = Rolloff none - For Chebyshev bandwidth
-		<br> &emsp; 8 = High precision - Increase irrational ratio accuracy
-		<br> &emsp; 16 = Double precision even if Precision <= 20
-		<br> &emsp; 32 = Variable-rate resampling
+		<br> &emsp; 0 - Rolloff <= 0.01 dB
+		<br> &emsp; 1 - Rolloff <= 0.35 dB
+		<br> &emsp; 2 - Rolloff none - For Chebyshev bandwidth
+		<br> &emsp; 8 - High precision - Increase irrational ratio accuracy
+		<br> &emsp; 16 - Double precision even if Precision <= 20
+		<br> &emsp; 32 - Variable rate resampling
 	</span>
 </div>
 </div>

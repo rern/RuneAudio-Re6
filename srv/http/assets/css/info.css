@@ -196,17 +196,20 @@ hr {
 	text-align: right;
 }
 .infotextbox,
+.infotextsuffix,
 #infotextsuffix,
 #infotextbox {
 	display: inline-block;
 	width: min-content;
 	text-align: left;
 }
+.infotextsuffix,
 #infotextsuffix {
 	width: fit-content;
 	margin-left: 5px;
 	line-height: 40px;
 }
+.infotextsuffix gr,
 #infotextsuffix gr {
 	display: block;
 }
