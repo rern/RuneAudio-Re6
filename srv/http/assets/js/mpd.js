@@ -213,7 +213,6 @@ $( '#dop' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	var $selected = $( '#audiooutput option:selected' );
 	var name = $selected.text();
-	$selected.data( 'dop', 1 );
 	notify( 'DSP over PCM', checked, 'mpd' );
 	bash( [ 'dop', checked, name ], refreshData );
 } );
