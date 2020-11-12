@@ -413,12 +413,12 @@ $( '#setting-soxr' ).click( function() {
 			if ( args.toString().replace( /,/g, ' ' ) === G.soxrset ) return
 			
 			var errors = '';
-			if ( [ 16,20,24,28,32 ].indexOf( args[ 0 ] ) === -1 ) errors += '<br>Precision is not 16, 20, 24, 28 or 32';
-			if ( args[ 1 ] < 0 || args[ 1 ] > 100 ) errors += '<br>Phase Response is not 1-100';
-			if ( args[ 2 ] < 0 || args[ 1 ] > 100 ) errors += '<br>Passband End is not 1-100<br>';
-			if ( args[ 3 ] < 100 || args[ 1 ] > 150 ) errors += '<br>Stopband Begin is not 100-150';
-			if ( args[ 4 ] < 0 || args[ 1 ] > 30 ) errors += '<br>Attenuation is not 0-30<br>';
-			if ( [ 0,1,2,8,16,32 ].indexOf( args[ 5 ] ) === -1 ) errors += '<br>Flags is not 0, 1, 2, 8, 16 or 32';
+			if ( [ 16,20,24,28,32 ].indexOf( args[ 0 ] ) === -1 ) errors += '<br><w>Precision</w> is not 16, 20, 24, 28 or 32';
+			if ( args[ 1 ] < 0 || args[ 1 ] > 100 ) errors += '<br><w>Phase Response</w> is not 1-100';
+			if ( args[ 2 ] < 0 || args[ 2 ] > 100 ) errors += '<br><w>Passband End</w> is not 1-100<br>';
+			if ( args[ 3 ] < 100 || args[ 3 ] > 150 ) errors += '<br><w>Stopband Begin</w> is not 100-150';
+			if ( args[ 4 ] < 0 || args[ 4 ] > 30 ) errors += '<br><w>Attenuation</w> is not 0-30<br>';
+			if ( [ 0,1,2,8,16,32 ].indexOf( args[ 5 ] ) === -1 ) errors += '<br><w>Flags</w> is not 0, 1, 2, 8, 16 or 32';
 			if ( errors ) {
 				info( {
 					  icon    : 'mpd'
