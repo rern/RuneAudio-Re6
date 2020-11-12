@@ -137,7 +137,7 @@
 	</span>
 </div>
 <div class="col-l double">
-	<a>Audio Format
+	<a>Output Format
 	<br><gr>custom</gr></a>
 </div>
 <div class="col-r">
