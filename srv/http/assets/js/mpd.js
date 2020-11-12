@@ -394,12 +394,7 @@ $( '#setting-format' ).click( function() {
 					+'<br>(samplerate<w>:</w>bit<w>:</w>channel)'
 		, textlabel : 'Format'
 		, textvalue : G.format || '44100:16:2'
-		, cancel    : function() {
-			if ( !G.format ) {
-				$( '#format' ).prop( 'checked', 0 );
-				$( '#setting-format' ).addClass( 'hide' );
-			}
-		}
+		, cancel    : refreshData
 		, ok        : function() {
 			G.format = $( '#infoTextBox' ).val();
 			var name = $( '#audiooutput option:selected' ).text();

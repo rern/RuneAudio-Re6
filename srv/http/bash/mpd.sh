@@ -143,11 +143,11 @@ filetype )
 	;;
 format )
 	format=${args[1]}
-	output=${args[1]}
+	output=${args[2]}
 	if [[ -n $format ]]; then
-		echo $format > $dirsystem/mpd-format-$output
+		echo $format > "$dirsystem/mpd-format-$output"
 	else
-		rm $dirsystem/mpd-format-$output
+		rm "$dirsystem/mpd-format-$output"
 	fi
 	restartMPD
 	pushRefresh
