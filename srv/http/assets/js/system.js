@@ -223,7 +223,7 @@ $( '#infoOverlay' ).on( 'click', '#custom', function() {
 		  icon      : 'volume'
 		, title     : 'Sound Profile'
 		, message   : 'Custom value (Current value shown)'
-		, textlabel : [ 'eth0 mtu (byte)', 'eth0 txqueuelen', 'vm.swappiness (0-100)', 'kernel.sched_latency_ns (ns)' ]
+		, textlabel : [ 'eth0 mtu <gr>(byte)</gr>', 'eth0 txqueuelen', 'vm.swappiness', 'kernel.sched_latency_ns <gr>(ns)</gr>' ]
 		, textvalue : val.split( ' ' )
 		, boxwidth  : 110
 		, preshow   : function() {
