@@ -56,6 +56,7 @@ mpdconf=$( sed '/audio_output/,/}/ d' $mpdfile ) # remove all outputs
 for (( i=0; i < cardL; i++ )); do
 	card=${Acard[i]}
 	dop=${Adop[i]}
+	format=${Aformat[i]}
 	hw=${Ahw[i]}
 	hwmixer=${Ahwmixer[i]}
 	mixermanual=${Amixermanual[i]}
@@ -96,6 +97,13 @@ audio_output {
 	dop            "yes"'
 	
 	fi
+	
+	if [[ -n $format ]]; then
+########
+		mpdconf+='
+	format         "'$format'"'
+	
+	fi
 ########
 	mpdconf+='
 }'
@@ -113,7 +121,7 @@ audio_output {
 }'
 fi
 
-if [[ -e /srv/http/data/system/streaming ]]; then
+if [[ -e $dirsystem/streaming ]]; then
 	mpdconf+='
 
 audio_output {

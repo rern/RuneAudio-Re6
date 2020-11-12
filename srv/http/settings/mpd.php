@@ -103,7 +103,7 @@
 	<div class="switchlabel" for="buffer"></div>
 	<i id="setting-buffer" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
-			<code>audio_buffer_size "N"</code>
+			<code>audio_buffer_size "kB"</code>
 		<br>Default buffer size: 4096 kB (24 seconds of CD-quality audio)
 		<br>Increase to fix intermittent audio.
 	</span>
@@ -114,23 +114,22 @@
 	<div class="switchlabel" for="bufferoutput"></div>
 	<i id="setting-bufferoutput" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
-			<code>max_output_buffer_size "N"</code>
+			<code>max_output_buffer_size "kB"</code>
 		<br>Default buffer size: 8192 kB
 		<br>Increase to fix missing Album list with large Library.
 	</span>
 </div>
-<div class="col-l">FFmpeg Decoder</div>
+<div class="col-l">Custom Format</div>
 <div class="col-r">
-	<input id="ffmpeg" type="checkbox">
-	<div class="switchlabel" for="ffmpeg"></div>
+	<input id="format" type="checkbox">
+	<div class="switchlabel" for="format"></div>
+	<i id="setting-format" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
-			<code>enable "yes"</code>
-		<br>Should be disabled if not used for faster Sources update.
-		<br>Decoder for audio filetypes:
-		<div style="margin-left: 20px"><?=( shell_exec( '/srv/http/bash/mpd.sh filetype' ) )?></div>
+			<code>format "samplerate:bits:channels"</code>
+		<br>Default: none
 	</span>
 </div>
-<div class="col-l">Custom SoXR</div>
+<div class="col-l">Custom Resampling</div>
 <div class="col-r">
 	<input id="soxr" type="checkbox">
 	<div class="switchlabel" for="soxr"></div>
@@ -152,6 +151,17 @@
 		<br> &emsp; 32 - Variable rate resampling
 	</span>
 </div>
+</div>
+<div class="col-l">FFmpeg Decoder</div>
+<div class="col-r">
+	<input id="ffmpeg" type="checkbox">
+	<div class="switchlabel" for="ffmpeg"></div>
+	<span class="help-block hide">
+			<code>enable "yes"</code>
+		<br>Should be disabled if not used for faster Sources update.
+		<br>Decoder for audio filetypes:
+		<div style="margin-left: 20px"><?=( shell_exec( '/srv/http/bash/mpd.sh filetype' ) )?></div>
+	</span>
 </div>
 
 <div>

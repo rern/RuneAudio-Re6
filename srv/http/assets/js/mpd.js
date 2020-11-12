@@ -24,6 +24,7 @@ refreshData = function() {
 				+'value="'+ this.aplayname +'" '
 				+'data-card="'+ this.card +'" '
 				+'data-device="'+ this.device +'" '
+				+'data-device="'+ this.device +'" '
 			if ( this.mixercount ) {
 				htmldevices += 'data-hwmixer="'+ this.hwmixer +'" '
 							  +'data-mixercount="'+ this.mixercount +'" '
@@ -37,6 +38,7 @@ refreshData = function() {
 			}
 			if ( this.mixermanual ) htmldevices += 'data-mixermanual="'+ this.mixermanual +'" ';
 			htmldevices += 'data-dop="'+ this.dop +'" '
+						  +'data-format="'+ this.format +'"'
 						  +'>'+ this.name +'</option>';
 		} );
 		$( '#audiooutput' ).html( htmldevices );
@@ -92,10 +94,13 @@ refreshData = function() {
 		$( '#setting-buffer' ).toggleClass( 'hide', G.buffer === '' );
 		$( '#bufferoutput' ).prop( 'checked', G.bufferoutput > 8192 );
 		$( '#setting-bufferoutput' ).toggleClass( 'hide', G.bufferoutput === '' );
-		$( '#ffmpeg' ).prop( 'checked', G.ffmpeg );
+		var format = $selected.data( 'format' ) !== '';
+		$( '#format' ).prop( 'checked', format );
+		$( '#setting-format' ).toggleClass( 'hide', !format );
 		$( '#soxr' ).prop( 'checked', G.soxr );
+		$( '#ffmpeg' ).prop( 'checked', G.ffmpeg );
 		$( '#setting-soxr' ).toggleClass( 'hide', !G.soxr );
-		[ 'aplay', 'amixer', 'mpdconf', 'mpdstatus' ].forEach( function( id ) {
+		[ 'aplay', 'amixer', 'mpd', 'mpdconf' ].forEach( function( id ) {
 			codeToggle( id, 'status' );
 		} );
 		resetLocal();
@@ -372,10 +377,36 @@ $( '#setting-bufferoutput' ).click( function() {
 		}
 	} );
 } );
-$( '#ffmpeg' ).click( function() {
-	G.ffmpeg = $( this ).prop( 'checked' );
-	notify( 'FFmpeg Decoder', G.ffmpeg, 'mpd' );
-	bash( [ 'ffmpeg', G.ffmpeg ], refreshData );
+$( '#format' ).click( function() {
+	if ( $( this ).prop( 'checked' ) ) {
+		$( '#setting-format' ).click();
+	} else {
+		var name = $( '#audiooutput option:selected' ).text();
+		notify( 'Custom Output Format', 'Disable ...', 'mpd' );
+		bash( [ 'format', '', name ], refreshData );
+	}
+} );
+$( '#setting-format' ).click( function() {
+	info( {
+		  icon      : 'mpd'
+		, title     : 'Audio Output Format'
+		, message   : 'Force output as:'
+					+'<br>(samplerate<w>:</w>bit<w>:</w>channel)'
+		, textlabel : 'Format'
+		, textvalue : G.format || '44100:16:2'
+		, cancel    : function() {
+			if ( !G.format ) {
+				$( '#format' ).prop( 'checked', 0 );
+				$( '#setting-format' ).addClass( 'hide' );
+			}
+		}
+		, ok        : function() {
+			G.format = $( '#infoTextBox' ).val();
+			var name = $( '#audiooutput option:selected' ).text();
+			notify( 'Audio Output Format', 'Change ...', 'mpd' );
+			bash( [ 'format', G.format, name ], refreshData );
+		}
+	} );
 } );
 $( '#soxr' ).click( function() {
 	G.soxr = $( this ).prop( 'checked' );
@@ -384,15 +415,14 @@ $( '#soxr' ).click( function() {
 } );
 var soxrinfo = heredoc( function() { /*
 	<div id="infoText" class="infocontent">
-		<div id="infotextlabel">
+		<div class="infotextlabel">
 			<a class="infolabel">Precision <gr>(bit)</gr></a>
 			<a class="infolabel">Phase Response</a>
 			<a class="infolabel">Passband End <gr>(%)</gr></a>
 			<a class="infolabel">Stopband Begin <gr>(%)</gr></a>
 			<a class="infolabel">Attenuation <gr>(dB)</gr></a>
-			<a class="infolabel">Flags</a>
 		</div>
-		<div id="infotextbox" style="width: fit-content;">
+		<div class="infotextbox">
 			<select class="infohtml" id="infoSelectBox">
 				<option value="16">16</option>
 				<option value="20">20</option>
@@ -404,22 +434,28 @@ var soxrinfo = heredoc( function() { /*
 			<input type="text" class="infoinput input" id="infoTextBox2">
 			<input type="text" class="infoinput input" id="infoTextBox3">
 			<input type="text" class="infoinput input" id="infoTextBox4">
-			<select class="infohtml" id="infoSelectBox1">
-				<option value="0">0</option>
-				<option value="1">1</option>
-				<option value="2">2</option>
-				<option value="8">8</option>
-				<option value="16">16</option>
-				<option value="32">32</option>
-			</select>
 		</div>
 		<div id="infotextsuffix">
 			<gr>&nbsp;</gr>
 			<gr>0-100</gr>
 			<gr>0-100</gr>
-			<gr>100-150</gr>
+			<gr>100-150<px30/></gr>
 			<gr>0-30</gr>
-			<gr>&nbsp;</gr>
+		</div>
+		<div id="extra">
+			<div class="infotextlabel">
+				<a class="infolabel"><px50/> Extra Settings</a>
+			</div>
+			<div class="infotextbox">
+				<select class="infohtml" id="infoSelectBox1">
+					<option value="0">0 - Rolloff - Small</option>
+					<option value="1">1 - Rolloff - Medium</option>
+					<option value="2">2 - Rolloff - None</option>
+					<option value="8">8 - High precision</option>
+					<option value="16">16 - Double precision</option>
+					<option value="32">32 - Variable rate</option>
+				</select>
+			</div>
 		</div>
 	</div>
 */ } );
@@ -431,13 +467,16 @@ $( '#setting-soxr' ).click( function() {
 		, nofocus     : 1
 		, preshow     : function() {
 			var soxrset = G.soxrset.split( ' ' );
-			$( '#infoSelectBox option[value='+  soxrset[ 0 ] +']' ).prop( 'selected', 1 );
-			$( '#infoSelectBox1 option[value='+  soxrset[ 5 ] +']' ).prop( 'selected', 1 );
+			$( '#infoSelectBox option[value='+ soxrset[ 0 ] +']' ).prop( 'selected', 1 );
+			$( '#infoSelectBox1 option[value='+ soxrset[ 5 ] +']' ).prop( 'selected', 1 );
 			for ( i = 1; i < 5; i++ ) {
 				$( '#infoTextBox'+ i ).val( soxrset[ i ] );
 			}
 			$( '#infoSelectBox, #infoSelectBox1' ).selectric();
-			$( '#infotextbox .selectric-wrapper' ).width( 70 );
+			setTimeout( function() {
+			$( '#extra .selectric, #extra .selectric-wrapper' ).css( 'width', '185px' );
+			$( '#extra .selectric-items' ).css( 'min-width', '185px' );
+			}, 0 );
 		}
 		, boxwidth    : 70
 		, buttonlabel : '<i class="fa fa-undo"></i>Default'
@@ -448,10 +487,11 @@ $( '#setting-soxr' ).click( function() {
 		}
 		, buttonwidth : 1
 		, ok          : function() {
-			var args = [];
-			for ( i = 0; i < 6; i++ ) {
+			var args = [ $( '#infoSelectBox' ).val() ];
+			for ( i = 1; i < 5; i++ ) {
 				args.push( Number( $( '#infoTextBox'+ i ).val() ) );
 			}
+			args.push( $( '#infoSelectBox1' ).val() );
 			if ( args.toString().replace( /,/g, ' ' ) === G.soxrset ) return
 			
 			var errors = '';
@@ -477,6 +517,11 @@ $( '#setting-soxr' ).click( function() {
 			bash( args, refreshData );
 		}
 	} );
+} );
+$( '#ffmpeg' ).click( function() {
+	G.ffmpeg = $( this ).prop( 'checked' );
+	notify( 'FFmpeg Decoder', G.ffmpeg, 'mpd' );
+	bash( [ 'ffmpeg', G.ffmpeg ], refreshData );
 } );
 $( '#mpdrestart' ).click( function() {
 	$this = $( this );

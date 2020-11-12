@@ -54,11 +54,11 @@ autoupdate )
 buffer )
 	buffer=${args[1]}
 	if [[ -n $buffer ]]; then
-		sed -i -e '/^audio_buffer/ d
+		sed -i -e '/^audio_buffer_size/ d
 		' -e '1 i\audio_buffer_size    "'$buffer'"' /etc/mpd.conf
 		echo $buffer > $dirsystem/mpd-buffer
 	else
-		sed -i '/^audio_buffer/ d' /etc/mpd.conf
+		sed -i '/^audio_buffer_size/ d' /etc/mpd.conf
 		rm $dirsystem/mpd-buffer
 	fi
 	restartMPD
@@ -67,7 +67,7 @@ buffer )
 bufferoutput )
 	buffer=${args[1]}
 	if [[ -n $buffer ]]; then
-		sed -i -e '/^max_output_buffer/ d
+		sed -i -e '/^max_output_buffer_size/ d
 		' -e '1 i\max_output_buffer_size "'$buffer'"' /etc/mpd.conf
 		echo $buffer > $dirsystem/mpd-bufferoutput
 	else
@@ -140,6 +140,17 @@ filetype )
 		[[ -n $line ]] && list+=${line:0:-1}'<br>'
 	done
 	echo "${list:0:-4}"
+	;;
+format )
+	format=${args[1]}
+	output=${args[1]}
+	if [[ -n $format ]]; then
+		echo $format > $dirsystem/mpd-format-$output
+	else
+		rm $dirsystem/mpd-format-$output
+	fi
+	restartMPD
+	pushRefresh
 	;;
 mixerhw )
 	output=${args[1]}

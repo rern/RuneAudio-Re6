@@ -1,5 +1,6 @@
 #!/bin/bash
 
+dirsystem=/srv/http/data/system
 amixer=$( amixer scontrols | cut -d"'" -f2 )
 readarray -t lines <<<"$amixer"
 for line in "${lines[@]}"; do
@@ -16,6 +17,7 @@ for (( i=0; i < cardL; i++ )); do
 		, "card"        : '${Acard[i]}'
 		, "device"      : '${Adevice[i]}'
 		, "dop"         : '${Adop[i]}'
+		, "format"      : "'${Aformat[i]}'"
 		, "mixercount"  : '${Amixercount[i]}'
 		, "mixermanual" : "'${Amixermanual[i]}'"
 		, "mixertype"   : "'${Amixertype[i]}'"
@@ -29,9 +31,9 @@ devices=${devices:0:-1}
 data='
 	  "devices"        : ['$devices']
 	, "mixerdevices"   : ['$mixerdevices']
-	, "audiooutput"    : "'$( cat /srv/http/data/system/audio-output )'"
-	, "audioaplayname" : "'$( cat /srv/http/data/system/audio-aplayname )'"
-	, "autoplay"       : '$( [[ -e /srv/http/data/system/autoplay ]] && echo true || echo false )'
+	, "audiooutput"    : "'$( cat $dirsystem/audio-output )'"
+	, "audioaplayname" : "'$( cat $dirsystem/audio-aplayname )'"
+	, "autoplay"       : '$( [[ -e $dirsystem/autoplay ]] && echo true || echo false )'
 	, "autoupdate"     : '$( grep -q "auto_update.*yes" /etc/mpd.conf && echo true || echo false )'
 	, "buffer"         : "'$( grep audio_buffer_size /etc/mpd.conf | cut -d'"' -f2 )'"
 	, "bufferoutput"   : "'$( grep max_output_buffer_size /etc/mpd.conf | cut -d'"' -f2 )'"
@@ -43,6 +45,6 @@ data='
 	, "replaygain"     : "'$( grep replaygain /etc/mpd.conf | cut -d'"' -f2 )'"
 	, "usbdac"         : "'$( cat /srv/http/data/shm/usbdac 2> /dev/null )'"
 	, "soxr"           : '$( grep -q "quality.*custom" /etc/mpd.conf && echo true || echo false )'
-	, "soxrset"        : "'$( grep -v 'quality\|}' /srv/http/data/system/mpd-soxrset | cut -d'"' -f2 )'"
+	, "soxrset"        : "'$( grep -v 'quality\|}' $dirsystem/mpd-soxrset | cut -d'"' -f2 )'"
 '
 echo {$data}
