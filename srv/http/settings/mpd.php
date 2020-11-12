@@ -88,7 +88,7 @@
 
 <div>
 <heading>Options<?=$help?></heading>
-<div class="col-l">Auto Update</div>
+<div class="col-l">Auto Update Library</div>
 <div class="col-r">
 	<input id="autoupdate" type="checkbox">
 	<div class="switchlabel" for="autoupdate"></div>
@@ -97,7 +97,21 @@
 		<br>Automatic update MPD database when files changed.
 	</span>
 </div>
-<div class="col-l">Custom Audio Buffer</div>
+<div class="col-l">FFmpeg Decoder</div>
+<div class="col-r">
+	<input id="ffmpeg" type="checkbox">
+	<div class="switchlabel" for="ffmpeg"></div>
+	<span class="help-block hide">
+			<code>enable "yes"</code>
+		<br>Should be disabled if not used for faster Sources update.
+		<br>Decoder for audio filetypes:
+		<div style="margin-left: 20px"><?=( shell_exec( '/srv/http/bash/mpd.sh filetype' ) )?></div>
+	</span>
+</div>
+<div class="col-l double">
+	<a>Audio Buffer
+	<br><gr>custom</gr></a>
+</div>
 <div class="col-r">
 	<input id="buffer" type="checkbox">
 	<div class="switchlabel" for="buffer"></div>
@@ -108,7 +122,10 @@
 		<br>Increase to fix intermittent audio.
 	</span>
 </div>
-<div class="col-l">Custom Output Buffer</div>
+<div class="col-l double">
+	<a>Output Buffer
+	<br><gr>custom</gr></a>
+</div>
 <div class="col-r">
 	<input id="bufferoutput" type="checkbox">
 	<div class="switchlabel" for="bufferoutput"></div>
@@ -119,7 +136,10 @@
 		<br>Increase to fix missing Album list with large Library.
 	</span>
 </div>
-<div class="col-l">Custom Format</div>
+<div class="col-l double">
+	<a>Audio Format
+	<br><gr>custom</gr></a>
+</div>
 <div class="col-r">
 	<input id="format" type="checkbox">
 	<div class="switchlabel" for="format"></div>
@@ -129,7 +149,10 @@
 		<br>Default: none
 	</span>
 </div>
-<div class="col-l">Custom Resampling</div>
+<div class="col-l double">
+	<a>Resampling
+	<br><gr>custom SoXR</gr></a>
+</div>
 <div class="col-r">
 	<input id="soxr" type="checkbox">
 	<div class="switchlabel" for="soxr"></div>
@@ -151,17 +174,6 @@
 		<br> &emsp; 32 - Variable rate resampling
 	</span>
 </div>
-</div>
-<div class="col-l">FFmpeg Decoder</div>
-<div class="col-r">
-	<input id="ffmpeg" type="checkbox">
-	<div class="switchlabel" for="ffmpeg"></div>
-	<span class="help-block hide">
-			<code>enable "yes"</code>
-		<br>Should be disabled if not used for faster Sources update.
-		<br>Decoder for audio filetypes:
-		<div style="margin-left: 20px"><?=( shell_exec( '/srv/http/bash/mpd.sh filetype' ) )?></div>
-	</span>
 </div>
 
 <div>
