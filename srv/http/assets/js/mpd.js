@@ -456,10 +456,11 @@ $( '#setting-soxr' ).click( function() {
 		}
 		, buttonwidth : 1
 		, ok          : function() {
-			var args = [];
-			for ( i = 0; i < 6; i++ ) {
+			var args = [ $( '#infoSelectBox' ).val() ];
+			for ( i = 1; i < 5; i++ ) {
 				args.push( Number( $( '#infoTextBox'+ i ).val() ) );
 			}
+			args.push( $( '#infoSelectBox1' ).val() );
 			if ( args.toString().replace( /,/g, ' ' ) === G.soxrset ) return
 			
 			var errors = '';
