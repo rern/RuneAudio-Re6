@@ -376,7 +376,7 @@ var infolcdchar = heredoc( function() { /*
 	<div id="divi2c">
 		<br>
 		<div id="infotextlabel">
-			<a class="infolabel">Expander</a>
+			<a class="infolabel"><px20/>Expander</a>
 			<a class="infolabel">Address</a>
 		</div>
 		<div id="infotextbox">
@@ -391,11 +391,11 @@ var infolcdchar = heredoc( function() { /*
 */ } );
 $( '#setting-lcdchar' ).click( function() {
 	info( {
-		  icon    : 'gear'
-		, title   : 'GPIO Character LCD'
-		, content : infolcdchar
-		, boxwidth : 200
-		, preshow : function() {
+		  icon     : 'gear'
+		, title    : 'GPIO Character LCD'
+		, content  : infolcdchar
+		, boxwidth : 180
+		, preshow  : function() {
 			var settings = G.lcdcharset.split( ' ' );
 			if (  settings.length > 1 ) {
 				G.i2c = 'i2c';
@@ -416,7 +416,7 @@ $( '#setting-lcdchar' ).click( function() {
 				$( '#divi2c' ).toggleClass( 'hide', $( '#infoRadio1 input:checked' ).val() === 'gpio' );
 			} );
 		}
-		, ok      : function() {
+		, ok       : function() {
 			var cols = $( '#infoRadio input:checked' ).val();
 			var chip = $( '#infoSelectBox').val();
 			var address = $( '#infoTextBox').val();
