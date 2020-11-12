@@ -199,6 +199,7 @@ function infoReset() {
 	$( '.infocontent, .infomessage, .infolabel, .infoinput, .infohtml, .filebtn, .infobtn, #infoFile' ).addClass( 'hide' );
 	$( '.infomessage, .infoinput, #infoFooter' ).css( 'text-align', '' );
 	$( '#infoBox, .infolabel, #infotextbox, .infoinput, #infoOverlay .selectric' ).css( 'width', '' );
+	$( '.selectric-items' ).css( 'min-width', '' );
 	$( '#infoMessage, .infolabel' ).off( 'click' );
 	$( '.filebtn, .infobtn' ).removeClass( 'active' ).css( 'background', '' ).off( 'click' );
 	$( '#infoIcon' ).removeAttr( 'class' ).empty();
@@ -466,6 +467,7 @@ function info( O ) {
 		} );
 		var boxW = O.boxwidth !== 'max' ? O.boxwidth : calcW - 70 - labelW;
 		$( '.infoinput, #infoOverlay .selectric' ).css( 'width', boxW +'px' );
+		$( '.selectric-items' ).css( 'min-width', boxW +'px' );
 	}
 	if ( 'buttonwidth' in O ) {
 		var widest = 0;

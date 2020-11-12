@@ -203,6 +203,7 @@ hr {
 	text-align: left;
 }
 #infotextsuffix {
+	width: fit-content;
 	margin-left: 5px;
 	line-height: 40px;
 }
@@ -294,7 +295,7 @@ hr {
 	padding: 10px 0 20px 0;
 }
 #infoContent .selectric-wrapper {
-	margin-bottom: 0;
+	margin: -1px 0 1px 0;
 }
 #infoSelect .selectric-wrapper {
 	width: auto;

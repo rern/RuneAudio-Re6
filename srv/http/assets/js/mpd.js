@@ -382,21 +382,63 @@ $( '#soxr' ).click( function() {
 	notify( 'Custom SoX Resampler', G.soxr, 'mpd' );
 	bash( [ 'soxr', G.soxr ], refreshData );
 } );
+var soxrinfo = heredoc( function() { /*
+	<div id="infoText" class="infocontent">
+		<div id="infotextlabel">
+			<a class="infolabel">Precision <gr>(bit)</gr></a>
+			<a class="infolabel">Phase Response</a>
+			<a class="infolabel">Passband End <gr>(%)</gr></a>
+			<a class="infolabel">Stopband Begin <gr>(%)</gr></a>
+			<a class="infolabel">Attenuation <gr>(dB)</gr></a>
+			<a class="infolabel">Flags</a>
+		</div>
+		<div id="infotextbox" style="width: fit-content;">
+			<select class="infohtml" id="infoSelectBox">
+				<option value="16">16</option>
+				<option value="20">20</option>
+				<option value="24">24</option>
+				<option value="28">28</option>
+				<option value="32">32</option>
+			</select>
+			<input type="text" class="infoinput input" id="infoTextBox1">
+			<input type="text" class="infoinput input" id="infoTextBox2">
+			<input type="text" class="infoinput input" id="infoTextBox3">
+			<input type="text" class="infoinput input" id="infoTextBox4">
+			<select class="infohtml" id="infoSelectBox1">
+				<option value="0">0</option>
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="8">8</option>
+				<option value="16">16</option>
+				<option value="32">32</option>
+			</select>
+		</div>
+		<div id="infotextsuffix">
+			<gr>&nbsp;</gr>
+			<gr>0-100</gr>
+			<gr>0-100</gr>
+			<gr>100-150</gr>
+			<gr>0-30</gr>
+			<gr>&nbsp;</gr>
+		</div>
+	</div>
+*/ } );
 $( '#setting-soxr' ).click( function() {
 	info( {
 		  icon        : 'mpd'
 		, title       : 'Custom SoX Resampler'
-		, textlabel   : [
-			  'Precision <gr>(bit)</gr>'
-			, 'Phase Response'
-			, 'Passband End <gr>(%)</gr>'
-			, 'Stopband Begin <gr>(%)</gr>'
-			, 'Attenuation <gr>(dB)</gr>'
-			, 'Flags'
-		]
-		, textvalue   : G.soxrset.split( ' ' )
-		, textsuffix  : [ '16,20,24,28,32', '0-100', '0-100', '100-150', '0-30', '0,1,2,8,16,32' ]
-		, boxwidth    : 60
+		, content     : soxrinfo
+		, preshow     : function() {
+			var soxrset = G.soxrset.split( ' ' );
+			$( '#infoSelectBox option[value='+  soxrset[ 0 ] +']' ).prop( 'selected', 1 );
+			$( '#infoSelectBox1 option[value='+  soxrset[ 5 ] +']' ).prop( 'selected', 1 );
+			for ( i = 1; i < 5; i++ ) {
+				$( '#infoTextBox'+ i ).val( soxrset[ i ] );
+			}
+			$( '#infoSelectBox, #infoSelectBox1' ).selectric();
+			$( '#infotextbox .selectric-wrapper' ).width( 70 );
+		}
+		, boxwidth    : 70
 		, buttonlabel : '<i class="fa fa-undo"></i>Default'
 		, buttoncolor : '#de810e'
 		, button      : function() {
@@ -407,18 +449,15 @@ $( '#setting-soxr' ).click( function() {
 		, ok          : function() {
 			var args = [];
 			for ( i = 0; i < 6; i++ ) {
-				if ( i === 0 ) i = '';
 				args.push( Number( $( '#infoTextBox'+ i ).val() ) );
 			}
 			if ( args.toString().replace( /,/g, ' ' ) === G.soxrset ) return
 			
 			var errors = '';
-			if ( [ 16,20,24,28,32 ].indexOf( args[ 0 ] ) === -1 ) errors += '<br><w>Precision</w> is not 16, 20, 24, 28 or 32';
 			if ( args[ 1 ] < 0 || args[ 1 ] > 100 ) errors += '<br><w>Phase Response</w> is not 1-100';
 			if ( args[ 2 ] < 0 || args[ 2 ] > 100 ) errors += '<br><w>Passband End</w> is not 1-100<br>';
 			if ( args[ 3 ] < 100 || args[ 3 ] > 150 ) errors += '<br><w>Stopband Begin</w> is not 100-150';
 			if ( args[ 4 ] < 0 || args[ 4 ] > 30 ) errors += '<br><w>Attenuation</w> is not 0-30<br>';
-			if ( [ 0,1,2,8,16,32 ].indexOf( args[ 5 ] ) === -1 ) errors += '<br><w>Flags</w> is not 0, 1, 2, 8, 16 or 32';
 			if ( errors ) {
 				info( {
 					  icon    : 'mpd'
