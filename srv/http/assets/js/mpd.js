@@ -315,8 +315,11 @@ $( '#setting-buffer' ).click( function() {
 				info( {
 					  icon    : 'mpd'
 					, title   : 'Audio Buffer'
-					, message : '<i class="fa fa-warning fa-lg"></i> Warning<br>'
+					, message : '<i class="fa fa-warning fa-lg wh"></i> Warning<br>'
 							   +'<br>Audio buffer must be greater than <wh>4096 kB</wh>.'
+					, ok      : function() {
+						$( '#setting-buffer' ).click();
+					}
 				} );
 				if ( !G.buffer ) $( '#buffer' ).prop( 'checked', 0 );
 			} else if ( buffer !== G.buffer ) {
@@ -354,8 +357,11 @@ $( '#setting-bufferoutput' ).click( function() {
 				info( {
 					  icon    : 'mpd'
 					, title   : 'Output Buffer'
-					, message : '<i class="fa fa-warning fa-lg"></i> Warning<br>'
+					, message : '<i class="fa fa-warning fa-lg wh"></i> Warning<br>'
 							   +'<br>Output buffer must be greater than <wh>8192 kB</wh>.'
+					, ok      : function() {
+						$( '#setting-bufferoutput' ).click();
+					}
 				} );
 				if ( !G.bufferoutput ) $( '#bufferoutput' ).prop( 'checked', 0 );
 			} else if ( buffer !== G.bufferoutput ) {
@@ -385,7 +391,7 @@ $( '#setting-soxr' ).click( function() {
 			, 'Phase Response'
 			, 'Passband End <gr>(%)</gr>'
 			, 'Stopband Begin <gr>(%)</gr>'
-			, 'Attenuation  <gr>(dB)</gr>'
+			, 'Attenuation <gr>(dB)</gr>'
 			, 'Flags'
 		]
 		, textvalue   : G.soxrset.split( ' ' )
@@ -405,6 +411,26 @@ $( '#setting-soxr' ).click( function() {
 				args.push( Number( $( '#infoTextBox'+ i ).val() ) );
 			}
 			if ( args.toString().replace( /,/g, ' ' ) === G.soxrset ) return
+			
+			var errors = '';
+			if ( [ 16,20,24,28,32 ].indexOf( args[ 0 ] ) === -1 ) errors += '<br>Precision is not 16, 20, 24, 28 or 32';
+			if ( args[ 1 ] < 0 || args[ 1 ] > 100 ) errors += '<br>Phase Response is not 1-100';
+			if ( args[ 2 ] < 0 || args[ 1 ] > 100 ) errors += '<br>Passband End is not 1-100<br>';
+			if ( args[ 3 ] < 100 || args[ 1 ] > 150 ) errors += '<br>Stopband Begin is not 100-150';
+			if ( args[ 4 ] < 0 || args[ 1 ] > 30 ) errors += '<br>Attenuation is not 0-30<br>';
+			if ( [ 0,1,2,8,16,32 ].indexOf( args[ 5 ] ) === -1 ) errors += '<br>Flags is not 0, 1, 2, 8, 16 or 32';
+			if ( errors ) {
+				info( {
+					  icon    : 'mpd'
+					, title   : 'Custom SoX Resampler'
+					, message : '<i class="fa fa-warning fa-lg wh"></i> Warning<br>'
+							   + errors
+					, ok      : function() {
+						$( '#setting-soxr' ).click();
+					}
+				} );
+				return
+			}
 			
 			args.unshift( 'soxrset' );
 			notify( 'Custom SoX Resampler', 'Change ...', 'mpd' );
