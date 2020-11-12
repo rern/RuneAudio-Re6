@@ -395,6 +395,7 @@ $( '#setting-lcdchar' ).click( function() {
 		, title    : 'GPIO Character LCD'
 		, content  : infolcdchar
 		, boxwidth : 180
+		, nofocus  : 1
 		, preshow  : function() {
 			var settings = G.lcdcharset.split( ' ' );
 			if (  settings.length > 1 ) {

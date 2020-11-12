@@ -428,6 +428,7 @@ $( '#setting-soxr' ).click( function() {
 		  icon        : 'mpd'
 		, title       : 'Custom SoX Resampler'
 		, content     : soxrinfo
+		, nofocus     : 1
 		, preshow     : function() {
 			var soxrset = G.soxrset.split( ' ' );
 			$( '#infoSelectBox option[value='+  soxrset[ 0 ] +']' ).prop( 'selected', 1 );
