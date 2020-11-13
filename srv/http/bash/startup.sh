@@ -47,7 +47,7 @@ touch $playerfile-mpd
 
 [[ -e $dirsystem/onboard-wlan ]] && ifconfig wlan0 up || rmmod brcmfmac
 
-[[ -e $dirsystem/soundprofile ]] && /srv/http/bash/cmd-soundprofile.sh
+[[ -e $dirsystem/soundprofile ]] && /srv/http/bash/system-soundprofile.sh
 
 /srv/http/bash/mpd-conf.sh # mpd start by this script
 

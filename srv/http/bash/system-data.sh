@@ -95,7 +95,7 @@ data+='
 	, "relays"          : '$( [[ -e $dirsystem/relays ]] && echo true || echo false )'
 	, "soc"             : "'$soc'"
 	, "soundprofile"    : "'$soundprofile'"
-	, "soundprofileval" : "'$( /srv/http/bash/cmd-soundprofile.sh getvalue )'"
+	, "soundprofileval" : "'$( /srv/http/bash/system-soundprofile.sh getvalue )'"
 	, "soundprofilecus" : "'$( cat /srv/http/data/system/soundprofile-custom 2> /dev/null )'"
 	, "sources"         : '$( /srv/http/bash/sources-data.sh )'
 	, "timezone"        : "'$timezone'"

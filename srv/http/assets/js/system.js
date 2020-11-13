@@ -21,16 +21,8 @@ function renderStatus() {
 		+'<br>'+ G.startup
 		+ undervoltage
 }
-function soundProfile( arg, callback ) {
-	var cmd = [ 'cmd-soundprofile.sh' ];
-	if ( arg ) cmd = cmd.concat( arg );
-	$.post( 'cmd.php', { cmd: 'sh', sh: cmd }, function( data ) {
-		G.soundprofilecus = data;
-		resetLocal();
-	} );
-}
 
-refreshData = function() { // system page: use resetLocal() to aviod delay
+refreshData = function() {
 	bash( '/srv/http/bash/system-data.sh', function( list ) {
 		G = list;
 		G.reboot = list.reboot ? list.reboot.split( '\n' ) : [];
@@ -200,22 +192,13 @@ $( '#i2smodule' ).on( 'selectric-change', function() {
 		rebootText( 'Disable', 'I&#178;S Module' );
 		notify( 'I&#178;S Module', 'Disable ...', 'volume' );
 	}
-	bash( [ 'i2smodule', G.audioaplayname, G.audiooutput, G.reboot.join( '\n' ) ], function() {
-			resetLocal();
-			codeToggle( 'configtxt' );
-		} );
+	bash( [ 'i2smodule', G.audioaplayname, G.audiooutput, G.reboot.join( '\n' ) ] );
 	$( '#output' ).text( G.audiooutput );
 } );
 $( '#soundprofile' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
-	rebootText( checked ? 'Enable' : 'Disable', 'sound profile' );
 	notify( 'Sound Profile', checked, 'volume' );
-	soundProfile( '', function( data ) {
-		G.soundprofilecus = data;
-		resetLocal();
-	} );
-	$( '#setting-soundprofile' ).toggleClass( 'hide', !checked );
-	G.soundprofile = checked ? 'RuneAudio' : '';
+	bash( [ 'soundprofile', checked ] );
 } );
 $( '#infoOverlay' ).on( 'click', '#custom', function() {
 	var val = G.soundprofilecus || G.soundprofileval;
@@ -234,12 +217,7 @@ $( '#infoOverlay' ).on( 'click', '#custom', function() {
 			for ( i = 1; i < 4; i++ ) {
 				soundprofileval += ' '+ ( $( '#infoTextBox'+ i ).val() || 0 );
 			}
-			if ( soundprofileval != G.soundprofileval ) {
-				G.soundprofileval = soundprofileval;
-				G.soundprofile = 'custom';
-				notify( 'Sound Profile', 'Change ...', 'volume' );
-				soundProfile( [ 'custom', soundprofileval ], resetLocal );
-			}
+			if ( soundprofileval != G.soundprofileval ) bash( [ 'soundprofileset', 'custom', soundprofileval ] );
 		}
 	} );
 } );
@@ -275,15 +253,7 @@ $( '#setting-soundprofile' ).click( function() {
 		}
 		, ok      : function() {
 			var soundprofile = $( 'input[name=inforadio]:checked' ).val();
-			if ( soundprofile !== G.soundprofile ) {
-				rebootText( G.soundprofile ? 'Change' : 'Enable', 'sound profile' );
-				G.soundprofile = soundprofile;
-				notify( 'Sound Profile', 'Change ...', 'volume' );
-				soundProfile( [ soundprofile ], function( data ) {
-					G.soundprofileval = data;
-					resetLocal();
-				} );
-			}
+			if ( soundprofile !== G.soundprofile ) bash( [ 'soundprofileset', 'custom', soundprofileval ] );
 		}
 	} );
 } );
@@ -311,14 +281,14 @@ $( '#onboardaudio' ).click( function() {
 		G.onboardaudio = onboardaudio;
 		rebootText( onboardaudio ? 'Enable' : 'Disable', 'on-board audio' );
 		local = 1;
-		bash( [ 'onboardaudio', G.onboardaudio, G.reboot.join( '\n' ) ], resetLocal );
+		bash( [ 'onboardaudio', G.onboardaudio, G.reboot.join( '\n' ) ] );
 	}
 } );
 $( '#bluetooth' ).click( function() {
 	G.bluetooth = $( this ).prop( 'checked' );
 	rebootText( G.bluetooth ? 'Enable' : 'Disable', 'on-board Bluetooth' );
 	notify( 'On-board Bluetooth', G.bluetooth, 'bluetooth' );
-	bash( [ 'bluetooth', G.bluetooth, G.reboot.join( '\n' ) ], resetLocal );
+	bash( [ 'bluetooth', G.bluetooth, G.reboot.join( '\n' ) ] );
 } );
 $( '#setting-bluetooth' ).click( function() {
 	info( {
@@ -329,20 +299,20 @@ $( '#setting-bluetooth' ).click( function() {
 		, ok       : function() {
 			G.btdiscoverable = $( '#infoCheckBox input' ).prop( 'checked' );
 			notify( 'Bluetooth Discoverable', G.btdiscoverable, 'bluetooth' );
-			bash( [ 'btdiscoverable', ( G.btdiscoverable ? 'yes' : 'no' ) ], resetLocal( 3000 ) );
+			bash( [ 'btdiscoverable', ( G.btdiscoverable ? 'yes' : 'no' ) ] );
 		}
 	} );
 } );
 $( '#wlan' ).click( function() {
 	G.wlan = $( this ).prop( 'checked' );
 	notify( 'On-board Wi-Fi', G.wlan, 'wifi-3' );
-	bash( [ 'wlan', G.wlan ], resetLocal );
+	bash( [ 'wlan', G.wlan ] );
 } );
 $( '#lcd' ).click( function() {
 	G.lcd = $( this ).prop( 'checked' );
 	rebootText( G.lcd ? 'Enable' : G.lcd, 'GPIO 3.5" LCD' );
 	notify( 'GPIO 3.5" LCD', G.lcd, 'gear' );
-	bash( [ 'lcd', G.lcd, G.reboot.join( '\n' ) ], resetLocal );
+	bash( [ 'lcd', G.lcd, G.reboot.join( '\n' ) ] );
 } );
 $( '#setting-lcd' ).click( function() {
 	info( {
@@ -361,7 +331,7 @@ $( '#lcdchar' ).click( function() {
 	G.lcdchar = $( this ).prop( 'checked' );
 	rebootText( G.lcdchar ? 'Enable' : G.lcdchar, 'GPIO Character LCD' );
 	notify( 'GPIO Character LCD', G.lcdchar, 'gear' );
-	bash( [ 'lcdchar', G.lcdchar, G.reboot.join( '\n' ) ], resetLocal );
+	bash( [ 'lcdchar', G.lcdchar, G.reboot.join( '\n' ) ] );
 } );
 var infolcdchar = heredoc( function() { /*
 	<div id="infoRadio" class="infocontent infohtml">
@@ -437,7 +407,7 @@ $( '#relays' ).click( function() {
 	G.relays = $( this ).prop( 'checked' );
 	$( '#setting-relays' ).toggleClass( 'hide', !G.relays );
 	notify( 'GPIO Relay', G.relays, 'gpio blink' );
-	bash( [ 'relays', G.relays ], resetLocal );
+	bash( [ 'relays', G.relays ] );
 } );
 $( '#setting-relays' ).click( function() {
 	location.href = '/settings/relays.php';
@@ -454,7 +424,7 @@ $( '#hostname' ).click( function() {
 				G.hostname = hostname;
 				$( '#hostname' ).val( hostname );
 				notify( 'Name', 'Change ...', 'sliders' );
-				bash( [ 'hostname', hostname ], resetLocal );
+				bash( [ 'hostname', hostname ] );
 			}
 		}
 	} );
@@ -473,7 +443,7 @@ $( '#setting-regional' ).click( function() {
 				G.ntp = ntp;
 				G.regdom = regdom;
 				notify( 'Regional Settings', 'Change ...', 'gear' );
-				bash( [ 'regional', ntp, regdom ], resetLocal );
+				bash( [ 'regional', ntp, regdom ] );
 			}
 		}
 	} );

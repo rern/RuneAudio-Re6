@@ -23,6 +23,8 @@ btdiscoverable )
 	else
 		touch $dirsystem/btdiscoverno
 	fi
+	sleep 3
+	pushRefresh
 	;;
 bluetooth )
 	if [[ ${args[1]} == true ]]; then
@@ -193,7 +195,7 @@ soundprofile )
 		profile=default
 		rm $dirsystem/soundprofile
 	fi
-	/srv/http/bash/cmd.sh soundprofile$'\n'"$profile"
+	/srv/http/bash/system-soundprofile.sh $profile
 	pushRefresh
 	;;
 soundprofileset )
@@ -203,7 +205,7 @@ soundprofileset )
 	echo $profile > $dirsystem/soundprofile
 	[[ -n $value ]] && echo $values > $customfile
 	[[ $profile == 'custom' && ! -e $customfile ]] && echo 1500 1000 60 18000000 > $customfile
-	/srv/http/bash/cmd.sh soundprofile$'\n'"$profile"
+	/srv/http/bash/system-soundprofile.sh $profile
 	pushRefresh
 	;;
 statusbootlog )

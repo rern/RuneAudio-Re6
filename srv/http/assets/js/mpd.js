@@ -26,7 +26,6 @@ refreshData = function() {
 				$( '#setting-manualconf, #codemanualconf' ).removeClass( 'hide' );
 				$( '#codemanualconf' ).text( data );
 				codeToggle( 'mpd', 'status' );
-				resetLocal();
 				showContent();
 			} );
 			return

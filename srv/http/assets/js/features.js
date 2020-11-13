@@ -69,7 +69,7 @@ $( '#setting-snapclient' ).click( function() {
 				G.snaplatency = latency;
 				G.snapserverpw = $( '#infoPasswordBox' ).val();
 				notify( 'Snapclient', 'Change ...', 'snapcast' );
-				bash( [ 'snapclientset', G.snaplatency, G.snapserverpw ], resetLocal );
+				bash( [ 'snapclientset', G.snaplatency, G.snapserverpw ] );
 			}
 		}
 	} );
@@ -111,7 +111,7 @@ $( '#setting-spotify' ).click( function() {
 				if ( device !== G.spotifydevice ) {
 					G.spotifydevice = device;
 					notify( 'Spotify Renderer', 'Change ...', 'spotify' );
-					bash( [ 'spotifyset', device ], resetLocal );
+					bash( [ 'spotifyset', device ] );
 				}
 			}
 		} );
@@ -136,7 +136,7 @@ $( '#snapcast' ).click( function( e ) {
 $( '#streaming' ).click( function( e ) {
 	G.streaming = $( this ).prop( 'checked' );
 	notify( 'HTTP Streaming', G.streaming, 'mpd' );
-	bash( [ 'streaming', G.streaming ], resetLocal );
+	bash( [ 'streaming', G.streaming ] );
 } );
 $( '#chromium' ).click( function( e ) {
 	G.localbrowser = $( this ).prop( 'checked' );
@@ -212,23 +212,21 @@ $( '#setting-chromium' ).click( function( e ) {
 			if ( rotate !== '' && cursor === G.cursor && screenoff === '' && zoom === G.zoom ) { // rotate only
 				if ( G.lcd ) {
 					var degree = { CW: 0, NORMAL: 90, CCW: 180, UD: 270 }
-					bash( [ 'rotatelcd', degree[ rotate ] ], resetLocal );
+					bash( [ 'rotatelcd', degree[ rotate ] ] );
 				} else {
-					bash( [ 'rotate', rotate ], resetLocal );
+					bash( [ 'rotate', rotate ] );
 				}
 				return
 			}
 			
 			if ( screenoff !== '' && cursor === G.cursor && rotate === '' && zoom === G.zoom ) { // screenoff only
-				bash( [ 'screenoff', screenoff ], resetLocal );
+				bash( [ 'screenoff', screenoff ] );
 				return
 			}
 			
 			G.cursor = cursor;
 			G.zoom = zoom;
-			bash( [ 'localbrowserset', rotate, screenoff, cursor, zoom ], function() {
-				resetLocal( 7000 );
-			} );
+			bash( [ 'localbrowserset', rotate, screenoff, cursor, zoom ] );
 		}
 	} );
 } );
@@ -255,7 +253,7 @@ $( '#setting-samba' ).click( function() {
 				G.writesd = writesd;
 				G.writeusb = writeusb;
 				notify( 'Samba - File Sharing', 'Change ...', 'network blink' );
-				bash( [ 'sambaset', G.writesd, G.writeusb ], resetLocal );
+				bash( [ 'sambaset', G.writesd, G.writeusb ] );
 			}
 		}
 	} );
@@ -290,7 +288,6 @@ $( '#setting-scrobbler' ).click( function() {
 			bash( [ 'mpdscribbleset', G.mpdscribbleuser, password ], function( std ) {
 				G.mpdscribble = std != -1 ? true : false;
 				$( '#setting-mpdscribble' ).toggleClass( 'hide', !G.mpdscribble );
-				resetLocal();
 		} );
 		}
 	} );
@@ -299,7 +296,7 @@ $( '#login' ).click( function() {
 	G.login = $( this ).prop( 'checked' );
 	$( '#setting-login' ).toggleClass( 'hide', !G.login );
 	notify( 'Password Login', G.login, 'lock' );
-	bash( [ 'login', G.login ], resetLocal );
+	bash( [ 'login', G.login ] );
 	if ( G.login && G.passworddefault ) {
 		info( {
 			  icon    : 'lock'
@@ -332,7 +329,7 @@ $( '#setting-login' ).click( function() {
 $( '#autoplay' ).click( function() {
 	G.autoplay = $( this ).prop( 'checked' );
 	notify( 'Play on Startup', G.autoplay, 'refresh-play' );
-	bash( [ 'autoplay', G.autoplay ], resetLocal );
+	bash( [ 'autoplay', G.autoplay ] );
 } );
 $( '#accesspoint' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
@@ -346,7 +343,7 @@ $( '#accesspoint' ).click( function() {
 				G.hostapd = true;
 				$( '#setting-accesspoint' ).removeClass( 'hide' );
 				notify( 'RPi Access Point', true, 'wifi-3' );
-				bash( [ 'accesspoint', true, G.hostapdip ], resetLocal );
+				bash( [ 'accesspoint', true, G.hostapdip ] );
 			}
 		} )
 		return
@@ -355,7 +352,7 @@ $( '#accesspoint' ).click( function() {
 	G.hostapd = checked;
 	$( '#setting-accesspoint' ).toggleClass( 'hide', !G.hostapd );
 	notify( 'RPi Access Point', G.hostapd, 'wifi-3' );
-	bash( [ 'accesspoint', G.hostapd, G.hostapdip ], resetLocal );
+	bash( [ 'accesspoint', G.hostapd, G.hostapdip ] );
 } );
 $( '#setting-accesspoint' ).click( function() {
 	info( {
@@ -382,7 +379,7 @@ $( '#setting-accesspoint' ).click( function() {
 			var ip012 = ips.join( '.' );
 			var iprange = ip012 +'.'+ ( +ip3 + 1 ) +','+ ip012 +'.254,24h';
 			notify( 'RPi Access Point', 'Change ...', 'wifi-3' );
-			bash( [ 'accesspointset', iprange, ip, passphrase ], resetLocal );
+			bash( [ 'accesspointset', iprange, ip, passphrase ] );
 		}
 	} );
 } );

@@ -10,18 +10,7 @@ readarray -t args <<< "$1"
 pushRefresh() {
 	curl -s -X POST http://127.0.0.1/pub?id=refresh -d '{ "page": "system" }'
 }
-enable() {
-	if systemctl start $1; then
-		systemctl enable $1
-		touch $dirsystem/$2
-		pushRefresh
-	fi
-}
-disable() {
-	systemctl disable --now $1
-	rm $dirsystem/$2
-	pushRefresh
-}
+
 rotate() {
 	rotate=$1
 	rotateconf=/etc/X11/xorg.conf.d/99-raspi-rotate.conf
@@ -63,7 +52,6 @@ xset dpms $sec $sec $sec
 		DISPLAY=:0 xset dpms $sec $sec $sec
 	fi
 	cp /etc/X11/xinit/xinitrc $dirsystem/xinitrc
-	pushRefresh
 }
 
 case ${args[0]} in
@@ -107,7 +95,14 @@ accesspointset )
 	pushRefresh
 	;;
 airplay )
-	[[ ${args[1]} == true ]] && enable shairport-sync airplay || disable shairport-sync airplay
+	if [[ ${args[1]} == true ]]; then
+		systemctl enable shairport-sync
+		touch $dirsystem/airplay
+	else
+		systemctl disable shairport-sync
+		rm $dirsystem/airplay
+	fi
+	pushRefresh
 	;;
 autoplay )
 	[[ ${args[1]} == true ]] && touch $dirsystem/autoplay || rm $dirsystem/autoplay
@@ -115,11 +110,13 @@ autoplay )
 	;;
 localbrowser )
 	if [[ ${args[1]} == true ]]; then
-		enable localbrowser localbrowser
+		systemctl enable localbrowser
+		touch $dirsystem/localbrowser
 		systemctl disable getty@tty1
 		sed -i 's/tty1/tty3/' /boot/cmdline.txt
 	else
-		disable localbrowser localbrowser
+		systemctl disable localbrowser
+		rm $dirsystem/localbrowser
 		systemctl enable getty@tty1
 		sed -i 's/tty3/tty1/' /boot/cmdline.txt
 		/srv/http/bash/ply-image /srv/http/assets/img/splash.png
@@ -160,13 +157,15 @@ login )
 mpdscribble )
 	if [[ ${args[1]} == true ]]; then
 		if systemctl start mpdscribble; then
-			systemctl enable mpdscribble
+			systemctl enable mpdscribble@mpd
 			touch $dirsystem/mpdscribble
 		fi
 	else
-		disable mpdscribble@mpd mpdscribble
+		systemctl disable mpdscribble@mpd
+		rm $dirsystem/mpdscribble
 		echo -1
 	fi
+	pushRefresh
 	;;
 mpdscribbleset )
 	sed -i -e "s/^\(username =\).*/\1 ${args[1]}/
@@ -184,9 +183,11 @@ mpdscribbleset )
 	;;
 rotate )
 	rotate ${args[1]}
+	pushRefresh
 	;;
 rotatelcd )
 	rotatelcd ${args[1]}
+	pushRefresh
 	;;
 samba )
 	if [[ ${args[1]} == true ]]; then
@@ -194,6 +195,7 @@ samba )
 	else
 		systemctl disable --now smb wsdd
 	fi
+	pushRefresh
 	;;
 sambaset )
 	smbconf=/etc/samba/smb.conf
@@ -212,11 +214,19 @@ sambaset )
 	;;
 screenoff )
 	screenoff ${args[1]}
+	pushRefresh
 	;;
 snapcast )
-	[[ ${args[1]} == true ]] && enable snapserver snapcast || disable snapserver snapcast
+	if [[ ${args[1]} == true ]]; then
+		systemctl enable snapserver
+		touch $dirsystem/snapcast
+	else
+		systemctl disable snapserver
+		rm $dirsystem/snapcast
+	fi
 	/srv/http/bash/mpd-conf.sh
 	/srv/http/bash/snapcast.sh serverstop
+	pushRefresh
 	;;
 snapclient )
 	[[ ${args[1]} == true ]] && touch $dirsystem/snapclient || rm $dirsystem/snapclient
@@ -232,7 +242,14 @@ snapclientset )
 	pushRefresh
 	;;
 spotify )
-	[[ ${args[1]} == true ]] && enable spotifyd spotify || disable spotifyd spotify
+	if [[ ${args[1]} == true ]]; then
+		systemctl enable spotifyd
+		touch $dirsystem/spotify
+	else
+		systemctl disable spotifyd
+		rm $dirsystem/spotify
+	fi
+	pushRefresh
 	;;
 spotifyset )
 	device=${args[1]}
@@ -247,7 +264,14 @@ streaming )
 	/srv/http/bash/mpd-conf.sh
 	;;
 upnp )
-	[[ ${args[1]} == true ]] && enable upmpdcli upnp || disable upmpdcli upnp
+	if [[ ${args[1]} == true ]]; then
+		systemctl enable upmpdcli
+		touch $dirsystem/upnp
+	else
+		systemctl disable upmpdcli
+		rm $dirsystem/upnp
+	fi
+	pushRefresh
 	;;
 	
 esac
