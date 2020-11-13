@@ -397,8 +397,12 @@ $( '#setting-bufferoutput' ).click( function() {
 } );
 $( '#custom' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
-	notify( 'Custom Options', checked, 'mpd' );
-	bash( [ 'custom', checked ] );
+	if ( checked ) {
+		$( '#setting-custom' ).click();
+	} else {
+		notify( "User's Settings", 'Disable ...', 'mpd' );
+		bash( [ 'customdisable' ] );
+	}
 } );
 var custominfo = heredoc( function() { /*
 	<p class="infomessage msg">
@@ -445,15 +449,21 @@ $( '#setting-custom' ).click( function() {
 		var data = data.split( '\n' );
 		var global = data[ 0 ].split( '^' );
 		var output = data[ 1 ].split( '^' );
+		var g = [];
+		var o = [];
 		info( {
 			  icon     : 'mpd'
-			, title    : 'Custom Options'
+			, title    : "User's Settings"
 			, content  : custominfo
 			, msgalign : 'left'
 			, boxwidth : 'max'
 			, preshow  : function() {
-				for ( i=0; i < 3; i++ ) $( '#global'+ i ).val( global[ i ] );
-				for ( i=0; i < 3; i++ ) $( '#output'+ i ).val( output[ i ] );
+				for ( i=0; i < 3; i++ ) {
+					g.push( global[ i ] || '' );
+					o.push( output[ i ] || '' );
+					$( '#global'+ i ).val( global[ i ] );
+					$( '#output'+ i ).val( output[ i ] );
+				}
 				$( '.msg' ).css( {
 					  'width'        : '100%'
 					, 'text-align'   : 'left'
@@ -461,12 +471,27 @@ $( '#setting-custom' ).click( function() {
 				} );
 				$( '.msg, .in' ).css( 'font-family', 'Inconsolata' );
 			}
+			, cancel   : function() {
+				if ( !G.custom ) $( '#custom' ).prop( 'checked', 0 );
+			}
 			, ok       : function() {
 				var args = [ 'customset' ];
-				for ( i=0; i < 3; i++ ) args.push( $( '#global'+ i ).val() );
-				for ( i=0; i < 3; i++ ) args.push( $( '#output'+ i ).val() );
-				notify( 'Custom Options', 'Change ...', 'mpd' );
-				bash( args );
+				var val;
+				var changed = 0;
+				for ( i=0; i < 3; i++ ) {
+					val = $( '#global'+ i ).val();
+					args.push( val );
+					if ( val !== g[ i ] ) changed = 1;
+				}
+				for ( i=0; i < 3; i++ ) {
+					val = $( '#output'+ i ).val();
+					args.push( $( '#output'+ i ).val() );
+					if ( val !== o[ i ] ) changed = 1;
+				}
+				if ( changed || !G.custom ) {
+					notify( "User's Settings", 'Change ...', 'mpd' );
+					bash( args );
+				}
 			}
 		} );
 	} );

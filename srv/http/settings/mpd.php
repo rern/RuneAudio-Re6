@@ -163,7 +163,7 @@
 		<br> &emsp; 32 - Variable rate resampling
 	</span>
 </div>
-<div class="col-l">User's settings</div>
+<div class="col-l">User's Settings</div>
 <div class="col-r">
 	<input id="custom" type="checkbox">
 	<div class="switchlabel" for="custom"></div>

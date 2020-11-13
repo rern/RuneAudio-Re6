@@ -111,6 +111,39 @@ count )
 	echo {$data}
 	echo $albumartist $composer $genre > /srv/http/data/system/mpddb
 	;;
+customdisable )
+	file=$dirsystem/mpd-custom
+	sed -i '/ #custom$/ d' /etc/mpd.conf
+	rm $dirsystem/mpd-custom
+	restartMPD
+	pushRefresh
+	;;
+customget )
+	file=$dirsystem/mpd-custom
+	global=$( sed 's/^\t\| #custom$//g' $file-global | tr '\n' ^ )
+	output=$( sed 's/^\t\| #custom$//g' $file-output | tr '\n' ^ )
+	echo "${global:0:-1}"$'\n'"${output:0:-1}"
+	;;
+customset )
+	global=$( printf '%s\n' "${args[@]:1:3}" | grep . | sed 's/$/ #custom/' )
+	output=$( printf '%s\n' "${args[@]:4:3}" | grep . | sed 's/^/\t/; s/$/ #custom/' )
+	file=$dirsystem/mpd-custom
+	touch $file
+	sed -i '/ #custom$/ d' /etc/mpd.conf
+	if [[ -n $global ]]; then
+		sed -i "/^user/ a$global" /etc/mpd.conf
+		echo "$global" > $file-global
+	else
+		rm $file-global
+	fi
+	if [[ -n $output ]]; then
+		echo "$output" > $file-output
+	else
+		rm $file-output
+	fi
+	restartMPD
+	pushRefresh
+	;;
 dop )
 	dop=${args[1]}
 	output=${args[2]}
@@ -140,43 +173,6 @@ filetype )
 		[[ -n $line ]] && list+=${line:0:-1}'<br>'
 	done
 	echo "${list:0:-4}"
-	;;
-custom )
-	if [[ ${args[1]} == true ]]; then
-		touch $dirsystem/mpd-custom
-		if [[ -e $dirsystem/mpd-custom-global ]]; then
-			global=$( cat $dirsystem/mpd-custom-global | tr '\n' ^ )
-			sed -i "/^user/ a${global:0:-1}" /etc/mpd.conf
-		fi
-	else
-		sed -i '/ #custom$/ d' /etc/mpd.conf
-		rm $dirsystem/mpd-custom
-	fi
-	restartMPD
-	pushRefresh
-	;;
-customget )
-	global=$( sed 's/^\t\| #custom$//g' $dirsystem/mpd-custom-global | tr '\n' ^ )
-	output=$( sed 's/^\t\| #custom$//g' $dirsystem/mpd-custom-output | tr '\n' ^ )
-	echo "${global:0:-1}"$'\n'"${output:0:-1}"
-	;;
-customset )
-	global=$( printf '%s\n' "${args[@]:1:3}" | grep . | sed 's/$/ #custom/' )
-	output=$( printf '%s\n' "${args[@]:4:3}" | grep . | sed 's/^/\t/; s/$/ #custom/' )
-	sed -i '/ #custom$/ d' /etc/mpd.conf
-	if [[ -n $global ]]; then
-		sed -i "/^user/ a$global" /etc/mpd.conf
-		echo "$global" > $dirsystem/mpd-custom-global
-	else
-		rm $dirsystem/mpd-custom-global
-	fi
-	if [[ -n $output ]]; then
-		echo "$output" > $dirsystem/mpd-custom-output
-	else
-		rm $dirsystem/mpd-custom-output
-	fi
-	restartMPD
-	pushRefresh
 	;;
 manualconf )
 	if [[ ${args[1]} == true ]]; then
