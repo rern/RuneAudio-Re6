@@ -115,8 +115,8 @@ refreshData = function() {
 		$( '#bufferoutput' ).prop( 'checked', G.bufferoutput > 8192 );
 		$( '#setting-bufferoutput' ).toggleClass( 'hide', G.bufferoutput === '' );
 		var format = $selected.data( 'format' ) !== '';
-		$( '#custom' ).prop( 'checked', G.customglobal !== '' || G.customoutput !== '' );
-		$( '#setting-custom' ).toggleClass( 'hide', G.customglobal === '' && G.customoutput === '' );
+		$( '#custom' ).prop( 'checked', G.custom );
+		$( '#setting-custom' ).toggleClass( 'hide', !G.custom );
 		$( '#soxr' ).prop( 'checked', G.soxr );
 		$( '#setting-soxr' ).toggleClass( 'hide', !G.soxr );
 		[ 'aplay', 'amixer', 'mpd', 'mpdconf' ].forEach( function( id ) {

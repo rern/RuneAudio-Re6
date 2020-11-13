@@ -38,6 +38,7 @@ data='
 	, "buffer"         : "'$( grep audio_buffer_size /etc/mpd.conf | cut -d'"' -f2 )'"
 	, "bufferoutput"   : "'$( grep max_output_buffer_size /etc/mpd.conf | cut -d'"' -f2 )'"
 	, "crossfade"      : '$( ( mpc crossfade 2> /dev/null || grep crossfade /srv/http/data/mpd/mpdstate ) | cut -d' ' -f2 )'
+	, "custom"         : '$( [[ -e $dirsystem/mpd-custom ]] && echo true || echo false )'
 	, "ffmpeg"         : '$( grep -A1 ffmpeg /etc/mpd.conf | grep -q yes && echo true || echo false )'
 	, "manualconf"     : '$( [[ -e $dirsystem/mpd-manualconf ]] && echo true || echo false )'
 	, "mixertype"      : "'$( grep mixer_type /etc/mpd.conf | cut -d'"' -f2 )'"
