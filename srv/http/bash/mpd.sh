@@ -141,13 +141,34 @@ filetype )
 	done
 	echo "${list:0:-4}"
 	;;
-format )
-	format=${args[1]}
-	output=${args[2]}
-	if [[ -n $format ]]; then
-		echo $format > "$dirsystem/mpd-format-$output"
+custom )
+	if [[ ${args[1]} == true ]]; then
+		touch $dirsystem/mpd-custom
 	else
-		rm "$dirsystem/mpd-format-$output"
+		sed -i '/#custom$/ d' /etc/mpd.conf
+		rm $dirsystem/mpd-custom
+	fi
+	pushRefresh
+	;;
+customget )
+	global=$( sed 's/^\t\| #custom$//g' $dirsystem/mpd-custom-global | tr '\n' ^ )
+	output=$( sed 's/^\t\| #custom$//g' $dirsystem/mpd-custom-output | tr '\n' ^ )
+	echo "${global:0:-1}"$'\n'"${output:0:-1}"
+	;;
+customset )
+	global=$( printf '%s\n' "${args[@]:1:3}" | grep . | sed 's/$/ #custom/' )
+	output=$( printf '%s\n' "${args[@]:4:3}" | grep . | sed 's/^/\t/; s/$/ #custom/' )
+	sed -i '/#custom$/ d' /etc/mpd.conf
+	if [[ -n $global ]]; then
+		sed -i "/^user/ a$global" /etc/mpd.conf
+		echo "$global" > $dirsystem/mpd-custom-global
+	else
+		rm $dirsystem/mpd-custom-global
+	fi
+	if [[ -n $output ]]; then
+		echo "$output" > $dirsystem/mpd-custom-output
+	else
+		rm $dirsystem/mpd-custom-output
 	fi
 	restartMPD
 	pushRefresh

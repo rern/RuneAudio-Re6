@@ -115,8 +115,8 @@ refreshData = function() {
 		$( '#bufferoutput' ).prop( 'checked', G.bufferoutput > 8192 );
 		$( '#setting-bufferoutput' ).toggleClass( 'hide', G.bufferoutput === '' );
 		var format = $selected.data( 'format' ) !== '';
-		$( '#format' ).prop( 'checked', format );
-		$( '#setting-format' ).toggleClass( 'hide', !format );
+		$( '#custom' ).prop( 'checked', G.customglobal !== '' || G.customoutput !== '' );
+		$( '#setting-custom' ).toggleClass( 'hide', G.customglobal === '' && G.customoutput === '' );
 		$( '#soxr' ).prop( 'checked', G.soxr );
 		$( '#setting-soxr' ).toggleClass( 'hide', !G.soxr );
 		[ 'aplay', 'amixer', 'mpd', 'mpdconf' ].forEach( function( id ) {
@@ -395,30 +395,80 @@ $( '#setting-bufferoutput' ).click( function() {
 		}
 	} );
 } );
-$( '#format' ).click( function() {
-	if ( $( this ).prop( 'checked' ) ) {
-		$( '#setting-format' ).click();
-	} else {
-		var name = $( '#audiooutput option:selected' ).text();
-		notify( 'Custom Output Format', 'Disable ...', 'mpd' );
-		bash( [ 'format', '', name ] );
-	}
+$( '#custom' ).click( function() {
+	var checked = $( this ).prop( 'checked' );
+	notify( 'Custom Options', checked, 'mpd' );
+	bash( [ 'custom', checked ] );
 } );
-$( '#setting-format' ).click( function() {
-	info( {
-		  icon      : 'mpd'
-		, title     : 'Audio Output Format'
-		, message   : 'Force output as:'
-					+'<br>(samplerate<w>:</w>bit<w>:</w>channel)'
-		, textlabel : 'Format'
-		, textvalue : G.format || '44100:16:2'
-		, cancel    : refreshData
-		, ok        : function() {
-			G.format = $( '#infoTextBox' ).val();
-			var name = $( '#audiooutput option:selected' ).text();
-			notify( 'Audio Output Format', 'Change ...', 'mpd' );
-			bash( [ 'format', G.format, name ] );
-		}
+var custominfo = heredoc( function() { /*
+	<p class="infomessage msg">
+		<br><code>...</code> global section (top)
+		<br><code>user <px100/><px20/>&ensp; "mpd"</code> << after
+	</p>
+	<div class="infocontent">
+		<div class="infotextlabel">
+			<a class="infolabel in">1.</a>
+			<a class="infolabel in">2.</a>
+			<a class="infolabel in">3.</a>
+		</div>
+		<div class="infotextbox">
+			<input type="text" class="infoinput input in" id="global0" spellcheck="false">
+			<input type="text" class="infoinput input in" id="global1" spellcheck="false">
+			<input type="text" class="infoinput input in" id="global2" spellcheck="false">
+		</div>
+	</div>
+	<hr>
+	<br>
+	<p class="infomessage msg">
+			<code>audio_output {</code> section
+		<br><code>...</code>
+		<br><code>mixer_device &nbsp; "hw:N"</code> << after
+	</p>
+	<div class="infocontent">
+		<div class="infotextlabel">
+			<a class="infolabel in">1.</a>
+			<a class="infolabel in">2.</a>
+			<a class="infolabel in">3.</a>
+		</div>
+		<div class="infotextbox">
+			<input type="text" class="infoinput input in" id="output0" spellcheck="false">
+			<input type="text" class="infoinput input in" id="output1" spellcheck="false">
+			<input type="text" class="infoinput input in" id="output2" spellcheck="false">
+		</div>
+	</div>
+	<p class="infomessage msg">
+		<code>}</code>
+	</p>
+*/ } );
+$( '#setting-custom' ).click( function() {
+	bash( [ 'customget' ], function( data ) {
+		var data = data.split( '\n' );
+		var global = data[ 0 ].split( '^' );
+		var output = data[ 1 ].split( '^' );
+		info( {
+			  icon     : 'mpd'
+			, title    : 'Custom Options'
+			, content  : custominfo
+			, msgalign : 'left'
+			, boxwidth : 'max'
+			, preshow  : function() {
+				for ( i=0; i < 3; i++ ) $( '#global'+ i ).val( global[ i ] );
+				for ( i=0; i < 3; i++ ) $( '#output'+ i ).val( output[ i ] );
+				$( '.msg' ).css( {
+					  'width'        : '100%'
+					, 'text-align'   : 'left'
+					, 'padding-left' : '53px'
+				} );
+				$( '.msg, .in' ).css( 'font-family', 'Inconsolata' );
+			}
+			, ok       : function() {
+				var args = [ 'customset' ];
+				for ( i=0; i < 3; i++ ) args.push( $( '#global'+ i ).val() );
+				for ( i=0; i < 3; i++ ) args.push( $( '#output'+ i ).val() );
+				notify( 'Custom Options', 'Change ...', 'mpd' );
+				bash( args );
+			}
+		} );
 	} );
 } );
 $( '#soxr' ).click( function() {

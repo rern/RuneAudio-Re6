@@ -143,7 +143,7 @@ echo '{
   "timer": 5
 }' > $dirsystem/gpio.json
 # mpd
-sed -i -e '/^auto_update\|^audio_buffer_size/ d
+sed -i -e '/^auto_update\|^audio_buffer_size\| #custom$/ d
 ' -e '/quality/,/}/ d
 ' -e '/soxr/ a\
 	quality        "very high"\

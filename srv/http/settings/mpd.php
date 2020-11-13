@@ -139,19 +139,6 @@
 	</span>
 </div>
 <div class="col-l double">
-	<a>Output Format
-	<br><gr>custom</gr></a>
-</div>
-<div class="col-r">
-	<input id="format" type="checkbox">
-	<div class="switchlabel" for="format"></div>
-	<i id="setting-format" class="setting fa fa-gear"></i>
-	<span class="help-block hide">
-			<code>format "samplerate:bits:channels"</code>
-		<br>Default: none
-	</span>
-</div>
-<div class="col-l double">
 	<a>Resampling
 	<br><gr>custom SoXR</gr></a>
 </div>
@@ -176,6 +163,13 @@
 		<br> &emsp; 32 - Variable rate resampling
 	</span>
 </div>
+<div class="col-l">User's settings</div>
+<div class="col-r">
+	<input id="custom" type="checkbox">
+	<div class="switchlabel" for="custom"></div>
+	<i id="setting-custom" class="setting fa fa-gear"></i>
+	<span class="help-block hide">Custom settings for MPD configuration</span>
+</div>
 </div>
 
 </div> <!-- divmain ****************************************** -->
@@ -193,20 +187,20 @@
 <heading id="mpdconf" class="status">Configuration<i class="fa fa-code"></i><?=$help?></heading>
 <span class="help-block hide"><code>cat /etc/mpd.conf</code></span>
 <pre id="codempdconf" class="hide"></pre>
+<!--
 <div class="col-l">Manual Mode</div>
 <div class="col-r">
 	<input id="manualconf" type="checkbox">
 	<div class="switchlabel" for="manualconf"></div>
 	<i id="setting-manualconf" class="setting fa fa-save"></i>
 	<span class="help-block hide">
-			Manually set <code>mpd.conf</code>. Once enabled, any further changes, options or audio devices, must be reconfigured manually.
-		<br>This will also disable USB DAC plug and play for:
-		<br>&emsp; &bull; MPD
-		<br>&emsp; &bull; AirPlay
-		<br>&emsp; &bull; Spotify
+			Manually set MPD configuration, <code>mpd.conf</code>. Once enabled, any further changes, options or audio devices, must be reconfigured manually.
+		<br>This will also disable:
+		<br>&emsp; &bull; USB DAC plug and play for MPD, AirPlay and Spotify.
+		<br>&emsp; &bull; Bluetooth auto connect.
 	</span>
 </div>
 <textarea id="codemanualconf" spellcheck="false"></textarea>
 </div>
-
+-->
 <div style="clear: both"></div>

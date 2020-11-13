@@ -70,13 +70,11 @@ for line in "${lines[@]}"; do
 	fi
 	
 	[[ -e "$dirsystem/mpd-dop-$name" ]] && dop=1 || dop=0
-	format=$( cat "$dirsystem/mpd-format-$name" 2> /dev/null )
 	
 	Aaplayname+=( "$aplayname" )
 	Acard+=( "$card" )
 	Adevice+=( "$device" )
 	Adop+=( "$dop" )
-	Aformat+=( "$format" )
 	Ahw+=( "$hw" )
 	Ahwmixer+=( "$hwmixer" )
 	Amixercount+=( "$mixercount" )
