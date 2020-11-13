@@ -104,7 +104,7 @@ audio_output {
 	
 	fi
 	
-	if [[ -n $dirsystem/mpd-custom-output ]]; then
+	if [[ -e $dirsystem/mpd-custom && -e $dirsystem/mpd-custom-output ]]; then
 ########
 		mpdconf+="
 $( cat $dirsystem/mpd-custom-output )"

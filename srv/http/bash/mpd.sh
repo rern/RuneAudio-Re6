@@ -144,10 +144,15 @@ filetype )
 custom )
 	if [[ ${args[1]} == true ]]; then
 		touch $dirsystem/mpd-custom
+		if [[ -e $dirsystem/mpd-custom-global ]]; then
+			global=$( cat $dirsystem/mpd-custom-global | tr '\n' ^ )
+			sed -i "/^user/ a${global:0:-1}" /etc/mpd.conf
+		fi
 	else
-		sed -i '/#custom$/ d' /etc/mpd.conf
+		sed -i '/ #custom$/ d' /etc/mpd.conf
 		rm $dirsystem/mpd-custom
 	fi
+	restartMPD
 	pushRefresh
 	;;
 customget )
@@ -158,7 +163,7 @@ customget )
 customset )
 	global=$( printf '%s\n' "${args[@]:1:3}" | grep . | sed 's/$/ #custom/' )
 	output=$( printf '%s\n' "${args[@]:4:3}" | grep . | sed 's/^/\t/; s/$/ #custom/' )
-	sed -i '/#custom$/ d' /etc/mpd.conf
+	sed -i '/ #custom$/ d' /etc/mpd.conf
 	if [[ -n $global ]]; then
 		sed -i "/^user/ a$global" /etc/mpd.conf
 		echo "$global" > $dirsystem/mpd-custom-global
