@@ -164,6 +164,7 @@ hr {
 	margin: 0;
 	font-weight: normal;
 }
+.infomessage,
 #infoMessage {
 	display: inline-block;
 	width: fit-content;
