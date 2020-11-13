@@ -449,8 +449,6 @@ $( '#setting-custom' ).click( function() {
 		var data = data.split( '\n' );
 		var global = data[ 0 ].split( '^' );
 		var output = data[ 1 ].split( '^' );
-		var g = [];
-		var o = [];
 		info( {
 			  icon     : 'mpd'
 			, title    : "User's Settings"
@@ -459,8 +457,6 @@ $( '#setting-custom' ).click( function() {
 			, boxwidth : 'max'
 			, preshow  : function() {
 				for ( i=0; i < 3; i++ ) {
-					g.push( global[ i ] || '' );
-					o.push( output[ i ] || '' );
 					$( '#global'+ i ).val( global[ i ] );
 					$( '#output'+ i ).val( output[ i ] );
 				}
@@ -477,16 +473,19 @@ $( '#setting-custom' ).click( function() {
 			, ok       : function() {
 				var args = [ 'customset' ];
 				var val;
+				var current;
 				var changed = 0;
 				for ( i=0; i < 3; i++ ) {
 					val = $( '#global'+ i ).val();
+					current = global[ i ] || '';
 					args.push( val );
-					if ( val !== g[ i ] ) changed = 1;
+					if ( val !== current ) changed = 1;
 				}
 				for ( i=0; i < 3; i++ ) {
 					val = $( '#output'+ i ).val();
-					args.push( $( '#output'+ i ).val() );
-					if ( val !== o[ i ] ) changed = 1;
+					current = output[ i ] || '';
+					args.push( val );
+					if ( val !== current ) changed = 1;
 				}
 				if ( changed || !G.custom ) {
 					notify( "User's Settings", 'Change ...', 'mpd' );
