@@ -1,3 +1,5 @@
+<div id="divmain"> <!-- ************************************************* -->
+
 <div>
 <heading>Audio Output<?=$help?></heading>
 <div class="col-l control-label">Device</div>
@@ -176,6 +178,8 @@
 </div>
 </div>
 
+</div> <!-- divmain ****************************************** -->
+
 <div>
 <heading id="mpd" class="status">Status<i class="fa fa-code"></i><i id="mpdrestart" class="fa fa-reboot"></i><?=$help?></heading>
 <span class="help-block hide">
@@ -189,6 +193,20 @@
 <heading id="mpdconf" class="status">Configuration<i class="fa fa-code"></i><?=$help?></heading>
 <span class="help-block hide"><code>cat /etc/mpd.conf</code></span>
 <pre id="codempdconf" class="hide"></pre>
+<div class="col-l">Manual Mode</div>
+<div class="col-r">
+	<input id="manualconf" type="checkbox">
+	<div class="switchlabel" for="manualconf"></div>
+	<i id="setting-manualconf" class="setting fa fa-save"></i>
+	<span class="help-block hide">
+			Manually set <code>mpd.conf</code>. Once enabled, any further changes, options or audio devices, must be reconfigured manually.
+		<br>This will also disable USB DAC plug and play for:
+		<br>&emsp; &bull; MPD
+		<br>&emsp; &bull; AirPlay
+		<br>&emsp; &bull; Spotify
+	</span>
+</div>
+<textarea id="codemanualconf" spellcheck="false"></textarea>
 </div>
 
 <div style="clear: both"></div>

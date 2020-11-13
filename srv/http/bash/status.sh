@@ -89,6 +89,11 @@ elif [[ -e $playerfile-airplay ]]; then
 	exit
 fi
 
+if ! systemctl -q is-active mpd; then
+	echo -1
+	exit
+fi
+
 filter='^Album\|^Artist\|^audio\|^bitrate\|^consume\|^duration\|^elapsed\|^file\|^Name\|^playlistlength\|'
 filter+='^random\|^repeat\|^single\|^song:\|^state\|^Time\|^Title\|^updating_db\|^volume'
 

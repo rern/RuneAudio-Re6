@@ -39,6 +39,7 @@ data='
 	, "bufferoutput"   : "'$( grep max_output_buffer_size /etc/mpd.conf | cut -d'"' -f2 )'"
 	, "crossfade"      : '$( ( mpc crossfade 2> /dev/null || grep crossfade /srv/http/data/mpd/mpdstate ) | cut -d' ' -f2 )'
 	, "ffmpeg"         : '$( grep -A1 ffmpeg /etc/mpd.conf | grep -q yes && echo true || echo false )'
+	, "manualconf"     : '$( [[ -e $dirsystem/mpd-manualconf ]] && echo true || echo false )'
 	, "mixertype"      : "'$( grep mixer_type /etc/mpd.conf | cut -d'"' -f2 )'"
 	, "normalization"  : '$( grep -q 'volume_normalization.*yes' /etc/mpd.conf && echo true || echo false )'
 	, "reboot"         : "'$( cat /srv/http/data/shm/reboot 2> /dev/null )'"

@@ -152,6 +152,19 @@ format )
 	restartMPD
 	pushRefresh
 	;;
+manualconf )
+	if [[ ${args[1]} == true ]]; then
+		cat /etc/mpd.conf | tee $dirsystem/mpd-manualconf
+	else
+		rm $dirsystem/mpd-manualconf
+	fi
+	pushRefresh
+	;;
+manualconfsave )
+	printf '%s\n' "${args[@]:1}" | tee /etc/mpd.conf $dirsystem/mpd-manualconf
+	restartMPD
+	pushRefresh
+	;;
 mixerhw )
 	output=${args[1]}
 	mixer=${args[2]}
@@ -221,6 +234,10 @@ replaygain )
 	restartMPD
 	pushRefresh
 	;;
+restart )
+	restartMPD
+	pushRefresh
+	;;
 soxr )
 	sed -i '/quality/,/}/ d' /etc/mpd.conf
 	if [[ ${args[1]} == true ]]; then
@@ -232,6 +249,7 @@ soxr )
 ' /etc/mpd.conf
 	fi
 	restartMPD
+	pushRefresh
 	;;
 soxrset )
 	sed -i -e 's/\(precision\s*"\).*/\1'${args[1]}'"/
@@ -245,6 +263,7 @@ soxrset )
 ' -e "/soxr/ r $dirsystem/mpd-soxrset
 " /etc/mpd.conf
 	restartMPD
+	pushRefresh
 	;;
 
 esac

@@ -477,6 +477,12 @@ function getPlaybackStatus() {
 	bash( '/srv/http/bash/status.sh get', function( status ) {
 		if ( !status ) return
 		
+		if ( status == -1 ) {
+			G.status = { sampling: -1 }
+			renderPlaybackBlank();
+			return
+		}
+		
 		$.each( status, function( key, value ) {
 			G.status[ key ] = value;
 		} );
@@ -1180,8 +1186,8 @@ function renderPlayback() {
 	}
 }
 function renderPlaybackBlank() {
+	$( '#page-playback .emptyadd' ).toggleClass( 'hide', G.status.sampling === -1 || !G.status.mpd );
 	$( '#playback-controls, #infoicon i' ).addClass( 'hide' );
-	$( '#page-playback .emptyadd' ).toggleClass( 'hide', !G.status.mpd );
 	$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
 	$( '#artist, #song, #album, #progress, #elapsed, #total' ).empty();
 	if ( G.display.time ) $( '#time' ).roundSlider( 'setValue', 0 );
@@ -1206,6 +1212,11 @@ function renderPlaybackBlank() {
 			$( '#sampling' )
 				.css( 'display', 'block' )
 				.html( 'Network not connected - Click&ensp;<i class="fa fa-gear"></i>&ensp;to setup' );
+		}
+		if ( G.status.sampling === -1 ) { // MPD failed
+			displayTopBottom();
+			$( '#sampling' ).html( '<i class="fa fa-warning wh"></i>&emsp;MPD not running.' );
+			$( '#time-knob, #volume-knob, #bar-bottom' ).addClass( 'hide' );
 		}
 	} );
 }
