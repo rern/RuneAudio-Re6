@@ -139,7 +139,7 @@
 	<div class="switchlabel" for="bufferoutput"></div>
 	<i id="setting-bufferoutput" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
-			Default buffer size: 8192 kB
+		<code>max_output_buffer_size "kB"</code>Default buffer size: 8192 kB
 		<br>Increase to fix missing Album list with large Library.
 	</span>
 </div>
@@ -152,7 +152,8 @@
 	<div class="switchlabel" for="soxr"></div>
 	<i id="setting-soxr" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
-			SoX Resampler custom settings:
+			<code>quality "custom"</code>
+		<br>SoX Resampler custom settings:
 		<br>&bull; Precision - Conversion precision <code>16, 20, 24, 28 or 32</code> bits (20 = HQ)
 		<br>&bull; Phase Response <code>0-100</code> (50 = Linear)
 		<br>&bull; Passband End - 0dB point bandwidth to preserve <code>1-100</code> % (100 = Nyquist)
