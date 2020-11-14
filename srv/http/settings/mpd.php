@@ -90,7 +90,10 @@
 
 <div>
 <heading>Options<?=$help?></heading>
-<div class="col-l">Auto Update Library</div>
+<div class="col-l double">
+	<a>Auto Update
+	<br><gr>Library</gr></a>
+</div>
 <div class="col-r">
 	<input id="autoupdate" type="checkbox">
 	<div class="switchlabel" for="autoupdate"></div>
@@ -99,7 +102,10 @@
 		<br>Automatic update MPD database when files changed.
 	</span>
 </div>
-<div class="col-l">FFmpeg Decoder</div>
+<div class="col-l double">
+	<a>FFmpeg
+	<br><gr>decoder</gr></a>
+</div>
 <div class="col-r">
 	<input id="ffmpeg" type="checkbox">
 	<div class="switchlabel" for="ffmpeg"></div>
@@ -139,8 +145,8 @@
 	</span>
 </div>
 <div class="col-l double">
-	<a>Resampling
-	<br><gr>custom SoXR</gr></a>
+	<a>SoX Resampling
+	<br><gr>custom</gr></a>
 </div>
 <div class="col-r">
 	<input id="soxr" type="checkbox">
@@ -163,16 +169,24 @@
 		<br> &emsp; 32 - Variable rate resampling
 	</span>
 </div>
-<div class="col-l">User's Settings</div>
+<div class="col-l double">
+	<a>User's Settings
+	<br><gr>custom</gr></a>
+</div>
 <div class="col-r">
 	<input id="custom" type="checkbox">
 	<div class="switchlabel" for="custom"></div>
 	<i id="setting-custom" class="setting fa fa-gear"></i>
-	<span class="help-block hide">Custom settings for MPD configuration</span>
+	<span class="help-block hide">User's custom settings for MPD configuration.</span>
 </div>
 </div>
 
 </div> <!-- divmain ****************************************** -->
+
+<div>
+<heading id="mpdconf" class="status">Configuration<i class="fa fa-code"></i><?=$help?></heading>
+<span class="help-block hide"><code>cat /etc/mpd.conf</code></span>
+<pre id="codempdconf" class="hide"></pre>
 
 <div>
 <heading id="mpd" class="status">Status<i class="fa fa-code"></i><i id="mpdrestart" class="fa fa-reboot"></i><?=$help?></heading>
@@ -183,10 +197,6 @@
 <pre id="codempd" class="hide"></pre>
 </div>
 
-<div>
-<heading id="mpdconf" class="status">Configuration<i class="fa fa-code"></i><?=$help?></heading>
-<span class="help-block hide"><code>cat /etc/mpd.conf</code></span>
-<pre id="codempdconf" class="hide"></pre>
 <!--
 <div class="col-l">Manual Mode</div>
 <div class="col-r">

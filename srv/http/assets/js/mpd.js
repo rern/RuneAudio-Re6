@@ -395,98 +395,10 @@ $( '#setting-bufferoutput' ).click( function() {
 		}
 	} );
 } );
-$( '#custom' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	if ( checked ) {
-		$( '#setting-custom' ).click();
-	} else {
-		notify( "User's Settings", 'Disable ...', 'mpd' );
-		bash( [ 'customdisable' ] );
-	}
-} );
-var custominfo = heredoc( function() { /*
-	<p class="infomessage msg">
-		<br><code>...</code> global section (top)
-		<br><code>user<px100/><px30/>&ensp; "mpd"</code> << after
-	</p>
-	<div class="infocontent">
-		<div class="infotextbox">
-			<input type="text" class="infoinput input in" id="global0" spellcheck="false">
-			<input type="text" class="infoinput input in" id="global1" spellcheck="false">
-			<input type="text" class="infoinput input in" id="global2" spellcheck="false">
-		</div>
-	</div>
-	<hr>
-	<br>
-	<p class="infomessage msg">
-			<code>audio_output {</code> section
-		<br><code class="co">...</code>
-		<br><code class="co">mixer_device &nbsp; "hw:N"</code> << after
-	</p>
-	<div class="infocontent">
-		<div class="infotextbox">
-			<input type="text" class="infoinput input ino" id="output0" spellcheck="false">
-			<input type="text" class="infoinput input ino" id="output1" spellcheck="false">
-			<input type="text" class="infoinput input ino" id="output2" spellcheck="false">
-		</div>
-	</div>
-	<p class="infomessage msg">
-		<code>}</code>
-	</p>
-*/ } );
-$( '#setting-custom' ).click( function() {
-	bash( [ 'customget' ], function( data ) {
-		var data = data.split( '\n' );
-		var global = data[ 0 ].split( '^' );
-		var output = data[ 1 ].split( '^' );
-		info( {
-			  icon     : 'mpd'
-			, title    : "User's Settings"
-			, content  : custominfo
-			, msgalign : 'left'
-			, boxwidth : 'max'
-			, preshow  : function() {
-				for ( i=0; i < 3; i++ ) {
-					$( '#global'+ i ).val( global[ i ] );
-					$( '#output'+ i ).val( output[ i ] );
-				}
-				$( '.msg' ).css( {
-					  'width'        : '100%'
-					, 'text-align'   : 'left'
-					, 'padding-left' : '25px'
-				} );
-				$( '.msg code' ).css( 'padding', '3px 11px' );
-				$( '.msg .co' ).css( 'padding-left', '41px' );
-				$( '.msg, .in, .ino' ).css( 'font-family', 'Inconsolata' );
-				$( '.ino' ).css( 'padding-left', '40px' )
-			}
-			, cancel   : function() {
-				if ( !G.custom ) $( '#custom' ).prop( 'checked', 0 );
-			}
-			, ok       : function() {
-				var args = [ 'customset' ];
-				var val;
-				var current;
-				var changed = 0;
-				for ( i=0; i < 3; i++ ) {
-					val = $( '#global'+ i ).val();
-					current = global[ i ] || '';
-					args.push( val );
-					if ( val !== current ) changed = 1;
-				}
-				for ( i=0; i < 3; i++ ) {
-					val = $( '#output'+ i ).val();
-					current = output[ i ] || '';
-					args.push( val );
-					if ( val !== current ) changed = 1;
-				}
-				if ( changed || !G.custom ) {
-					notify( "User's Settings", 'Change ...', 'mpd' );
-					bash( args );
-				}
-			}
-		} );
-	} );
+$( '#ffmpeg' ).click( function() {
+	G.ffmpeg = $( this ).prop( 'checked' );
+	notify( 'FFmpeg Decoder', G.ffmpeg, 'mpd' );
+	bash( [ 'ffmpeg', G.ffmpeg ] );
 } );
 $( '#soxr' ).click( function() {
 	G.soxr = $( this ).prop( 'checked' );
@@ -598,10 +510,103 @@ $( '#setting-soxr' ).click( function() {
 		}
 	} );
 } );
-$( '#ffmpeg' ).click( function() {
-	G.ffmpeg = $( this ).prop( 'checked' );
-	notify( 'FFmpeg Decoder', G.ffmpeg, 'mpd' );
-	bash( [ 'ffmpeg', G.ffmpeg ] );
+$( '#custom' ).click( function() {
+	var checked = $( this ).prop( 'checked' );
+	if ( checked ) {
+		$( '#setting-custom' ).click();
+	} else {
+		notify( "User's Custom Settings", 'Disable ...', 'mpd' );
+		bash( [ 'customdisable' ] );
+	}
+} );
+var custominfo = heredoc( function() { /*
+	<p class="infomessage msg">
+			<code>...</code> global section
+		<br><code>user<px100/><px30/>&ensp; "mpd"</code> << after
+	</p>
+	<div class="infocontent">
+		<div class="infotextbox">
+			<input type="text" class="infoinput input in" id="global0" spellcheck="false">
+			<input type="text" class="infoinput input in" id="global1" spellcheck="false">
+			<input type="text" class="infoinput input in" id="global2" spellcheck="false">
+		</div>
+	</div>
+	<p class="infomessage msg">
+		<br><code>...</code> other sections
+		<br>
+		<br><code>audio_output {</code> section
+		<br><code class="co">...</code>
+		<br><code class="co">mixer_device &nbsp; "hw:N"</code> << after
+	</p>
+	<div class="infocontent">
+		<div class="infotextbox">
+			<input type="text" class="infoinput input ino" id="output0" spellcheck="false">
+			<input type="text" class="infoinput input ino" id="output1" spellcheck="false">
+			<input type="text" class="infoinput input ino" id="output2" spellcheck="false">
+		</div>
+	</div>
+	<p class="infomessage msg">
+		<code>}</code>
+	</p>
+*/ } );
+$( '#setting-custom' ).click( function() {
+	bash( [ 'customget' ], function( data ) {
+		var data = data.split( '\n' );
+		var global = data[ 0 ].split( '^' );
+		var output = data[ 1 ].split( '^' );
+		info( {
+			  icon     : 'mpd'
+			, title    : "User's Custom Settings"
+			, content  : custominfo
+			, msgalign : 'left'
+			, boxwidth : 'max'
+			, preshow  : function() {
+				for ( i=0; i < 3; i++ ) {
+					$( '#global'+ i ).val( global[ i ] );
+					$( '#output'+ i ).val( output[ i ] );
+				}
+				$( '.msg' ).css( {
+					  width          : '100%'
+					, margin         : 0
+					, 'text-align'   : 'left'
+					, 'padding-left' : '25px'
+				} );
+				$( '.msg code' ).css( 'padding', '3px 11px' );
+				$( '.msg .co' ).css( 'padding-left', '41px' );
+				$( '.msg, .in, .ino' ).css( 'font-family', 'Inconsolata' );
+				$( '.ino' ).css( 'padding-left', '40px' )
+			}
+			, cancel   : function() {
+				if ( !G.custom ) $( '#custom' ).prop( 'checked', 0 );
+			}
+			, ok       : function() {
+				var args = [ 'customset' ];
+				var val;
+				var current;
+				var changed = 0;
+				for ( i=0; i < 3; i++ ) {
+					val = $( '#global'+ i ).val();
+					current = global[ i ] || '';
+					args.push( val );
+					if ( val !== current ) changed = 1;
+				}
+				for ( i=0; i < 3; i++ ) {
+					val = $( '#output'+ i ).val();
+					current = output[ i ] || '';
+					args.push( val );
+					if ( val !== current ) changed = 1;
+				}
+				if ( changed || !G.custom ) {
+					notify( "User's Custom Settings", 'Change ...', 'mpd' );
+					bash( args );
+				}
+			}
+		} );
+	} );
+} );
+$( '#setting-manualconf' ).click( function() {
+	notify( 'Manual Configure', 'Change ...', 'mpd' );
+	bash( [ 'manualconfsave', $( '#codemanualconf' ).val() ] );
 } );
 $( '#mpdrestart' ).click( function() {
 	$this = $( this );
@@ -629,11 +634,6 @@ $( '#manualconf' ).click( function() {
 	} else {
 		bash( [ 'manualconf', false ] );
 	}
-} );
-$( '#setting-manualconf' ).click( function() {
-	notify( 'Manual Confirure', 'Change ...', 'mpd' );
-	bash( [ 'manualconfsave', $( '#codemanualconf' ).val() ] );
-	console.log($( '#codemanualconf' ).val())
 } );
 
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
