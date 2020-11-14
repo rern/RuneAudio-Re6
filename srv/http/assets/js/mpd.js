@@ -407,14 +407,9 @@ $( '#custom' ).click( function() {
 var custominfo = heredoc( function() { /*
 	<p class="infomessage msg">
 		<br><code>...</code> global section (top)
-		<br><code>user <px100/><px20/>&ensp; "mpd"</code> << after
+		<br><code>user<px100/><px30/>&ensp; "mpd"</code> << after
 	</p>
 	<div class="infocontent">
-		<div class="infotextlabel">
-			<a class="infolabel in">1.</a>
-			<a class="infolabel in">2.</a>
-			<a class="infolabel in">3.</a>
-		</div>
 		<div class="infotextbox">
 			<input type="text" class="infoinput input in" id="global0" spellcheck="false">
 			<input type="text" class="infoinput input in" id="global1" spellcheck="false">
@@ -425,19 +420,14 @@ var custominfo = heredoc( function() { /*
 	<br>
 	<p class="infomessage msg">
 			<code>audio_output {</code> section
-		<br><code>...</code>
-		<br><code>mixer_device &nbsp; "hw:N"</code> << after
+		<br><code class="co">...</code>
+		<br><code class="co">mixer_device &nbsp; "hw:N"</code> << after
 	</p>
 	<div class="infocontent">
-		<div class="infotextlabel">
-			<a class="infolabel in">1.</a>
-			<a class="infolabel in">2.</a>
-			<a class="infolabel in">3.</a>
-		</div>
 		<div class="infotextbox">
-			<input type="text" class="infoinput input in" id="output0" spellcheck="false">
-			<input type="text" class="infoinput input in" id="output1" spellcheck="false">
-			<input type="text" class="infoinput input in" id="output2" spellcheck="false">
+			<input type="text" class="infoinput input ino" id="output0" spellcheck="false">
+			<input type="text" class="infoinput input ino" id="output1" spellcheck="false">
+			<input type="text" class="infoinput input ino" id="output2" spellcheck="false">
 		</div>
 	</div>
 	<p class="infomessage msg">
@@ -463,9 +453,12 @@ $( '#setting-custom' ).click( function() {
 				$( '.msg' ).css( {
 					  'width'        : '100%'
 					, 'text-align'   : 'left'
-					, 'padding-left' : '53px'
+					, 'padding-left' : '25px'
 				} );
-				$( '.msg, .in' ).css( 'font-family', 'Inconsolata' );
+				$( '.msg code' ).css( 'padding', '3px 11px' );
+				$( '.msg .co' ).css( 'padding-left', '41px' );
+				$( '.msg, .in, .ino' ).css( 'font-family', 'Inconsolata' );
+				$( '.ino' ).css( 'padding-left', '40px' )
 			}
 			, cancel   : function() {
 				if ( !G.custom ) $( '#custom' ).prop( 'checked', 0 );
