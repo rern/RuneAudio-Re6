@@ -129,7 +129,14 @@ lcdchar )
 	enable=${args[1]}
 	if [[ $enable == true ]]; then
 		touch $dirsystem/lcdchar
+		sed -i '$ a\dtparam=i2c_arm=on' /boot/config.txt
+		echo -n "\
+i2c-bcm2708
+i2c-dev
+" >> /etc/modules-load.d/raspberrypi.conf
 	else
+		sed -i '/dtparam=i2c_arm=on/ d' /boot/config.txt
+		sed -i '/i2c-bcm2708\|i2c-dev/ d' /etc/modules-load.d/raspberrypi.conf
 		rm $dirsystem/lcdchar
 	fi
 	pushRefresh
