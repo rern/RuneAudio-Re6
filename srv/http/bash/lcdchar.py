@@ -13,7 +13,13 @@ chip = 'PCF8574'
 
 from RPLCD.i2c import CharLCD
 lcd = CharLCD( chip, address )
+
+if len( sys.argv ) == 1: # no args - off backlight
+    lcd = CharLCD( address=address, i2c_expander=chip, backlight_enabled=False )
+    quit()
+    
 lcd = CharLCD( cols=cols, rows=rows, address=address, i2c_expander=chip, auto_linebreaks=False )
+
 
 ### gpio
 #from RPLCD.gpio import CharLCD
