@@ -491,7 +491,7 @@ input:checked + .switchlabel:after {
 }
 .col-l {
 	display: inline-block;
-	width: 200px;
+	width: 170px;
 	text-align: right;
 	padding-right: 15px;
 	padding-top: 10px;
@@ -532,7 +532,7 @@ input:checked + .switchlabel:after {
 	color: var( --cw );
 }
 .col-r {
-	width: calc( 100% - 200px );
+	width: calc( 100% - 170px );
 	min-width: 230px;
 	padding-right: 0;
 	padding-left: 0 !important;
@@ -610,7 +610,7 @@ input:checked + .switchlabel:after {
 	}
 	.col-l {
 		width: 100%;
-		padding-top: 5px;
+		padding: 5px 0;
 		text-align: left;
 	}
 	.col-l.text {
