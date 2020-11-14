@@ -400,6 +400,9 @@ $( '#ffmpeg' ).click( function() {
 	notify( 'FFmpeg Decoder', G.ffmpeg, 'mpd' );
 	bash( [ 'ffmpeg', G.ffmpeg ] );
 } );
+$( '#filetype' ).click( function() {
+	$( '#divfiletype' ).toggleClass( 'hide' );
+} );
 $( '#soxr' ).click( function() {
 	G.soxr = $( this ).prop( 'checked' );
 	notify( 'Custom SoX Resampler', G.soxr, 'mpd' );

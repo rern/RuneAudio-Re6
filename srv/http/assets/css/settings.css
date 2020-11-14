@@ -683,6 +683,7 @@ input:checked + .switchlabel:after {
 	.status,
 	.switchlabel,
 	#close,
+	#filetype,
 	#help {
 		cursor: pointer;
 	}

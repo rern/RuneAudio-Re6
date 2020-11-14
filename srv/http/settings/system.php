@@ -50,7 +50,10 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 
 <div>
 <heading>Audio<?=$help?></heading>
-<div class="col-l">I&#178;S Module</div>
+<div class="col-l double">
+		<a>I&#178;S Module
+	<br><gr>GPIO</gr></a>
+</div>
 <div class="col-r i2s">
 	<div id="divi2smodulesw">
 		<input id="i2smodulesw" type="checkbox">
@@ -62,7 +65,10 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<span class="help-block hide">I&#178;S modules are not plug-and-play capable. Select a driver for installed device.</span>
 </div>
 
-<div class="col-l">Sound Profile</div>
+<div class="col-l double">
+		<a>Sound Profile
+	<br><gr>kernel</gr></a>
+</div>
 <div class="col-r">
 	<input id="soundprofile" type="checkbox">
 	<div class="switchlabel" for="soundprofile"></div>
@@ -142,7 +148,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	</span>
 </div>
 <pre id="codei2cdetect" class="hide"></pre>
-<div class="col-l">Relays</div>
+<div class="col-l">Relays Module</div>
 <div class="col-r">
 	<input id="relays" type="checkbox">
 	<div class="switchlabel" for="relays"></div>

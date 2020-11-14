@@ -112,13 +112,13 @@
 	<span class="help-block hide">
 			<code>enable "yes"</code>
 		<br>Should be disabled if not used for faster Sources update.
-		<br>Decoder for audio filetypes:
-		<div style="margin-left: 20px"><?=( shell_exec( '/srv/http/bash/mpd.sh filetype' ) )?></div>
+		<br>Decoder for audio filetypes:&emsp;<i id="filetype" class="fa fa-question-circle"></i>
+		<div id="divfiletype" class="hide" style="margin-left: 20px"><?=( shell_exec( '/srv/http/bash/mpd.sh filetype' ) )?></div>
 	</span>
 </div>
 <div class="col-l double">
 	<a>Audio Buffer
-	<br><gr>custom</gr></a>
+	<br><gr>custom size</gr></a>
 </div>
 <div class="col-r">
 	<input id="buffer" type="checkbox">
@@ -131,30 +131,28 @@
 	</span>
 </div>
 <div class="col-l double">
-	<a>Output Buffer
-	<br><gr>custom</gr></a>
+		<a>Output Buffer
+	<br><gr>custom size</gr></a>
 </div>
 <div class="col-r">
 	<input id="bufferoutput" type="checkbox">
 	<div class="switchlabel" for="bufferoutput"></div>
 	<i id="setting-bufferoutput" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
-			<code>max_output_buffer_size "kB"</code>
-		<br>Default buffer size: 8192 kB
+			Default buffer size: 8192 kB
 		<br>Increase to fix missing Album list with large Library.
 	</span>
 </div>
 <div class="col-l double">
-	<a>SoX Resampling
-	<br><gr>custom</gr></a>
+		<a>Resampling
+	<br><gr>SoXR custom values</gr></a>
 </div>
 <div class="col-r">
 	<input id="soxr" type="checkbox">
 	<div class="switchlabel" for="soxr"></div>
 	<i id="setting-soxr" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
-			Default: <code>quality "very high"</code>
-		<br>SoX Resampler custom settings:
+			SoX Resampler custom settings:
 		<br>&bull; Precision - Conversion precision <code>16, 20, 24, 28 or 32</code> bits (20 = HQ)
 		<br>&bull; Phase Response <code>0-100</code> (50 = Linear)
 		<br>&bull; Passband End - 0dB point bandwidth to preserve <code>1-100</code> % (100 = Nyquist)
@@ -169,15 +167,12 @@
 		<br> &emsp; 32 - Variable rate resampling
 	</span>
 </div>
-<div class="col-l double">
-	<a>User's Settings
-	<br><gr>custom</gr></a>
-</div>
+<div class="col-l">User's Custom Settings</div>
 <div class="col-r">
 	<input id="custom" type="checkbox">
 	<div class="switchlabel" for="custom"></div>
 	<i id="setting-custom" class="setting fa fa-gear"></i>
-	<span class="help-block hide">User's custom settings for MPD configuration.</span>
+	<span class="help-block hide">Insert settings into <code>/etc/mpd.conf</code>.</span>
 </div>
 </div>
 
