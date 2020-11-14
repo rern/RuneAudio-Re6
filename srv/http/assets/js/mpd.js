@@ -1,5 +1,13 @@
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+function lines2line( lines ) {
+	var val = '';
+	var lines = lines.split( '\n' ).filter( e => e );
+	lines.forEach( function( el ) {
+		val += '^'+ el;
+	} );
+	return val.substring( 1 );
+}
 function setMixerType( mixertype ) {
 	var $output = $( '#audiooutput option:selected' );
 	var name = $output.text();
@@ -524,39 +532,34 @@ $( '#custom' ).click( function() {
 } );
 var custominfo = heredoc( function() { /*
 	<p class="infomessage msg">
-			<code>...</code> global section
-		<br><code>user<px100/><px30/>&ensp; "mpd"</code> << after
+			<code>/etc/mpd.conf</code>
+		<br>...
+		<br>user<px style="width: 153px"></px>"mpd"
 	</p>
-	<div class="infocontent">
-		<div class="infotextbox">
-			<input type="text" class="infoinput input in" id="global0" spellcheck="false">
-			<input type="text" class="infoinput input in" id="global1" spellcheck="false">
-			<input type="text" class="infoinput input in" id="global2" spellcheck="false">
-		</div>
+	<div class="infotextbox">
+		<textarea class="infoinput" id="global" spellcheck="false"></textarea>
 	</div>
 	<p class="infomessage msg">
-		<br><code>...</code> other sections
+			...
 		<br>
-		<br><code>audio_output {</code> section
-		<br><code class="co">...</code>
-		<br><code class="co">mixer_device &nbsp; "hw:N"</code> << after
+		<br>audio_output {
+		<br><px30/>...
+		<br><px30/>mixer_device<px style="width: 24px"></px>"hw:N"
 	</p>
-	<div class="infocontent">
-		<div class="infotextbox">
-			<input type="text" class="infoinput input ino" id="output0" spellcheck="false">
-			<input type="text" class="infoinput input ino" id="output1" spellcheck="false">
-			<input type="text" class="infoinput input ino" id="output2" spellcheck="false">
-		</div>
+	<div class="infotextbox">
+		<textarea class="infoinput" id="output" spellcheck="false"></textarea>
 	</div>
 	<p class="infomessage msg">
-		<code>}</code>
+		}
 	</p>
 */ } );
 $( '#setting-custom' ).click( function() {
 	bash( [ 'customget' ], function( data ) {
 		var data = data.split( '\n' );
-		var global = data[ 0 ].split( '^' );
-		var output = data[ 1 ].split( '^' );
+		var data0 =  data[ 0 ] || '';
+		var data1 =  data[ 1 ] || '';
+		var global = data0.replace( /\^/g, '\n' );
+		var output = data1.replace( /\^/g, '\n' );
 		info( {
 			  icon     : 'mpd'
 			, title    : "User's Custom Settings"
@@ -564,44 +567,27 @@ $( '#setting-custom' ).click( function() {
 			, msgalign : 'left'
 			, boxwidth : 'max'
 			, preshow  : function() {
-				for ( i=0; i < 3; i++ ) {
-					$( '#global'+ i ).val( global[ i ] );
-					$( '#output'+ i ).val( output[ i ] );
-				}
+				$( '#global' ).val( global );
+				$( '#output' ).val( output );
 				$( '.msg' ).css( {
 					  width          : '100%'
 					, margin         : 0
 					, 'text-align'   : 'left'
-					, 'padding-left' : '25px'
+					, 'padding-left' : '35px'
 				} );
-				$( '.msg code' ).css( 'padding', '3px 11px' );
-				$( '.msg .co' ).css( 'padding-left', '41px' );
-				$( '.msg, .in, .ino' ).css( 'font-family', 'Inconsolata' );
-				$( '.ino' ).css( 'padding-left', '40px' )
+				$( '.msg, #global, #output' ).css( 'font-family', 'Inconsolata' );
+				$( '#output' ).css( 'padding-left', '39px' )
 			}
 			, cancel   : function() {
 				if ( !G.custom ) $( '#custom' ).prop( 'checked', 0 );
 			}
 			, ok       : function() {
-				var args = [ 'customset' ];
-				var val;
-				var current;
-				var changed = 0;
-				for ( i=0; i < 3; i++ ) {
-					val = $( '#global'+ i ).val();
-					current = global[ i ] || '';
-					args.push( val );
-					if ( val !== current ) changed = 1;
-				}
-				for ( i=0; i < 3; i++ ) {
-					val = $( '#output'+ i ).val();
-					current = output[ i ] || '';
-					args.push( val );
-					if ( val !== current ) changed = 1;
-				}
-				if ( changed || !G.custom ) {
+				var globalnew = lines2line( $( '#global' ).val() );
+				var outputnew = lines2line( $( '#output' ).val() );
+				if ( globalnew !== data0 || outputnew !== data1 || !G.custom ) {
+					var file = '/srv/http/data/system/mpd-custom';
 					notify( "User's Custom Settings", 'Change ...', 'mpd' );
-					bash( args );
+					bash( [ 'customset', globalnew, outputnew ] );
 				}
 			}
 		} );

@@ -120,27 +120,24 @@ customdisable )
 	;;
 customget )
 	file=$dirsystem/mpd-custom
-	global=$( sed 's/^\t\| #custom$//g' $file-global | tr '\n' ^ )
-	output=$( sed 's/^\t\| #custom$//g' $file-output | tr '\n' ^ )
-	echo "${global:0:-1}"$'\n'"${output:0:-1}"
+	global=$( sed 's/^\t\| #custom$//g' $file-global 2> /dev/null | tr '\n' ^ )
+	output=$( sed 's/^\t\| #custom$//g' $file-output 2> /dev/null | tr '\n' ^ )
+	[[ -n $global ]] && global=${global:0:-1}
+	[[ -n $output ]] && output=${output:0:-1}
+	echo "$global"$'\n'"$output"
 	;;
 customset )
-	global=$( printf '%s\n' "${args[@]:1:3}" | grep . | sed 's/$/ #custom/' )
-	output=$( printf '%s\n' "${args[@]:4:3}" | grep . | sed 's/^/\t/; s/$/ #custom/' )
+	global=${args[1]}
+	output=${args[2]}
 	file=$dirsystem/mpd-custom
 	touch $file
 	sed -i '/ #custom$/ d' /etc/mpd.conf
 	if [[ -n $global ]]; then
-		sed -i "/^user/ a$global" /etc/mpd.conf
-		echo "$global" > $file-global
-	else
-		rm $file-global
+		global=$( echo "$global" | tr ^ '\n' | tee $file-global )
+		gcustom=$( echo "$global" | sed 's/$/ #custom/' )
+		sed -i "/^user/ a$gcustom" /etc/mpd.conf
 	fi
-	if [[ -n $output ]]; then
-		echo "$output" > $file-output
-	else
-		rm $file-output
-	fi
+	[[ -n $output ]] && echo "$output" | tr ^ '\n' > $file-output
 	restartMPD
 	pushRefresh
 	;;

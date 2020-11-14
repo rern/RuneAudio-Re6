@@ -107,7 +107,7 @@ audio_output {
 	if [[ -e $dirsystem/mpd-custom && -e $dirsystem/mpd-custom-output ]]; then
 ########
 		mpdconf+="
-$( cat $dirsystem/mpd-custom-output )"
+$( cat $dirsystem/mpd-custom-output | sed 's/^/\t/' )"
 	
 	fi
 ########
