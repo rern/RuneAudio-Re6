@@ -13,16 +13,16 @@ chip = 'PCF8574'
 
 from RPLCD.i2c import CharLCD
 lcd = CharLCD( chip, address )
-lcd = CharLCD( cols=cold, rows=rows, charmap='A02', address=address, i2c_expander=chip )
+lcd = CharLCD( cols=cols, rows=rows, charmap='A02', address=address, i2c_expander=chip, auto_linebreaks=False )
 
 ### gpio
 #from RPLCD.gpio import CharLCD
-#lcd = CharLCD( cols=cols, rows=rows, charmap='A02', numbering_mode=GPIO.BOARD, pin_rs=15, pin_rw=18, pin_e=16, pins_data=[21, 22, 23, 24] )
+#lcd = CharLCD( cols=cols, rows=rows, charmap='A02', numbering_mode=GPIO.BOARD, pin_rs=15, pin_rw=18, pin_e=16, pins_data=[21, 22, 23, 24], auto_linebreaks=False )
 
 # assign variables
 field = [ '', 'artist', 'title', 'album', 'elapsed', 'time', 'state' ]
 for i in range( 1, 7 ):
-    exec( field[ i ] +' = "'+ sys.argv[ i ] +'"' )
+    exec( field[ i ] +' = "'+ sys.argv[ i ][ :cols ]+'"' )
 
 def second2hhmmss( second ):
     sec = round( float( second ) )
@@ -40,8 +40,8 @@ def second2hhmmss( second ):
 
 if state == 'stop':
     lines = artist +'\r\n'+ title
-    if rows = 4:
-        lines += '\r\n'+ album +'\r\n'+ time
+    if rows == 4:
+        lines += '\r\n'+ album +'\r\n'+ second2hhmmss( time )
         
     lcd.clear()
     lcd.write_string( lines )
