@@ -118,7 +118,7 @@ $( '#infoOverlay' ).keydown( function( e ) {
 	var key = e.key;
 	
 	if ( $( '#infoOverlay' ).is( ':visible' ) ) {
-		if ( key == 'Enter' && !$( '#infoOk' ).hasClass( 'disabled' ) ) {
+		if ( key == 'Enter' && !$( '#infoOk' ).hasClass( 'disabled' ) && !$( 'textarea' ).is( ':focus' ) ) {
 			$( '#infoOk' ).click();
 		} else if ( e.keyCode === 32 && $( '.infocheckbox input.active' ).length ) {
 			e.preventDefault();
