@@ -52,36 +52,37 @@ if state == 'stop':
     lcd.clear()
     lcd.write_string( lines )
     lcd.close()
+    quit()
     
-else:
-    hhmmss = second2hhmmss( elapsed )
-    progress = second2hhmmss( elapsed )
-    if total != 'false':
-        total = ' / '+ second2hhmmss( total )
-        progress = hhmmss + total
+hhmmss = second2hhmmss( elapsed )
+progress = second2hhmmss( elapsed )
+if total != 'false':
+    total = ' / '+ second2hhmmss( total )
+    progress = hhmmss + total
+
+lines = rows == 2 and title +'\r\n'+ progress or artist +'\r\n'+ title +'\r\n'+ album +'\r\n'+ progress
     
-    lines = rows == 2 and title +'\r\n'+ progress or artist +'\r\n'+ title +'\r\n'+ album +'\r\n'+ progress
+lcd.clear()
+lcd.write_string( lines )
+
+pos = rows -1
+if state == 'play':
+    while True:
+        time.sleep( 1 )
         
-    lcd.clear()
-    lcd.write_string( lines )
-    
-    pos = rows -1
-    if state == 'play':
-        while True:
-            time.sleep( 1 )
-            
-            elapsed += 1
-            progress = second2hhmmss( elapsed ) + total
-            lcd.cursor_pos = ( pos, 0 )
-            lcd.write_string( progress )
-    else: # pause
-        pausetxt = progress
-        pauseblank = ' ' * len( hhmmss )
+        elapsed += 1
+        progress = second2hhmmss( elapsed ) + total
+        lcd.cursor_pos = ( pos, 0 )
+        lcd.write_string( progress )
         
-        while True: # blink
-            time.sleep( 0.75 )
-            
-            lcd.cursor_pos = ( pos, 0 )
-            lcd.write_string( pauseblank )
-            time.sleep( 0.75 )
-            lcd.write_string( '\r'+ hhmmss )
+else: # pause
+    pausetxt = progress
+    pauseblank = ' ' * len( hhmmss )
+    
+    while True: # blink
+        time.sleep( 0.75 )
+        
+        lcd.cursor_pos = ( pos, 0 )
+        lcd.write_string( pauseblank )
+        time.sleep( 0.75 )
+        lcd.write_string( '\r'+ hhmmss )
