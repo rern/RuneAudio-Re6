@@ -4,6 +4,9 @@ import sys
 import time
 import math
 
+if len( sys.argv ) == 1:
+    quit()
+
 cols = 20
 rows = 4
 
@@ -13,21 +16,26 @@ chip = 'PCF8574'
 
 from RPLCD.i2c import CharLCD
 lcd = CharLCD( chip, address )
+    
+argv1 = sys.argv[ 1 ] # backlight on/off
+if argv1 == 'on' or argv1 == 'off':
+    if argv1 == 'off':
+        lcd.backlight_enabled = False
+    quit()
 
 lcd = CharLCD( cols=cols, rows=rows, address=address, i2c_expander=chip, auto_linebreaks=False )
-lcd.clear()
-
-if len( sys.argv ) == 1: # no args - off backlight
-    lcd.backlight_enabled = False
-    quit()
-elif len( sys.argv ) == 2: # display single argument string
-    lcd.write_string( sys.argv[ 1 ] )
-    lcd.close()
-    quit()
 
 ### gpio
 #from RPLCD.gpio import CharLCD
 #lcd = CharLCD( cols=cols, rows=rows, numbering_mode=GPIO.BOARD, pin_rs=15, pin_rw=18, pin_e=16, pins_data=[21, 22, 23, 24], auto_linebreaks=False )
+
+if len( sys.argv ) == 2: # single argument
+    lcd.clear()
+    lcd.write_string( argv1 )
+    lcd.close()
+    quit()
+
+lcd.clear()
 
 # assign variables
 field = [ '', 'artist', 'title', 'album', 'elapsed', 'total', 'state' ]
@@ -59,9 +67,10 @@ if not artist and not title and not album:
     lcd.create_char( 4, logor )
     
     file = open( '/srv/http/data/system/version' )
-    version = file.read().rstrip( '\n' )
+    version = rows == 4 and '\r\n' or ''
+    version += '         \x03\x04\r\n       R+R '+ file.read().rstrip( '\n' )
     file.close()
-    lcd.write_string( '\r\n         \x03\x04\r\n       R+R '+ version )
+    lcd.write_string( version )
     lcd.close()
     quit()
     
