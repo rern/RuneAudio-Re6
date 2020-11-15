@@ -129,18 +129,6 @@ lcdchar )
 	enable=${args[1]}
 	if [[ $enable == true ]]; then
 		touch $dirsystem/lcdchar
-		sed -i '$ a\dtparam=i2c_arm=on' /boot/config.txt
-		echo -n "\
-i2c-bcm2708
-i2c-dev
-" >> /etc/modules-load.d/raspberrypi.conf
-		address=$( i2cdetect -y $( ls /dev/i2c* | tail -c 2 ) \
-					| grep -v '^\s' \
-					| cut -d' ' -f2- \
-					| tr -d ' \-' \
-					| grep . \
-					| head -1 )
-		sed -i "s/^\(address = \).*/\10x$address" /srv/http/bash/lcdchar.py
 	else
 		sed -i '/dtparam=i2c_arm=on/ d' /boot/config.txt
 		sed -i '/i2c-bcm2708\|i2c-dev/ d' /etc/modules-load.d/raspberrypi.conf
@@ -154,6 +142,11 @@ lcdcharset )
 	address=${args[3]}
 	[[ $cols == 16 ]] && rows=2 || rows=4
 	if [[ -n $chip ]]; then
+		sed -i '$ a\dtparam=i2c_arm=on' /boot/config.txt
+		echo -n "\
+i2c-bcm2708
+i2c-dev
+" >> /etc/modules-load.d/raspberrypi.conf
 		sed -i -e "s/^\(address = \).*/\1$address
 " -e "s/^\(chip = \).*/\1'$chip'
 " -e "s/^\(cols = \).*/\1$cols
