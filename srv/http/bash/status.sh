@@ -195,17 +195,23 @@ if [[ ${file:0:4} == http ]]; then
 		radiofile=/srv/http/data/webradios/$urlname
 		radiodata=$( cat $radiofile )
 		stationname=$( sed -n 1p <<< "$radiodata" )
-		[[ $state == stop ]] && Title=
+		[[ $state == stop ]] && titlename=
 		[[ $Name != $stationname ]] && albumname=$Name || albumname=$file 
 ########
 		status=$( sed '/^, "webradio".*/ d' <<< "$status" )
+		if [[ $file0 =~ radioparadise.com ]]; then
+			radioparadise=1
+			albumname=$stationname
+			stationname=${Title/ - *}
+			titlename=${Title/* - }
+		fi
 ########
 		status+='
 , "Album"    : "'$albumname'"
 , "Artist"   : "'$stationname'"
 , "Name"     : "'$Name'"
 , "Time"     : false
-, "Title"    : "'$Title'"
+, "Title"    : "'$titlename'"
 , "webradio" : 'true
 		systemctl start radiowatchdog
 	fi
@@ -331,7 +337,7 @@ if [[ $ext == Radio || -e $dirtmp/webradio ]]; then # webradio start - 'file:' m
 			coverart=/data/shm/online-$name.$date.${file/*.}
 		else
 			killall status-coverartonline.sh &> /dev/null # new track - kill if still running
-			if [[ $file0 =~ radioparadise.com ]]; then
+			if [[ -n $radioparadise ]]; then
 				/srv/http/bash/status-coverartonline.sh "$data"$'\n'$file0 &> /dev/null &
 			else
 				/srv/http/bash/status-coverartonline.sh "$data"$'\ntitle' &> /dev/null &
