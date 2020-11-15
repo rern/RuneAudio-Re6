@@ -201,9 +201,11 @@ if [[ ${file:0:4} == http ]]; then
 		status=$( sed '/^, "webradio".*/ d' <<< "$status" )
 		if [[ $file0 =~ radioparadise.com ]]; then
 			radioparadise=1
-			albumname=$stationname
-			stationname=${Title/ - *}
-			titlename=${Title/* - }
+			if [[ $state == play ]]; then
+				albumname=$stationname
+				stationname=${Title/ - *}
+				titlename=${Title/* - }
+			fi
 		fi
 ########
 		status+='
