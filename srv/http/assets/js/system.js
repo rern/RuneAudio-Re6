@@ -274,7 +274,9 @@ var infolcdchar = heredoc( function() { /*
 				<option value="MCP23008">MCP23008</option>
 				<option value="MCP23017">MCP23017</option>
 			</select>
-			<select class="infohtml" id="infoSelectBox1"></select>
+			<select class="infohtml" id="infoSelectBox1">
+				<option value="0x27">0x27</option>
+			</select>
 		</div>
 	</div>
 */ } );
@@ -311,9 +313,9 @@ $( '#setting-lcdchar' ).click( function() {
 				} );
 				$( '#infoSelectBox1' ).html( opt );
 				$( '#infoSelectBox1 option[value='+ G.i2caddress +']' ).prop( 'selected', 1 );
-				if ( addr.length === 1 ) $( '#infoSelectBox1' ).prop( 'disabled', 1 );
-				$( '#infoSelectBox, #infoSelectBox1' ).selectric();
 			}
+			if ( $( '#infoSelectBox1 option' ).length === 1 ) $( '#infoSelectBox1' ).prop( 'disabled', 1 );
+			$( '#infoSelectBox, #infoSelectBox1' ).selectric();
 		}
 		, ok       : function() {
 			var cols = $( '#infoRadio input:checked' ).val();
