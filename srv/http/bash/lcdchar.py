@@ -74,6 +74,8 @@ if not artist and not title and not album:
     lcd.close()
     quit()
     
+if title == '':
+    title = '...'
 elapsed = elapsed != 'false' and round( float( elapsed ) )
 total = total != 'false' and round( float( total ) )
 

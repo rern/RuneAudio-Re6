@@ -109,8 +109,14 @@ pushstreamPlaylist() {
 	rm -f $flagpladd
 }
 pushstreamStatus() {
-	pushstream mpdplayer "$( $dirbash/status.sh )"
+	status=$( $dirbash/status.sh )
+	pushstream mpdplayer "$status"
 	rm -f $flag
+	if [[ -e /srv/http/data/system/lcdchar ]]; then
+		killall lcdchar.py &> /dev/null
+		readarray -t data <<< "$( echo "$status" | jq -r '.Artist, .Title, .Album, .elapsed, .Time, .state' )"
+		/srv/http/bash/lcdchar.py "${data[@]}" &
+	fi
 }
 pushstreamVolume() {
 	pushstream volume '{"type":"'$1'", "val":'$2' }'
