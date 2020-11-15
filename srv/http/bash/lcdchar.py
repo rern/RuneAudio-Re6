@@ -74,7 +74,7 @@ if not artist and not title and not album:
     lcd.close()
     quit()
     
-elapsed = round( float( elapsed ) )
+elapsed = elapsed != 'false' and round( float( elapsed ) )
 total = total != 'false' and round( float( total ) )
 
 pause = (
@@ -138,13 +138,11 @@ if state == 'stop':
     lcd.close()
     quit()
     
-hhmmss = second2hhmmss( elapsed )
-progress = second2hhmmss( elapsed )
+totalhhmmss = ''
+progress = elapsed and second2hhmmss( elapsed )
 if total:
     totalhhmmss = ' / '+ second2hhmmss( total )
     progress += totalhhmmss
-else:
-    totalhhmmss = ''
     
 lines = rows == 2 and title or artist + rn + title + rn + album
 
