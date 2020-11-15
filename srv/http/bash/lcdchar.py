@@ -35,10 +35,33 @@ for i in range( 1, 7 ):
     exec( field[ i ] +' = "'+ sys.argv[ i ][ :cols ]+'"' )
 
 if not artist and not title and not album:
+    logol = (
+        0b01111,
+        0b11011,
+        0b11011,
+        0b00000,
+        0b11011,
+        0b11011,
+        0b01111,
+        0b00000,
+    )
+    logor = (
+        0b01100,
+        0b10110,
+        0b10110,
+        0b01110,
+        0b10110,
+        0b11010,
+        0b11100,
+        0b00000,
+    )
+    lcd.create_char( 3, logol )
+    lcd.create_char( 4, logor )
+    
     file = open( '/srv/http/data/system/version' )
     version = file.read().rstrip( '\n' )
     file.close()
-    lcd.write_string( '\r\n       R+R '+ version )
+    lcd.write_string( '\r\n         \x03\x04\r\n       R+R '+ version )
     lcd.close()
     quit()
     
