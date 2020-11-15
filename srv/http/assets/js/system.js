@@ -84,6 +84,10 @@ refreshData = function() {
 		);
 		$( '#statuslabel' ).html( statuslabel );
 		$( '#status' ).html( renderStatus );
+		$( '#onboardaudio' ).prop( 'checked', G.onboardaudio );
+		$( '#bluetooth' ).prop( 'checked', G.bluetooth );
+		$( '#setting-bluetooth' ).toggleClass( 'hide', !G.bluetooth );
+		$( '#wlan' ).prop( 'checked', G.wlan );
 		$( '#i2smodule' ).val( 'none' );
 		$( '#i2smodule option' ).filter( function() {
 			var $this = $( this );
@@ -93,17 +97,11 @@ refreshData = function() {
 		var i2senabled = $( '#i2smodule' ).val() === 'none' ? false : true;
 		$( '#divi2smodulesw' ).toggleClass( 'hide', i2senabled );
 		$( '#divi2smodule' ).toggleClass( 'hide', !i2senabled );
-		$( '#soundprofile' ).prop( 'checked', G.soundprofile !== '' );
-		$( '#setting-soundprofile' ).toggleClass( 'hide', G.soundprofile === '' );
 		$( '#eth0help' ).toggleClass( 'hide', G.ip.slice( 0, 4 ) !== 'eth0' );
-		$( '#onboardaudio' ).prop( 'checked', G.onboardaudio );
-		$( '#bluetooth' ).prop( 'checked', G.bluetooth );
-		$( '#setting-bluetooth' ).toggleClass( 'hide', !G.bluetooth );
-		$( '#wlan' ).prop( 'checked', G.wlan );
-		$( '#lcd' ).prop( 'checked', G.lcd );
-		$( '#setting-lcd' ).toggleClass( 'hide', !G.lcd );
 		$( '#lcdchar' ).prop( 'checked', G.lcdchar );
 		$( '#setting-lcdchar' ).toggleClass( 'hide', !G.lcdchar );
+		$( '#lcd' ).prop( 'checked', G.lcd );
+		$( '#setting-lcd' ).toggleClass( 'hide', !G.lcd );
 		$( '#relays' ).prop( 'checked', G.relays );
 		$( '#setting-relays' ).toggleClass( 'hide', !G.relays );
 		$( '#hostname' ).val( G.hostname );
@@ -113,6 +111,8 @@ refreshData = function() {
 		[ 'ifconfig', 'configtxt', 'journalctl' ].forEach( function( id ) {
 			codeToggle( id, 'status' );
 		} );
+		$( '#soundprofile' ).prop( 'checked', G.soundprofile !== '' );
+		$( '#setting-soundprofile' ).toggleClass( 'hide', G.soundprofile === '' );
 		resetLocal();
 		showContent();
 	}, 'json' );
