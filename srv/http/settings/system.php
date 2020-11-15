@@ -49,42 +49,6 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 </div>
 
 <div>
-<heading>Audio<?=$help?></heading>
-<div class="col-l double">
-		<a>I&#178;S Module
-	<br><gr>GPIO</gr></a>
-</div>
-<div class="col-r i2s">
-	<div id="divi2smodulesw">
-		<input id="i2smodulesw" type="checkbox">
-		<div class="switchlabel" for="i2smodulesw"></div>
-	</div>
-	<div id="divi2smodule">
-		<?=$selecti2s?>
-	</div>
-	<span class="help-block hide">I&#178;S modules are not plug-and-play capable. Select a driver for installed device.</span>
-</div>
-
-<div class="col-l double">
-		<a>Sound Profile
-	<br><gr>kernel</gr></a>
-</div>
-<div class="col-r">
-	<input id="soundprofile" type="checkbox">
-	<div class="switchlabel" for="soundprofile"></div>
-	<i id="setting-soundprofile" class="setting fa fa-gear"></i>
-	<span class="help-block hide">Tweak system parameters:
-		<br><code>sysctl vm.swappiness=N</code>
-		<br><code>sysctl kernel.sched_latency_ns=NS</code>
-		<div id="eth0help">
-			<code>ip link set eth0 mtu BYTE</code>
-			<br><code>ip link set eth0 txqueuelen N</code>
-		</div>
-	</span>
-</div>
-</div>
-
-<div>
 <heading>On-board Devices<?=$help?></heading>
 <div id="divonboardaudio">
 	<div id="aplay" class="col-l icon status">Audio <i class="fa fa-code code"></i></div>
@@ -127,28 +91,35 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 
 <div>
 <heading>GPIO Devices<?=$help?></heading>
-<div class="col-l">3.5" LCD</div>
+<div class="col-l">Audio (I&#178;S)</div>
+<div class="col-r i2s">
+	<div id="divi2smodulesw">
+		<input id="i2smodulesw" type="checkbox">
+		<div class="switchlabel" for="i2smodulesw"></div>
+	</div>
+	<div id="divi2smodule">
+		<?=$selecti2s?>
+	</div>
+	<span class="help-block hide">I&#178;S modules are not plug-and-play capable. Select a driver for installed device.</span>
+</div>
+<div class="col-l">LCD - Character</div>
+<div class="col-r">
+	<input id="lcdchar" type="checkbox">
+	<div class="switchlabel" for="lcdchar"></div>
+	<i id="setting-lcdchar" class="setting fa fa-gear"></i>
+	<span class="help-block hide">Support 16x2, 20x4 and 40x4 LCD modules via I&#178;C and GPIO mode</span>
+</div>
+<div class="col-l">LCD - TFT</div>
 <div class="col-r">
 	<input id="lcd" type="checkbox">
 	<div class="switchlabel" for="lcd"></div>
 	<i id="setting-lcd" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
-		For 3.5" 480x320 GPIO LCD display only.
+		For TFT LCD display.
 	<br><i class="fa fa-gear"></i>&ensp;Calibrate touchscreen precision.
 	</span>
 </div>
-<div id="i2cdetect" class="col-l icon status">Character LCD <i class="fa fa-code code"></i></div>
-<div class="col-r">
-	<input id="lcdchar" type="checkbox">
-	<div class="switchlabel" for="lcdchar"></div>
-	<i id="setting-lcdchar" class="setting fa fa-gear"></i>
-	<span class="help-block hide">
-		Support 16x2, 20x4 and 40x4 LCD modules.
-		<br><i class="fa fa-code code"></i> Detect I&#178;C address.
-	</span>
-</div>
-<pre id="codei2cdetect" class="hide"></pre>
-<div class="col-l">Relays Module</div>
+<div class="col-l">Relays</div>
 <div class="col-r">
 	<input id="relays" type="checkbox">
 	<div class="switchlabel" for="relays"></div>
@@ -176,6 +147,23 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 		<br>- Wi-Fi regulatory domain:
 		<p style="margin: 0 0 0 20px">00 = Least common denominator settings, channels and transmit power are permitted in all countries.
 		<br>Active regulatory domian may be reassigned by connected router.</p>
+	</span>
+</div>
+<div class="col-l double">
+		<a>Sound Profile
+	<br><gr>kernel</gr></a>
+</div>
+<div class="col-r">
+	<input id="soundprofile" type="checkbox">
+	<div class="switchlabel" for="soundprofile"></div>
+	<i id="setting-soundprofile" class="setting fa fa-gear"></i>
+	<span class="help-block hide">Tweak system parameters:
+		<br><code>sysctl vm.swappiness=N</code>
+		<br><code>sysctl kernel.sched_latency_ns=NS</code>
+		<div id="eth0help">
+			<code>ip link set eth0 mtu BYTE</code>
+			<br><code>ip link set eth0 txqueuelen N</code>
+		</div>
 	</span>
 </div>
 </div>

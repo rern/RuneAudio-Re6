@@ -16,7 +16,6 @@ var cmd = {
 	, bluetoothctl : 'systemctl -q is-active bluetooth && bluetoothctl show'
 	, configtxt    : 'cat /boot/config.txt'
 	, fstab        : 'cat /etc/fstab'
-	, i2cdetect    : 'i2cdetect -y $( ls /dev/i2c* | tail -c 2 ) | grep -v "^\s" | cut -d" " -f2- | tr -d " \-" | grep .'
 	, ifconfig     : 'ifconfig wlan0'
 	, journalctl   : '/srv/http/bash/system.sh statusbootlog'
 	, mpdconf      : 'cat /etc/mpd.conf'
