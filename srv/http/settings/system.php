@@ -107,7 +107,10 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<input id="lcdchar" type="checkbox">
 	<div class="switchlabel" for="lcdchar"></div>
 	<i id="setting-lcdchar" class="setting fa fa-gear"></i>
-	<span class="help-block hide">Support 16x2, 20x4 and 40x4 LCD modules via I&#178;C and GPIO mode</span>
+	<span class="help-block hide">
+		Support 16x2, 20x4 and 40x4 LCD modules via I&#178;C and GPIO mode
+		<br>Nothing displayed: Try adjusting blue potentiometer on I2C board.
+	</span>
 </div>
 <div class="col-l">LCD - TFT</div>
 <div class="col-r">
