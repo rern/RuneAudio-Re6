@@ -109,7 +109,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<i id="setting-lcdchar" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
 			Support 16x2, 20x4 and 40x4 LCD modules via I&#178;C and GPIO mode
-		<br>Wiring: <a href="https://rplcd.readthedocs.io/en/stable/getting_started.html#wiring">RPLCD Wiring</a>
+		<br>Wiring details: <a href="https://rplcd.readthedocs.io/en/latest/getting_started.html">RPLCD</a>
 		<br>Nothing displayed: Try adjusting blue potentiometer on I&#178;C board.
 	</span>
 </div>
