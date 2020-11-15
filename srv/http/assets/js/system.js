@@ -355,7 +355,7 @@ var infolcdchar = heredoc( function() { /*
 				<option value="MCP23008">MCP23008</option>
 				<option value="MCP23017">MCP23017</option>
 			</select>
-			<input id="infoTextBox" type="text" class="infoinput" spellcheck="false">
+			<select class="infohtml" id="infoSelectBox1"></select>
 		</div>
 	</div>
 */ } );
@@ -374,7 +374,6 @@ $( '#setting-lcdchar' ).click( function() {
 				G.i2caddress = settings[ 1 ];
 				G.i2cchip = settings[ 2 ];
 				$( '#infoSelectBox option[value='+ G.i2cchip +']' ).prop( 'selected', 1 );
-				$( '#infoTextBox' ).val( G.i2caddress );
 			} else {
 				G.i2c = 'gpio';
 				G.i2ccols = settings;
@@ -382,10 +381,20 @@ $( '#setting-lcdchar' ).click( function() {
 			}
 			$( '#infoRadio input[value='+ G.i2ccols +']' ).prop( 'checked', 1 )
 			$( '#infoRadio1 input[value='+ G.i2c +']' ).prop( 'checked', 1 )
-			$( '#infoSelectBox' ).selectric();
 			$( '#infoRadio1' ).click( function() {
 				$( '#divi2c' ).toggleClass( 'hide', $( '#infoRadio1 input:checked' ).val() === 'gpio' );
 			} );
+			if ( G.lcdcharaddr ) {
+				var addr = G.lcdcharaddr.split( ' ' );
+				var opt = '';
+				addr.forEach( function( el ) {
+					opt += '<option value="0x'+ el +'">0x'+ el +'</option>';
+				} );
+				$( '#infoSelectBox1' ).html( opt );
+				$( '#infoSelectBox1 option[value='+ G.i2caddress +']' ).prop( 'selected', 1 );
+				if ( addr.length === 1 ) $( '#infoSelectBox1' ).prop( 'disabled', 1 );
+				$( '#infoSelectBox, #infoSelectBox1' ).selectric();
+			}
 		}
 		, ok       : function() {
 			var cols = $( '#infoRadio input:checked' ).val();

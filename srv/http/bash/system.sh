@@ -134,6 +134,13 @@ lcdchar )
 i2c-bcm2708
 i2c-dev
 " >> /etc/modules-load.d/raspberrypi.conf
+		address=$( i2cdetect -y $( ls /dev/i2c* | tail -c 2 ) \
+					| grep -v '^\s' \
+					| cut -d' ' -f2- \
+					| tr -d ' \-' \
+					| grep . \
+					| head -1 )
+		sed -i "s/^\(address = \).*/\10x$address" /srv/http/bash/lcdchar.py
 	else
 		sed -i '/dtparam=i2c_arm=on/ d' /boot/config.txt
 		sed -i '/i2c-bcm2708\|i2c-dev/ d' /etc/modules-load.d/raspberrypi.conf
