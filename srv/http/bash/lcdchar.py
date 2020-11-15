@@ -29,35 +29,37 @@ lcd = CharLCD( cols=cols, rows=rows, address=address, i2c_expander=chip, auto_li
 #from RPLCD.gpio import CharLCD
 #lcd = CharLCD( cols=cols, rows=rows, numbering_mode=GPIO.BOARD, pin_rs=15, pin_rw=18, pin_e=16, pins_data=[21, 22, 23, 24], auto_linebreaks=False )
 
-logol = (
-    0b01111,
-    0b11011,
-    0b11011,
-    0b00000,
-    0b11011,
-    0b11011,
-    0b01111,
-    0b00000,
-)
-logor = (
-    0b01100,
-    0b10110,
-    0b10110,
-    0b01110,
-    0b10110,
-    0b11010,
-    0b11100,
-    0b00000,
-)
-lcd.create_char( 3, logol )
-lcd.create_char( 4, logor )
-file = open( '/srv/http/data/system/version' )
-version = rows == 4 and '\r\n' or ''
-version += '         \x03\x04\r\n       R+R '+ file.read().rstrip( '\n' )
-file.close()
+rn = '\r\n'
 
-if len( sys.argv ) == 2: # single argument
+if len( sys.argv ) == 2: # logo or single argument string
     if argv1 == 'rr':
+        logol = (
+            0b01111,
+            0b11011,
+            0b11011,
+            0b00000,
+            0b11011,
+            0b11011,
+            0b01111,
+            0b00000,
+        )
+        logor = (
+            0b01100,
+            0b10110,
+            0b10110,
+            0b01110,
+            0b10110,
+            0b11010,
+            0b11100,
+            0b00000,
+        )
+        lcd.create_char( 3, logol )
+        lcd.create_char( 4, logor )
+        file = open( '/srv/http/data/system/version' )
+        version = rows == 4 and rn or ''
+        version += '         \x03\x04'+ rn +'       R+R '+ file.read().rstrip( '\n' )
+        file.close()
+        
         lcd.write_string( version )
     else:
         lcd.clear()
@@ -71,11 +73,6 @@ lcd.clear()
 field = [ '', 'artist', 'title', 'album', 'elapsed', 'total', 'state' ]
 for i in range( 1, 7 ):
     exec( field[ i ] +' = "'+ sys.argv[ i ][ :cols ]+'"' )
-
-if not artist and not title and not album:
-    lcd.write_string( version )
-    lcd.close()
-    quit()
     
 if title == '':
     title = '...'
@@ -112,14 +109,12 @@ stop = (
     0b00000,
     0b00000,
 )
-
 lcd.create_char( 0, pause )
 lcd.create_char( 1, play )
 lcd.create_char( 2, stop )
 ipause = '\x00 '
 iplay = '\x01 '
 istop = '\x02 '
-rn = '\r\n'
 
 def second2hhmmss( sec ):
     hh = math.floor( sec / 3600 )
