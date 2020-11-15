@@ -573,7 +573,7 @@ power )
 	type=${args[1]}
 	mpc stop
 	[[ -e $dirtmp/gpiotimer ]] && $dirbash/gpio.py off && sleep 2
-	grep -q 'dtparam=i2c_arm=on' /boot/config.txt && $dirbash/lcdchar.py off
+	grep -q 'dtparam=i2c_arm=on' /boot/config.txt && $dirbash/lcdchar.py rr
 	if [[ $type == off ]]; then
 		pushstream notify '{"title":"Power","text":"Off ...","icon":"power blink","delay":-1}'
 	else

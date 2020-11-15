@@ -29,9 +29,39 @@ lcd = CharLCD( cols=cols, rows=rows, address=address, i2c_expander=chip, auto_li
 #from RPLCD.gpio import CharLCD
 #lcd = CharLCD( cols=cols, rows=rows, numbering_mode=GPIO.BOARD, pin_rs=15, pin_rw=18, pin_e=16, pins_data=[21, 22, 23, 24], auto_linebreaks=False )
 
+logol = (
+    0b01111,
+    0b11011,
+    0b11011,
+    0b00000,
+    0b11011,
+    0b11011,
+    0b01111,
+    0b00000,
+)
+logor = (
+    0b01100,
+    0b10110,
+    0b10110,
+    0b01110,
+    0b10110,
+    0b11010,
+    0b11100,
+    0b00000,
+)
+lcd.create_char( 3, logol )
+lcd.create_char( 4, logor )
+file = open( '/srv/http/data/system/version' )
+version = rows == 4 and '\r\n' or ''
+version += '         \x03\x04\r\n       R+R '+ file.read().rstrip( '\n' )
+file.close()
+
 if len( sys.argv ) == 2: # single argument
-    lcd.clear()
-    lcd.write_string( argv1 )
+    if argv1 == 'rr':
+        lcd.write_string( version )
+    else:
+        lcd.clear()
+        lcd.write_string( argv1 )
     lcd.close()
     quit()
 
@@ -43,33 +73,6 @@ for i in range( 1, 7 ):
     exec( field[ i ] +' = "'+ sys.argv[ i ][ :cols ]+'"' )
 
 if not artist and not title and not album:
-    logol = (
-        0b01111,
-        0b11011,
-        0b11011,
-        0b00000,
-        0b11011,
-        0b11011,
-        0b01111,
-        0b00000,
-    )
-    logor = (
-        0b01100,
-        0b10110,
-        0b10110,
-        0b01110,
-        0b10110,
-        0b11010,
-        0b11100,
-        0b00000,
-    )
-    lcd.create_char( 3, logol )
-    lcd.create_char( 4, logor )
-    
-    file = open( '/srv/http/data/system/version' )
-    version = rows == 4 and '\r\n' or ''
-    version += '         \x03\x04\r\n       R+R '+ file.read().rstrip( '\n' )
-    file.close()
     lcd.write_string( version )
     lcd.close()
     quit()

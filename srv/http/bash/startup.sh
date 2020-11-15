@@ -42,6 +42,8 @@ dirmpd=$dirdata/mpd
 dirsystem=$dirdata/system
 playerfile=$dirdata/shm/player
 
+/srv/http/bash/lcdchar.py rr
+
 echo '"mpd":true,"airplay":false,"snapclient":false,"spotify":false,"upnp":false' > $playerfile
 touch $playerfile-mpd
 
