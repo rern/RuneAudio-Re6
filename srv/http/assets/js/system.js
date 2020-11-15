@@ -152,111 +152,6 @@ $( '#refresh' ).click( function( e ) {
 		banner( 'System Status', 'Refresh every 10 seconds.<br>Click again to stop.', 'sliders', 10000 );
 	}
 } );
-$( '#i2smodulesw' ).click( function() {
-	// delay to show switch sliding
-	setTimeout( function() {
-		$( '#i2smodulesw' ).prop( 'checked', 0 );
-		$( '#divi2smodulesw' ).addClass( 'hide' );
-		$( '#divi2smodule' )
-			.removeClass( 'hide' )
-			.find( '.selectric' ).click();
-	}, 200 );
-} );
-$( '#i2smodule' ).on( 'selectric-change', function() {
-	var audioaplayname = $( this ).val();
-	var audiooutput = $( this ).find( ':selected' ).text();
-	local = 1;
-	if ( audioaplayname !== 'none' ) {
-		G.audioaplayname = audioaplayname;
-		G.audiooutput = audiooutput;
-		G.onboardaudio = false;
-		$( '#onboardaudio' ).prop( 'checked', 0 );
-		$( '#divi2smodulesw' ).addClass( 'hide' );
-		$( '#divi2smodule, #divonboardaudio' ).removeClass( 'hide' );
-		rebootText( 'Enable', 'I&#178;S Module' );
-		notify( 'I&#178;S Module', 'Enable ...', 'volume' );
-	} else {
-		var audioaplayname = G.audioaplayname;
-		var notrpi0 = G.hardware.split( ' ' )[ 2 ] !== 'Zero';
-		if ( notrpi0 ) {
-			G.audiooutput = 'On-board - Headphone';
-			G.audioaplayname = 'bcm2835 Headphones';
-		} else {
-			G.audiooutput = 'On-board - HDMI';
-			G.audioaplayname = 'bcm2835 HDMI 1';
-		}
-		G.onboardaudio = true;
-		$( '#onboardaudio' ).prop( 'checked', 1 );
-		$( '#divi2smodulesw' ).removeClass( 'hide' );
-		$( '#divi2smodule, #divonboardaudio' ).addClass( 'hide' );
-		rebootText( 'Disable', 'I&#178;S Module' );
-		notify( 'I&#178;S Module', 'Disable ...', 'volume' );
-	}
-	bash( [ 'i2smodule', G.audioaplayname, G.audiooutput, G.reboot.join( '\n' ) ] );
-	$( '#output' ).text( G.audiooutput );
-} );
-$( '#soundprofile' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	notify( 'Sound Profile', checked, 'volume' );
-	bash( [ 'soundprofile', checked ] );
-} );
-$( '#infoOverlay' ).on( 'click', '#custom', function() {
-	var val = G.soundprofilecus || G.soundprofileval;
-	info( {
-		  icon      : 'volume'
-		, title     : 'Sound Profile'
-		, message   : 'Custom value (Current value shown)'
-		, textlabel : [ 'eth0 mtu <gr>(byte)</gr>', 'eth0 txqueuelen', 'vm.swappiness', 'kernel.sched_latency_ns <gr>(ns)</gr>' ]
-		, textvalue : val.split( ' ' )
-		, boxwidth  : 110
-		, preshow   : function() {
-			if ( G.ip.slice( 0, 4 ) !== 'eth0' ) $( '#infoTextBox, #infoTextBox1' ).hide();
-		}
-		, ok        : function() {
-			var soundprofileval = $( '#infoTextBox' ).val() || 0;
-			for ( i = 1; i < 4; i++ ) {
-				soundprofileval += ' '+ ( $( '#infoTextBox'+ i ).val() || 0 );
-			}
-			if ( soundprofileval != G.soundprofileval ) bash( [ 'soundprofileset', 'custom', soundprofileval ] );
-		}
-	} );
-} );
-$( '#setting-soundprofile' ).click( function() {
-	var radio= {
-		  RuneAudio : 'RuneAudio'
-		, ACX       : 'ACX'
-		, Orion     : 'Orion'
-		, 'Orion V2': 'OrionV2'
-		, Um3ggh1U  : 'Um3ggh1U'
-	}
-	if ( G.audioaplayname === 'snd_rpi_iqaudio_dac' ) radio[ 'IQaudio Pi-DAC' ] = 'OrionV3';
-	if ( G.audiooutput === 'BerryNOS' ) radio[ 'BerryNOS' ] = 'OrionV4';
-	radio[ 'Custom&ensp;<i id="custom" class="fa fa-gear"></i>' ] = 'custom';
-	info( {
-		  icon    : 'volume'
-		, title   : 'Sound Profile'
-		, radio   : radio
-		, checked : G.soundprofile
-		, cancel  : function() {
-			if ( !G.soundprofile ) {
-				$( '#soundprofile' ).prop( 'checked', 0 );
-				$( '#setting-soundprofile' ).addClass( 'hide' );
-			}
-		}
-		, preshow : function() {
-			$( '#infoRadio input[value=custom]' ).click( function( e ) {
-				if ( !G.soundprofilecus ) {
-					$( '#infoOverlay #custom' ).click();
-					return
-				}
-			} );
-		}
-		, ok      : function() {
-			var soundprofile = $( 'input[name=inforadio]:checked' ).val();
-			if ( soundprofile !== G.soundprofile ) bash( [ 'soundprofileset', 'custom', soundprofileval ] );
-		}
-	} );
-} );
 $( '#onboardaudio' ).click( function() {
 	if ( $( '#i2smodule' ).val() === 'none' ) {
 		info( {
@@ -308,24 +203,48 @@ $( '#wlan' ).click( function() {
 	notify( 'On-board Wi-Fi', G.wlan, 'wifi-3' );
 	bash( [ 'wlan', G.wlan ] );
 } );
-$( '#lcd' ).click( function() {
-	G.lcd = $( this ).prop( 'checked' );
-	rebootText( G.lcd ? 'Enable' : G.lcd, 'GPIO 3.5" LCD' );
-	notify( 'GPIO 3.5" LCD', G.lcd, 'gear' );
-	bash( [ 'lcd', G.lcd, G.reboot.join( '\n' ) ] );
+$( '#i2smodulesw' ).click( function() {
+	// delay to show switch sliding
+	setTimeout( function() {
+		$( '#i2smodulesw' ).prop( 'checked', 0 );
+		$( '#divi2smodulesw' ).addClass( 'hide' );
+		$( '#divi2smodule' )
+			.removeClass( 'hide' )
+			.find( '.selectric' ).click();
+	}, 200 );
 } );
-$( '#setting-lcd' ).click( function() {
-	info( {
-		  icon        : 'edit'
-		, title       : 'GPIO 3.5" LCD'
-		, message     : 'Calibrate touchscreen?'
-						+'<br>(Get stylus ready.)'
-		, oklabel     : 'Start'
-		, ok          : function() {
-			notify( 'Calibrate Touchscreen', 'Start ...', 'edit' );
-			bash( [ 'lcdcalibrate' ] );
+$( '#i2smodule' ).on( 'selectric-change', function() {
+	var audioaplayname = $( this ).val();
+	var audiooutput = $( this ).find( ':selected' ).text();
+	local = 1;
+	if ( audioaplayname !== 'none' ) {
+		G.audioaplayname = audioaplayname;
+		G.audiooutput = audiooutput;
+		G.onboardaudio = false;
+		$( '#onboardaudio' ).prop( 'checked', 0 );
+		$( '#divi2smodulesw' ).addClass( 'hide' );
+		$( '#divi2smodule, #divonboardaudio' ).removeClass( 'hide' );
+		rebootText( 'Enable', 'I&#178;S Module' );
+		notify( 'I&#178;S Module', 'Enable ...', 'volume' );
+	} else {
+		var audioaplayname = G.audioaplayname;
+		var notrpi0 = G.hardware.split( ' ' )[ 2 ] !== 'Zero';
+		if ( notrpi0 ) {
+			G.audiooutput = 'On-board - Headphone';
+			G.audioaplayname = 'bcm2835 Headphones';
+		} else {
+			G.audiooutput = 'On-board - HDMI';
+			G.audioaplayname = 'bcm2835 HDMI 1';
 		}
-	} );
+		G.onboardaudio = true;
+		$( '#onboardaudio' ).prop( 'checked', 1 );
+		$( '#divi2smodulesw' ).removeClass( 'hide' );
+		$( '#divi2smodule, #divonboardaudio' ).addClass( 'hide' );
+		rebootText( 'Disable', 'I&#178;S Module' );
+		notify( 'I&#178;S Module', 'Disable ...', 'volume' );
+	}
+	bash( [ 'i2smodule', G.audioaplayname, G.audiooutput, G.reboot.join( '\n' ) ] );
+	$( '#output' ).text( G.audiooutput );
 } );
 $( '#lcdchar' ).click( function() {
 	G.lcdchar = $( this ).prop( 'checked' );
@@ -412,6 +331,25 @@ $( '#setting-lcdchar' ).click( function() {
 		}
 	} );
 } );
+$( '#lcd' ).click( function() {
+	G.lcd = $( this ).prop( 'checked' );
+	rebootText( G.lcd ? 'Enable' : G.lcd, 'GPIO 3.5" LCD' );
+	notify( 'GPIO 3.5" LCD', G.lcd, 'gear' );
+	bash( [ 'lcd', G.lcd, G.reboot.join( '\n' ) ] );
+} );
+$( '#setting-lcd' ).click( function() {
+	info( {
+		  icon        : 'edit'
+		, title       : 'GPIO 3.5" LCD'
+		, message     : 'Calibrate touchscreen?'
+						+'<br>(Get stylus ready.)'
+		, oklabel     : 'Start'
+		, ok          : function() {
+			notify( 'Calibrate Touchscreen', 'Start ...', 'edit' );
+			bash( [ 'lcdcalibrate' ] );
+		}
+	} );
+} );
 $( '#relays' ).click( function() {
 	G.relays = $( this ).prop( 'checked' );
 	$( '#setting-relays' ).toggleClass( 'hide', !G.relays );
@@ -460,6 +398,68 @@ $( '#setting-regional' ).click( function() {
 $( '#timezone' ).on( 'selectric-change', function( e ) {
 	G.timezone = $( this ).val();
 	bash( [ 'timezone', G.timezone ] );
+} );
+$( '#soundprofile' ).click( function() {
+	var checked = $( this ).prop( 'checked' );
+	notify( 'Sound Profile', checked, 'volume' );
+	bash( [ 'soundprofile', checked ] );
+} );
+$( '#infoOverlay' ).on( 'click', '#custom', function() {
+	var val = G.soundprofilecus || G.soundprofileval;
+	info( {
+		  icon      : 'volume'
+		, title     : 'Sound Profile'
+		, message   : 'Custom value (Current value shown)'
+		, textlabel : [ 'eth0 mtu <gr>(byte)</gr>', 'eth0 txqueuelen', 'vm.swappiness', 'kernel.sched_latency_ns <gr>(ns)</gr>' ]
+		, textvalue : val.split( ' ' )
+		, boxwidth  : 110
+		, preshow   : function() {
+			if ( G.ip.slice( 0, 4 ) !== 'eth0' ) $( '#infoTextBox, #infoTextBox1' ).hide();
+		}
+		, ok        : function() {
+			var soundprofileval = $( '#infoTextBox' ).val() || 0;
+			for ( i = 1; i < 4; i++ ) {
+				soundprofileval += ' '+ ( $( '#infoTextBox'+ i ).val() || 0 );
+			}
+			if ( soundprofileval != G.soundprofileval ) bash( [ 'soundprofileset', 'custom', soundprofileval ] );
+		}
+	} );
+} );
+$( '#setting-soundprofile' ).click( function() {
+	var radio= {
+		  RuneAudio : 'RuneAudio'
+		, ACX       : 'ACX'
+		, Orion     : 'Orion'
+		, 'Orion V2': 'OrionV2'
+		, Um3ggh1U  : 'Um3ggh1U'
+	}
+	if ( G.audioaplayname === 'snd_rpi_iqaudio_dac' ) radio[ 'IQaudio Pi-DAC' ] = 'OrionV3';
+	if ( G.audiooutput === 'BerryNOS' ) radio[ 'BerryNOS' ] = 'OrionV4';
+	radio[ 'Custom&ensp;<i id="custom" class="fa fa-gear"></i>' ] = 'custom';
+	info( {
+		  icon    : 'volume'
+		, title   : 'Sound Profile'
+		, radio   : radio
+		, checked : G.soundprofile
+		, cancel  : function() {
+			if ( !G.soundprofile ) {
+				$( '#soundprofile' ).prop( 'checked', 0 );
+				$( '#setting-soundprofile' ).addClass( 'hide' );
+			}
+		}
+		, preshow : function() {
+			$( '#infoRadio input[value=custom]' ).click( function( e ) {
+				if ( !G.soundprofilecus ) {
+					$( '#infoOverlay #custom' ).click();
+					return
+				}
+			} );
+		}
+		, ok      : function() {
+			var soundprofile = $( 'input[name=inforadio]:checked' ).val();
+			if ( soundprofile !== G.soundprofile ) bash( [ 'soundprofileset', 'custom', soundprofileval ] );
+		}
+	} );
 } );
 $( '#backuprestore' ).click( function( e ) {
 	if ( $( e.target ).hasClass( 'help' ) ) return
