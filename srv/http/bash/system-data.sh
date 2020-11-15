@@ -73,9 +73,12 @@ dirsystem=/srv/http/data/system
 version=$( cat $dirsystem/version )
 soundprofile=$( cat $dirsystem/soundprofile )
 snaplatency=$( grep OPTS= /etc/default/snapclient | sed 's/.*latency=\(.*\)"/\1/' )
-lcdcharset=$( grep '^address\|^chip\|^cols' /srv/http/bash/lcdchar.py | cut -d' ' -f3 | tr -d "'" )
 if [[ -e $dirsystem/lcdchar ]] && grep -q 'dtparam=i2c_arm=on' /boot/config.txt; then
+	lcdchar=true
 	lcdcharaddr=$( i2cdetect -y $( ls /dev/i2c* | tail -c 2 ) | grep -v '^\s' | cut -d' ' -f2- | tr -d ' \-' | grep . )
+	lcdcharset=$( grep '^address\|^chip\|^cols' /srv/http/bash/lcdchar.py | cut -d' ' -f3 | tr -d "'" )
+else
+	lcdchar=false
 fi
 
 [[ -z $snaplatency ]] && snaplatency=0
@@ -88,7 +91,7 @@ data+='
 	, "ip"              : "'${iplist:1}'"
 	, "kernel"          : "'$( uname -r )'"
 	, "lcd"             : '$( grep -q dtoverlay=tft35a /boot/config.txt && echo true || echo false )'
-	, "lcdchar"         : '$( [[ -e $dirsystem/lcdchar ]] && echo true || echo false )'
+	, "lcdchar"         : '$lcdchar'
 	, "lcdcharaddr"     : "'$lcdcharaddr'"
 	, "lcdcharset"      : "'$lcdcharset'"
 	, "mpd"             : "'$( pacman -Q mpd 2> /dev/null |  cut -d' ' -f2 )'"
