@@ -140,13 +140,17 @@ lcdcharset )
 	cols=${args[1]}
 	chip=${args[2]}
 	address=${args[3]}
+	reboot=${args[4]}
 	[[ $cols == 16 ]] && rows=2 || rows=4
 	if [[ -n $chip ]]; then
-		sed -i '$ a\dtparam=i2c_arm=on' /boot/config.txt
-		echo -n "\
+		if [[ ! grep -q 'dtparam=i2c_arm=on' /boot/config.txt ]]; then
+			sed -i '$ a\dtparam=i2c_arm=on' /boot/config.txt
+			echo -n "\
 i2c-bcm2708
 i2c-dev
 " >> /etc/modules-load.d/raspberrypi.conf
+			echo "$reboot" > $filereboot
+		fi
 		sed -i -e "s/^\(address = \).*/\1$address
 " -e "s/^\(chip = \).*/\1'$chip'
 " -e "s/^\(cols = \).*/\1$cols

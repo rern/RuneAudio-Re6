@@ -224,7 +224,7 @@ $( '#i2smodule' ).on( 'selectric-change', function() {
 		$( '#onboardaudio' ).prop( 'checked', 0 );
 		$( '#divi2smodulesw' ).addClass( 'hide' );
 		$( '#divi2smodule, #divonboardaudio' ).removeClass( 'hide' );
-		rebootText( 'Enable', 'I&#178;S Module' );
+		rebootText( 'Enable', 'Audio I&#178;S Module' );
 		notify( 'I&#178;S Module', 'Enable ...', 'volume' );
 	} else {
 		var audioaplayname = G.audioaplayname;
@@ -240,7 +240,7 @@ $( '#i2smodule' ).on( 'selectric-change', function() {
 		$( '#onboardaudio' ).prop( 'checked', 1 );
 		$( '#divi2smodulesw' ).removeClass( 'hide' );
 		$( '#divi2smodule, #divonboardaudio' ).addClass( 'hide' );
-		rebootText( 'Disable', 'I&#178;S Module' );
+		rebootText( 'Disable', 'Audio I&#178;S Module' );
 		notify( 'I&#178;S Module', 'Disable ...', 'volume' );
 	}
 	bash( [ 'i2smodule', G.audioaplayname, G.audiooutput, G.reboot.join( '\n' ) ] );
@@ -248,9 +248,9 @@ $( '#i2smodule' ).on( 'selectric-change', function() {
 } );
 $( '#lcdchar' ).click( function() {
 	G.lcdchar = $( this ).prop( 'checked' );
-	rebootText( G.lcdchar ? 'Enable' : G.lcdchar, 'GPIO Character LCD' );
-	notify( 'GPIO Character LCD', G.lcdchar, 'gear' );
-	bash( [ 'lcdchar', G.lcdchar, G.reboot.join( '\n' ) ] );
+	if ( G.lcdchar ) rebootText( 'Enable', 'Character LCD' );
+	notify( 'Character LCD', G.lcdchar, 'gear' );
+	bash( [ 'lcdchar', G.lcdchar ] );
 } );
 var infolcdchar = heredoc( function() { /*
 	<div id="infoRadio" class="infocontent infohtml">
@@ -323,13 +323,12 @@ $( '#setting-lcdchar' ).click( function() {
 			var address = $( '#infoTextBox').val();
 			if ( cols === G.i2ccols && chip === G.i2cchip && address === G.i2caddress ) return
 			
-			var args = cols;
 			if ( $( '#infoRadio1 input:checked' ).val() ) {
-				args += "$'\n'"+ chip;
-				args += "$'\n'"+ address;
+				bash( [ 'lcdcharset', cols, chip, address, G.reboot.join( '\n' ) ] );
+			} else {
+				bash( [ 'lcdcharset', cols ] );
 			}
-			notify( 'GPIO Character LCD', 'Change ...', 'gear' );
-			bash( [ 'lcdcharset', args ] );
+			notify( 'Character LCD', 'Change ...', 'gear' );
 		}
 	} );
 } );
