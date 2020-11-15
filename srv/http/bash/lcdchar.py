@@ -15,9 +15,14 @@ from RPLCD.i2c import CharLCD
 lcd = CharLCD( chip, address )
 
 lcd = CharLCD( cols=cols, rows=rows, address=address, i2c_expander=chip, auto_linebreaks=False )
+lcd.clear()
 
 if len( sys.argv ) == 1: # no args - off backlight
     lcd.backlight_enabled = False
+    quit()
+elif len( sys.argv ) == 2: # display single argument string
+    lcd.write_string( sys.argv[ 1 ] )
+    lcd.close()
     quit()
 
 ### gpio
@@ -30,8 +35,10 @@ for i in range( 1, 7 ):
     exec( field[ i ] +' = "'+ sys.argv[ i ][ :cols ]+'"' )
 
 if not artist and not title and not album:
-    lcd.clear()
-    lcd.write_string( '\r\n   RuneAudio+R e6' )
+    file = open( '/srv/http/data/system/version' )
+    version = file.read().rstrip( '\n' )
+    file.close()
+    lcd.write_string( '\r\n       R+R '+ version )
     lcd.close()
     quit()
     
@@ -87,8 +94,6 @@ def second2hhmmss( sec ):
     sst = str( ss )
     SS = mm > 0 and ( ss > 9 and sst or '0'+ sst ) or sst
     return HH + MM + SS
-
-lcd.clear()
 
 if state == 'stop':
     lines = artist + rn + title
