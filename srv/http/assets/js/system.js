@@ -285,12 +285,12 @@ var infolcdchar = heredoc( function() { /*
 */ } );
 $( '#setting-lcdchar' ).click( function() {
 	info( {
-		  icon     : 'gear'
-		, title    : 'Character LCD'
-		, content  : infolcdchar
-		, boxwidth : 180
-		, nofocus  : 1
-		, preshow  : function() {
+		  icon        : 'gear'
+		, title       : 'Character LCD'
+		, content     : infolcdchar
+		, boxwidth    : 180
+		, nofocus     : 1
+		, preshow     : function() {
 			var settings = G.lcdcharset.split( ' ' );
 			G.cols = settings[ 0 ];
 			if (  settings.length > 1 ) {
@@ -319,10 +319,16 @@ $( '#setting-lcdchar' ).click( function() {
 			if ( $( '#infoSelectBox1 option' ).length === 1 ) $( '#infoSelectBox1' ).prop( 'disabled', 1 );
 			$( '#infoSelectBox, #infoSelectBox1' ).selectric();
 		}
-		, cancel   : function() {
+		, cancel      : function() {
 			if ( !G.lcdchar ) $( '#lcdchar' ).prop( 'checked', 0 );
 		}
-		, ok       : function() {
+		, buttonlabel : [ 'Splash', 'Off' ]
+		, buttoncolor : [ '',       '#de810e' ]
+		, button      : [ 
+			  function() { bash( '/srv/http/bash/lcdchar.py rr' ) }
+			, function() { bash( '/srv/http/bash/lcdchar.py off' ) }
+		]
+		, ok          : function() {
 			var cols = $( '#infoRadio input:checked' ).val();
 			var inf = $( '#infoRadio1 input:checked' ).val();
 			var changed = !G.lcdchar || cols !== G.cols;
@@ -467,7 +473,7 @@ $( '#setting-soundprofile' ).click( function() {
 		}
 		, ok      : function() {
 			var soundprofile = $( '#infoTextBox' ).val();
-			for ( i = 1; i < 4; i++ ) val += ' '+ $( '#infoTextBox'+ i ).val();
+			for ( i = 1; i < 4; i++ ) soundprofile += ' '+ $( '#infoTextBox'+ i ).val();
 			if ( soundprofile === G.soundprofile ) return
 				
 			if ( soundprofile === defaultval ) {
