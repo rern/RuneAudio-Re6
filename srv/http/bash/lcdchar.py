@@ -34,17 +34,17 @@ rn = '\r\n'
 if len( sys.argv ) == 2: # logo or single argument string
     if argv1 == 'rr':
         logol = (
-            0b01111,
+            0b11111,
             0b11011,
             0b11011,
             0b00000,
             0b11011,
             0b11011,
-            0b01111,
+            0b11111,
             0b00000,
         )
         logor = (
-            0b01100,
+            0b01110,
             0b10110,
             0b10110,
             0b01110,
