@@ -56,10 +56,12 @@ if len( sys.argv ) == 2: # logo or single argument string
         lcd.create_char( 3, logol )
         lcd.create_char( 4, logor )
         file = open( '/srv/http/data/system/version' )
-        version = rows == 4 and rn +'  ' or ''
-        version += '       \x03\x04'+ rn +'       R+R '+ file.read().rstrip( '\n' )
+        ver = file.read().rstrip( '\n' )
         file.close()
-        
+        if rows == 4:
+            version = rn +'         \x03\x04'+ rn +'       R+R '+ ver
+        else:
+            version = '       \x03\x04'+ rn +'     R+R '+ ver
         lcd.write_string( version )
     else:
         lcd.clear()
