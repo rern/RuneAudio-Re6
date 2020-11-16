@@ -112,7 +112,10 @@ touch $dirsystem/{localbrowser,onboard-audio,onboard-wlan}
 # nowireless
 [[ $hwcode =~ ^(00|01|02|03|04|09)$ ]] && rm $dirsystem/onboard-wlan
 [[ $hwcode =~ ^(00|01|02|03|09|0c)$ ]] && rm $dirsystem/localbrowser
-echo RuneAudio | tee $dirsystem/{hostname,soundprofile} > /dev/null
+soc=$( cat /proc/cpuinfo | awk '/Hardware/ {print $NF}' )
+[[ $soc == BCM2835 || $soc == BCM2836 ]] && lat=1500000 || lat=4500000
+echo 1500 1000 0 $lat > $dirsystem/soundprofile
+echo RuneAudio > $dirsystem/hostname
 echo '$2a$12$rNJSBU0FOJM/jP98tA.J7uzFWAnpbXFYx5q1pmNhPnXnUu3L1Zz6W' > $dirsystem/password
 # gpio
 echo '{

@@ -437,7 +437,7 @@ $( '#setting-soundprofile' ).click( function() {
 		, _Custom   : 0
 	}
 	var values = Object.values( radio );
-	var existing = G.soundprofileval.split( ' ' );
+	var existing = G.soundprofile.split( ' ' );
 	info( {
 		  icon    : 'volume'
 		, title   : 'Kernel Sound Profile'
@@ -445,7 +445,7 @@ $( '#setting-soundprofile' ).click( function() {
 		, textvalue : existing
 		, boxwidth  : 110
 		, radio   : radio
-		, checked : values.indexOf( G.soundprofileval ) !== -1 ? G.soundprofileval : 0
+		, checked : values.indexOf( G.soundprofile ) !== -1 ? G.soundprofile : 0
 		, preshow : function() {
 			$( '#infoRadio input' ).last().prop( 'disabled', 1 );
 			$( '#infoRadio' ).change( function() {
@@ -456,7 +456,7 @@ $( '#setting-soundprofile' ).click( function() {
 				if (  $( this ).val() !== existing[ $( '.infoinput' ).index() ] ) {
 					$( '#infoRadio input' ).last().prop( 'checked', 1 );
 				} else {
-					$( '#infoRadio input[value="'+ G.soundprofileval +'"]' ).prop( 'checked', 1 );
+					$( '#infoRadio input[value="'+ G.soundprofile +'"]' ).prop( 'checked', 1 );
 				}
 			} );
 		}
@@ -464,14 +464,14 @@ $( '#setting-soundprofile' ).click( function() {
 			$( '#soundprofile' ).prop( 'checked', 0 );
 		}
 		, ok      : function() {
-			var val = $( '#infoTextBox' ).val();
+			var soundprofile = $( '#infoTextBox' ).val();
 			for ( i = 1; i < 4; i++ ) val += ' '+ $( '#infoTextBox'+ i ).val();
-			if ( val === G.soundprofileval ) return
+			if ( soundprofile === G.soundprofile ) return
 				
-			if ( val === '1500 1000 60 18000000' ) {
+			if ( soundprofile === '1500 1000 60 18000000' ) { // default
 				bash( [ 'soundprofiledisable' ] );
 			} else {
-				bash( [ 'soundprofileset', val ] );
+				bash( [ 'soundprofileset', soundprofile ] );
 			}
 		}
 	} );
