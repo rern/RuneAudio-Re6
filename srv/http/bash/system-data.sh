@@ -94,6 +94,7 @@ data+='
 	, "reboot"          : "'$( cat /srv/http/data/shm/reboot 2> /dev/null )'"
 	, "regdom"          : "'$( cat /etc/conf.d/wireless-regdom | cut -d'"' -f2 )'"
 	, "relays"          : '$( [[ -e $dirsystem/relays ]] && echo true || echo false )'
+	, "rpi01"           : "'$( [[ $soc == BCM2835 || $soc == BCM2836 ]] && rpi01=true || rpi01=false )'"
 	, "soc"             : "'$soc'"
 	, "soundprofile"    : "'$soundprofile'"
 	, "soundprofileval" : "'$( /srv/http/bash/system-soundprofile.sh getvalue )'"

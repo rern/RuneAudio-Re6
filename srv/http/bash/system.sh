@@ -14,6 +14,15 @@ readarray -t args <<< "$1"
 pushRefresh() {
 	curl -s -X POST http://127.0.0.1/pub?id=refresh -d '{ "page": "system" }'
 }
+soundprofile() {
+	val=( $1 )
+	if ifconfig | grep -q eth0; then
+		ip link set eth0 mtu ${val[0]}
+		ip link set eth0 txqueuelen ${val[1]}
+	fi
+	sysctl vm.swappiness=${val[2]}
+	sysctl kernel.sched_latency_ns=${val[3]}
+}
 
 case ${args[0]} in
 
@@ -202,25 +211,15 @@ relays )
 	fi
 	pushRefresh
 	;;
-soundprofile )
-	if [[ ${args[1]} == true ]]; then
-		[[ -e $dirsystem/soundprofile-custom ]] && profile=custom || profile=RuneAudio
-		echo $profile > $dirsystem/soundprofile
-	else
-		profile=default
-		rm $dirsystem/soundprofile
-	fi
-	/srv/http/bash/system-soundprofile.sh $profile
+soundprofiledisable )
+	rm $dirsystem/soundprofile
+	soundprofile '1500 1000 60 18000000'
 	pushRefresh
 	;;
 soundprofileset )
-	profile=${args[1]}
-	values=${args[2]}
-	customfile=$dirsystem/soundprofile-custom
-	echo $profile > $dirsystem/soundprofile
-	[[ -n $value ]] && echo $values > $customfile
-	[[ $profile == 'custom' && ! -e $customfile ]] && echo 1500 1000 60 18000000 > $customfile
-	/srv/http/bash/system-soundprofile.sh $profile
+	values=${args[1]}
+	echo $values > $dirsystem/soundprofile
+	soundprofile $values
 	pushRefresh
 	;;
 statusbootlog )
