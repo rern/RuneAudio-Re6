@@ -61,7 +61,6 @@ function codeToggle( id, target ) {
 	}
 }
 function notify( title, message, icon ) {
-	local = 1;
 	if ( typeof message === 'boolean' || typeof message === 'number' ) var message = message ? 'Enable ...' : 'Disable ...';
 	banner( title, message, icon +' blink', -1 );
 }
@@ -75,7 +74,6 @@ function getReset( callback ) {
 	}, 'json' );
 }
 function resetLocal( ms ) {
-	local = 0;
 	setTimeout( function() {
 		$( '#bannerIcon i' ).removeClass( 'blink' );
 		$( '#bannerMessage' ).text( 'Done' );
@@ -159,7 +157,6 @@ onVisibilityChange( function( visible ) {
 } );
 //---------------------------------------------------------------------------------------
 G = {}
-var local = 0;
 var intervalcputime;
 var intervalscan;
 var page = location.href.split( '=' ).pop();

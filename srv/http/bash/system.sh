@@ -148,18 +148,17 @@ i2c-dev
 " >> /etc/modules-load.d/raspberrypi.conf
 			echo "$reboot" > $filereboot
 		fi
-		sed -i -e "s/^\(address = \).*/\1$address
-" -e "s/^\(chip = \).*/\1'$chip/'
+		sed -i -e "s/^\(address = \).*/\1$address/
+" -e "s/^\(chip = \).*/\1$chip/
 " -e "s/^\(cols = \).*/\1$cols/
 " -e "s/^\(rows = \).*/\1$rows/
-" -e '/RPLCD.i2c/,/i2c_expander/ s/^#//
+" -e '/^#address/,/i2c_expander/ s/^#//
 ' -e '/RPLCD.gpio/,/numbering_mode/ s/^/#/
 ' /srv/http/bash/lcdchar.py
 	else
-		echo "${args[@]}" > /root/gpio
 		sed -i -e "s/^\(cols = \).*/\1$cols/
 " -e "s/^\(rows = \).*/\1$rows/
-" -e '/RPLCD.i2c/,/i2c_expander/ s/^/#/
+" -e '/^address/,/i2c_expander/ s/^/#/
 ' -e '/RPLCD.gpio/,/numbering_mode/ s/^#//
 ' /srv/http/bash/lcdchar.py
 	fi

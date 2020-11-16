@@ -247,10 +247,13 @@ $( '#i2smodule' ).on( 'selectric-change', function() {
 	$( '#output' ).text( G.audiooutput );
 } );
 $( '#lcdchar' ).click( function() {
-	G.lcdchar = $( this ).prop( 'checked' );
-	if ( G.lcdchar ) rebootText( 'Enable', 'Character LCD' );
-	notify( 'Character LCD', G.lcdchar, 'gear' );
-	bash( [ 'lcdchar', G.lcdchar ] );
+	var checked = $( this ).prop( 'checked' );
+	if ( checked ) {
+		$( '#setting-lcdchar' ).click();
+	} else {
+		notify( "Character LCD", 'Disable ...', 'gear' );
+		bash( [ 'lcdchardisable' ] );
+	}
 } );
 var infolcdchar = heredoc( function() { /*
 	<div id="infoRadio" class="infocontent infohtml">
@@ -289,19 +292,18 @@ $( '#setting-lcdchar' ).click( function() {
 		, nofocus  : 1
 		, preshow  : function() {
 			var settings = G.lcdcharset.split( ' ' );
+			G.cols = settings[ 0 ];
 			if (  settings.length > 1 ) {
-				G.i2c = 'i2c';
-				G.i2ccols = settings[ 0 ];
+				G.inf = 'i2c';
 				G.i2caddress = settings[ 1 ];
 				G.i2cchip = settings[ 2 ];
 				$( '#infoSelectBox option[value='+ G.i2cchip +']' ).prop( 'selected', 1 );
 			} else {
-				G.i2c = 'gpio';
-				G.i2ccols = settings;
-				$( '#divi2c' ).hide();
+				G.inf = 'gpio';
 			}
-			$( '#infoRadio input[value='+ G.i2ccols +']' ).prop( 'checked', 1 )
-			$( '#infoRadio1 input[value='+ G.i2c +']' ).prop( 'checked', 1 )
+			$( '#infoRadio input[value='+ G.cols +']' ).prop( 'checked', 1 )
+			$( '#infoRadio1 input[value='+ G.inf +']' ).prop( 'checked', 1 )
+			$( '#divi2c' ).toggleClass( 'hide', G.inf === 'gpio' );
 			$( '#infoRadio1' ).click( function() {
 				$( '#divi2c' ).toggleClass( 'hide', $( '#infoRadio1 input:checked' ).val() === 'gpio' );
 			} );
@@ -317,18 +319,26 @@ $( '#setting-lcdchar' ).click( function() {
 			if ( $( '#infoSelectBox1 option' ).length === 1 ) $( '#infoSelectBox1' ).prop( 'disabled', 1 );
 			$( '#infoSelectBox, #infoSelectBox1' ).selectric();
 		}
+		, cancel   : function() {
+			$( '#lcdchar' ).prop( 'checked', 0 );
+		}
 		, ok       : function() {
 			var cols = $( '#infoRadio input:checked' ).val();
-			var chip = $( '#infoSelectBox').val();
-			var address = $( '#infoTextBox').val();
-			if ( cols === G.i2ccols && chip === G.i2cchip && address === G.i2caddress ) return
-			
-			if ( $( '#infoRadio1 input:checked' ).val() ) {
-				bash( [ 'lcdcharset', cols, chip, address, G.reboot.join( '\n' ) ] );
-			} else {
-				bash( [ 'lcdcharset', cols ] );
+			var inf = $( '#infoRadio1 input:checked' ).val();
+			var changed = cols !== G.cols || !G.lcdchar;
+			if ( inf === 'i2c' ) {
+				var chip = $( '#infoSelectBox').val();
+				var address = $( '#infoTextBox').val();
+				changed = changed || chip !== G.i2cchip || address !== G.i2caddress;
 			}
-			notify( 'Character LCD', 'Change ...', 'gear' );
+			if ( changed ) {
+				if ( $( '#infoRadio1 input:checked' ).val() === 'i2c' ) {
+					bash( [ 'lcdcharset', cols, chip, address, G.reboot.join( '\n' ) ] );
+				} else {
+					bash( [ 'lcdcharset', cols ] );
+				}
+				notify( 'Character LCD', 'Change ...', 'gear' );
+			}
 		}
 	} );
 } );
