@@ -185,14 +185,14 @@ $( '#setting-mixertype' ).click( function() { // hardware mixer
 			select[ val ] = val;
 		} );
 		info( {
-			  icon    : 'volume'
-			, title   : 'Hardware Mixer'
-			, message : 'Manually select hardware mixer:'
-					   +'<br>(Only if current one not working)'
+			  icon        : 'volume'
+			, title       : 'Hardware Mixer'
+			, message     : 'Manually select hardware mixer:'
+						   +'<br>(Only if current one not working)'
 			, selectlabel : 'Device'
-			, select  : select
-			, checked : hwmixer
-			, preshow : function() {
+			, select      : select
+			, checked     : hwmixer
+			, preshow     : function() {
 				$( '#infoOk' ).addClass( 'disabled' );
 				$( '#infoSelectBox' )
 					.selectric()
@@ -200,7 +200,7 @@ $( '#setting-mixertype' ).click( function() { // hardware mixer
 						$( '#infoOk' ).toggleClass( 'disabled', $( this ).val() === hwmixer );
 					} );
 			}
-			, ok      : function() {
+			, ok          : function() {
 				var name = $( '#audiooutput option:selected' ).text();
 				var mixermanual = $( '#infoSelectBox' ).val();
 				var mixerauto = mixermanual === 'auto';
