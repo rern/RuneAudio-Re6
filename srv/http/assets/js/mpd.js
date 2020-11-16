@@ -244,11 +244,12 @@ $( '#dop' ).click( function() {
 	bash( [ 'dop', checked, name ] );
 } );
 $( '#crossfade' ).click( function() {
-	if ( $( this ).prop( 'checked' ) ) {
+	var checked = $( this ).prop( 'checked' );
+	if ( checked ) {
 		$( '#setting-crossfade' ).click();
 	} else {
-		notify( 'Crossfade', G.crossfade > 0, 'mpd' );
-		bash( [ 'crossfade' ] );
+		notify( 'Crossfade', 'Disable ...', 'mpd' );
+		bash( [ 'crossfade', 0 ] );
 	}
 } );
 $( '#setting-crossfade' ).click( function() {
@@ -261,10 +262,7 @@ $( '#setting-crossfade' ).click( function() {
 			$( 'input[name=inforadio]' ).val( [ G.crossfade || 2 ] )
 		}
 		, cancel    : function() {
-			if ( !G.crossfade ) {
-				$( '#crossfade' ).prop( 'checked', 0 );
-				$( '#setting-crossfade' ).addClass( 'hide' );
-			}
+			if ( !G.crossfade ) $( '#crossfade' ).prop( 'checked', 0 );
 		}
 		, ok      : function() {
 			crossfade = $( 'input[name=inforadio]:checked' ).val();
@@ -277,34 +275,29 @@ $( '#setting-crossfade' ).click( function() {
 	} );
 } );
 $( '#normalization' ).click( function() {
-	G.normalization = $( this ).prop( 'checked' );
-	notify( 'Normalization', G.normalization, 'mpd' );
-	bash( [ 'normalization', G.normalization ] );
+	var checked = $( this ).prop( 'checked' );
+	notify( 'Normalization', checked, 'mpd' );
+	bash( [ 'normalization', checked ] );
 } );
 $( '#replaygain' ).click( function() {
-	if ( $( this ).prop( 'checked' ) ) {
+	var checked = $( this ).prop( 'checked' );
+	if ( checked ) {
 		$( '#setting-replaygain' ).click();
 	} else {
-		notify( 'Replay Gain', G.replaygain !== 'off', 'mpd' );
+		notify( 'Replay Gain', 'Disable ...', 'mpd' );
 		bash( [ 'replaygain' ] );
 	}
 } );
 $( '#setting-replaygain' ).click( function() {
 	info( {
-		  icon      : 'mpd'
-		, title     : 'Replay Gain'
-		, radio     : { Auto: 'auto', Album: 'album', Track: 'track' }
-		, preshow : function() {
-			var checked = G.replaygain === 'off' ? 'auto' : G.replaygain;
-			$( 'input[name=inforadio]' ).val( [ checked ] )
+		  icon    : 'mpd'
+		, title   : 'Replay Gain'
+		, radio   : { Auto: 'auto', Album: 'album', Track: 'track' }
+		, checked : G.replaygain === 'off' ? 'auto' : G.replaygain
+		, cancel  : function() {
+			if ( G.replaygain === 'off' ) $( '#replaygain' ).prop( 'checked', 0 );
 		}
-		, cancel    : function() {
-			if ( G.replaygain === 'off' ) {
-				$( '#replaygain' ).prop( 'checked', 0 );
-				$( '#setting-replaygain' ).addClass( 'hide' );
-			}
-		}
-		, ok        : function() {
+		, ok      : function() {
 			replaygain = $( 'input[name=inforadio]:checked' ).val();
 			if ( replaygain !== G.replaygain ) {
 				G.replaygain = replaygain;
@@ -315,30 +308,33 @@ $( '#setting-replaygain' ).click( function() {
 	} );
 } );
 $( '#autoupdate' ).click( function() {
-	G.autoupdate = $( this ).prop( 'checked' );
-	notify( 'Auto Update', G.autoupdate, 'mpd' );
-	bash( [ 'autoupdate', G.autoupdate ] );
+	var checked = $( this ).prop( 'checked' );
+	notify( 'Auto Update', checked, 'mpd' );
+	bash( [ 'autoupdate', checked ] );
+} );
+$( '#ffmpeg' ).click( function() {
+	var checked = $( this ).prop( 'checked' );
+	notify( 'FFmpeg Decoder', checked, 'mpd' );
+	bash( [ 'ffmpeg', checked ] );
 } );
 $( '#buffer' ).click( function() {
-	if ( $( this ).prop( 'checked' ) ) {
+	var checked = $( this ).prop( 'checked' );
+	if ( checked ) {
 		$( '#setting-buffer' ).click();
 	} else {
-		notify( 'Custom Buffer', 'Disable ...', 'mpd' );
-		bash( [ 'buffer' ] );
+		notify( 'Custom Audio Buffer', 'Disable ...', 'mpd' );
+		bash( [ 'buffer', 0 ] );
 	}
 } );
 $( '#setting-buffer' ).click( function() {
 	info( {
 		  icon      : 'mpd'
-		, title     : 'Audio Buffer'
+		, title     : 'Custom Audio Buffer'
 		, message   : '<code>audio_buffer_size</code> (default: 4096)'
 		, textlabel : 'Size <gr>(kB)</gr>'
 		, textvalue : G.buffer || 4096
 		, cancel    : function() {
-			if ( !G.buffer ) {
-				$( '#buffer' ).prop( 'checked', 0 );
-				$( '#setting-buffer' ).addClass( 'hide' );
-			}
+			if ( !G.buffer ) $( '#buffer' ).prop( 'checked', 0 );
 		}
 		, ok        : function() {
 			var buffer = $( '#infoTextBox' ).val().replace( /\D/g, '' );
@@ -362,7 +358,8 @@ $( '#setting-buffer' ).click( function() {
 	} );
 } );
 $( '#bufferoutput' ).click( function() {
-	if ( $( this ).prop( 'checked' ) ) {
+	var checked = $( this ).prop( 'checked' );
+	if ( checked ) {
 		$( '#setting-bufferoutput' ).click();
 	} else {
 		notify( 'Custom Output Buffer', 'Disable ...', 'mpd' );
@@ -372,22 +369,19 @@ $( '#bufferoutput' ).click( function() {
 $( '#setting-bufferoutput' ).click( function() {
 	info( {
 		  icon      : 'mpd'
-		, title     : 'Output Buffer'
+		, title     : 'Custom Output Buffer'
 		, message   : '<code>max_output_buffer_size</code> (default: 8192)'
 		, textlabel : 'Size <gr>(kB)</gr>'
 		, textvalue : G.bufferoutput || 8192
 		, cancel    : function() {
-			if ( !G.buffer ) {
-				$( '#bufferoutput' ).prop( 'checked', 0 );
-				$( '#setting-bufferoutput' ).addClass( 'hide' );
-			}
+			if ( !G.buffer ) $( '#bufferoutput' ).prop( 'checked', 0 );
 		}
 		, ok        : function() {
 			var buffer = $( '#infoTextBox' ).val().replace( /\D/g, '' );
 			if ( buffer < 8192 ) {
 				info( {
 					  icon    : 'mpd'
-					, title   : 'Output Buffer'
+					, title   : 'Custom Output Buffer'
 					, message : '<i class="fa fa-warning fa-lg wh"></i> Warning<br>'
 							   +'<br>Output buffer must be greater than <wh>8192 kB</wh>.'
 					, ok      : function() {
@@ -403,18 +397,17 @@ $( '#setting-bufferoutput' ).click( function() {
 		}
 	} );
 } );
-$( '#ffmpeg' ).click( function() {
-	G.ffmpeg = $( this ).prop( 'checked' );
-	notify( 'FFmpeg Decoder', G.ffmpeg, 'mpd' );
-	bash( [ 'ffmpeg', G.ffmpeg ] );
-} );
 $( '#filetype' ).click( function() {
 	$( '#divfiletype' ).toggleClass( 'hide' );
 } );
 $( '#soxr' ).click( function() {
-	G.soxr = $( this ).prop( 'checked' );
-	notify( 'Custom SoX Resampler', G.soxr, 'mpd' );
-	bash( [ 'soxr', G.soxr ] );
+	var checked = $( this ).prop( 'checked' );
+	if ( checked ) {
+		$( '#setting-soxr' ).click();
+	} else {
+		notify( 'Custom SoX Resampler', 'Disable ...', 'mpd' );
+		bash( [ 'soxrdisable' ] );
+	}
 } );
 var soxrinfo = heredoc( function() { /*
 	<div id="infoText" class="infocontent">
@@ -463,6 +456,7 @@ var soxrinfo = heredoc( function() { /*
 	</div>
 */ } );
 $( '#setting-soxr' ).click( function() {
+	if ( G.soxrset === 'very high' ) G.soxrset = '20 50 91.3 100 0 0';
 	info( {
 		  icon        : 'mpd'
 		, title       : 'Custom SoX Resampler'
@@ -489,6 +483,9 @@ $( '#setting-soxr' ).click( function() {
 			bash( [ 'soxrset', 20, 50, 91.3, 100, 0, 0 ] );
 		}
 		, buttonwidth : 1
+		, cancel      : function() {
+			if ( !G.soxr ) $( '#soxr' ).prop( 'checked', 0 );
+		}
 		, ok          : function() {
 			var args = [ $( '#infoSelectBox' ).val() ];
 			for ( i = 1; i < 5; i++ ) {

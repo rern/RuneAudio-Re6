@@ -320,7 +320,7 @@ $( '#setting-lcdchar' ).click( function() {
 			$( '#infoSelectBox, #infoSelectBox1' ).selectric();
 		}
 		, cancel   : function() {
-			$( '#lcdchar' ).prop( 'checked', 0 );
+			if ( !G.lcdchar ) $( '#lcdchar' ).prop( 'checked', 0 );
 		}
 		, ok       : function() {
 			var cols = $( '#infoRadio input:checked' ).val();
@@ -463,7 +463,7 @@ $( '#setting-soundprofile' ).click( function() {
 			} );
 		}
 		, cancel  : function() {
-			$( '#soundprofile' ).prop( 'checked', 0 );
+			if ( G.soundprofile === defaultval ) $( '#soundprofile' ).prop( 'checked', 0 );
 		}
 		, ok      : function() {
 			var soundprofile = $( '#infoTextBox' ).val();
