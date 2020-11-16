@@ -125,15 +125,10 @@ lcdcalibrate )
 	cp -f /etc/X11/{lcd$degree,xorg.conf.d/99-calibration.conf}
 	systemctl restart localbrowser
 	;;
-lcdchar )
-	enable=${args[1]}
-	if [[ $enable == true ]]; then
-		touch $dirsystem/lcdchar
-	else
-		sed -i '/dtparam=i2c_arm=on/ d' /boot/config.txt
-		sed -i '/i2c-bcm2708\|i2c-dev/ d' /etc/modules-load.d/raspberrypi.conf
-		rm $dirsystem/lcdchar
-	fi
+lcdchardisable )
+	sed -i '/dtparam=i2c_arm=on/ d' /boot/config.txt
+	sed -i '/i2c-bcm2708\|i2c-dev/ d' /etc/modules-load.d/raspberrypi.conf
+	rm $dirsystem/lcdchar
 	pushRefresh
 	;;
 lcdcharset )
@@ -141,9 +136,11 @@ lcdcharset )
 	chip=${args[2]}
 	address=${args[3]}
 	reboot=${args[4]}
+	touch $dirsystem/lcdchar
 	[[ $cols == 16 ]] && rows=2 || rows=4
 	if [[ -n $chip ]]; then
-		if [[ ! grep -q 'dtparam=i2c_arm=on' /boot/config.txt ]]; then
+		echo "${args[@]}" > /root/i2c
+		if ! grep -q 'dtparam=i2c_arm=on' /boot/config.txt; then
 			sed -i '$ a\dtparam=i2c_arm=on' /boot/config.txt
 			echo -n "\
 i2c-bcm2708
@@ -152,18 +149,19 @@ i2c-dev
 			echo "$reboot" > $filereboot
 		fi
 		sed -i -e "s/^\(address = \).*/\1$address
-" -e "s/^\(chip = \).*/\1'$chip'
-" -e "s/^\(cols = \).*/\1$cols
-" -e "s/^\(rows = \).*/\1$rows
+" -e "s/^\(chip = \).*/\1'$chip/'
+" -e "s/^\(cols = \).*/\1$cols/
+" -e "s/^\(rows = \).*/\1$rows/
 " -e '/RPLCD.i2c/,/i2c_expander/ s/^#//
 ' -e '/RPLCD.gpio/,/numbering_mode/ s/^/#/
 ' /srv/http/bash/lcdchar.py
 	else
-		sed -i "s/^\(cols = \).*/\1$cols
-" -e "s/^\(rows = \).*/\1$rows
+		echo "${args[@]}" > /root/gpio
+		sed -i -e "s/^\(cols = \).*/\1$cols/
+" -e "s/^\(rows = \).*/\1$rows/
 " -e '/RPLCD.i2c/,/i2c_expander/ s/^/#/
 ' -e '/RPLCD.gpio/,/numbering_mode/ s/^#//
-' /srv/http/bash/lcdchargpio.py
+' /srv/http/bash/lcdchar.py
 	fi
 	pushRefresh
 	;;
