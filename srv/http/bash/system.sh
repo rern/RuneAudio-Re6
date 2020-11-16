@@ -107,12 +107,13 @@ lcd )
 	enable=${args[1]}
 	if [[ $enable == true ]]; then
 		sed -i '1 s/$/ fbcon=map:10 fbcon=font:ProFont6x11/' /boot/cmdline.txt
-		echo -n "\
+		config="\
 hdmi_force_hotplug=1
-dtparam=i2c_arm=on
 dtparam=spi=on
-dtoverlay=tft35a:rotate=0
-" >> $fileconfig
+dtoverlay=tft35a:rotate=0"
+		! grep -q 'dtparam=i2c_arm=on' $fileconfig && config+="
+dtparam=i2c_arm=on"
+		echo -n "$config" >> $fileconfig
 		! grep -q 'i2c-bcm2708' $filemodule && echo -n "\
 i2c-bcm2708
 i2c-dev
