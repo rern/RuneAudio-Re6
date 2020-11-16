@@ -573,7 +573,6 @@ power )
 	type=${args[1]}
 	mpc stop
 	[[ -e $dirtmp/gpiotimer ]] && $dirbash/gpio.py off && sleep 2
-	grep -q 'dtparam=i2c_arm=on' /boot/config.txt && $dirbash/lcdchar.py rr
 	if [[ $type == off ]]; then
 		pushstream notify '{"title":"Power","text":"Off ...","icon":"power blink","delay":-1}'
 	else
@@ -582,6 +581,7 @@ power )
 	$dirbash/ply-image /srv/http/assets/img/splash.png &> /dev/null
 	mount | grep -q /mnt/MPD/NAS && umount -l /mnt/MPD/NAS/* &> /dev/null
 	sleep 3
+	grep -q 'dtparam=i2c_arm=on' /boot/config.txt && $dirbash/lcdchar.py rr
 	[[ $type == off ]] && shutdown -h now || shutdown -r now
 	;;
 refreshbrowser )
