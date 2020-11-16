@@ -318,6 +318,7 @@ $( '#setting-lcdchar' ).click( function() {
 			}
 			if ( $( '#infoSelectBox1 option' ).length === 1 ) $( '#infoSelectBox1' ).prop( 'disabled', 1 );
 			$( '#infoSelectBox, #infoSelectBox1' ).selectric();
+			$( '.extrabtn' ).toggleClass( 'hide', !G.lcdchar );
 		}
 		, cancel      : function() {
 			if ( !G.lcdchar ) $( '#lcdchar' ).prop( 'checked', 0 );
@@ -339,6 +340,7 @@ $( '#setting-lcdchar' ).click( function() {
 			}
 			if ( changed ) {
 				if ( $( '#infoRadio1 input:checked' ).val() === 'i2c' ) {
+					rebootText( 'Enable Character LCD' );
 					bash( [ 'lcdcharset', cols, chip, address, G.reboot.join( '\n' ) ] );
 				} else {
 					bash( [ 'lcdcharset', cols ] );
