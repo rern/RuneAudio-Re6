@@ -420,13 +420,16 @@ $( '#soundprofile' ).click( function() {
 	}
 } );
 $( '#setting-soundprofile' ).click( function() {
+	var defaultval = '1500 1000 60 18000000';
+	if ( !G.soundprofile ) G.soundprofile = defaultval;
+	var existing = G.soundprofile.split( ' ' );
 	if ( G.rpi01 ) {
 		var lat = [ 1500000, 850000, 500000, 120000, 500000, 1500000, 145655, 6000000 ];
 	} else {
 		var lat = [ 4500000, 3500075, 1000000, 2000000, 3700000, 1500000, 145655, 6000000 ];
 	}
 	var radio = {
-		  _Default  : '1500 1000 60 18000000'
+		  _Default  : defaultval
 		, RuneAudio : '1500 1000 0 '+ lat[ 0 ]
 		, _ACX      : '1500 4000 0 '+ lat[ 1 ]
 		, Orion     : '1000 4000 20 '+ lat[ 2 ]
@@ -437,7 +440,6 @@ $( '#setting-soundprofile' ).click( function() {
 		, _Custom   : 0
 	}
 	var values = Object.values( radio );
-	var existing = G.soundprofile.split( ' ' );
 	info( {
 		  icon    : 'volume'
 		, title   : 'Kernel Sound Profile'
@@ -468,7 +470,7 @@ $( '#setting-soundprofile' ).click( function() {
 			for ( i = 1; i < 4; i++ ) val += ' '+ $( '#infoTextBox'+ i ).val();
 			if ( soundprofile === G.soundprofile ) return
 				
-			if ( soundprofile === '1500 1000 60 18000000' ) { // default
+			if ( soundprofile === defaultval ) {
 				bash( [ 'soundprofiledisable' ] );
 			} else {
 				bash( [ 'soundprofileset', soundprofile ] );
