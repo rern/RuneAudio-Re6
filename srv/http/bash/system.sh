@@ -113,11 +113,11 @@ dtparam=i2c_arm=on
 dtparam=spi=on
 dtoverlay=tft35a:rotate=0
 " >> $fileconfig
-		cp -f /etc/X11/{lcd0,xorg.conf.d/99-calibration.conf}
-		echo -n "\
+		! grep -q 'i2c-bcm2708' $filemodule && echo -n "\
 i2c-bcm2708
 i2c-dev
 " >> $filemodule
+		cp -f /etc/X11/{lcd0,xorg.conf.d/99-calibration.conf}
 		sed -i 's/fb0/fb1/' /etc/X11/xorg.conf.d/99-fbturbo.conf
 		echo "${args[2]}" > $filereboot
 		touch $dirsystem/lcd

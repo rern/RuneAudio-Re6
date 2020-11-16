@@ -286,7 +286,7 @@ var infolcdchar = heredoc( function() { /*
 $( '#setting-lcdchar' ).click( function() {
 	info( {
 		  icon     : 'gear'
-		, title    : 'GPIO Character LCD'
+		, title    : 'Character LCD'
 		, content  : infolcdchar
 		, boxwidth : 180
 		, nofocus  : 1
@@ -344,14 +344,14 @@ $( '#setting-lcdchar' ).click( function() {
 } );
 $( '#lcd' ).click( function() {
 	G.lcd = $( this ).prop( 'checked' );
-	rebootText( G.lcd ? 'Enable' : G.lcd, 'GPIO 3.5" LCD' );
-	notify( 'GPIO 3.5" LCD', G.lcd, 'gear' );
+	rebootText( G.lcd ? 'Enable' : G.lcd, 'TFT LCD' );
+	notify( 'TFT LCD', G.lcd, 'gear' );
 	bash( [ 'lcd', G.lcd, G.reboot.join( '\n' ) ] );
 } );
 $( '#setting-lcd' ).click( function() {
 	info( {
 		  icon        : 'edit'
-		, title       : 'GPIO 3.5" LCD'
+		, title       : 'TFT LCD'
 		, message     : 'Calibrate touchscreen?'
 						+'<br>(Get stylus ready.)'
 		, oklabel     : 'Start'
