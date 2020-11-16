@@ -325,11 +325,11 @@ $( '#setting-lcdchar' ).click( function() {
 		, ok       : function() {
 			var cols = $( '#infoRadio input:checked' ).val();
 			var inf = $( '#infoRadio1 input:checked' ).val();
-			var changed = cols !== G.cols || !G.lcdchar;
+			var changed = !G.lcdchar || cols !== G.cols;
 			if ( inf === 'i2c' ) {
 				var chip = $( '#infoSelectBox').val();
-				var address = $( '#infoTextBox').val();
-				changed = changed || chip !== G.i2cchip || address !== G.i2caddress;
+				var address = $( '#infoSelectBox1').val();
+				changed = changed || inf !== G.inf || chip !== G.i2cchip || address !== G.i2caddress;
 			}
 			if ( changed ) {
 				if ( $( '#infoRadio1 input:checked' ).val() === 'i2c' ) {

@@ -5,6 +5,8 @@ dirsystem=$dirdata/system
 dirtmp=$dirdata/shm
 filebootlog=$dirtmp/bootlog
 filereboot=$dirtmp/reboot
+fileconfig=/boot/config.txt
+filemodule=/etc/modules-load.d/raspberrypi.conf
 
 # convert each line to each args
 readarray -t args <<< "$1"
@@ -28,12 +30,12 @@ btdiscoverable )
 	;;
 bluetooth )
 	if [[ ${args[1]} == true ]]; then
-		sed -i '$ a\dtparam=krnbt=on' /boot/config.txt
+		sed -i '$ a\dtparam=krnbt=on' $fileconfig
 		systemctl enable --now bluetooth
 		echo "${args[2]}" > $filereboot
 		touch $dirsystem/onboard-bluetooth
 	else
-		sed -i '/dtparam=krnbt=on/ d' /boot/config.txt
+		sed -i '/dtparam=krnbt=on/ d' $fileconfig
 		systemctl disable --now bluetooth
 		rm $dirsystem/onboard-bluetooth
 	fi
@@ -73,18 +75,18 @@ i2smodule )
 	aplayname=${args[1]}
 	output=${args[2]}
 	reboot=${args[3]}
-	dtoverlay=$( grep 'dtparam=i2c_arm=on\|dtparam=krnbt=on\|dtparam=spi=on\|dtoverlay=gpio\|dtoverlay=sdtweak,poll_once\|dtoverlay=tft35a\|hdmi_force_hotplug=1' /boot/config.txt )
-	sed -i '/dtparam=\|dtoverlay=\|^$/ d' /boot/config.txt
-	[[ -n $dtoverlay ]] && sed -i '$ r /dev/stdin' /boot/config.txt <<< "$dtoverlay"
+	dtoverlay=$( grep 'dtparam=i2c_arm=on\|dtparam=krnbt=on\|dtparam=spi=on\|dtoverlay=gpio\|dtoverlay=sdtweak,poll_once\|dtoverlay=tft35a\|hdmi_force_hotplug=1' $fileconfig )
+	sed -i '/dtparam=\|dtoverlay=\|^$/ d' $fileconfig
+	[[ -n $dtoverlay ]] && sed -i '$ r /dev/stdin' $fileconfig <<< "$dtoverlay"
 	if [[ ${aplayname:0:7} != bcm2835 ]]; then
 		lines="\
 dtparam=audio=off
 dtparam=i2s=on
 dtoverlay=${args[1]}"
-		sed -i '$ r /dev/stdin' /boot/config.txt <<< "$lines"
+		sed -i '$ r /dev/stdin' $fileconfig <<< "$lines"
 		rm -f $dirsystem/onboard-audio
 	else
-		sed -i '$ a\dtparam=audio=on' /boot/config.txt
+		sed -i '$ a\dtparam=audio=on' $fileconfig
 		touch $dirsystem/onboard-audio
 	fi
 	echo $aplayname > $dirsystem/audio-aplayname
@@ -101,19 +103,19 @@ hdmi_force_hotplug=1
 dtparam=i2c_arm=on
 dtparam=spi=on
 dtoverlay=tft35a:rotate=0
-" >> /boot/config.txt
+" >> $fileconfig
 		cp -f /etc/X11/{lcd0,xorg.conf.d/99-calibration.conf}
 		echo -n "\
 i2c-bcm2708
 i2c-dev
-" >> /etc/modules-load.d/raspberrypi.conf
+" >> $filemodule
 		sed -i 's/fb0/fb1/' /etc/X11/xorg.conf.d/99-fbturbo.conf
 		echo "${args[2]}" > $filereboot
 		touch $dirsystem/lcd
 	else
 		sed -i '1 s/ fbcon=map:10 fbcon=font:ProFont6x11//' /boot/cmdline.txt
-		sed -i '/hdmi_force_hotplug\|i2c_arm=on\|spi=on\|tft35a/ d' /boot/config.txt
-		sed -i '/i2c-bcm2708\|i2c-dev/ d' /etc/modules-load.d/raspberrypi.conf
+		sed -i '/hdmi_force_hotplug\|i2c_arm=on\|spi=on\|tft35a/ d' $fileconfig
+		sed -i '/i2c-bcm2708\|i2c-dev/ d' $filemodule
 		sed -i 's/fb1/fb0/' /etc/X11/xorg.conf.d/99-fbturbo.conf
 		rm $dirsystem/lcd
 	fi
@@ -121,13 +123,13 @@ i2c-dev
 	;;
 lcdcalibrate )
 	touch /srv/http/data/shm/calibrate
-	degree=$( grep rotate /boot/config.txt | cut -d= -f3 )
+	degree=$( grep rotate $fileconfig | cut -d= -f3 )
 	cp -f /etc/X11/{lcd$degree,xorg.conf.d/99-calibration.conf}
 	systemctl restart localbrowser
 	;;
 lcdchardisable )
-	sed -i '/dtparam=i2c_arm=on/ d' /boot/config.txt
-	sed -i '/i2c-bcm2708\|i2c-dev/ d' /etc/modules-load.d/raspberrypi.conf
+	sed -i '/dtparam=i2c_arm=on/ d' $fileconfig
+	sed -i '/i2c-bcm2708\|i2c-dev/ d' $filemodule
 	rm $dirsystem/lcdchar
 	pushRefresh
 	;;
@@ -138,30 +140,35 @@ lcdcharset )
 	reboot=${args[4]}
 	touch $dirsystem/lcdchar
 	[[ $cols == 16 ]] && rows=2 || rows=4
-	if [[ -n $chip ]]; then
-		echo "${args[@]}" > /root/i2c
-		if ! grep -q 'dtparam=i2c_arm=on' /boot/config.txt; then
-			sed -i '$ a\dtparam=i2c_arm=on' /boot/config.txt
-			echo -n "\
-i2c-bcm2708
-i2c-dev
-" >> /etc/modules-load.d/raspberrypi.conf
+	filelcdchar=/srv/http/bash/lcdchar.py
+
+	sed -i -e '/address = /,/i2c_expander/ s/^#//
+' -e '/RPLCD.gpio/,/numbering_mode/ s/^#//
+' $filelcdchar
+	if [[ -n $chip ]]; then ####################
+		if ! grep -q 'dtparam=i2c_arm=on' $fileconfig; then
+			sed -i '$ a\dtparam=i2c_arm=on' $fileconfig
 			echo "$reboot" > $filereboot
 		fi
-		sed -i -e "s/^\(address = \).*/\1$address/
-" -e "s/^\(chip = \).*/\1$chip/
-" -e "s/^\(cols = \).*/\1$cols/
-" -e "s/^\(rows = \).*/\1$rows/
-" -e '/^#address/,/i2c_expander/ s/^#//
+		! grep -q 'i2c-bcm2708' $filemodule && echo "\
+i2c-bcm2708
+i2c-dev" >> $filemodule
+		sed -i -e "s/^\(address = '\).*/\1$address'/
+" -e "s/\(chip = '\).*/\1$chip'/
+" -e "s/\(cols = \).*/\1$cols/
+" -e "s/\(rows = \).*/\1$rows/
+" -e '/address = /,/i2c_expander/ s/^#//
 ' -e '/RPLCD.gpio/,/numbering_mode/ s/^/#/
-' /srv/http/bash/lcdchar.py
-	else
-		sed -i -e "s/^\(cols = \).*/\1$cols/
-" -e "s/^\(rows = \).*/\1$rows/
-" -e '/^address/,/i2c_expander/ s/^/#/
+' $filelcdchar
+	else #########################################
+		sed -i '/dtparam=i2c_arm=on/ d' $fileconfig
+		sed -i '/i2c-bcm2708\|i2c-dev/ d' $filemodule
+		sed -i -e "s/\(cols = \).*/\1$cols/
+" -e "s/\(rows = \).*/\1$rows/
+" -e '/address = /,/i2c_expander/ s/^/#/
 ' -e '/RPLCD.gpio/,/numbering_mode/ s/^#//
-' /srv/http/bash/lcdchar.py
-	fi
+' $filelcdchar
+	fi ############################################
 	pushRefresh
 	;;
 onboardaudio )
@@ -172,7 +179,7 @@ onboardaudio )
 		onoff=off
 		rm $dirsystem/onboard-audio
 	fi
-	sed -i "s/\(dtparam=audio=\).*/\1$onoff/" /boot/config.txt
+	sed -i "s/\(dtparam=audio=\).*/\1$onoff/" $fileconfig
 	echo "${args[2]}" > $filereboot
 	pushRefresh
 	;;
