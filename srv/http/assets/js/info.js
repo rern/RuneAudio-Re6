@@ -526,7 +526,6 @@ function checkRequired() {
 	$( '#infoOk' ).toggleClass( 'disabled', $empty.length > 0 );
 }
 function renderOption( $el, htm, chk ) {
-		console.log( splitcols )
 	$el.html( htm ).promise().done( function() {
 		$el.removeClass( 'hide' );
 		if ( $el.prop( 'id' ) === 'infoCheckBox' ) { // by index
