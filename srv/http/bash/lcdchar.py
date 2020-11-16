@@ -75,7 +75,7 @@ for i in range( 1, 7 ):
     exec( field[ i ] +' = "'+ sys.argv[ i ][ :cols ]+'"' )
     
 if title == '':
-    title = '. . .'
+    title = '- - -'
 elapsed = elapsed != 'false' and round( float( elapsed ) )
 total = total != 'false' and round( float( total ) )
 
