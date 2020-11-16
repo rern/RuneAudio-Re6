@@ -111,6 +111,7 @@ infocontenthtml = heredoc( function() { /*
 			<p id="infoFooter" class="infomessage hide"></p>
 */ } );
 var infoscroll = 0;
+var splitcols = 0;
 
 $( 'body' ).prepend( containerhtml );
 
@@ -400,9 +401,21 @@ function info( O ) {
 				var html = O.radio;
 			} else {
 				var html = '';
+				var cl, label, br;
 				$.each( O.radio, function( key, val ) {
+					if ( key[ 0 ] === '_' ) {
+						splitcols = 1;
+						cl = ' class="splitl"';
+						label = key.substring( 1 );
+						br = '';
+					} else {
+						cl = ' class="splitr"';
+						label = key;
+						br = '<br>';
+					}
 					// <label> for clickable label
-					html += '<label><input type="radio" name="inforadio" value="'+ val.toString().replace( /"/g, '&quot;' ) +'">&ensp;'+ key +'</label><br>';
+					html += '<label'+ cl +'><input type="radio" name="inforadio" value="'
+							+ val.toString().replace( /"/g, '&quot;' )+'">&ensp;'+ label +'</label>'+ br;
 				} );
 			}
 			if ( 'radiohr' in O ) $( '#infoRadio' ).after( '<hr>' );
@@ -413,8 +426,20 @@ function info( O ) {
 				var html = O.checkbox;
 			} else {
 				var html = '';
+				var cl, label, br;
 				$.each( O.checkbox, function( key, val ) {
-					html += '<label><input type="checkbox" value="'+ val.toString().replace( /"/g, '&quot;' ) +'">&ensp;'+ key +'</label><br>';
+					if ( key[ 0 ] === '_' ) {
+						splitcols = 1;
+						cl = ' class="splitl"';
+						label = key.substring( 1 );
+						br = '';
+					} else {
+						cl = ' class="splitr"';
+						label = key;
+						br = '<br>';
+					}
+					html += '<label'+ cl +'><input type="checkbox" name="'+ val +'" value="'
+							+ val.toString().replace( /"/g, '&quot;' )+'">&ensp;'+ label +'</label>'+ br;
 				} );
 			}
 			if ( 'checkboxhr' in O ) $( '#infoCheckBox' ).after( '<hr>' );
@@ -501,22 +526,44 @@ function checkRequired() {
 	$( '#infoOk' ).toggleClass( 'disabled', $empty.length > 0 );
 }
 function renderOption( $el, htm, chk ) {
-	$el.html( htm ).removeClass( 'hide' );
-	if ( $el.prop( 'id' ) === 'infoCheckBox' ) { // by index
-		if ( !chk ) return;
-		
-		var checked = typeof chk === 'object' ? chk : [ chk ];
-		checked.forEach( function( val ) {
-			$el.find( 'input' ).eq( val ).prop( 'checked', true );
-		} );
-	} else {                                    // by value
-		var opt = $el.prop( 'id' ) === 'infoSelectBox' ? 'option' : 'input';
-		if ( chk === '' ) { // undefined
-			$el.find( opt ).eq( 0 ).prop( 'checked', true );
-		} else {
-			$el.find( opt +'[value="'+ chk +'"]' ).prop( opt === 'option' ? 'selected' : 'checked', true );
+		console.log( splitcols )
+	$el.html( htm ).promise().done( function() {
+		$el.removeClass( 'hide' );
+		if ( $el.prop( 'id' ) === 'infoCheckBox' ) { // by index
+			if ( chk ) {
+				var checked = typeof chk === 'object' ? chk : [ chk ];
+				checked.forEach( function( val ) {
+					$el.find( 'input' ).eq( val ).prop( 'checked', true );
+				} );
+			}
+		} else {                                    // by value
+			var opt = $el.prop( 'id' ) === 'infoSelectBox' ? 'option' : 'input';
+			if ( chk === '' ) { // undefined
+				$el.find( opt ).eq( 0 ).prop( 'checked', true );
+			} else {
+				$el.find( opt +'[value="'+ chk +'"]' ).prop( opt === 'option' ? 'selected' : 'checked', true );
+			}
 		}
-	}
+		if ( !splitcols ) return
+	
+		setTimeout( function() {
+			var types = []
+			if ( $( '#infoRadio label' ).length ) types.push( 'Radio' );
+			if ( $( '#infoCheckBox label' ).length ) types.push( 'CheckBox' );
+			types.forEach( function( type ) {
+				[ 'splitl', 'splitr' ].forEach( function( cl ) {
+					var $el = $( '#info'+ type +' label.'+ cl );
+					var widest = 0;
+					var pad = cl === 'splitl' ? 20 : 5;
+					$el.each( function() {
+						w = $( this ).width();
+						if ( w > widest ) widest = w;
+					} );
+					$el.width( widest + pad );
+				} );
+			} );
+		}, 0 );
+	} );
 }
 function verifyPassword( title, pwd, fn ) {
 	info( {

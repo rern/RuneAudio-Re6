@@ -161,6 +161,7 @@ hr {
 	font-size: 16px;
 }
 #infoContent label {
+	display: inline-block;
 	margin: 0;
 	font-weight: normal;
 }
