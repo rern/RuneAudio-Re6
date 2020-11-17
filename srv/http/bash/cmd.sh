@@ -114,7 +114,7 @@ pushstreamStatus() {
 	rm -f $flag
 	if [[ -e /srv/http/data/system/lcdchar ]]; then
 		killall lcdchar.py &> /dev/null
-		readarray -t data <<< "$( echo "$status" | jq -r '.Artist, .Title, .Album, .elapsed, .Time, .state' )"
+		readarray -t data <<< "$( echo "$status" | jq -r '.Artist, .Title, .Album, .elapsed, .Time, .state' | sed 's/^$/false/' )"
 		/srv/http/bash/lcdchar.py "${data[@]}" &
 	fi
 }
