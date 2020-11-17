@@ -161,7 +161,7 @@ dtparam=audio=on
 fi
 
 if [[ -e $dirsystem/lcdchar ]]; then
-	val=$( cat $dirsystem/lcdchar | tr ' ' '\n' )
+	val=$( cat $dirsystem/lcdchar )
 	/srv/http/bash/system.sh lcdcharset$'\n'"$val"
 fi
 
