@@ -144,12 +144,12 @@ else:
 istate = state == 'stop' and  istop or ( state == 'pause' and ipause or iplay )
 progress = istate + progress
 
-l = len( progress )
-if l <= cols - 3: progress += ' ' * ( cols - 2 - l ) + irr
+progl = len( progress )
+if progl <= cols - 3: progress += ' ' * ( cols - progl - 2 ) + irr
 
-lines = rows == 2 and title + rn or artist + rn + title + rn + album + rn
+lines = rows == 2 and title or artist + rn + title + rn + album
 
-lcd.write_string( lines + progress[ :cols ] )
+lcd.write_string( lines + rn + progress[ :cols ] )
 lcd.close()
     
 if state == 'stop' or state == 'pause': quit()
