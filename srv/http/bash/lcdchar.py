@@ -118,7 +118,9 @@ def second2hhmmss( sec ):
     return HH + MM + SS
 
 field = [ '', 'artist', 'title', 'album', 'elapsed', 'total', 'state' ] # assign variables
-for i in range( 1, 7 ): exec( field[ i ] +' = "'+ sys.argv[ i ][ :cols ]+'"' )
+for i in range( 1, 7 ):
+    val = sys.argv[ i ][ :cols ].replace( '"', '\\"' ) # escape "
+    exec( field[ i ] +' = "'+ val +'"' )
     
 if title == '': title = rows == 2 and artist or '* * *'
     
