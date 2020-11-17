@@ -340,7 +340,7 @@ $( '#setting-lcdchar' ).click( function() {
 			}
 			if ( changed ) {
 				if ( $( '#infoRadio1 input:checked' ).val() === 'i2c' ) {
-					rebootText( 'Enable Character LCD' );
+					rebootText( 'Enable', 'Character LCD' );
 					bash( [ 'lcdcharset', cols, chip, address, G.reboot.join( '\n' ) ] );
 				} else {
 					bash( [ 'lcdcharset', cols ] );
