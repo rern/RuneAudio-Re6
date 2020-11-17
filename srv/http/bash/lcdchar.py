@@ -99,6 +99,7 @@ if len( sys.argv ) == 2: # splash or single argument string
             version = '     '+ irr + rn +'     R+R '+ ver
         lcd.write_string( version )
     else:
+        lcd.auto_linebreaks = True
         lcd.clear()
         lcd.write_string( argv1 )
     lcd.close()
@@ -160,6 +161,7 @@ while True: # play
     
     elapsed += 1
     progress = iplay + second2hhmmss( elapsed ) + totalhhmmss
+    if len( progress ) > 17: progress += '  '
     lcd.cursor_pos = ( row, 0 )
-    lcd.write_string( progress )
+    lcd.write_string( progress[ :cols ] )
     
