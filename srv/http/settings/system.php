@@ -109,8 +109,8 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<i id="setting-lcdchar" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
 		Support 16x2, 20x4 and 40x4 LCD modules via I&#178;C and GPIO wiring.
-		<br>&emsp; - I&#178;C 5V / 3.3V: For peace of mind, <a href="https://www.instructables.com/Raspberry-Pi-Using-1-I2C-LCD-Backpacks-for-1602-Sc/">Fixing the Incompatibility</a> or use a level converter board.
-		<br>&emsp; - if nothing displayed, adjust contrast with blue potentiometer on I&#178;C board.
+		<br>5V I&#178;C to 3.3V I&#178;C + 5V LCD: <a href="https://www.instructables.com/Raspberry-Pi-Using-1-I2C-LCD-Backpacks-for-1602-Sc/">Fixing the Incompatibility</a>
+		<br>Adjust contrast with blue potentiometer on I&#178;C board. (Blank display might need it as well.)
 	</span>
 </div>
 <div class="col-l">LCD - TFT</div>
