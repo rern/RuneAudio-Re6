@@ -324,7 +324,7 @@ $( '#setting-lcdchar' ).click( function() {
 			if ( !G.lcdchar ) $( '#lcdchar' ).prop( 'checked', 0 );
 		}
 		, buttonlabel : [ 'Splash', 'Off' ]
-		, buttoncolor : [ '',       '#de810e' ]
+		, buttoncolor : [ '#448822',       '#de810e' ]
 		, button      : [ 
 			  function() { bash( '/srv/http/bash/lcdchar.py rr' ) }
 			, function() { bash( '/srv/http/bash/lcdchar.py off' ) }
