@@ -199,13 +199,11 @@ if [[ ${file:0:4} == http ]]; then
 		[[ $Name != $stationname ]] && albumname=$Name || albumname=$file 
 ########
 		status=$( sed '/^, "webradio".*/ d' <<< "$status" )
-		if [[ $file0 =~ radioparadise.com ]]; then
-			radioparadise=1
-			if [[ $state == play ]]; then
-				albumname=$stationname
-				stationname=${Title/ - *}
-				titlename=${Title/* - }
-			fi
+		if [[ $state == play ]]; then
+			albumname=$stationname
+			readarray -t radioname <<< "$( sed 's/\s*$//; s/ - \|: /\n/g' <<< "$Title" )"
+			stationname=${radioname[0]}
+			titlename=${radioname[1]}
 		fi
 ########
 		status+='
@@ -339,7 +337,7 @@ if [[ $ext == Radio || -e $dirtmp/webradio ]]; then # webradio start - 'file:' m
 			coverart=/data/shm/online-$name.$date.${file/*.}
 		else
 			killall status-coverartonline.sh &> /dev/null # new track - kill if still running
-			if [[ -n $radioparadise ]]; then
+			if [[ $file0 =~ radioparadise.com ]]; then
 				/srv/http/bash/status-coverartonline.sh "$data"$'\n'$file0 &> /dev/null &
 			else
 				/srv/http/bash/status-coverartonline.sh "$data"$'\ntitle' &> /dev/null &
