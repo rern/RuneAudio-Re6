@@ -252,7 +252,8 @@ $( '#lcdchar' ).click( function() {
 		$( '#setting-lcdchar' ).click();
 	} else {
 		notify( "Character LCD", 'Disable ...', 'gear' );
-		bash( [ 'lcdchardisable' ] );
+		rebootText( 'Disble', 'Character LCD' );
+		bash( [ 'lcdchardisable' ], G.reboot.join( '\n' ) );
 	}
 } );
 var infolcdchar = heredoc( function() { /*
@@ -339,12 +340,11 @@ $( '#setting-lcdchar' ).click( function() {
 				changed = changed || inf !== G.inf || chip !== G.i2cchip || address !== G.i2caddress;
 			}
 			if ( changed ) {
-				if ( $( '#infoRadio1 input:checked' ).val() === 'i2c' ) {
-					rebootText( 'Enable', 'Character LCD' );
-					bash( [ 'lcdcharset', cols, chip, address, G.reboot.join( '\n' ) ] );
-				} else {
-					bash( [ 'lcdcharset', cols ] );
-				}
+				rebootText( 'Enable', 'Character LCD' );
+				var cmd = [ 'lcdcharset', cols ];
+				if ( $( '#infoRadio1 input:checked' ).val() === 'i2c' ) cmd.push( chip, address );
+				cmd.push( G.reboot.join( '\n' ) );
+				bash( cmd );
 				notify( 'Character LCD', 'Change ...', 'gear' );
 			}
 		}

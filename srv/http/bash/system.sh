@@ -105,6 +105,7 @@ dtoverlay=${args[1]}"
 	;;
 lcd )
 	enable=${args[1]}
+	reboot=${args[2]}
 	if [[ $enable == true ]]; then
 		sed -i '1 s/$/ fbcon=map:10 fbcon=font:ProFont6x11/' /boot/cmdline.txt
 		config="\
@@ -120,7 +121,6 @@ i2c-dev
 " >> $filemodule
 		cp -f /etc/X11/{lcd0,xorg.conf.d/99-calibration.conf}
 		sed -i 's/fb0/fb1/' /etc/X11/xorg.conf.d/99-fbturbo.conf
-		echo "${args[2]}" > $filereboot
 		touch $dirsystem/lcd
 	else
 		sed -i '1 s/ fbcon=map:10 fbcon=font:ProFont6x11//' /boot/cmdline.txt
@@ -129,6 +129,7 @@ i2c-dev
 		sed -i 's/fb1/fb0/' /etc/X11/xorg.conf.d/99-fbturbo.conf
 		rm $dirsystem/lcd
 	fi
+	echo "$reboot" > $filereboot
 	pushRefresh
 	;;
 lcdcalibrate )
@@ -141,6 +142,7 @@ lcdchardisable )
 	sed -i '/dtparam=i2c_arm=on/ d' $fileconfig
 	sed -i '/i2c-bcm2708\|i2c-dev/ d' $filemodule
 	rm $dirsystem/lcdchar
+	echo "${args[1]}" > $filereboot
 	pushRefresh
 	;;
 lcdcharset )
