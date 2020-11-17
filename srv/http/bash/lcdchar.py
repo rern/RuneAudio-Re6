@@ -88,7 +88,7 @@ istop = '\x02 '
 irr = '\x03\x04'
 rn = '\r\n'
 
-if len( sys.argv ) == 2: # splash or single argument string
+if len( sys.argv ) == 2: # rr - splash or single argument string (^ = linebreak)
     if argv1 == 'rr':
         file = open( '/srv/http/data/system/version' )
         ver = file.read()
@@ -101,7 +101,7 @@ if len( sys.argv ) == 2: # splash or single argument string
     else:
         lcd.auto_linebreaks = True
         lcd.clear()
-        lcd.write_string( argv1 )
+        lcd.write_string( argv1.replace( '^', rn ) )
     lcd.close()
     quit()
 
