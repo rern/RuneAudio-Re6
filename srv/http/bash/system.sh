@@ -149,8 +149,9 @@ lcdcharset )
 	cols=${args[1]}
 	chip=${args[2]}
 	address=${args[3]}
-	reboot=${args[4]}
-	touch $dirsystem/lcdchar
+	charmap=${args[4]}
+	reboot=${args[5]}
+	echo ${args[@]} > $dirsystem/lcdcharset
 	[[ $cols == 16 ]] && rows=2 || rows=4
 	filelcdchar=/srv/http/bash/lcdchar.py
 

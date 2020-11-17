@@ -8,6 +8,7 @@ if len( sys.argv ) == 1: quit()
 
 cols = 20
 rows = 4
+charmap = 'A00'
 
 ### i2c
 address = 0x27
@@ -15,11 +16,11 @@ chip = 'PCF8574'
 
 from RPLCD.i2c import CharLCD
 lcd = CharLCD( chip, address )
-lcd = CharLCD( cols=cols, rows=rows, address=address, i2c_expander=chip, auto_linebreaks=False )
+lcd = CharLCD( cols=cols, rows=rows, charmap=charmap, address=address, i2c_expander=chip, auto_linebreaks=False )
 
 ### gpio
 #from RPLCD.gpio import CharLCD
-#lcd = CharLCD( cols=cols, rows=rows, numbering_mode=GPIO.BOARD, pin_rs=15, pin_rw=18, pin_e=16, pins_data=[21, 22, 23, 24], auto_linebreaks=False )
+#lcd = CharLCD( cols=cols, rows=rows, charmap=charmap, numbering_mode=GPIO.BOARD, pin_rs=15, pin_rw=18, pin_e=16, pins_data=[21, 22, 23, 24], auto_linebreaks=False )
 
 argv1 = sys.argv[ 1 ] # backlight on/off
 if argv1 == 'on' or argv1 == 'off':

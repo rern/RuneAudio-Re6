@@ -85,7 +85,7 @@ data+='
 	, "lcd"            : '$( grep -q dtoverlay=tft35a /boot/config.txt && echo true || echo false )'
 	, "lcdchar"        : '$( [[ -e $dirsystem/lcdchar ]] && echo true || echo false )'
 	, "lcdcharaddr"    : "'$lcdcharaddr'"
-	, "lcdcharset"     : "'$( grep '^address\|^chip\|^cols' /srv/http/bash/lcdchar.py | cut -d' ' -f3 | tr -d "'" )'"
+	, "lcdcharset"     : "'$( grep '^cols\|^charmap\|^address\|^chip' /srv/http/bash/lcdchar.py | cut -d' ' -f3 | tr -d "'" )'"
 	, "mpd"            : "'$( pacman -Q mpd 2> /dev/null |  cut -d' ' -f2 )'"
 	, "mpdstats"       : "'$( jq '.song, .album, .artist' /srv/http/data/mpd/counts 2> /dev/null )'"
 	, "ntp"            : "'$( grep '^NTP' /etc/systemd/timesyncd.conf | cut -d= -f2 )'"

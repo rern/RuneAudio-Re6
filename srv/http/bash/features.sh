@@ -168,10 +168,12 @@ mpdscribble )
 	pushRefresh
 	;;
 mpdscribbleset )
-	sed -i -e "s/^\(username =\).*/\1 ${args[1]}/
-	" -e "s/^\(password =\).*/\1 ${args[2]}/
+	user=${args[1]}
+	pwd=${args[2]}
+	sed -i -e "s/^\(username =\).*/\1 $user/
+	" -e "s/^\(password =\).*/\1 $pwd/
 	" /etc/mpdscribble.conf
-	echo -e "${args[1]}\n${args[2]}" > $dirsystem/mpdscribble-login
+	echo -e "$user\n$pwd" > $dirsystem/mpdscribble-login
 	if systemctl restart mpdscribble@mpd; then
 		touch $dirsystem/mpdscribble
 	else

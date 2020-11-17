@@ -26,14 +26,7 @@ chmod 755 /srv/http/* /srv/http/bash/* /srv/http/settings/*
 # hostname
 if [[ $( cat $dirsystem/hostname ) != RuneAudio ]]; then
 	hostname=$( cat $dirsystem/hostname )
-	hostnamelc=$( echo $hostname | tr '[:upper:]' '[:lower:]' )
-	hostnamectl set-hostname $hostnamelc
-	sed -i "s/\(.*\[\).*\(\] \[.*\)/\1$hostnamelc\2/" /etc/avahi/services/runeaudio.service
-	sed -i "s/^\(ssid=\).*/\1$hostname/" /etc/hostapd/hostapd.conf &> /dev/null
-	sed -i "s/\(netbios name = \"\).*/\1+ $hostnamelc +\"/" /etc/samba/smb.conf &> /dev/null
-	sed -i "/ExecStart/ s/\\w*$/$hostname/" /etc/systemd/system/wsdd.service &> /dev/null
-	sed -i "s/^\(name = \).*/\1$hostname" /etc/shairport-sync.conf &> /dev/null
-	sed -i "s/^\(friendlyname = \).*/\1$hostname/" /etc/upmpdcli.conf &> /dev/null
+	/srv/http/bash/system.sh hostname$'\n'$hostname
 fi
 # chromium
 if [[ -e /usr/bin/chromium ]]; then
@@ -60,20 +53,12 @@ if ls $dirsystem/fstab-* &> /dev/null; then
 	mount -a
 fi
 # hostapd
-if [[ -e /usr/bin/hostapd ]]; then
-	if [[ -e $dirsystem/accesspoint-passphrase ]]; then
-		passphrase=$( cat $dirsystem/accesspoint-passphrase )
-		ip=$( cat $dirsystem/accesspoint-ip )
-		iprange=$( cat $dirsystem/accesspoint-iprange )
-		sed -i -e "/wpa\|rsn_pairwise/ s/^#*//
-" -e "s/\(wpa_passphrase=\).*/\1$passphrase/
-" /etc/hostapd/hostapd.conf
-		sed -i -e "s/^\(dhcp-range=\).*/\1$iprange/
-" -e "s/^\(dhcp-option-force=option:router,\).*/\1$ip/
-" -e "s/^\(dhcp-option-force=option:dns-server,\).*/\1$ip/
-" /etc/dnsmasq.conf
-	fi
-	[[ -e $dirsystem/accesspoint ]] && enable+=' hostapd'
+if [[ -e /usr/bin/hostapd && -e $dirsystem/accesspoint ]]; then
+	enable+=' hostapd'
+	iprange=$( cat $dirsystem/accesspoint-iprange )
+	router=$( cat $dirsystem/accesspoint-ip )
+	password=$( cat $dirsystem/accesspoint-passphrase )
+	/srv/http/bash/features.sh accesspointset$'\n'"$iprange"$'\n'"$router"$'\n'"$password"
 fi
 # login
 [[ -e $dirsystem/login ]] && sed -i 's/\(bind_to_address\).*/\1           "127.0.0.1"/' /etc/mpd.conf
@@ -92,9 +77,7 @@ fi
 # mpdscribble
 file=$dirsystem/mpdscribble
 if [[ -e $file ]]; then
-	sed -i -e 's/^\(username =\).*/\1 "'$( sed -n '1 p' $file )'"/
-' -e 's/^\(password =\).*/\1 "'$( sed -n '2 p' $file )'"/
-' /etc/mpdscribble.conf
+	/srv/http/bash/features.sh mpdscribbleset$'\n'"$( cat $file )"
 	[[ -e $dirsystem/mpdscribble ]] && enable+=' mpdscribble'
 fi
 # ntp
@@ -121,24 +104,7 @@ fi
 # timezone
 [[ -e $dirsystem/timezone ]] && timedatectl set-timezone $( cat $dirsystem/timezone )
 # upmpdcli
-if [[ -e /usr/bin/upmpdcli && -e $dirsystem/upnp ]]; then
-	file=$dirsystem/upnp
-	setUpnp() {
-		user=( $( cat $dirsystem/upnp-$1user ) )
-		pass=( $( cat $dirsystem/upnp-$1pass ) )
-		quality=( $( cat $dirsystem/upnp-$1quality 2> /dev/null ) )
-		[[ $1 == qobuz ]] && qlty=formatid || qlty=quallity
-		sed -i -e "s/#*\($1user = \).*/\1$user/
-" -e "s/#*\($1pass = \).*/\1$pass/
-" -e "s/#*\($1$qlty = \).*/\1$quality/
-" /etc/upmpdcli.conf
-	}
-	[[ -e $file-gmusicuser ]] && setUpnp gmusic
-	[[ -e $file-qobuzuser ]] && setUpnp qobuz
-	[[ -e $file-tidaluser ]] && setUpnp tidal
-	[[ -e $file-spotifyuser ]] && setUpnp spotify
-	[[ -e $file ]] && enable+=' upmpdcli'
-fi
+[[ -e /usr/bin/upmpdcli && -e $dirsystem/upnp ]] && enable+=' upmpdcli'
 
 ### config.txt
 # remove before reinstate
@@ -194,20 +160,13 @@ dtparam=audio=on
 "
 fi
 
+if [[ -e $dirsystem/lcdchar ]]; then
+	val=$( cat $dirsystem/lcdchar | tr ' ' '\n' )
+	/srv/http/bash/system.sh lcdcharset$'\n'"$val"
+fi
+
 if [[ -e $dirsystem/lcd ]]; then
-	sed -i '1 s/$/ console=ttyAMA0,115200 fbcon=map:10 fbcon=font:ProFont6x11/' /boot/cmdline.txt
-	cp {$dirsystem,/etc/X11/xorg.conf.d}/99-calibration.conf
-	config+="\
-hdmi_force_hotplug=1
-dtparam=i2c_arm=on
-dtparam=spi=on
-dtoverlay=tft35a
-"
-	echo -n "\
-i2c-bcm2708
-i2c-dev
-" >> /etc/modules-load.d/raspberrypi.conf
-	sed -i 's/fb0/fb1/' /usr/share/X11/xorg.conf.d/99-fbturbo.conf
+	/srv/http/bash/system.sh lcd lcd$'\n'true
 fi
 
 [[ -n $config ]] && echo -n "$config" >> /boot/config.txt

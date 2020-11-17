@@ -287,6 +287,7 @@ var infolcdchar = heredoc( function() { /*
 		<div id="infotextlabel">
 			<a class="infolabel"><px20/>Expander</a>
 			<a class="infolabel">Address</a>
+			<a class="infolabel">Character Map</a>
 		</div>
 		<div id="infotextbox">
 			<select class="infohtml" id="infoSelectBox">
@@ -296,6 +297,10 @@ var infolcdchar = heredoc( function() { /*
 			</select>
 			<select class="infohtml" id="infoSelectBox1">
 				<option value="0x27">0x27</option>
+			</select>
+			<select class="infohtml" id="infoSelectBox2">
+				<option value="A00">A00</option>
+				<option value="A02">A02</option>
 			</select>
 		</div>
 	</div>
@@ -310,10 +315,12 @@ $( '#setting-lcdchar' ).click( function() {
 		, preshow     : function() {
 			var settings = G.lcdcharset.split( ' ' );
 			G.cols = settings[ 0 ];
-			if (  settings.length > 1 ) {
+			G.charmap = settings[ 1 ];
+			$( '#infoSelectBox2 option[value='+ G.charmap +']' ).prop( 'selected', 1 );
+			if (  settings.length > 2 ) {
 				G.inf = 'i2c';
-				G.i2caddress = settings[ 1 ];
-				G.i2cchip = settings[ 2 ];
+				G.i2caddress = settings[ 2 ];
+				G.i2cchip = settings[ 3 ];
 				$( '#infoSelectBox option[value='+ G.i2cchip +']' ).prop( 'selected', 1 );
 			} else {
 				G.inf = 'gpio';
@@ -334,7 +341,7 @@ $( '#setting-lcdchar' ).click( function() {
 				$( '#infoSelectBox1 option[value='+ G.i2caddress +']' ).prop( 'selected', 1 );
 			}
 			if ( $( '#infoSelectBox1 option' ).length === 1 ) $( '#infoSelectBox1' ).prop( 'disabled', 1 );
-			$( '#infoSelectBox, #infoSelectBox1' ).selectric();
+			$( '#infoSelectBox, #infoSelectBox1, #infoSelectBox2' ).selectric();
 			$( '.extrabtn' ).toggleClass( 'hide', !G.lcdchar );
 		}
 		, cancel      : function() {
@@ -348,8 +355,9 @@ $( '#setting-lcdchar' ).click( function() {
 		]
 		, ok          : function() {
 			var cols = $( '#infoRadio input:checked' ).val();
+			var charmap = $( '#infoSelectBox2').val();
+			var changed = !G.lcdchar || cols !== G.cols || charmap !== G.charmap;
 			var inf = $( '#infoRadio1 input:checked' ).val();
-			var changed = !G.lcdchar || cols !== G.cols;
 			if ( inf === 'i2c' ) {
 				var chip = $( '#infoSelectBox').val();
 				var address = $( '#infoSelectBox1').val();
@@ -357,7 +365,7 @@ $( '#setting-lcdchar' ).click( function() {
 			}
 			if ( changed ) {
 				rebootText( 'Enable', 'Character LCD' );
-				var cmd = [ 'lcdcharset', cols ];
+				var cmd = [ 'lcdcharset', cols, charmap ];
 				if ( $( '#infoRadio1 input:checked' ).val() === 'i2c' ) cmd.push( chip, address );
 				cmd.push( G.reboot.join( '\n' ) );
 				bash( cmd );
