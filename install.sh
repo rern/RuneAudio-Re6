@@ -8,6 +8,8 @@ installstart "$1"
 
 getinstallzip
 
+echo 1500 1000 60 18000000 > /srv/http/data/system/soundprofile
+
 file=/srv/http/data/system/mpd-soxrset
 [[ ! -e $file ]] && cat <<[-]EOF > $file
 	quality        "custom"
