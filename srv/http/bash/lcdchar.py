@@ -121,9 +121,9 @@ def second2hhmmss( sec ):
 field = [ '', 'artist', 'title', 'album', 'elapsed', 'total', 'state' ] # assign variables
 for i in range( 1, 7 ):
     val = sys.argv[ i ][ :cols ].replace( '"', '\\"' ) # escape "
-    exec( field[ i ] +' = "'+ val +'"' )
+    exec( field[ i ] +' = "'+ val.rstrip() +'"' )      # fix last space error - remove
     
-if title == '': title = rows == 2 and artist or '* * *'
+if title == 'false': title = rows == 2 and artist or '* * *'
     
 if total != 'false':
     total = round( float( total ) )
