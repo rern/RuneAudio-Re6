@@ -199,9 +199,25 @@ $( '#setting-bluetooth' ).click( function() {
 	} );
 } );
 $( '#wlan' ).click( function() {
-	G.wlan = $( this ).prop( 'checked' );
-	notify( 'On-board Wi-Fi', G.wlan, 'wifi-3' );
-	bash( [ 'wlan', G.wlan ] );
+	var checked = $( this ).prop( 'checked' );
+	if ( !$( '#system .fa-wifi-3' ).length ) {
+		notify( 'On-board Wi-Fi', checked, 'wifi-3' );
+		bash( [ 'wlan', checked ] );
+	} else {
+		info( {
+			  icon    : 'wifi-3'
+			, title   : 'On-board Wi-Fi'
+			, message : 'This will disconnect Wi-Fi from router.'
+						+'<br>Continue?'
+			, cancel  : function() {
+				$( '#wlan' ).prop( 'checked', 1 );
+			}
+			, ok      : function() {
+				notify( 'On-board Wi-Fi', false, 'wifi-3' );
+				bash( [ 'wlan', false ] );
+			}
+		} );
+	}
 } );
 $( '#i2smodulesw' ).click( function() {
 	// delay to show switch sliding
