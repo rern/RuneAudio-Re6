@@ -16,7 +16,7 @@ rm -f $dirsystem/soundprofile
 
 files=$dirsystem/{accesspoint-ip,accesspoint-iprange,accesspoint-passphrase}
 if [[ -e $dirsystem/accesspoint-ip ]]; then
-	cat $files > $dirsystem/accesspoint
+	cat $files > $dirsystem/accesspointset
 	rm $files
 fi
 
