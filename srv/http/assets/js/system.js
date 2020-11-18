@@ -273,34 +273,40 @@ $( '#lcdchar' ).click( function() {
 	}
 } );
 var infolcdchar = heredoc( function() { /*
-	<div id="infoRadio" class="infocontent infohtml">
-		<px50/>Size&emsp;<label><input type="radio" name="size" value="16"> 16x2</label>&ensp;
-		<label><input type="radio" name="size" value="20"> 20x4</label>&ensp;
-		<label><input type="radio" name="size" value="40"> 40x4</label>
+	<div class="infotextlabel">
+		<a class="infolabel">Size</a>
+		<a class="infolabel">Interface</a>
+		<a class="infolabel">Character Map</a>
 	</div>
-	<div id="infoRadio1" class="infocontent infohtml">
-		&emsp;Interface&emsp;<label><input type="radio" name="interface" value="i2c"> I&#178;C</label>&ensp;<px20/>
-		<label><input type="radio" name="interface" value="gpio"> GPIO</label><px70/>
-	</div>
-	<div id="divi2c">
-		<br>
-		<div id="infotextlabel">
-			<a class="infolabel"><px20/>Expander</a>
-			<a class="infolabel">Address</a>
-			<a class="infolabel">Character Map</a>
+	<div class="infotextbox" style="width: 220px">
+		<div id="cols" class="infocontent infohtml">
+			<label><input type="radio" name="size" value="16"> 16x2</label>&ensp;
+			<label><input type="radio" name="size" value="20"> 20x4</label>&ensp;
+			<label><input type="radio" name="size" value="40"> 40x4</label>
 		</div>
-		<div id="infotextbox">
-			<select class="infohtml" id="infoSelectBox">
+		<div id="inf" class="infocontent infohtml">
+			<label><input type="radio" name="interface" value="i2c"> I&#178;C</label>&ensp;<px20/>
+			<label><input type="radio" name="interface" value="gpio"> GPIO</label><px70/>
+		</div>
+		<select class="infohtml" id="charmap">
+			<option value="A00">A00</option>
+			<option value="A02">A02</option>
+		</select>
+	</div>
+	<br>
+	<div id="divi2c" style="padding-right: 53px">
+		<div class="infotextlabel">
+			<a class="infolabel">Expander</a>
+			<a class="infolabel">Address</a>
+		</div>
+		<div class="infotextbox">
+			<select class="infohtml" id="chip">
 				<option value="PCF8574">PCF8574</option>
 				<option value="MCP23008">MCP23008</option>
 				<option value="MCP23017">MCP23017</option>
 			</select>
-			<select class="infohtml" id="infoSelectBox1">
+			<select class="infohtml" id="address">
 				<option value="0x27">0x27</option>
-			</select>
-			<select class="infohtml" id="infoSelectBox2">
-				<option value="A00">A00</option>
-				<option value="A02">A02</option>
 			</select>
 		</div>
 	</div>
@@ -310,26 +316,26 @@ $( '#setting-lcdchar' ).click( function() {
 		  icon        : 'gear'
 		, title       : 'Character LCD'
 		, content     : infolcdchar
-		, boxwidth    : 180
+		, boxwidth    : 130
 		, nofocus     : 1
 		, preshow     : function() {
 			var settings = G.lcdcharset.split( ' ' );
 			G.cols = settings[ 0 ];
 			G.charmap = settings[ 1 ];
-			$( '#infoSelectBox2 option[value='+ G.charmap +']' ).prop( 'selected', 1 );
+			$( '#charmap option[value='+ G.charmap +']' ).prop( 'selected', 1 );
 			if (  settings.length > 2 ) {
 				G.inf = 'i2c';
 				G.i2caddress = settings[ 2 ];
 				G.i2cchip = settings[ 3 ];
-				$( '#infoSelectBox option[value='+ G.i2cchip +']' ).prop( 'selected', 1 );
+				$( '#chip option[value='+ G.i2cchip +']' ).prop( 'selected', 1 );
 			} else {
 				G.inf = 'gpio';
 			}
-			$( '#infoRadio input[value='+ G.cols +']' ).prop( 'checked', 1 )
-			$( '#infoRadio1 input[value='+ G.inf +']' ).prop( 'checked', 1 )
+			$( '#cols input[value='+ G.cols +']' ).prop( 'checked', 1 )
+			$( '#inf input[value='+ G.inf +']' ).prop( 'checked', 1 )
 			$( '#divi2c' ).toggleClass( 'hide', G.inf === 'gpio' );
-			$( '#infoRadio1' ).change( function() {
-				$( '#divi2c' ).toggleClass( 'hide', $( '#infoRadio1 input:checked' ).val() === 'gpio' );
+			$( '#inf' ).change( function() {
+				$( '#divi2c' ).toggleClass( 'hide', G.inf === 'gpio' );
 			} );
 			if ( G.lcdcharaddr ) {
 				var addr = G.lcdcharaddr.split( ' ' );
@@ -337,11 +343,10 @@ $( '#setting-lcdchar' ).click( function() {
 				addr.forEach( function( el ) {
 					opt += '<option value="0x'+ el +'">0x'+ el +'</option>';
 				} );
-				$( '#infoSelectBox1' ).html( opt );
-				$( '#infoSelectBox1 option[value='+ G.i2caddress +']' ).prop( 'selected', 1 );
+				$( '#address' ).html( opt );
+				$( '#address option[value='+ G.i2caddress +']' ).prop( 'selected', 1 );
 			}
-			if ( $( '#infoSelectBox1 option' ).length === 1 ) $( '#infoSelectBox1' ).prop( 'disabled', 1 );
-			$( '#infoSelectBox, #infoSelectBox1, #infoSelectBox2' ).selectric();
+			if ( $( '#address option' ).length === 1 ) $( '#address' ).prop( 'disabled', 1 );
 			$( '.extrabtn' ).toggleClass( 'hide', !G.lcdchar );
 		}
 		, cancel      : function() {
@@ -354,19 +359,19 @@ $( '#setting-lcdchar' ).click( function() {
 			, function() { bash( '/srv/http/bash/lcdchar.py off' ) }
 		]
 		, ok          : function() {
-			var cols = $( '#infoRadio input:checked' ).val();
-			var charmap = $( '#infoSelectBox2').val();
+			var cols = $( '#cols input:checked' ).val();
+			var charmap = $( '#charmap').val();
 			var changed = !G.lcdchar || cols !== G.cols || charmap !== G.charmap;
-			var inf = $( '#infoRadio1 input:checked' ).val();
+			var inf = $( '#inf input:checked' ).val();
 			if ( inf === 'i2c' ) {
-				var chip = $( '#infoSelectBox').val();
-				var address = $( '#infoSelectBox1').val();
+				var chip = $( '#chip').val();
+				var address = $( '#address').val();
 				changed = changed || inf !== G.inf || chip !== G.i2cchip || address !== G.i2caddress;
 			}
 			if ( changed ) {
 				rebootText( 'Enable', 'Character LCD' );
 				var cmd = [ 'lcdcharset', cols, charmap ];
-				if ( $( '#infoRadio1 input:checked' ).val() === 'i2c' ) cmd.push( chip, address );
+				if ( inf === 'i2c' ) cmd.push( chip, address );
 				cmd.push( G.reboot.join( '\n' ) );
 				bash( cmd );
 				notify( 'Character LCD', 'Change ...', 'gear' );

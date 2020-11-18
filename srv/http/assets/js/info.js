@@ -491,6 +491,7 @@ function info( O ) {
 			if ( thisW > labelW ) labelW = thisW;
 		} );
 		var boxW = O.boxwidth !== 'max' ? O.boxwidth : calcW - 70 - labelW;
+		if ( $( '#infoContent select' ).length ) $( '#infoContent select' ).selectric();
 		$( '.infoinput, #infoOverlay .selectric, #infoOverlay .selectric-wrapper' ).css( 'width', boxW +'px' );
 		$( '.selectric-items' ).css( 'min-width', boxW +'px' );
 	}

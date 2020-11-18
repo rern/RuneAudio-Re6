@@ -96,9 +96,6 @@ $( '#setting-spotify' ).click( function() {
 			, select      : select
 			, checked     : G.spotifydevice
 			, boxwidth    : 'max'
-			, preshow     : function() {
-				$( '#infoSelectBox' ).selectric();
-			}
 			, ok          : function() {
 				var device = $( '#infoSelectBox option:selected' ).text();
 				if ( device !== G.spotifydevice ) {

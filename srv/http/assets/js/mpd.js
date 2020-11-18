@@ -194,11 +194,9 @@ $( '#setting-mixertype' ).click( function() { // hardware mixer
 			, checked     : hwmixer
 			, preshow     : function() {
 				$( '#infoOk' ).addClass( 'disabled' );
-				$( '#infoSelectBox' )
-					.selectric()
-					.on( 'selectric-change', function() {
-						$( '#infoOk' ).toggleClass( 'disabled', $( this ).val() === hwmixer );
-					} );
+				$( '#infoSelectBox' ).on( 'selectric-change', function() {
+					$( '#infoOk' ).toggleClass( 'disabled', $( this ).val() === hwmixer );
+				} );
 			}
 			, ok          : function() {
 				var name = $( '#audiooutput option:selected' ).text();
@@ -469,7 +467,6 @@ $( '#setting-soxr' ).click( function() {
 			for ( i = 1; i < 5; i++ ) {
 				$( '#infoTextBox'+ i ).val( soxrset[ i ] );
 			}
-			$( '#infoSelectBox, #infoSelectBox1' ).selectric();
 			setTimeout( function() {
 			$( '#extra .selectric, #extra .selectric-wrapper' ).css( 'width', '185px' );
 			$( '#extra .selectric-items' ).css( 'min-width', '185px' );
