@@ -293,10 +293,9 @@ var infolcdchar = heredoc( function() { /*
 			<option value="A02">A02</option>
 		</select>
 	</div>
-	<br>
 	<div id="divi2c" style="padding-right: 53px">
 		<div class="infotextlabel">
-			<a class="infolabel">Expander</a>
+			<a class="infolabel"><px10/>I&#178;C Chip</a>
 			<a class="infolabel">Address</a>
 		</div>
 		<div class="infotextbox">
@@ -335,7 +334,7 @@ $( '#setting-lcdchar' ).click( function() {
 			$( '#inf input[value='+ G.inf +']' ).prop( 'checked', 1 )
 			$( '#divi2c' ).toggleClass( 'hide', G.inf === 'gpio' );
 			$( '#inf' ).change( function() {
-				$( '#divi2c' ).toggleClass( 'hide', G.inf === 'gpio' );
+				$( '#divi2c' ).toggleClass( 'hide', $( '#inf input:checked' ).val() === 'gpio' );
 			} );
 			if ( G.lcdcharaddr ) {
 				var addr = G.lcdcharaddr.split( ' ' );
