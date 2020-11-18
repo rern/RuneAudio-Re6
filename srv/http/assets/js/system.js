@@ -592,7 +592,7 @@ $( '#backuprestore' ).click( function( e ) {
 					} );
 				}
 				, ok          : function() {
-					notify( restoretitle, 'Restore ...', 'sd );
+					notify( restoretitle, 'Restore ...', 'sd' );
 					var checked = $( '#infoRadio input:checked' ).val();
 					if ( checked === 'reset' ) {
 						bash( '/srv/http/bash/datareset.sh', bannerHide );
