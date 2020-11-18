@@ -44,15 +44,14 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 refreshData();
 //---------------------------------------------------------------------------------------
 $( '#airplay' ).click( function( e ) {
-	G.airplay = $( this ).prop( 'checked' );
-	notify( 'AirPlay Renderer', G.airplay, 'airplay' );
-	bash( [ 'airplay', G.airplay ], codeToggle( 'shairport-sync', 'status' ) );
+	var checked = $( this ).prop( 'checked' );
+	notify( 'AirPlay Renderer', checked, 'airplay' );
+	bash( [ 'airplay', checked ] );
 } );
 $( '#snapclient' ).click( function( e ) {
-	G.snapclient = $( this ).prop( 'checked' );
-	$( '#setting-snapclient' ).toggleClass( 'hide', !G.snapclient );
-	notify( 'SnapClient Renderer', G.snapclient, 'snapcast' );
-	bash( [ 'snapclient', G.snapclient ], codeToggle( 'snapclient', 'status' ) );
+	var checked = $( this ).prop( 'checked' );
+	notify( 'SnapClient Renderer', checked, 'snapcast' );
+	bash( [ 'snapclient', checked ] );
 } );
 $( '#setting-snapclient' ).click( function() {
 	info( {
@@ -75,10 +74,9 @@ $( '#setting-snapclient' ).click( function() {
 	} );
 } );
 $( '#spotify' ).click( function() {
-	G.spotify = $( this ).prop( 'checked' );
-	$( '#setting-spotify' ).toggleClass( 'hide', !G.spotify );
-	notify( 'Spotify Connect', G.spotify, 'spotify' );
-	bash( [ 'spotify', G.spotify ], codeToggle( 'spotifyd', 'status' ) );
+	var checked = $( this ).prop( 'checked' );
+	notify( 'Spotify Connect', checked, 'spotify' );
+	bash( [ 'spotify', checked ] );
 } );
 $( '#setting-spotify' ).click( function() {
 	bash( [ 'aplaydevices' ], function( devices ) {
@@ -108,31 +106,30 @@ $( '#setting-spotify' ).click( function() {
 	} );
 } );
 $( '#upnp' ).click( function( e ) {
-	G.upnp = $( this ).prop( 'checked' );
-	notify( 'UPnP Renderer', G.upnp, 'upnp fa-s' );
-	bash( [ 'upnp', G.upnp ], codeToggle( 'upmpdcli', 'status' ) );
+	var checked = $( this ).prop( 'checked' );
+	notify( 'UPnP Renderer', checked, 'upnp fa-s' );
+	bash( [ 'upnp', checked ] );
 } );
 $( '#snapcast' ).click( function( e ) {
-	G.snapcast = $( this ).prop( 'checked' );
-	if ( G.snapcast ) {
+	var checked = $( this ).prop( 'checked' );
+	if ( checked ) {
 		if ( G.snapclient ) $( '#snapclient' ).click();
 		$( '#divsnapclient' ).addClass( 'hide' );
 	} else {
 		$( '#divsnapclient' ).removeClass( 'hide' );
 	}
-	notify( 'Snapcast - Sync Streaming Server', G.snapcast, 'snapcast' );
-	bash( [ 'snapcast', G.snapcast ], codeToggle( 'snapserver', 'status' ) );
+	notify( 'Snapcast - Sync Streaming Server', checked, 'snapcast' );
+	bash( [ 'snapcast', checked ] );
 } );
 $( '#streaming' ).click( function( e ) {
-	G.streaming = $( this ).prop( 'checked' );
-	notify( 'HTTP Streaming', G.streaming, 'mpd' );
-	bash( [ 'streaming', G.streaming ] );
+	var checked = $( this ).prop( 'checked' );
+	notify( 'HTTP Streaming', checked, 'mpd' );
+	bash( [ 'streaming', checked ] );
 } );
 $( '#chromium' ).click( function( e ) {
-	G.localbrowser = $( this ).prop( 'checked' );
-	$( '#setting-chromium' ).toggleClass( 'hide', !G.localbrowser );
-	notify( 'Chromium - Browser on RPi', G.localbrowser, 'chromium blink' );
-	bash( [ 'localbrowser', G.localbrowser ], codeToggle( 'localbrowser', 'status' ) );
+	var checked = $( this ).prop( 'checked' );
+	notify( 'Chromium - Browser on RPi', checked, 'chromium blink' );
+	bash( [ 'localbrowser',checked ] );
 } );
 var localbrowserinfo = heredoc( function() { /*
 	<div id="infoText" class="infocontent">
@@ -221,10 +218,9 @@ $( '#setting-chromium' ).click( function( e ) {
 	} );
 } );
 $( '#samba' ).click( function( e ) {
-	G.samba = $( this ).prop( 'checked' );
-	$( '#setting-samba' ).toggleClass( 'hide', !G.samba );
-	notify( 'Samba - File Sharing', G.samba, 'network blink' );
-	bash( [ 'samba', G.samba ], codeToggle( 'smb', 'status' ) );
+	var checked = $( this ).prop( 'checked' );
+	notify( 'Samba - File Sharing', checked, 'network blink' );
+	bash( [ 'samba', checked ] );
 } );
 $( '#setting-samba' ).click( function() {
 	info( {
@@ -278,16 +274,12 @@ $( '#setting-scrobbler' ).click( function() {
 	} );
 } );
 $( '#login' ).click( function() {
-	G.login = $( this ).prop( 'checked' );
-	$( '#setting-login' ).toggleClass( 'hide', !G.login );
-	notify( 'Password Login', G.login, 'lock' );
-	bash( [ 'login', G.login ] );
-	if ( G.login && G.passworddefault ) {
-		info( {
-			  icon    : 'lock'
-			, title   : 'Password'
-			, message : 'Default password is <wh>rune</wh>'
-		} );
+	var checked = $( this ).prop( 'checked' );
+	if ( checked ) {
+		$( '#setting-login' ).click();
+	} else {
+		notify( 'Password Login', 'Disable ...', 'lastfm' );
+		bash( [ 'login', false ] );
 	}
 } );
 $( '#setting-login' ).click( function() {
@@ -295,6 +287,10 @@ $( '#setting-login' ).click( function() {
 		  icon          : 'lock'
 		, title         : 'Change Password'
 		, passwordlabel : [ 'Existing', 'New' ]
+		, pwdrequired   : 1
+		, preshow       : function() {
+			$( '#infoPasswordBox' ).val( G.passworddefault ? 'rune' : '' )
+		}
 		, ok            : function() {
 			$.post( cmdphp, {
 				  cmd      : 'login'

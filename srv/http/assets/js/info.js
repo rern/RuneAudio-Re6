@@ -349,9 +349,21 @@ function info( O ) {
 			}
 		}
 		if ( 'passwordlabel' in O ) {
-			$( '#infotextlabel' ).append( '<a class="infolabel">'+ O.passwordlabel +'</a>' );
-			$( '#infotextbox' ).append( '<input type="password" class="infoinput" id="infoPasswordBox">' );
-			$( '#infotextsuffix' ).append( '<i class="fa fa-eye fa-lg"></i>' );
+			passwordlabel = typeof O.passwordlabel !== 'object' ? [ passwordlabel ] : O.passwordlabel;
+			var labelhtml = '';
+			var boxhtml = '';
+			var suffixhtml = '';
+			var iL = passwordlabel.length;
+			for ( i = 0; i < iL; i++ ) {
+				var iid = i || '';
+				var labeltext = passwordlabel[ i ];
+				labelhtml += '<a class="infolabel">'+ passwordlabel[ i ] +'</a>';
+				boxhtml += '<input type="password" class="infoinput input" id="infoPasswordBox'+ iid +'">';
+				suffixhtml += '<i class="fa fa-eye fa-lg"></i><br>';
+			}
+			$( '#infotextlabel' ).append( labelhtml );
+			$( '#infotextbox' ).append( boxhtml );
+			$( '#infotextsuffix' ).append( suffixhtml );
 			$( '#infoText' ).removeClass( 'hide' );
 		}
 		if ( 'fileoklabel' in O ) {

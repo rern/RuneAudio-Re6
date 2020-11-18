@@ -182,6 +182,7 @@ i2c-dev" >> $filemodule
 ' -e '/RPLCD.gpio/,/numbering_mode/ s/^#//
 ' $filelcdchar
 	fi ############################################
+	touch $dirsystem/lcdchar
 	pushRefresh
 	;;
 onboardaudio )
