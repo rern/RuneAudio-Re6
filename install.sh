@@ -20,9 +20,17 @@ if [[ -e $dirsystem/accesspoint-ip ]]; then
 	rm $files
 fi
 
+mv $dirsystem/mpdscribble{-login,set} &> /dev/null
+
 files=$dirsystem/{ntp,wlanregdom}
 if [[ -e $dirsystem/ntp ]]; then
 	cat $files > $dirsystem/regional
+	rm $files
+fi
+
+files=$dirsystem/{snapcast-latency,snapserverpw}
+if [[ -e $dirsystem/snapcast-latency ]]; then
+	cat $files > $dirsystem/snapclientset
 	rm $files
 fi
 

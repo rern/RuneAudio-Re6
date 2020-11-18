@@ -46,7 +46,7 @@ bluetooth )
 	else
 		sed -i '/dtparam=krnbt=on/ d' $fileconfig
 		systemctl disable --now bluetooth
-		rm $dirsystem/onboard-bluetooth
+		rm -f $dirsystem/onboard-bluetooth
 	fi
 	pushRefresh
 	;;
@@ -127,7 +127,7 @@ i2c-dev
 		sed -i '/hdmi_force_hotplug\|i2c_arm=on\|spi=on\|tft35a/ d' $fileconfig
 		sed -i '/i2c-bcm2708\|i2c-dev/ d' $filemodule
 		sed -i 's/fb1/fb0/' /etc/X11/xorg.conf.d/99-fbturbo.conf
-		rm $dirsystem/lcd
+		rm -f $dirsystem/lcd
 	fi
 	echo "$reboot" > $filereboot
 	pushRefresh
@@ -141,7 +141,7 @@ lcdcalibrate )
 lcdchardisable )
 	sed -i '/dtparam=i2c_arm=on/ d' $fileconfig
 	sed -i '/i2c-bcm2708\|i2c-dev/ d' $filemodule
-	rm $dirsystem/lcdchar
+	rm -f $dirsystem/lcdchar
 	echo "${args[1]}" > $filereboot
 	pushRefresh
 	;;
@@ -151,8 +151,7 @@ lcdcharset )
 	address=${args[3]}
 	charmap=${args[4]}
 	reboot=${args[5]}
-	val=$( IFS=$'\n'; echo "${args[@]:1}" ) # array to multiline string
-	echo "$val" > $dirsystem/lcdcharset
+	( IFS=$'\n'; echo "${args[@]:1}" > $dirsystem/lcdcharset ) # array to multiline string
 	[[ $cols == 16 ]] && rows=2 || rows=4
 	filelcdchar=/srv/http/bash/lcdchar.py
 
@@ -191,7 +190,7 @@ onboardaudio )
 		touch $dirsystem/onboard-audio
 	else
 		onoff=off
-		rm $dirsystem/onboard-audio
+		rm -f $dirsystem/onboard-audio
 	fi
 	sed -i "s/\(dtparam=audio=\).*/\1$onoff/" $fileconfig
 	echo "${args[2]}" > $filereboot
@@ -203,8 +202,7 @@ regional )
 	sed -i "s/^\(NTP=\).*/\1$ntp/" /etc/systemd/timesyncd.conf
 	sed -i 's/".*"/"'$regdom'"/' /etc/conf.d/wireless-regdom
 	iw reg set $regdom
-	[[ $ntp == pool.ntp.org ]] && rm $dirsystem/ntp || echo $ntp > $dirsystem/ntp
-	[[ $regdom == 00 ]] && rm $dirsystem/wlanregdom || echo $regdom > $dirsystem/wlanregdom
+	( IFS=$'\n'; echo "${args[@]:1}" > $dirsystem/regional )
 	pushRefresh
 	;;
 relays )
@@ -212,12 +210,12 @@ relays )
 	if [[ $enable == true ]]; then
 		touch $dirsystem/relays
 	else
-		rm $dirsystem/relays
+		rm -f $dirsystem/relays
 	fi
 	pushRefresh
 	;;
 soundprofiledisable )
-	rm $dirsystem/soundprofile
+	rm -f $dirsystem/soundprofile
 	soundprofile '1500 1000 60 18000000'
 	pushRefresh
 	;;
@@ -254,7 +252,7 @@ wlan )
 		touch $dirsystem/onboard-wlan
 	else
 		systemctl disable --now netctl-auto@wlan0
-		rm $dirsystem/onboard-wlan
+		rm -f $dirsystem/onboard-wlan
 		rmmod brcmfmac
 	fi
 	pushRefresh

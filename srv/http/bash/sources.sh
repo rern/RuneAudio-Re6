@@ -58,7 +58,7 @@ remove )
 	umount -l "$mountpoint"
 	sed -i "\|${mountpoint// /.040}| d" /etc/fstab
 	rmdir "$mountpoint" &> /dev/null
-	rm "$dirsystem/fstab-${mountpoint/*\/}"
+	rm -f "$dirsystem/fstab-${mountpoint/*\/}"
 	pushRefresh
 	;;
 unmount )

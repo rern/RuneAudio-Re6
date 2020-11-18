@@ -252,16 +252,12 @@ $( '#setting-samba' ).click( function() {
 	} );
 } );
 $( '#scrobbler' ).click( function() {
-	var mpdscribble = $( this ).prop( 'checked' );
-	if ( mpdscribble && !G.mpdscribbleuser ) {
+	var checked = $( this ).prop( 'checked' );
+	if ( checked ) {
 		$( '#setting-scrobbler' ).click();
 	} else {
-		notify( 'Scrobbler', mpdscribble, 'lastfm' );
-		bash( [ 'mpdscribble', mpdscribble ], function( std ) {
-			G.mpdscribble = std != -1 ? true : false;
-			$( '#setting-scrobbler' ).toggleClass( 'hide', !G.mpdscribble );
-			codeToggle( 'mpdscribble', 'status' );
-		} );
+		notify( 'Scrobbler', 'Disable ...', 'lastfm' );
+		bash( [ 'mpdscribbledisable' ] );
 	}
 } );
 $( '#setting-scrobbler' ).click( function() {
@@ -280,7 +276,6 @@ $( '#setting-scrobbler' ).click( function() {
 			notify( 'Scrobbler', G.mpdscribble ? 'Change ...' : 'Enable ...', 'lastfm' );
 			bash( [ 'mpdscribbleset', G.mpdscribbleuser, password ], function( std ) {
 				G.mpdscribble = std != -1 ? true : false;
-				$( '#setting-mpdscribble' ).toggleClass( 'hide', !G.mpdscribble );
 		} );
 		}
 	} );

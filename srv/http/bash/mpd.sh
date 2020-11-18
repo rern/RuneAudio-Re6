@@ -9,7 +9,7 @@ pushRefresh() {
 	curl -s -X POST http://127.0.0.1/pub?id=refresh -d '{ "page": "mpd" }'
 }
 restartMPD() {
-	/srv/http/bash/mpd-conf.sh
+	[[ ! -e /srv/http/data/shm/datarestore ]] && /srv/http/bash/mpd-conf.sh
 }
 
 case ${args[0]} in
@@ -46,7 +46,7 @@ autoupdate )
 		touch $dirsystem/mpd-autoupdate
 	else
 		sed -i '/^auto_update/ d' /etc/mpd.conf
-		rm $dirsystem/mpd-autoupdate
+		rm -f $dirsystem/mpd-autoupdate
 	fi
 	restartMPD
 	pushRefresh
@@ -59,7 +59,7 @@ buffer )
 		echo $buffer > $dirsystem/mpd-buffer
 	else
 		sed -i '/^audio_buffer_size/ d' /etc/mpd.conf
-		rm $dirsystem/mpd-buffer
+		rm -f $dirsystem/mpd-buffer
 	fi
 	restartMPD
 	pushRefresh
@@ -72,7 +72,7 @@ bufferoutput )
 		echo $buffer > $dirsystem/mpd-bufferoutput
 	else
 		sed -i '/^max_output_buffer_size/ d' /etc/mpd.conf
-		rm $dirsystem/mpd-bufferoutput
+		rm -f $dirsystem/mpd-bufferoutput
 	fi
 	restartMPD
 	pushRefresh
@@ -84,7 +84,7 @@ crossfade )
 		echo $crossfade > $dirsystem/mpd-crossfade
 	else
 		mpc crossfade 0
-		rm $dirsystem/mpd-crossfade
+		rm -f $dirsystem/mpd-crossfade
 	fi
 	pushRefresh
 	;;
@@ -114,7 +114,7 @@ count )
 customdisable )
 	file=$dirsystem/mpd-custom
 	sed -i '/ #custom$/ d' /etc/mpd.conf
-	rm $dirsystem/mpd-custom
+	rm -f $dirsystem/mpd-custom
 	restartMPD
 	pushRefresh
 	;;
@@ -147,7 +147,7 @@ dop )
 	if [[ $dop == true ]]; then
 		touch "$dirsystem/mpd-dop-$output"
 	else
-		rm "$dirsystem/mpd-dop-$output"
+		rm -f "$dirsystem/mpd-dop-$output"
 	fi
 	restartMPD
 	pushRefresh
@@ -158,7 +158,7 @@ ffmpeg )
 		touch $dirsystem/mpd-ffmpeg
 	else
 		sed -i '/ffmpeg/ {n; s/".*"/"no"/}' /etc/mpd.conf
-		rm $dirsystem/mpd-ffmpeg
+		rm -f $dirsystem/mpd-ffmpeg
 	fi
 	restartMPD
 	pushRefresh
@@ -175,7 +175,7 @@ manualconf )
 	if [[ ${args[1]} == true ]]; then
 		cat /etc/mpd.conf | tee $dirsystem/mpd-manualconf
 	else
-		rm $dirsystem/mpd-manualconf
+		rm -f $dirsystem/mpd-manualconf
 	fi
 	pushRefresh
 	;;
@@ -192,7 +192,7 @@ mixerhw )
 	sed -i '/'$output'/,/}/ s/\(mixer_control \+"\).*/\1"'$mixer'"/' /etc/mpd.conf
 	sed -i '/mixer_control_name = / s/".*"/"'$mixer'"/' /etc/shairport-sync.conf
 	if [[ $hwmixer == auto ]]; then
-		rm "/srv/http/data/system/mpd-hwmixer-$aplayname"
+		rm -f "/srv/http/data/system/mpd-hwmixer-$aplayname"
 	else
 		echo $hwmixer > "/srv/http/data/system/mpd-hwmixer-$aplayname"
 	fi
@@ -211,7 +211,7 @@ mixerset )
 		volumenone=1
 	fi
 	if [[ $mixer == hardware ]]; then
-		rm "$dirsystem/mpd-mixertype-$output"
+		rm -f "$dirsystem/mpd-mixertype-$output"
 	else
 		echo $mixer > "$dirsystem/mpd-mixertype-$output"
 	fi
@@ -225,7 +225,7 @@ normalization )
 		touch $dirsystem/mpd-normalization
 	else
 		sed -i '/^volume_normalization/ d' /etc/mpd.conf
-		rm $dirsystem/mpd-normalization
+		rm -f $dirsystem/mpd-normalization
 	fi
 	restartMPD
 	pushRefresh
@@ -236,7 +236,7 @@ novolume )
 	' /etc/mpd.conf
 	echo none > "$dirsystem/mpd-mixertype-${args[1]}"
 	mpc crossfade 0
-	rm $dirsystem/{mpd-crossfade,mpd-replaygain,mpd-normalization}
+	rm -f $dirsystem/{mpd-crossfade,mpd-replaygain,mpd-normalization}
 	restartMPD
 	pushRefresh
 	curl -s -X POST http://127.0.0.1/pub?id=volumenone -d '{ "pvolumenone": "1" }'
@@ -248,7 +248,7 @@ replaygain )
 		echo $replaygain $dirsystem/mpd-replaygain
 	else
 		sed -i '/^replaygain/ s/".*"/"off"/' /etc/mpd.conf
-		rm $dirsystem/mpd-replaygain
+		rm -f $dirsystem/mpd-replaygain
 	fi
 	restartMPD
 	pushRefresh
@@ -260,8 +260,10 @@ restart )
 soxr )
 	sed -i '/quality/,/}/ d' /etc/mpd.conf
 	if [[ ${args[1]} == true ]]; then
+		touch $dirsystem/mpd-soxr
 		sed -i "/soxr/ r $dirsystem/mpd-soxrset" /etc/mpd.conf
 	else
+		rm -f $dirsystem/mpd-soxr
 		sed -i '/soxr/ a\
 	quality        "very high"\
 }
