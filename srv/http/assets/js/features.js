@@ -97,12 +97,7 @@ $( '#setting-spotify' ).click( function() {
 			, checked     : G.spotifydevice
 			, boxwidth    : 'max'
 			, preshow     : function() {
-				$( '#infoOk' ).addClass( 'disabled' );
-				$( '#infoSelectBox' )
-					.selectric()
-					.on( 'selectric-change', function() {
-						$( '#infoOk' ).toggleClass( 'disabled', $( this ).val() === G.spotifydevice );
-					} );
+				$( '#infoSelectBox' ).selectric();
 			}
 			, ok          : function() {
 				var device = $( '#infoSelectBox option:selected' ).text();
