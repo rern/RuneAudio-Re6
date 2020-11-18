@@ -133,10 +133,15 @@ i2c-dev
 	pushRefresh
 	;;
 lcdcalibrate )
-	touch /srv/http/data/shm/calibrate
 	degree=$( grep rotate $fileconfig | cut -d= -f3 )
 	cp -f /etc/X11/{lcd$degree,xorg.conf.d/99-calibration.conf}
-	systemctl restart localbrowser
+	systemctl stop localbrowser
+	value=$( DISPLAY=:0 xinput_calibrator | grep Calibration | cut -d'"' -f4 )
+	if [[ -n $value ]]; then
+		sed -i "s/\(Calibration\"  \"\).*/\1$value\"/" /etc/X11/xorg.conf.d/99-calibration.conf
+		systemctl start localbrowser
+		cp /etc/X11/xorg.conf.d/99-calibration.conf /srv/http/data/system/calibration
+	fi
 	;;
 lcdchardisable )
 	sed -i '/dtparam=i2c_arm=on/ d' $fileconfig
