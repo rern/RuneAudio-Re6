@@ -8,9 +8,21 @@ installstart "$1"
 
 getinstallzip
 
-echo 1500 1000 60 18000000 > /srv/http/data/system/soundprofile
+dirsystem=/srv/http/data/system
 
-file=/srv/http/data/system/mpd-soxrset
+echo 1500 1000 60 18000000 > $dirsystem/soundprofile
+
+cp $dirsystem/spotify{-device,set} &> /dev/null
+
+files=$dirsystem/{accesspoint-iprange,accesspoint-ip,accesspoint-passphrase}
+cat $files > $dirsystem/accesspoint &> /dev/null
+rm -f $files
+
+files=$dirsystem/{ntp,wlanregdom}
+cat $files > $dirsystem/regional &> /dev/null
+rm -f $files
+
+file=$dirsystem/mpd-soxrset
 [[ ! -e $file ]] && cat <<[-]EOF > $file
 	quality        "custom"
 	precision      "20"

@@ -298,10 +298,6 @@ hr {
 	padding-right: 25px;
 	font-size: 16px;
 }
-#infoSelect a {
-	margin: 0;
-	padding-left: 10px;
-}
 #infoFile {
 	display: block;
 }
@@ -319,9 +315,6 @@ hr {
 #infoOverlay code,
 #infoSelect .selectric-items ul {
 	color: var( --cw );
-}
-#infoSelect .selectric {
-	margin-top: 10px;
 }
 #infoContent .selectric {
 	border-radius: 3px;

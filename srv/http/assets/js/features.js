@@ -81,10 +81,8 @@ $( '#spotify' ).click( function() {
 	bash( [ 'spotify', G.spotify ], codeToggle( 'spotifyd', 'status' ) );
 } );
 $( '#setting-spotify' ).click( function() {
-	$.post( cmdphp, {
-		  cmd  : 'exec'
-		, exec : "aplay -L | grep -v '^\\s\\|^null'"
-	}, function( devices ) {
+	bash( [ 'aplaydevices' ], function( devices ) {
+		var devices = devices.split( '\n' );
 		var select = {}
 		devices.forEach( function( val ) {
 			select[ val ] = val;
@@ -97,8 +95,8 @@ $( '#setting-spotify' ).click( function() {
 			, selectlabel : 'Device'
 			, select      : select
 			, checked     : G.spotifydevice
-			, preshow : function() {
-				$( '#infoSelectBox' )
+			, boxwidth    : 'max'
+			, preshow     : function() {
 				$( '#infoOk' ).addClass( 'disabled' );
 				$( '#infoSelectBox' )
 					.selectric()
@@ -115,7 +113,7 @@ $( '#setting-spotify' ).click( function() {
 				}
 			}
 		} );
-	}, 'json' );
+	} );
 } );
 $( '#upnp' ).click( function( e ) {
 	G.upnp = $( this ).prop( 'checked' );
