@@ -216,13 +216,13 @@ relays )
 	;;
 soundprofiledisable )
 	rm -f $dirsystem/soundprofile
-	soundprofile '1500 1000 60 18000000'
+	soundprofile $'1500\n1000\n60\n18000000'
 	pushRefresh
 	;;
 soundprofileset )
-	values=${args[1]}
-	echo $values > $dirsystem/soundprofile
+	values=${args[@]:1}
 	soundprofile $values
+	( IFS=$'\n'; echo "${args[@]:1}" )> $dirsystem/soundprofile )
 	pushRefresh
 	;;
 statusbootlog )
