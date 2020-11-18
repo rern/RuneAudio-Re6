@@ -12,15 +12,19 @@ dirsystem=/srv/http/data/system
 
 echo 1500 1000 60 18000000 > $dirsystem/soundprofile
 
-cp $dirsystem/spotify{-device,set} &> /dev/null
+[[ -e $dirsystem/spotify-device ]] && cp $dirsystem/spotify{-device,set}
 
-files=$dirsystem/{accesspoint-iprange,accesspoint-ip,accesspoint-passphrase}
-cat $files > $dirsystem/accesspoint &> /dev/null
-rm -f $files
+files=$dirsystem/{accesspoint-ip,accesspoint-iprange,accesspoint-passphrase}
+if [[ -e $dirsystem/accesspoint-ip ]]; then
+	cat $files > $dirsystem/accesspoint
+	rm $files
+fi
 
 files=$dirsystem/{ntp,wlanregdom}
-cat $files > $dirsystem/regional &> /dev/null
-rm -f $files
+if [[ -e $dirsystem/ntp ]]; then
+	cat $files > $dirsystem/regional
+	rm $files
+fi
 
 file=$dirsystem/mpd-soxrset
 [[ ! -e $file ]] && cat <<[-]EOF > $file
