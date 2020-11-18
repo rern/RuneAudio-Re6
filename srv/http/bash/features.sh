@@ -81,7 +81,7 @@ accesspointset )
 ' -e "s/\(wpa_passphrase=\).*/\1$password/
 " /etc/hostapd/hostapd.conf
 	systemctl try-restart hostapd dnsmasq
-	( IFS=$'\n'; echo "${args[@]:1}" > $dirsystem/lcdcharset )
+	printf '%s\n' "${args[@]:1}" > $dirsystem/lcdcharset
 	pushRefresh
 	;;
 airplay )
@@ -132,7 +132,7 @@ localbrowserset )
 ' -e 's/\(factor=\).*/\1'$zoom'/
 ' /etc/X11/xinit/xinitrc
 	systemctl try-restart localbrowser
-	( IFS=$'\n'; echo "${args[@]:1}" > $dirsystem/localbrowserset )
+	printf '%s\n' "${args[@]:1}" > $dirsystem/localbrowserset
 	pushRefresh
 	;;
 login )
@@ -160,7 +160,7 @@ mpdscribbleset )
 	" /etc/mpdscribble.conf
 	if systemctl try-restart mpdscribble@mpd; then
 		systemctl enable mpdscribble@mpd
-		( IFS=$'\n'; echo "${args[@]:1}" > $dirsystem/mpdscribbleset )
+		printf '%s\n' "${args[@]:1}" > $dirsystem/mpdscribbleset
 	else
 		systemctl disable mpdscribble@mpd
 	fi
@@ -189,7 +189,7 @@ sambaset )
 	[[ ${args[1]} == true ]] && sed -i '/path = .*SD/ a\tread only = no' $smbconf
 	[[ ${args[2]} == true ]] && sed -i '/path = .*USB/ a\tread only = no' $smbconf
 	systemctl try-restart smb wsdd
-	( IFS=$'\n'; echo "${args[@]:1}" > $dirsystem/sambaset )
+	printf '%s\n' "${args[@]:1}" > $dirsystem/sambaset
 	pushRefresh
 	;;
 screenoff )
@@ -217,7 +217,7 @@ snapclientset )
 	pwd=${args[2]}
 	sed -i '/OPTS=/ s/".*"/"--latency="'$latency'"/' /etc/default/snapclient
 	systemctl try-restart snapclient
-	( IFS=$'\n'; echo "${args[@]:1}" > $dirsystem/snapclientset )
+	printf '%s\n' "${args[@]:1}" > $dirsystem/snapclientset
 	pushRefresh
 	;;
 spotify )

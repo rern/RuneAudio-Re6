@@ -151,7 +151,7 @@ lcdcharset )
 	address=${args[3]}
 	charmap=${args[4]}
 	reboot=${args[5]}
-	( IFS=$'\n'; echo "${args[@]:1}" > $dirsystem/lcdcharset ) # array to multiline string
+	printf '%s\n' "${args[@]:1}" > $dirsystem/lcdcharset # array to multiline string
 	[[ $cols == 16 ]] && rows=2 || rows=4
 	filelcdchar=/srv/http/bash/lcdchar.py
 
@@ -202,7 +202,7 @@ regional )
 	sed -i "s/^\(NTP=\).*/\1$ntp/" /etc/systemd/timesyncd.conf
 	sed -i 's/".*"/"'$regdom'"/' /etc/conf.d/wireless-regdom
 	iw reg set $regdom
-	( IFS=$'\n'; echo "${args[@]:1}" > $dirsystem/regional )
+	printf '%s\n' "${args[@]:1}" > $dirsystem/regional
 	pushRefresh
 	;;
 relays )
@@ -222,7 +222,7 @@ soundprofiledisable )
 soundprofileset )
 	values=${args[@]:1}
 	soundprofile $values
-	( IFS=$'\n'; echo "${args[@]:1}" > $dirsystem/soundprofile )
+	printf '%s\n' "${args[@]:1}" > $dirsystem/soundprofile
 	pushRefresh
 	;;
 statusbootlog )
