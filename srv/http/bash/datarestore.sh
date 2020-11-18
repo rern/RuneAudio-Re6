@@ -66,7 +66,7 @@ if ls $file-* &> /dev/null; then
 	/srv/http/bash/mpd-conf.sh
 fi
 # mpdscribble
-[[ -e $dirsystem/mpdscribbleset ]] && $dirbash/features.sh mpdscribbleset$'\n'"$( cat $dirsystem/mpdscribbleset )"
+[[ -e $dirsystem/mpdscribble ]] && $dirbash/features.sh mpdscribbleset$'\n'"$( cat $dirsystem/mpdscribbleset )"
 # regional
 [[ -e $dirsystem/regional ]] && $dirbash/features.sh regional$'\n'"$( cat $dirsystem/regional )"
 # samba

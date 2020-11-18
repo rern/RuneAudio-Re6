@@ -128,7 +128,7 @@ $( '#streaming' ).click( function( e ) {
 } );
 $( '#chromium' ).click( function( e ) {
 	var checked = $( this ).prop( 'checked' );
-	notify( 'Chromium - Browser on RPi', checked, 'chromium blink' );
+	notify( 'Chromium - Browser on RPi', checked, 'chromium' );
 	bash( [ 'localbrowser',checked ] );
 } );
 var localbrowserinfo = heredoc( function() { /*
@@ -195,7 +195,7 @@ $( '#setting-chromium' ).click( function( e ) {
 			}
 			if ( cursor === G.cursor && rotate === '' && screenoff === '' && zoom === G.zoom ) return
 			
-			notify( 'Chromium - Browser on RPi', 'Change ...', 'chromium blink' );
+			notify( 'Chromium - Browser on RPi', 'Change ...', 'chromium' );
 			if ( rotate !== '' && cursor === G.cursor && screenoff === '' && zoom === G.zoom ) { // rotate only
 				if ( G.lcd ) {
 					var degree = { CW: 0, NORMAL: 90, CCW: 180, UD: 270 }
@@ -219,7 +219,7 @@ $( '#setting-chromium' ).click( function( e ) {
 } );
 $( '#samba' ).click( function( e ) {
 	var checked = $( this ).prop( 'checked' );
-	notify( 'Samba - File Sharing', checked, 'network blink' );
+	notify( 'Samba - File Sharing', checked, 'network' );
 	bash( [ 'samba', checked ] );
 } );
 $( '#setting-samba' ).click( function() {
@@ -238,7 +238,7 @@ $( '#setting-samba' ).click( function() {
 			if ( writesd !== G.writesd || writeusb !== G.writeusb ) {
 				G.writesd = writesd;
 				G.writeusb = writeusb;
-				notify( 'Samba - File Sharing', 'Change ...', 'network blink' );
+				notify( 'Samba - File Sharing', 'Change ...', 'network' );
 				bash( [ 'sambaset', G.writesd, G.writeusb ] );
 			}
 		}
@@ -268,7 +268,13 @@ $( '#setting-scrobbler' ).click( function() {
 			var password = $( '#infoPasswordBox' ).val().replace( /(["&()\\])/g, '\$1' );
 			notify( 'Scrobbler', G.mpdscribble ? 'Change ...' : 'Enable ...', 'lastfm' );
 			bash( [ 'mpdscribbleset', G.mpdscribbleuser, password ], function( std ) {
-				G.mpdscribble = std != -1 ? true : false;
+				if ( std == -1 ) {
+					info( {
+						  icon    : 'lastfm'
+						, title   : 'Scrobbler'
+						, message : 'Lastfm Login failed.'
+					} );
+				}
 		} );
 		}
 	} );

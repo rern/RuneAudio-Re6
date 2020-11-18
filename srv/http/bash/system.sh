@@ -143,10 +143,23 @@ lcdcalibrate )
 		cp /etc/X11/xorg.conf.d/99-calibration.conf /srv/http/data/system/calibration
 	fi
 	;;
-lcdchardisable )
-	sed -i '/dtparam=i2c_arm=on/ d' $fileconfig
-	sed -i '/i2c-bcm2708\|i2c-dev/ d' $filemodule
-	rm -f $dirsystem/lcdchar
+lcdchar )
+	enable=${args[1]}
+	reboot=${args[2]}
+	if [[ $enable == true ]]; then
+		if ! grep -q 'dtparam=i2c_arm=on' $fileconfig; then
+			sed -i '$ a\dtparam=i2c_arm=on' $fileconfig
+			echo "$reboot" > $filereboot
+		fi
+		! grep -q 'i2c-bcm2708' $filemodule && echo "\
+i2c-bcm2708
+i2c-dev" >> $filemodule
+		touch $dirsystem/lcdchar
+	else
+		sed -i '/dtparam=i2c_arm=on/ d' $fileconfig
+		sed -i '/i2c-bcm2708\|i2c-dev/ d' $filemodule
+		rm -f $dirsystem/lcdchar
+	fi
 	echo "${args[1]}" > $filereboot
 	pushRefresh
 	;;
@@ -163,14 +176,7 @@ lcdcharset )
 	sed -i -e '/address = /,/i2c_expander/ s/^#//
 ' -e '/RPLCD.gpio/,/numbering_mode/ s/^#//
 ' $filelcdchar
-	if [[ -n $chip ]]; then ####################
-		if ! grep -q 'dtparam=i2c_arm=on' $fileconfig; then
-			sed -i '$ a\dtparam=i2c_arm=on' $fileconfig
-			echo "$reboot" > $filereboot
-		fi
-		! grep -q 'i2c-bcm2708' $filemodule && echo "\
-i2c-bcm2708
-i2c-dev" >> $filemodule
+	if [[ -n $chip ]]; then
 		sed -i -e "s/^\(address = '\).*/\1$address'/
 " -e "s/\(chip = '\).*/\1$chip'/
 " -e "s/\(cols = \).*/\1$cols/
@@ -178,16 +184,13 @@ i2c-dev" >> $filemodule
 " -e '/address = /,/i2c_expander/ s/^#//
 ' -e '/RPLCD.gpio/,/numbering_mode/ s/^/#/
 ' $filelcdchar
-	else #########################################
-		sed -i '/dtparam=i2c_arm=on/ d' $fileconfig
-		sed -i '/i2c-bcm2708\|i2c-dev/ d' $filemodule
+	else
 		sed -i -e "s/\(cols = \).*/\1$cols/
 " -e "s/\(rows = \).*/\1$rows/
 " -e '/address = /,/i2c_expander/ s/^/#/
 ' -e '/RPLCD.gpio/,/numbering_mode/ s/^#//
 ' $filelcdchar
-	fi ############################################
-	touch $dirsystem/lcdchar
+	fi
 	pushRefresh
 	;;
 onboardaudio )
@@ -220,9 +223,15 @@ relays )
 	fi
 	pushRefresh
 	;;
-soundprofiledisable )
-	rm -f $dirsystem/soundprofile
-	soundprofile '1500 1000 60 18000000'
+soundprofile )
+	enable=${args[1]}
+	reboot=${args[2]}
+	if [[ $enable == true ]]; then
+		touch $dirsystem/soundprofile
+	else
+		rm -f $dirsystem/soundprofile
+		soundprofile '1500 1000 60 18000000'
+	fi
 	pushRefresh
 	;;
 soundprofileset )

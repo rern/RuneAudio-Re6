@@ -95,7 +95,8 @@ data+='
 	, "relays"         : '$( [[ -e $dirsystem/relays ]] && echo true || echo false )'
 	, "rpi01"          : "'$( [[ $soc == BCM2835 || $soc == BCM2836 ]] && rpi01=true || rpi01=false )'"
 	, "soc"            : "'$soc'"
-	, "soundprofile"   : "'$( cat $dirsystem/soundprofile 2> /dev/null )'"
+	, "soundprofile"   : '$( [[ -e $dirsystem/soundprofile ]] && echo true || echo false )'
+	, "soundprofileset": "'$( cat $dirsystem/soundprofileset 2> /dev/null )'"
 	, "sources"        : '$( /srv/http/bash/sources-data.sh )'
 	, "timezone"       : "'$timezone'"
 	, "version"        : "'$version'"

@@ -161,8 +161,11 @@ mpdscribbleset )
 	if systemctl try-restart mpdscribble@mpd; then
 		systemctl enable mpdscribble@mpd
 		printf '%s\n' "${args[@]:1}" > $dirsystem/mpdscribbleset
+		touch $dirsystem/mpdscribble
 	else
 		systemctl disable mpdscribble@mpd
+		rm -f $dirsystem/mpdscribble
+		echo -1
 	fi
 	pushRefresh
 	;;
