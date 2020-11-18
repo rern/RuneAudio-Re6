@@ -509,7 +509,7 @@ $( '#setting-soundprofile' ).click( function() {
 			if ( soundprofile === defaultval ) {
 				bash( [ 'soundprofiledisable' ] );
 			} else {
-				bash( [ 'soundprofileset', soundprofile.split( ' ' ) ] );
+				bash( ( 'soundprofileset '+ soundprofile ).split( ' ' ) );
 			}
 		}
 	} );
