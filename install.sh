@@ -10,7 +10,7 @@ getinstallzip
 
 dirsystem=/srv/http/data/system
 
-echo 1500 1000 60 18000000 > $dirsystem/soundprofile
+echo -e '1500\n1000\n60\n18000000' > $dirsystem/soundprofile
 
 [[ -e $dirsystem/spotify-device ]] && cp $dirsystem/spotify{-device,set}
 
