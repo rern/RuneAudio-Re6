@@ -292,36 +292,33 @@ var infolcdchar = heredoc( function() { /*
 		<a class="infolabel">Size</a>
 		<a class="infolabel">Interface</a>
 		<a class="infolabel">Character Map</a>
+		<div class="i2c">
+			<a class="infolabel">Address</a>
+			<a class="infolabel">I&#178;C Chip</a>
+		</div>
 	</div>
-	<div class="infotextbox" style="width: 220px">
-		<div id="cols" class="infocontent infohtml">
-			<label><input type="radio" name="size" value="16"> 16x2</label>&ensp;
-			<label><input type="radio" name="size" value="20"> 20x4</label>&ensp;
+	<div class="infotextbox" style="width: 240px">
+		<div id="cols" class="infocontent infohtml lcd">
+			<label><input type="radio" name="size" value="16"> 16x2</label>
+			<label><input type="radio" name="size" value="20"> 20x4</label>
 			<label><input type="radio" name="size" value="40"> 40x4</label>
 		</div>
-		<div id="inf" class="infocontent infohtml">
-			<label><input type="radio" name="interface" value="i2c"> I&#178;C</label>&ensp;<px20/>
-			<label><input type="radio" name="interface" value="gpio"> GPIO</label><px70/>
+		<div id="inf" class="infocontent infohtml lcd">
+			<label><input type="radio" name="interface" value="i2c"> I&#178;C</label>
+			<label><input type="radio" name="interface" value="gpio"> GPIO</label>
 		</div>
-		<select class="infohtml" id="charmap">
-			<option value="A00">A00</option>
-			<option value="A02">A02</option>
-		</select>
-	</div>
-	<div id="divi2c" style="padding-right: 53px">
-		<div class="infotextlabel">
-			<a class="infolabel"><px10/>I&#178;C Chip</a>
-			<a class="infolabel">Address</a>
+		<div id="charmap" class="infocontent infohtml lcd">
+			<label><input type="radio" name="charmap" value="A00"> A00</label>
+			<label><input type="radio" name="charmap" value="A02"> A02</label>
 		</div>
-		<div class="infotextbox">
-			<select class="infohtml" id="chip">
-				<option value="PCF8574">PCF8574</option>
-				<option value="MCP23008">MCP23008</option>
-				<option value="MCP23017">MCP23017</option>
-			</select>
-			<select class="infohtml" id="address">
-				<option value="0x27">0x27</option>
-			</select>
+		<div class="i2c">
+			<div id="address" class="infocontent infohtml lcd">
+			</div>
+			<div id="chip" class="infocontent infohtml lcd">
+				<label><input type="radio" name="chip" value="PCF8574"> 8574</label>
+				<label><input type="radio" name="chip" value="MCP23008"> 23008</label>
+				<label><input type="radio" name="chip" value="MCP23017"> 23017</label>
+			</div>
 		</div>
 	</div>
 */ } );
@@ -330,18 +327,17 @@ $( '#setting-lcdchar' ).click( function() {
 		  icon        : 'gear'
 		, title       : 'Character LCD'
 		, content     : infolcdchar
-		, boxwidth    : 130
 		, nofocus     : 1
 		, preshow     : function() {
 			var settings = G.lcdcharval.split( ' ' );
 			G.cols = settings[ 0 ];
 			G.charmap = settings[ 1 ];
-			$( '#charmap option[value='+ G.charmap +']' ).prop( 'selected', 1 );
+			$( '#charmap input[value='+ G.charmap +']' ).prop( 'checked', 1 );
 			if (  settings.length > 2 ) {
 				G.inf = 'i2c';
 				G.i2caddress = settings[ 2 ];
 				G.i2cchip = settings[ 3 ];
-				$( '#chip option[value='+ G.i2cchip +']' ).prop( 'selected', 1 );
+				$( '#chip input[value='+ G.i2cchip +']' ).prop( 'checked', 1 );
 			} else {
 				G.inf = 'gpio';
 			}
@@ -349,19 +345,18 @@ $( '#setting-lcdchar' ).click( function() {
 			$( '#inf input[value='+ G.inf +']' ).prop( 'checked', 1 )
 			$( '#divi2c' ).toggleClass( 'hide', G.inf === 'gpio' );
 			$( '#inf' ).change( function() {
-				$( '#divi2c' ).toggleClass( 'hide', $( '#inf input:checked' ).val() === 'gpio' );
+				$( '.i2c' ).toggleClass( 'hide', $( '#inf input:checked' ).val() === 'gpio' );
 			} );
 			if ( G.lcdcharaddr ) {
 				var addr = G.lcdcharaddr.split( ' ' );
 				var opt = '';
 				addr.forEach( function( el ) {
-					opt += '<option value="0x'+ el +'">0x'+ el +'</option>';
+					opt += '<label><input type="radio" name="address" value="0x'+ el +'"> 0x'+ el +'</label>';
 				} );
 				$( '#address' ).html( opt );
-				$( '#address option[value='+ G.i2caddress +']' ).prop( 'selected', 1 );
+				$( '#address input[value='+ G.i2caddress +']' ).prop( 'checked', 1 );
 			}
-			if ( $( '#address option' ).length === 1 ) $( '#address' ).prop( 'disabled', 1 );
-			$( '.extrabtn' ).toggleClass( 'hide', !G.lcdchar );
+			$( '.lcd label' ).width( 80 );
 		}
 		, cancel      : function() {
 			if ( !G.lcdcharset ) $( '#lcdchar' ).prop( 'checked', 0 );

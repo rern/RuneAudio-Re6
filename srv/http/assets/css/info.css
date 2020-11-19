@@ -195,6 +195,7 @@ hr {
 	display: inline-block;
 	margin-right: 5px;
 	line-height: 40px;
+	vertical-align: 14px;
 	text-align: right;
 }
 .infotextbox,
@@ -203,6 +204,7 @@ hr {
 #infotextbox {
 	display: inline-block;
 	width: min-content;
+	line-height: 35px;
 	text-align: left;
 }
 .infotextsuffix,
