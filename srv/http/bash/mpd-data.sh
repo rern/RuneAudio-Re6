@@ -1,12 +1,6 @@
 #!/bin/bash
 
 dirsystem=/srv/http/data/system
-amixer=$( amixer scontrols | cut -d"'" -f2 )
-readarray -t lines <<<"$amixer"
-for line in "${lines[@]}"; do
-	mixerdevices+='"'$line'",'
-done
-mixerdevices=${mixerdevices:0:-1}
 
 . /srv/http/bash/mpd-devices.sh
 
@@ -30,19 +24,18 @@ devices=${devices:0:-1}
 
 data='
 	  "devices"         : ['$devices']
-	, "mixerdevices"    : ['$mixerdevices']
 	, "audiooutput"     : "'$( cat $dirsystem/audio-output )'"
 	, "audioaplayname"  : "'$( cat $dirsystem/audio-aplayname )'"
 	, "autoupdate"      : '$( grep -q "auto_update.*yes" /etc/mpd.conf && echo true || echo false )'
 	, "buffer"          : '$( [[ -e $dirsystem/mpd-buffer ]] && echo true || echo false )'
 	, "bufferset"       : '$( [[ -e $dirsystem/mpd-bufferset ]] && echo true || echo false )'
-	, "bufferval"       : '$( grep audio_buffer_size /etc/mpd.conf | cut -d'"' -f2 )'
+	, "bufferval"       : "'$( grep audio_buffer_size /etc/mpd.conf | cut -d'"' -f2 )'"
 	, "bufferoutput"    : '$( [[ -e $dirsystem/mpd-bufferoutput ]] && echo true || echo false )'
 	, "bufferoutputset" : '$( [[ -e $dirsystem/mpd-bufferoutputset ]] && echo true || echo false )'
-	, "bufferoutputval" : '$( grep max_output_buffer_size /etc/mpd.conf | cut -d'"' -f2 )'
+	, "bufferoutputval" : "'$( grep max_output_buffer_size /etc/mpd.conf | cut -d'"' -f2 )'"
 	, "crossfade"       : '$( [[ -e $dirsystem/mpd-crossfade ]] && echo true || echo false )'
 	, "crossfadeset"    : '$( [[ -e $dirsystem/mpd-crossfadeset ]] && echo true || echo false )'
-	, "crossfadeval"    : '$( ( mpc crossfade 2> /dev/null || grep crossfade /srv/http/data/mpd/mpdstate ) | cut -d' ' -f2 )'
+	, "crossfadeval"    : "'$( ( mpc crossfade 2> /dev/null || grep crossfade /srv/http/data/mpd/mpdstate ) | cut -d' ' -f2 )'"
 	, "custom"          : '$( [[ -e $dirsystem/mpd-custom ]] && echo true || echo false )'
 	, "customset"       : '$( [[ -e $dirsystem/mpd-customset ]] && echo true || echo false )'
 	, "customglobal"    : "'$( sed 's/^\t\| #custom$//g' $dirsystem/mpd-global 2> /dev/null )'"
@@ -57,6 +50,6 @@ data='
 	, "usbdac"          : "'$( cat /srv/http/data/shm/usbdac 2> /dev/null )'"
 	, "soxr"            : '$( grep -q "quality.*custom" /etc/mpd.conf && echo true || echo false )'
 	, "soxrset"         : '$( [[ -e $dirsystem/mpd-soxrset ]] && echo true || echo false )'
-	, "soxrval"         : "'$( grep -v 'quality\|}' $dirsystem/mpd-soxrset | cut -d'"' -f2 )'"
+	, "soxrval"         : "'$( grep -v 'quality\|}' $dirsystem/mpd-soxrset 2> /dev/null | cut -d'"' -f2 )'"
 '
 echo {$data}
