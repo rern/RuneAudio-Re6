@@ -66,17 +66,17 @@ $( '#setting-snapclient' ).click( function() {
 		, footer        : '<px40/>(If Snapcast server password '
 						+'<br><px40/>not the same as this client.)'
 		, preshow       : function() {
-			$( '#infoPasswordBox' ).val( G.snapserverpw );
+			$( '#infoPasswordBox' ).val( G.snapspassword );
 		}
 		, cancel        : function() {
-			if ( !G.snaplatency ) $( '#snapclient' ).prop( 'checked', 0 );
+			if ( !G.snapclientset ) $( '#snapclient' ).prop( 'checked', 0 );
 		}
 		, ok            : function() {
 			var snaplatency = Math.abs( $( '#infoTextBox' ).val() );
-			var snapserverpw = $( '#infoPasswordBox' ).val();
-			if ( snaplatency !== G.snaplatency || snapserverpw !== G.snapserverpw ) {
+			var snapspassword = $( '#infoPasswordBox' ).val();
+			if ( snaplatency !== G.snaplatency || snapspassword !== G.snapspassword ) {
 				notify( 'Snapclient', 'Change ...', 'snapcast' );
-				bash( [ 'snapclientset', snaplatency, snapserverpw ] );
+				bash( [ 'snapclientset', snaplatency, snapspassword ] );
 			}
 		}
 	} );
@@ -100,16 +100,13 @@ $( '#setting-spotifyd' ).click( function() {
 						   +'<br>(Only if current one not working)'
 			, selectlabel : 'Device'
 			, select      : select
-			, checked     : G.spotifydset
+			, checked     : G.spotifyddevice
 			, boxwidth    : 'max'
-			, cancel      : function() {
-				if ( !G.spotifydset ) $( '#spotify' ).prop( 'checked', 0 );
-			}
 			, ok          : function() {
-				var device = $( '#infoSelectBox option:selected' ).text();
-				if ( device !== G.spotifydset ) {
+				var spotifyddevice = $( '#infoSelectBox option:selected' ).text();
+				if ( spotifyddevice !== G.spotifyddevice ) {
 					notify( 'Spotify Renderer', 'Change ...', 'spotify' );
-					bash( [ 'spotifyset', device ] );
+					bash( [ 'spotifyset', spotifyddevice ] );
 				}
 			}
 		} );
@@ -230,7 +227,7 @@ $( '#setting-localbrowser' ).click( function( e ) {
 } );
 $( '#smb' ).click( function( e ) {
 	var checked = $( this ).prop( 'checked' );
-	if ( G.smb ) {
+	if ( G.smbset ) {
 		notify( 'Samba - File Sharing', checked, 'network' );
 		bash( [ 'smb', checked ] );
 	} else {
@@ -264,7 +261,7 @@ $( '#setting-smb' ).click( function() {
 } );
 $( '#mpdscribble' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
-	if ( G.mpdscribble ) {
+	if ( G.mpdscribbleset ) {
 		notify( 'Scrobbler', checked, 'lastfm' );
 		bash( [ 'mpdscribble', checked ] );
 	} else {
@@ -272,12 +269,16 @@ $( '#mpdscribble' ).click( function() {
 	}
 } );
 $( '#setting-mpdscribble' ).click( function() {
+	var data = G.mpdscribbleval ? G.mpdscribbleval.split( '\n' ) : [ '', '' ];
 	info( {
 		  icon          : 'lastfm'
 		, title         : 'Scrobbler'
 		, textlabel     : 'Username'
-		, textvalue     : G.mpdscribbleset
+		, textvalue     : data[ 0 ]
 		, passwordlabel : 'Password'
+		, preshow       : function() {
+			$( '#infoPasswordBox' ).val( data[ 1 ] );
+		}
 		, cancel        : function() {
 			if ( !G.mpdscribbleset ) $( '#mpdscribble' ).prop( 'checked', 0 );
 		}

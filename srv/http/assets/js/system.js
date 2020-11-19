@@ -446,8 +446,7 @@ $( '#soundprofile' ).click( function() {
 } );
 $( '#setting-soundprofile' ).click( function() {
 	var defaultval = '1500 1000 60 18000000';
-	if ( !G.soundprofileset ) G.soundprofileset = defaultval;
-	var existing = G.soundprofileset.split( ' ' );
+	var data = G.soundprofileset ? G.soundprofileset.split( ' ' ) : defaultval;
 	if ( G.rpi01 ) {
 		var lat = [ 1500000, 850000, 500000, 120000, 500000, 1500000, 145655, 6000000 ];
 	} else {
@@ -465,14 +464,15 @@ $( '#setting-soundprofile' ).click( function() {
 		, _Custom   : 0
 	}
 	var values = Object.values( radio );
+	var checked = values.indexOf( G.soundprofileset ) !== -1 ? G.soundprofileset : 0;
 	info( {
 		  icon    : 'volume'
 		, title   : 'Kernel Sound Profile'
 		, textlabel : [ 'eth0 mtu <gr>(byte)</gr>', 'eth0 txqueuelen', 'vm.swappiness', 'kernel.sched_latency_ns <gr>(ns)</gr>' ]
-		, textvalue : existing
+		, textvalue : data
 		, boxwidth  : 110
 		, radio   : radio
-		, checked : values.indexOf( G.soundprofileset ) !== -1 ? G.soundprofileset : 0
+		, checked : checked
 		, preshow : function() {
 			$( '#infoRadio input' ).last().prop( 'disabled', 1 );
 			$( '#infoRadio' ).change( function() {
@@ -480,10 +480,10 @@ $( '#setting-soundprofile' ).click( function() {
 				for ( i = 0; i < 4; i++ ) $( '#infoTextBox'+ ( i !== 0 ? i : '' ) ).val( val[ i ] );
 			} );
 			$( '.infoinput' ).on( 'keyup', function() {
-				if (  $( this ).val() !== existing[ $( '.infoinput' ).index() ] ) {
+				if (  $( this ).val() !== data[ $( '.infoinput' ).index() ] ) {
 					$( '#infoRadio input' ).last().prop( 'checked', 1 );
 				} else {
-					$( '#infoRadio input[value="'+ G.soundprofileset +'"]' ).prop( 'checked', 1 );
+					$( '#infoRadio input[value="'+ checked +'"]' ).prop( 'checked', 1 );
 				}
 			} );
 		}
@@ -491,15 +491,9 @@ $( '#setting-soundprofile' ).click( function() {
 			if ( !G.soundprofileset ) $( '#soundprofile' ).prop( 'checked', 0 );
 		}
 		, ok      : function() {
-			var soundprofile = $( '#infoTextBox' ).val();
-			for ( i = 1; i < 4; i++ ) soundprofile += ' '+ $( '#infoTextBox'+ i ).val();
-			if ( soundprofile === G.soundprofileset ) return
-				
-			if ( soundprofile === defaultval ) {
-				bash( [ 'soundprofiledisable' ] );
-			} else {
-				bash( ( 'soundprofileset '+ soundprofile ).split( ' ' ) );
-			}
+			var soundprofileset = $( '#infoTextBox' ).val();
+			for ( i = 1; i < 4; i++ ) soundprofileset += ' '+ $( '#infoTextBox'+ i ).val();
+			if ( soundprofileset !== G.soundprofileset ) bash( ( 'soundprofileset '+ soundprofileset ).split( ' ' ) );
 		}
 	} );
 } );

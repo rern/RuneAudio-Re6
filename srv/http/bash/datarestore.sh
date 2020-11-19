@@ -104,13 +104,13 @@ file=$dirsystem/mpd
 if ls $file-* &> /dev/null; then
 	touch /srv/http/data/shm/datarestore
 	[[ -e $file-autoupdate ]] &&    $dirbash/mpd.sh autoupdate$'\n'true
-	[[ -e $file-buffer ]] &&        $dirbash/mpd.sh buffer$'\n'$( cat $file-buffer )
-	[[ -e $file-bufferoutput ]] &&  $dirbash/mpd.sh bufferoutput$'\n'$( cat $file-bufferoutput )
-	[[ -e $file-crossfade ]] &&     $dirbash/mpd.sh crossfade$'\n'$( cat $file-crossfade )
+	[[ -e $file-buffer ]] &&        $dirbash/mpd.sh bufferset$'\n'$( cat $file-buffer )
+	[[ -e $file-bufferoutput ]] &&  $dirbash/mpd.sh bufferoutputset$'\n'$( cat $file-bufferoutput )
+	[[ -e $file-crossfade ]] &&     $dirbash/mpd.sh crossfadeset$'\n'$( cat $file-crossfade )
 	[[ -e $file-custom ]] &&        $dirbash/mpd.sh customset$'\n'$( cat $file-custom-global )
 	[[ -e $file-ffmpeg ]] &&        $dirbash/mpd.sh ffmpeg$'\n'true
 	[[ -e $file-normalization ]] && $dirbash/mpd.sh normalization$'\n'true
-	[[ -e $file-replaygain ]] &&    $dirbash/mpd.sh replaygain$'\n'$( cat $file-replaygain )
+	[[ -e $file-replaygain ]] &&    $dirbash/mpd.sh replaygainset$'\n'$( cat $file-replaygain )
 	[[ -e $file-soxr ]] &&          $dirbash/mpd.sh soxrset$'\n'$( cat $file-soxrset )
 	rm /srv/http/data/shm/datarestore
 	/srv/http/bash/mpd-conf.sh

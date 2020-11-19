@@ -33,13 +33,13 @@ uptimesince=$( uptime -s | cut -d: -f1-2 )
 uptime+="<span class='wide'>&emsp;<gr>since ${uptimesince/ / &bull; }</gr></span>"
 
 data='
-	  "cpuload"        : "'$cpuload'"
-	, "cputemp"        : '$cputemp'
-	, "startup"        : "'$startup'"
-	, "time"           : "'$time'"
-	, "uptime"         : "'$uptime'"
-	, "undervoltage"   : '$undervoltage'
-	, "undervdetected" : '$undervdetected
+	  "cpuload"         : "'$cpuload'"
+	, "cputemp"         : '$cputemp'
+	, "startup"         : "'$startup'"
+	, "time"            : "'$time'"
+	, "uptime"          : "'$uptime'"
+	, "undervoltage"    : '$undervoltage'
+	, "undervdetected"  : '$undervdetected
 
 # for interval refresh
 (( $# > 0 )) && echo {$data} && exit
@@ -76,32 +76,33 @@ snaplatency=$( grep OPTS= /etc/default/snapclient | sed 's/.*latency=\(.*\)"/\1/
 grep -q 'dtparam=i2c_arm=on' /boot/config.txt && lcdcharaddr=$( i2cdetect -y $( ls /dev/i2c* | tail -c 2 ) | grep -v '^\s' | cut -d' ' -f2- | tr -d ' \-' | grep . )
 
 data+='
-	, "audioaplayname" : "'$( cat $dirsystem/audio-aplayname 2> /dev/null )'"
-	, "audiooutput"    : "'$( cat $dirsystem/audio-output )'"
-	, "hardware"       : "'$( awk '/Model/ {$1=$2=""; print}' <<< "$cpuinfo" )'"
-	, "hostname"       : "'$( cat $dirsystem/hostname )'"
-	, "ip"             : "'${iplist:1}'"
-	, "kernel"         : "'$( uname -r )'"
-	, "lcd"            : '$( grep -q dtoverlay=tft35a /boot/config.txt && echo true || echo false )'
-	, "lcdchar"        : '$( [[ -e $dirsystem/lcdchar ]] && echo true || echo false )'
-	, "lcdcharset"     : '$( cat $dirsystem/lcdcharset 2> /dev/null || echo false )'
-	, "lcdcharaddr"    : "'$lcdcharaddr'"
-	, "lcdcharval"     : "'$( grep '^cols\|^charmap\|^address\|^chip' /srv/http/bash/lcdchar.py | cut -d' ' -f3 | tr -d "'" )'"
-	, "mpd"            : "'$( pacman -Q mpd 2> /dev/null |  cut -d' ' -f2 )'"
-	, "mpdstats"       : "'$( jq '.song, .album, .artist' /srv/http/data/mpd/counts 2> /dev/null )'"
-	, "ntp"            : "'$( grep '^NTP' /etc/systemd/timesyncd.conf | cut -d= -f2 )'"
-	, "onboardaudio"   : '$( grep -q 'dtparam=audio=on' /boot/config.txt && echo true || echo false )'
-	, "reboot"         : "'$( cat /srv/http/data/shm/reboot 2> /dev/null )'"
-	, "regdom"         : "'$( cat /etc/conf.d/wireless-regdom | cut -d'"' -f2 )'"
-	, "relays"         : '$( [[ -e $dirsystem/relays ]] && echo true || echo false )'
-	, "rpi01"          : "'$( [[ $soc == BCM2835 || $soc == BCM2836 ]] && rpi01=true || rpi01=false )'"
-	, "soc"            : "'$soc'"
-	, "soundprofile"   : '$( [[ -e $dirsystem/soundprofile ]] && echo true || echo false )'
-	, "soundprofileset": "'$( cat $dirsystem/soundprofileset 2> /dev/null )'"
-	, "sources"        : '$( /srv/http/bash/sources-data.sh )'
-	, "timezone"       : "'$timezone'"
-	, "version"        : "'$version'"
-	, "versionui"      : '$( cat /srv/http/data/addons/rr$version 2> /dev/null || echo 0 )
+	, "audioaplayname"  : "'$( cat $dirsystem/audio-aplayname 2> /dev/null )'"
+	, "audiooutput"     : "'$( cat $dirsystem/audio-output )'"
+	, "hardware"        : "'$( awk '/Model/ {$1=$2=""; print}' <<< "$cpuinfo" )'"
+	, "hostname"        : "'$( cat $dirsystem/hostname )'"
+	, "ip"              : "'${iplist:1}'"
+	, "kernel"          : "'$( uname -r )'"
+	, "lcd"             : '$( grep -q dtoverlay=tft35a /boot/config.txt && echo true || echo false )'
+	, "lcdchar"         : '$( [[ -e $dirsystem/lcdchar ]] && echo true || echo false )'
+	, "lcdcharset"      : '$( [[ -e $dirsystem/lcdcharset ]] && echo true || echo false )'
+	, "lcdcharaddr"     : "'$lcdcharaddr'"
+	, "lcdcharval"      : "'$( grep '^cols\|^charmap\|^address\|^chip' /srv/http/bash/lcdchar.py | cut -d' ' -f3 | tr -d "'" )'"
+	, "mpd"             : "'$( pacman -Q mpd 2> /dev/null |  cut -d' ' -f2 )'"
+	, "mpdstats"        : "'$( jq '.song, .album, .artist' /srv/http/data/mpd/counts 2> /dev/null )'"
+	, "ntp"             : "'$( grep '^NTP' /etc/systemd/timesyncd.conf | cut -d= -f2 )'"
+	, "onboardaudio"    : '$( grep -q 'dtparam=audio=on' /boot/config.txt && echo true || echo false )'
+	, "reboot"          : "'$( cat /srv/http/data/shm/reboot 2> /dev/null )'"
+	, "regdom"          : "'$( cat /etc/conf.d/wireless-regdom | cut -d'"' -f2 )'"
+	, "relays"          : '$( [[ -e $dirsystem/relays ]] && echo true || echo false )'
+	, "rpi01"           : "'$( [[ $soc == BCM2835 || $soc == BCM2836 ]] && rpi01=true || rpi01=false )'"
+	, "soc"             : "'$soc'"
+	, "soundprofile"    : '$( [[ -e $dirsystem/soundprofile ]] && echo true || echo false )'
+	, "soundprofileset" : '$( [[ -e $dirsystem/soundprofileset ]] && echo true || echo false )'
+	, "soundprofileval" : "'$( cat $dirsystem/soundprofileset 2> /dev/null )'"
+	, "sources"         : '$( /srv/http/bash/sources-data.sh )'
+	, "timezone"        : "'$timezone'"
+	, "version"         : "'$version'"
+	, "versionui"       : '$( cat /srv/http/data/addons/rr$version 2> /dev/null || echo 0 )
 if [[ -e /usr/bin/bluetoothctl  ]]; then
 	bluetooth=$( grep -q dtparam=krnbt=on /boot/config.txt && echo true || echo false )
 	bluetoothon=$( systemctl -q is-active bluetooth && echo true || echo false )
@@ -111,11 +112,11 @@ if [[ -e /usr/bin/bluetoothctl  ]]; then
 		btdiscoverable=false
 	fi
 	data+='
-	, "bluetooth"      : '$bluetooth'
-	, "bluetoothon"    : '$bluetoothon'
-	, "btdiscoverable" : '$btdiscoverable
+	, "bluetooth"       : '$bluetooth'
+	, "bluetoothon"     : '$bluetoothon'
+	, "btdiscoverable"  : '$btdiscoverable
 fi
 [[ ${hwcode: -3:2} =~ ^(08|0c|0d|0e|11)$ ]] && data+='
-	, "wlan"           : '$( lsmod | grep -q '^brcmfmac ' && echo true || echo false )
+	, "wlan"            : '$( lsmod | grep -q '^brcmfmac ' && echo true || echo false )
 
 echo {$data}

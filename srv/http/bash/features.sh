@@ -111,15 +111,15 @@ autoplay )
 localbrowser )
 	if [[ ${args[1]} == true ]]; then
 		systemctl enable --now localbrowser
-		touch $dirsystem/localbrowser
 		systemctl disable --now getty@tty1
 		sed -i 's/tty1/tty3/' /boot/cmdline.txt
+		touch $dirsystem/localbrowser
 	else
 		systemctl disable --now localbrowser
-		rm -f $dirsystem/localbrowser
 		systemctl enable --now getty@tty1
 		sed -i 's/tty3/tty1/' /boot/cmdline.txt
 		$dirbash/ply-image /srv/http/assets/img/splash.png
+		rm -f $dirsystem/localbrowser
 	fi
 	pushRefresh
 	;;
@@ -233,7 +233,7 @@ snapclientset )
 	latency=${args[1]}
 	password=${args[2]}
 	sed -i '/OPTS=/ s/".*"/"--latency="'$latency'"/' /etc/default/snapclient
-	[[ -n $password ]] && echo $pwd > $dirsystem/snapserverpw
+	[[ -n $password ]] && echo $pwd > $dirsystem/snapclientpw
 	featureSet snapclient "${args[@]:1}"
 	;;
 spotifyd )
