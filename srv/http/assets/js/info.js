@@ -349,7 +349,7 @@ function info( O ) {
 			}
 		}
 		if ( 'passwordlabel' in O ) {
-			passwordlabel = typeof O.passwordlabel !== 'object' ? [ passwordlabel ] : O.passwordlabel;
+			passwordlabel = typeof O.passwordlabel !== 'object' ? [ O.passwordlabel ] : O.passwordlabel;
 			var labelhtml = '';
 			var boxhtml = '';
 			var suffixhtml = '';

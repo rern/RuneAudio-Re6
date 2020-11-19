@@ -2,13 +2,13 @@
 <div>
 <heading>Renderers<?=$help?></heading>
 	<?php if ( file_exists( '/usr/bin/shairport-sync' ) ) { ?>
-<div id="shairport-sync" class="col-l double status">
+<div data="shairport-sync" class="col-l double status">
 	<a>AirPlay
 	<br><gr>Shairport-sync<?=$code?></gr></a><i class="fa fa-airplay fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="airplay" type="checkbox">
-	<div class="switchlabel" for="airplay"></div>
+	<input id="shairport-sync" type="checkbox">
+	<div class="switchlabel" for="shairport-sync"></div>
 	<span class="help-block hide">
 		<a href="https://github.com/mikebrady/shairport-sync">Shairport-sync</a> - RuneAudio as AirPlay rendering device.
 	</span>
@@ -34,14 +34,14 @@
 </div>
 	<?php }
 		  if ( file_exists( '/usr/bin/spotifyd' ) ) { ?>
-<div id="spotifyd" class="col-l double status">
+<div data="spotifyd" class="col-l double status">
 	<a>Spotify
 	<br><gr>Spotifyd<?=$code?></gr></a><i class="fa fa-spotify fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="spotify" type="checkbox">
-	<div class="switchlabel" for="spotify"></div>
-	<i id="setting-spotify" class="setting fa fa-gear hide"></i>
+	<input id="spotifyd" type="checkbox">
+	<div class="switchlabel" for="spotifyd"></div>
+	<i id="setting-spotifyd" class="setting fa fa-gear hide"></i>
 	<span class="help-block hide">
 		<a href="https://github.com/Spotifyd/spotifyd">Spotifyd</a> - RuneAudio as Spotify Connect device.(For Premium account only)
 		<br><i class="fa fa-gear"></i>&ensp;Manually select audio output (when default not working only)
@@ -50,14 +50,14 @@
 <pre id="codespotifyd" class="hide"></pre>
 	<?php }
 		  if ( file_exists( '/usr/bin/upmpdcli' ) ) { ?>
-<div id="upmpdcli" class="col-l double status">
+<div data="upmpdcli" class="col-l double status">
 	<a>UPnP
 	<br><gr>upmpdcli<?=$code?></gr></a><i class="fa fa-upnp fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="upnp" type="checkbox">
-	<div class="switchlabel" for="upnp"></div>
-	<i id="setting-upnp" class="setting fa fa-gear hide"></i>
+	<input id="upmpdcli" type="checkbox">
+	<div class="switchlabel" for="upmpdcli"></div>
+	<!--<i id="setting-upnp" class="setting fa fa-gear hide"></i>-->
 	<span class="help-block hide">
 		<a href="https://www.lesbonscomptes.com/upmpdcli/">upmpdcli</a> - RuneAudio as UPnP / DLNA rendering device.
 	</span>
@@ -78,13 +78,13 @@
 	<span class="help-block hide">Asynchronous streaming for browsers via <code id="ip"></code> (Latency - several seconds)</span>
 </div>
 	<?php if ( file_exists( '/usr/bin/snapserver' ) ) { ?>
-<div id="snapserver" class="col-l double status">
+<div data="snapserver" class="col-l double status">
 	<a>Synchronous
 	<br><gr>Snapcast<?=$code?></gr></a><i class="fa fa-snapcast fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="snapcast" type="checkbox">
-	<div class="switchlabel" for="snapcast"></div>
+	<input id="snapserver" type="checkbox">
+	<div class="switchlabel" for="snapserver"></div>
 	<span class="help-block hide">
 		<a href="https://github.com/badaix/snapcast">Snapcast</a> - Multiroom client-server audio player
 		<br>SnapServer - Clients can be either RPis with RuneAudio+R e or Snapcast capable devices.
@@ -98,14 +98,14 @@
 <div>
 <heading>Features<?=$help?></heading>
 	<?php if ( file_exists( '/usr/bin/chromium' ) ) { ?>
-<div id="localbrowser" class="col-l double status">
+<div data="localbrowser" class="col-l double status">
 	<a>Browser on RPi
 	<br><gr>Chromium<?=$code?></gr></a><i class="fa fa-chromium fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="chromium" type="checkbox">
-	<div class="switchlabel" for="chromium"></div>
-	<i id="setting-chromium" class="setting fa fa-gear"></i>
+	<input id="localbrowser" type="checkbox">
+	<div class="switchlabel" for="localbrowser"></div>
+	<i id="setting-localbrowser" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
 		<a href="https://github.com/chromium/chromium">Chromium</a> - Browser on RPi connected screen. (Overscan change needs reboot.)
 	</span>
@@ -113,14 +113,14 @@
 <pre id="codelocalbrowser" class="hide"></pre>
 	<?php } 
 		  if ( file_exists( '/usr/bin/smbd' ) ) { ?>
-<div id="smb" class="col-l double status">
+<div data="smb" class="col-l double status">
 	<a>File Sharing
 	<br><gr>Samba<?=$code?></gr></a><i class="fa fa-networks fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="samba" type="checkbox">
-	<div class="switchlabel" for="samba"></div>
-	<i id="setting-samba" class="setting fa fa-gear"></i>
+	<input id="smb" type="checkbox">
+	<div class="switchlabel" for="smb"></div>
+	<i id="setting-smb" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
 		<a href="https://www.samba.org">Samba</a> - Share files on RuneAudio.
 		<br>Set sources permissions for read+write - directory: <code>0777</code> file: <code>0555</code>
@@ -129,14 +129,14 @@
 </div>
 <pre id="codesmb" class="hide"></pre>
 	<?php } ?>
-<div id="mpdscribble" class="col-l double status">
+<div data="mpdscribble" class="col-l double status">
 	<a>Last.fm Scrobbler
 	<br><gr>mpdscribble<?=$code?></gr></a><i class="fa fa-lastfm fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="scrobbler" type="checkbox">
-	<div class="switchlabel" for="scrobbler"></div>
-	<i id="setting-scrobbler" class="setting fa fa-gear"></i>
+	<input id="mpdscribble" type="checkbox">
+	<div class="switchlabel" for="mpdscribble"></div>
+	<i id="setting-mpdscribble" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
 		<a href="https://github.com/MusicPlayerDaemon/mpdscribble">mpdscribble</a> - Automatically send listened music data to Last.fm for tracking.
 	</span>
@@ -161,14 +161,14 @@
 	<div class="switchlabel" for="autoplay"></div>
 	<span class="help-block hide">Start playing automatically after boot.</span>
 </div>
-<div id="hostapd" class="col-l double status">
+<div data="hostapd" class="col-l double status">
 	<a>RPi Access Point
 	<br><gr>hostapd<?=$code?></gr></a><i class="fa fa-wifi-3 fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="accesspoint" type="checkbox">
-	<div class="switchlabel" for="accesspoint"></div>
-	<i id="setting-accesspoint" class="setting fa fa-gear"></i>
+	<input id="hostapd" type="checkbox">
+	<div class="switchlabel" for="hostapd"></div>
+	<i id="setting-hostapd" class="setting fa fa-gear"></i>
 	<span class="help-block hide">Connect with RuneAudio+R Wi-Fi directly when no routers available.
 		<br>RuneAudio+R access point should be used only when necessary.</span>
 </div>

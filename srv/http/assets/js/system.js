@@ -279,10 +279,13 @@ $( '#setting-lcd' ).click( function() {
 	} );
 } );
 $( '#lcdchar' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	rebootText( checked, 'Character LCD' );
-	notify( 'Character LCD', checked, 'gear' );
-	bash( [ 'lcdchar', checked, G.reboot.join( '\n' ) ] );
+	var checked = $( this ).prop( 'checked' )
+	if ( G.lcdcharset ) {
+		notify( 'Character LCD', checked, 'gear' );
+		bash( [ 'lcdchar', checked, G.reboot.join( '\n' ) ] );
+	} else {
+		$( '#setting-lcdchar' ).click();
+	}
 } );
 var infolcdchar = heredoc( function() { /*
 	<div class="infotextlabel">
@@ -330,7 +333,7 @@ $( '#setting-lcdchar' ).click( function() {
 		, boxwidth    : 130
 		, nofocus     : 1
 		, preshow     : function() {
-			var settings = G.lcdcharset.split( ' ' );
+			var settings = G.lcdcharval.split( ' ' );
 			G.cols = settings[ 0 ];
 			G.charmap = settings[ 1 ];
 			$( '#charmap option[value='+ G.charmap +']' ).prop( 'selected', 1 );
@@ -361,7 +364,7 @@ $( '#setting-lcdchar' ).click( function() {
 			$( '.extrabtn' ).toggleClass( 'hide', !G.lcdchar );
 		}
 		, cancel      : function() {
-			if ( !G.lcdchar ) $( '#lcdchar' ).prop( 'checked', 0 );
+			if ( !G.lcdcharset ) $( '#lcdchar' ).prop( 'checked', 0 );
 		}
 		, buttonlabel : [ 'Splash', 'Off' ]
 		, buttoncolor : [ '#448822',       '#de810e' ]
@@ -439,11 +442,11 @@ $( '#timezone' ).on( 'selectric-change', function( e ) {
 } );
 $( '#soundprofile' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
-	if ( checked ) {
-		$( '#setting-soundprofile' ).click();
+	if ( G.soundprofileset ) {
+		notify( "Kernel Sound Profile", checked, 'volume' );
+		bash( [ 'soundprofile', checked ] );
 	} else {
-		notify( "Kernel Sound Profile", 'Disable ...', 'volume' );
-		bash( [ 'soundprofile' ] );
+		$( '#setting-soundprofile' ).click();
 	}
 } );
 $( '#setting-soundprofile' ).click( function() {
@@ -490,7 +493,7 @@ $( '#setting-soundprofile' ).click( function() {
 			} );
 		}
 		, cancel  : function() {
-			if ( G.soundprofileset === defaultval ) $( '#soundprofile' ).prop( 'checked', 0 );
+			if ( !G.soundprofileset ) $( '#soundprofile' ).prop( 'checked', 0 );
 		}
 		, ok      : function() {
 			var soundprofile = $( '#infoTextBox' ).val();
@@ -608,9 +611,7 @@ $( '#backuprestore' ).click( function( e ) {
 							, processData : false  // no - process the data
 							, contentType : false  // no - contentType
 							, success     : function( data ) {
-								if ( data ) {
-									if ( data !== 'restored' ) G.reboot = data.split( '\n' );
-								} else {
+								if ( data == -1 ) {
 									info( {
 										  icon    : icon
 										, title   : restoretitle

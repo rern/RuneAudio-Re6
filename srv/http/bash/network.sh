@@ -71,7 +71,7 @@ Hidden=yes
 Address=$ip/24
 Gateway=$gw
 "
-		echo "$profile" > "/etc/netctl/$ssid"
+		echo "$profile" | "/etc/netctl/$ssid" > "$dirsystem/netctl-$ssid"
 	fi
 	
 	ifconfig $wlan down

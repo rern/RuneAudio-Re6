@@ -150,16 +150,6 @@ sed -i -e '/^auto_update\|^audio_buffer_size\| #custom$/ d
 	quality        "very high"\
 }
 ' /etc/mpd.conf
-cat <<[-]EOF > /srv/http/data/system/mpd-soxrset
-	quality        "custom"
-	precision      "20"
-	phase_response "50"
-	passband_end   "91.3"
-	stopband_begin "100"
-	attenuation    "0"
-	flags          "0"
-}
-[-]EOF
 
 usermod -a -G root http # add user http to group root to allow /dev/gpiomem access
 

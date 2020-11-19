@@ -92,7 +92,7 @@ if ( count( $files ) ) {
 // context menus
 function menuli( $command, $icon, $label, $type = '' ) {
 	if ( $command === 'similar' ) {
-		$class.= ' sub';
+		$class = ' sub';
 		$submenu = '<i class="fa fa-play-plus submenu" data-cmd="similar"></i>';
 	} else {
 		$class = in_array( $icon, [ 'refresh-library', 'tag', 'minus-circle', 'lastfm' ] ) ? $icon : '';

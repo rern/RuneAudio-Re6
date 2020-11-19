@@ -118,9 +118,11 @@ case 'imagereplace':
 	}
 	break;
 case 'login':
-	$passwordfile = $dirsystem.'password';
-	$hash = rtrim( file_get_contents( $passwordfile ) );
-	if ( !password_verify( $_POST[ 'password' ], $hash ) ) die( '-1' );
+	$passwordfile = $dirsystem.'loginset';
+	if ( file_exists( $passwordfile ) ) {
+		$hash = rtrim( file_get_contents( $passwordfile ) );
+		if ( !password_verify( $_POST[ 'password' ], $hash ) ) die( '-1' );
+	}
 	
 	if ( isset( $_POST[ 'pwdnew' ] ) ) {
 		$hash = password_hash( $_POST[ 'pwdnew' ], PASSWORD_BCRYPT, [ 'cost' => 12 ] );

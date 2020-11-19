@@ -1,45 +1,46 @@
 #!/bin/bash
 
 dirsystem=/srv/http/data/system
-snaplatency=$( grep OPTS= /etc/default/snapclient | sed 's/.*latency=\(.*\)"/\1/' )
-[[ -z $snaplatency ]] && snaplatency=0
-lcd=$( grep -q dtoverlay=tft35a /boot/config.txt && echo true || echo false )
 
 data+='
 	  "autoplay"        : '$( [[ -e $dirsystem/autoplay ]] && echo true || echo false )'
 	, "hostname"        : "'$( hostname )'"
-	, "lcd"             : '$lcd'
+	, "lcd"             : '$( grep -q dtoverlay=tft35a /boot/config.txt && echo true || echo false )'
 	, "login"           : '$( [[ -e $dirsystem/login ]] && echo true || echo false )'
-	, "scrobbler"       : '$( systemctl -q is-active mpdscribble@mpd && echo true || echo false )'
-	, "mpdscribbleuser" : "'$( grep ^username /etc/mpdscribble.conf | cut -d' ' -f3- )'"
-	, "passworddefault" : '$( grep -q '$2a$12$rNJSBU0FOJM/jP98tA.J7uzFWAnpbXFYx5q1pmNhPnXnUu3L1Zz6W' $dirsystem/password && echo true || echo false )'
+	, "loginset"        : "'$( cat $dirsystem/loginset 2> /dev/null )'"
+	, "mpdscribble"     : '$( systemctl -q is-active mpdscribble@mpd && echo true || echo false )'
+	, "mpdscribbleset"  : "'$( grep ^username /etc/mpdscribble.conf | cut -d' ' -f3- )'"
 	, "reboot"          : "'$( cat /srv/http/data/shm/reboot 2> /dev/null )'"
-	, "snapcast"        : '$( systemctl -q is-active snapserver && echo true || echo false )'
+	, "snapserver"      : '$( systemctl -q is-active snapserver && echo true || echo false )'
 	, "snapclient"      : '$( [[ -e $dirsystem/snapclient ]] && echo true || echo false )'
-	, "snaplatency"     : '$snaplatency'
+	, "snapclientset"   : '$( cat $dirsystem/snapclientset 2> /dev/null || echo false )'
+	, "snaplatency"     : "'$( grep OPTS= /etc/default/snapclient | sed 's/.*latency=\(.*\)"/\1/' )'"
+	, "snapserverpw"    : "'$( cat $dirsystem/snapserverpw 2> /dev/null || echo false )'"
 	, "streaming"       : '$( grep -q 'type.*"httpd"' /etc/mpd.conf && echo true || echo false )
-# accesspoint
+# hostapd
 if [[ -e /usr/bin/hostapd ]]; then
 	passphrase=$( awk -F'=' '/^wpa_passphrase/ {print $2}' /etc/hostapd/hostapd.conf )
 	ssid=$( awk -F'=' '/^ssid/ {print $2}' /etc/hostapd/hostapd.conf )
 	data+='
 	, "hostapd"         : '$( systemctl -q is-active hostapd && echo true || echo false )'
+	, "hostapdset"      : "'$( cat $dirsystem/hostapdset 2> /dev/null )'"
 	, "hostapdip"       : "'$( awk -F',' '/router/ {print $2}' /etc/dnsmasq.conf )'"
-	, "passphrase"      : "'${passphrase//\"/\\\"}'"
-	, "ssid"            : "'${ssid//\"/\\\"}'"
+	, "hostapdpwd"      : "'$( awk -F'=' '/^wpa_passphrase/ {print $2}' /etc/hostapd/hostapd.conf | sed 's/"/\\"/g' )'"
+	, "ssid"            : "'$( awk -F'=' '/^ssid/ {print $2}' /etc/hostapd/hostapd.conf | sed 's/"/\\"/g' )'"
 	, "wlanup"          : '$( ip link show wlan0 | grep -q 'state UP' && echo true || echo false )
 fi
 # renderer
 [[ -e /usr/bin/shairport-sync  ]] && data+='
-	, "airplay"         : '$( systemctl -q is-active shairport-sync && echo true || echo false )
+	, "shairport-sync"  : '$( systemctl -q is-active shairport-sync && echo true || echo false )
 [[ -e /usr/bin/spotifyd  ]] && data+='
-	, "spotify"         : '$( systemctl -q is-active spotifyd && echo true || echo false )'
-	, "spotifydevice"   : "'$( awk '/device =/ {print $NF}' /etc/spotifyd.conf )'"'
+	, "spotifyd"        : '$( systemctl -q is-active spotifyd && echo true || echo false )'
+	, "spotifydset"     : "'$( cat $dirsystem/spotifydset 2> /dev/null )'"'
 [[ -e /usr/bin/upmpdcli  ]] && data+='
-	, "upnp"            : '$( systemctl -q is-active upmpdcli && echo true || echo false )
+	, "upmpdcli"        : '$( systemctl -q is-active upmpdcli && echo true || echo false )
 # features
 [[ -e /usr/bin/smbd  ]] && data+='
-	, "samba"           : '$( systemctl -q is-active smb && echo true || echo false )'
+	, "smb"             : '$( systemctl -q is-active smb && echo true || echo false )'
+	, "smbset"          : "'$( cat $dirsystem/smbset 2> /dev/null )'"
 	, "writesd"         : '$( grep -A1 /mnt/MPD/SD /etc/samba/smb.conf | grep -q 'read only = no' && echo true || echo false )'
 	, "writeusb"        : '$( grep -A1 /mnt/MPD/USB /etc/samba/smb.conf | grep -q 'read only = no' && echo true || echo false )
 xinitrc=/etc/X11/xinit/xinitrc
@@ -53,14 +54,15 @@ if [[ -e $xinitrc ]]; then
 			270 ) rotate=UD ;;
 		esac
 	else
-		file='/etc/X11/xorg.conf.d/99-raspi-rotate.conf'
+		file=/etc/X11/xorg.conf.d/99-raspi-rotate.conf
 		[[ -e $file ]] && rotate=$( grep rotate $file 2> /dev/null | cut -d'"' -f4 ) || rotate=NORMAL
 	fi
 	data+='
+	, "localbrowser"    : '$( systemctl -q is-enabled localbrowser && echo true || echo false )'
+	, "localbrowserset" : "'$( cat $dirsystem/localbrowserset 2> /dev/null )'"
 	, "cursor"          : '$( grep -q 'cursor yes' $xinitrc && echo true || echo false )'
-	, "chromium"        : '$( systemctl -q is-enabled localbrowser && echo true || echo false )'
 	, "rotate"          : "'$rotate'"
-	, "screenoff"       : '$(( $( grep 'xset dpms .*' $xinitrc | cut -d' ' -f5 ) ))'
+	, "screenoff"       : '$( grep 'xset dpms .*' $xinitrc | cut -d' ' -f5 )'
 	, "zoom"            : '$( grep factor $xinitrc | cut -d'=' -f3 )
 fi
 

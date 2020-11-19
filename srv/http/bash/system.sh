@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 dirdata=/srv/http/data
 dirsystem=$dirdata/system
 dirtmp=$dirdata/shm
@@ -148,19 +149,22 @@ lcdchar )
 	reboot=${args[2]}
 	if [[ $enable == true ]]; then
 		if ! grep -q 'dtparam=i2c_arm=on' $fileconfig; then
-			sed -i '$ a\dtparam=i2c_arm=on' $fileconfig
-			echo "$reboot" > $filereboot
-		fi
-		! grep -q 'i2c-bcm2708' $filemodule && echo "\
+				sed -i '$ a\dtparam=i2c_arm=on' $fileconfig
+				echo "$reboot" > $filereboot
+			fi
+			! grep -q 'i2c-bcm2708' $filemodule && echo "\
 i2c-bcm2708
 i2c-dev" >> $filemodule
-		touch $dirsystem/lcdchar
+			touch $dirsystem/lcdchar
+		fi
 	else
-		sed -i '/dtparam=i2c_arm=on/ d' $fileconfig
-		sed -i '/i2c-bcm2708\|i2c-dev/ d' $filemodule
+		if [[ ! -e $dirsystem/lcd ]]; then
+			sed -i '/dtparam=i2c_arm=on/ d' $fileconfig
+			sed -i '/i2c-bcm2708\|i2c-dev/ d' $filemodule
+		fi
 		rm -f $dirsystem/lcdchar
+		echo "$reboot" > $filereboot
 	fi
-	echo "${args[1]}" > $filereboot
 	pushRefresh
 	;;
 lcdcharset )
@@ -168,7 +172,6 @@ lcdcharset )
 	chip=${args[2]}
 	address=${args[3]}
 	charmap=${args[4]}
-	reboot=${args[5]}
 	printf '%s\n' "${args[@]:1}" > $dirsystem/lcdcharset # array to multiline string
 	[[ $cols == 16 ]] && rows=2 || rows=4
 	filelcdchar=/srv/http/bash/lcdchar.py
@@ -191,6 +194,7 @@ lcdcharset )
 ' -e '/RPLCD.gpio/,/numbering_mode/ s/^#//
 ' $filelcdchar
 	fi
+	! grep -q 'dtparam=i2c_arm=on' $fileconfig && /srv/http/bash/system.sh lcdchar$'\n'true
 	pushRefresh
 	;;
 onboardaudio )
@@ -225,19 +229,19 @@ relays )
 	;;
 soundprofile )
 	enable=${args[1]}
-	reboot=${args[2]}
 	if [[ $enable == true ]]; then
+		soundprofile "$( cat $dirsystem/soundprofileset )"
 		touch $dirsystem/soundprofile
 	else
-		rm -f $dirsystem/soundprofile
 		soundprofile '1500 1000 60 18000000'
+		rm -f $dirsystem/soundprofile
 	fi
 	pushRefresh
 	;;
 soundprofileset )
 	values=${args[@]:1}
-	soundprofile $values
-	printf '%s\n' "${args[@]:1}" > $dirsystem/soundprofile
+	printf '%s\n' "${args[@]:1}" > $dirsystem/soundprofileset
+	[[ ! -e $dirdata/shm/datarestore ]] && /srv/http/bash/system.sh soundprofile$'\n'true
 	pushRefresh
 	;;
 statusbootlog )

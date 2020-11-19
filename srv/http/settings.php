@@ -1,7 +1,7 @@
 <?php
 if ( file_exists( '/srv/http/data/system/login' ) ) {
 	session_start();
-	if ( !$_SESSION[ 'login' ] ) header( 'Location: /' );
+	if ( !isset( $_SESSION[ 'login' ] ) ) header( 'Location: /' );
 }
 $time = time();
 $localhost = in_array( $_SERVER[ 'REMOTE_ADDR' ], ['127.0.0.1', '::1'] );
