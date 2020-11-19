@@ -89,12 +89,10 @@ case 'bookmarkrename':
 	pushstream( 'bookmark', [ 'type' => 'rename', 'path' => $_POST[ 'path' ], 'name' => $rename ] );
 	break;
 case 'datarestore':
-	if ( $_FILES[ 'file' ][ 'error' ] != UPLOAD_ERR_OK ) exit;
+	if ( $_FILES[ 'file' ][ 'error' ] != UPLOAD_ERR_OK ) exit( '-1' );
 	
 	move_uploaded_file( $_FILES[ 'file' ][ 'tmp_name' ], $dirdata.'tmp/backup.gz' );
 	exec( $sudo.'/srv/http/bash/datarestore.sh' );
-	$reboot = @file_get_contents( '/tmp/reboot' );
-	echo $reboot ?: 'restored';
 	break;
 case 'displayset':
 	$data = json_decode( $_POST[ 'displayset' ] );
