@@ -215,6 +215,6 @@ $( '.help' ).click( function() {
 	$( '#help' ).toggleClass( 'blue', $( '.help-block:not(.hide)' ).length !== 0 );
 } );
 $( '.status' ).click( function( e ) {
-	codeToggle( $( this ).data( 'service' ), e.target );
+	codeToggle( $( this ).data( 'status' ), e.target );
 } );
 

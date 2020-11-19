@@ -2,7 +2,7 @@
 <div>
 <heading>Renderers<?=$help?></heading>
 	<?php if ( file_exists( '/usr/bin/shairport-sync' ) ) { ?>
-<div data="shairport-sync" class="col-l double status">
+<div data-status="shairport-sync" class="col-l double status">
 	<a>AirPlay
 	<br><gr>Shairport-sync<?=$code?></gr></a><i class="fa fa-airplay fa-lg"></i>
 </div>
@@ -34,7 +34,7 @@
 </div>
 	<?php }
 		  if ( file_exists( '/usr/bin/spotifyd' ) ) { ?>
-<div data="spotifyd" class="col-l double status">
+<div data-status="spotifyd" class="col-l double status">
 	<a>Spotify
 	<br><gr>Spotifyd<?=$code?></gr></a><i class="fa fa-spotify fa-lg"></i>
 </div>
@@ -50,7 +50,7 @@
 <pre id="codespotifyd" class="hide"></pre>
 	<?php }
 		  if ( file_exists( '/usr/bin/upmpdcli' ) ) { ?>
-<div data="upmpdcli" class="col-l double status">
+<div data-status="upmpdcli" class="col-l double status">
 	<a>UPnP
 	<br><gr>upmpdcli<?=$code?></gr></a><i class="fa fa-upnp fa-lg"></i>
 </div>
@@ -78,7 +78,7 @@
 	<span class="help-block hide">Asynchronous streaming for browsers via <code id="ip"></code> (Latency - several seconds)</span>
 </div>
 	<?php if ( file_exists( '/usr/bin/snapserver' ) ) { ?>
-<div data="snapserver" class="col-l double status">
+<div data-status="snapserver" class="col-l double status">
 	<a>Synchronous
 	<br><gr>Snapcast<?=$code?></gr></a><i class="fa fa-snapcast fa-lg"></i>
 </div>
@@ -98,7 +98,7 @@
 <div>
 <heading>Features<?=$help?></heading>
 	<?php if ( file_exists( '/usr/bin/chromium' ) ) { ?>
-<div data="localbrowser" class="col-l double status">
+<div data-status="localbrowser" class="col-l double status">
 	<a>Browser on RPi
 	<br><gr>Chromium<?=$code?></gr></a><i class="fa fa-chromium fa-lg"></i>
 </div>
@@ -113,7 +113,7 @@
 <pre id="codelocalbrowser" class="hide"></pre>
 	<?php } 
 		  if ( file_exists( '/usr/bin/smbd' ) ) { ?>
-<div data="smb" class="col-l double status">
+<div data-status="smb" class="col-l double status">
 	<a>File Sharing
 	<br><gr>Samba<?=$code?></gr></a><i class="fa fa-networks fa-lg"></i>
 </div>
@@ -129,7 +129,7 @@
 </div>
 <pre id="codesmb" class="hide"></pre>
 	<?php } ?>
-<div data="mpdscribble" class="col-l double status">
+<div data-status="mpdscribble" class="col-l double status">
 	<a>Last.fm Scrobbler
 	<br><gr>mpdscribble<?=$code?></gr></a><i class="fa fa-lastfm fa-lg"></i>
 </div>
@@ -161,7 +161,7 @@
 	<div class="switchlabel" for="autoplay"></div>
 	<span class="help-block hide">Start playing automatically after boot.</span>
 </div>
-<div data="hostapd" class="col-l double status">
+<div data-status="hostapd" class="col-l double status">
 	<a>RPi Access Point
 	<br><gr>hostapd<?=$code?></gr></a><i class="fa fa-wifi-3 fa-lg"></i>
 </div>
