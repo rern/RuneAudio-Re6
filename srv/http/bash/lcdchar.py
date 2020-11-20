@@ -77,16 +77,28 @@ logor = (
     0b11010,
     0b11100,
 )
+dot = (
+    0b00000,
+    0b00000,
+    0b00000,
+    0b00110,
+    0b00110,
+    0b00000,
+    0b00000,
+    0b00000,
+)
 lcd.create_char( 0, pause )
 lcd.create_char( 1, play )
 lcd.create_char( 2, stop )
 lcd.create_char( 3, logol )
 lcd.create_char( 4, logor )
+lcd.create_char( 5, dot )
 
 ipause = '\x00 '
 iplay = '\x01 '
 istop = '\x02 '
 irr = '\x03\x04'
+idots = ' \x05  \x05  \x05'
 rn = '\r\n'
 
 if len( sys.argv ) == 2: # rr - splash or single argument string (^ = linebreak)
@@ -124,7 +136,7 @@ for i in range( 1, 7 ):
     val = sys.argv[ i ][ :cols ].replace( '"', '\\"' ) # escape "
     exec( field[ i ] +' = "'+ val.rstrip() +'"' )      # fix last space error - remove
     
-if title == 'false': title = rows == 2 and artist or '* * *'
+if title == 'false': title = rows == 2 and artist or idots
     
 if total != 'false':
     total = round( float( total ) )
@@ -149,6 +161,7 @@ progress = istate + progress
 progl = len( progress )
 if progl <= cols - 3: progress += ' ' * ( cols - progl - 2 ) + irr
 
+if artist == 'false': artist = idots
 lines = rows == 2 and title or artist + rn + title + rn + album
 
 lcd.write_string( lines + rn + progress[ :cols ] )
