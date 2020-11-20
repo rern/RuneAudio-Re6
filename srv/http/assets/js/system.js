@@ -447,7 +447,7 @@ $( '#soundprofile' ).click( function() {
 } );
 $( '#setting-soundprofile' ).click( function() {
 	var defaultval = '1500 1000 60 18000000';
-	var data = G.soundprofileset ? G.soundprofileset.split( ' ' ) : defaultval;
+	var data = G.soundprofileset ? G.soundprofileset.split( ' ' ) : defaultval.split( ' ' );
 	if ( G.rpi01 ) {
 		var lat = [ 1500000, 850000, 500000, 120000, 500000, 1500000, 145655, 6000000 ];
 	} else {
@@ -465,7 +465,11 @@ $( '#setting-soundprofile' ).click( function() {
 		, _Custom   : 0
 	}
 	var values = Object.values( radio );
-	var checked = values.indexOf( G.soundprofileset ) !== -1 ? G.soundprofileset : 0;
+	if ( G.soundprofileset ) {
+		var checked = values.indexOf( G.soundprofileset ) !== -1 ? G.soundprofileset : 0;
+	} else {
+		var checked = defaultval;
+	}
 	info( {
 		  icon    : 'volume'
 		, title   : 'Kernel Sound Profile'
