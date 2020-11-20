@@ -378,7 +378,7 @@ $( '#setting-lcdchar' ).click( function() {
 				var address = $( '#address').val();
 				changed = changed || inf !== G.inf || chip !== G.i2cchip || address !== G.i2caddress;
 			}
-			if ( changed ) {
+			if ( changed || !G.lcdcharset ) {
 				rebootText( 1, 'Character LCD' );
 				var cmd = [ 'lcdcharset', cols, charmap ];
 				if ( inf === 'i2c' ) cmd.push( chip, address );
@@ -494,7 +494,7 @@ $( '#setting-soundprofile' ).click( function() {
 		, ok      : function() {
 			var soundprofileset = $( '#infoTextBox' ).val();
 			for ( i = 1; i < 4; i++ ) soundprofileset += ' '+ $( '#infoTextBox'+ i ).val();
-			if ( soundprofileset !== G.soundprofileset ) bash( ( 'soundprofileset '+ soundprofileset ).split( ' ' ) );
+			if ( soundprofileset !== G.soundprofileset || !G.soundprofileset ) bash( ( 'soundprofileset '+ soundprofileset ).split( ' ' ) );
 		}
 	} );
 } );
