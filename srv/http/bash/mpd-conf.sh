@@ -217,12 +217,12 @@ fi
 
 if [[ -e /usr/bin/spotifyd ]]; then
 	if [[ -e $dirsystem/spotify-device ]]; then
-		device=$( cat $dirsystem/spotify-device )
+		device=$( cat $dirsystem/spotifydset )
 	else
 		if [[ -e $usbdacfile ]]; then
 			cardname=$( aplay -l | grep "^card.*$aplayname" | head -1 | cut -d' ' -f3 )
 		else
-			cardname=$( aplay -l | grep "^card ${Acard[i]}:" | head -1 | cut -d' ' -f3 ) # 'head -1" for on-board
+			cardname=$( aplay -l | grep "^card ${Acard[i]}:" | head -1 | cut -d' ' -f3 )
 		fi
 		device=$( aplay -L | grep "^default.*$cardname" )
 	fi

@@ -30,9 +30,9 @@ fi
 mv $dirsystem/{accesspoint,hostapd} &> /dev/null
 mv $dirsystem/{airplay,shairport-sync} &> /dev/null
 mv $dirsystem/mpdscribble{-login,set} &> /dev/null
+mv $dirsystem/{snapcast,snapserver} &> /dev/null
 mv $dirsystem/spotify{,d} &> /dev/null
 mv $dirsystem/spotify{-device,dset} &> /dev/null
-mv $dirsystem/{snapcast,snapserver} &> /dev/null
 mv $dirsystem/{upnp,upmpdcli} &> /dev/null
 
 files=$dirsystem/{ntp,wlanregdom}

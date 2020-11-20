@@ -251,7 +251,11 @@ spotifydset )
 	device=${args[1]}
 	sed -i "s/^\(device = \)/\1$device/" /etc/spotifyd.conf
 	systemctl try-restart spotifyd
-	echo $device > $dirsystem/spotifydset
+	if [[ ${device:0:7} == default ]]; then
+		rm -f $dirsystem/spotifydset
+	else
+		echo $device > $dirsystem/spotifydset
+	fi
 	pushRefresh
 	;;
 streaming )
