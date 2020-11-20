@@ -370,18 +370,18 @@ $( '#setting-lcdchar' ).click( function() {
 		]
 		, ok          : function() {
 			var cols = $( '#cols input:checked' ).val();
-			var charmap = $( '#charmap').val();
+			var charmap = $( '#charmap input:checked').val();
 			var changed = !G.lcdchar || cols !== G.cols || charmap !== G.charmap;
 			var inf = $( '#inf input:checked' ).val();
 			if ( inf === 'i2c' ) {
 				var chip = $( '#chip').val();
-				var address = $( '#address').val();
+				var address = $( '#address input:checked').val();
 				changed = changed || inf !== G.inf || chip !== G.i2cchip || address !== G.i2caddress;
 			}
 			if ( changed || !G.lcdcharset ) {
 				rebootText( 1, 'Character LCD' );
 				var cmd = [ 'lcdcharset', cols, charmap ];
-				if ( inf === 'i2c' ) cmd.push( chip, address );
+				if ( inf === 'i2c' ) cmd.push( address, chip );
 				cmd.push( G.reboot.join( '\n' ) );
 				bash( cmd );
 				notify( 'Character LCD', 'Change ...', 'gear' );

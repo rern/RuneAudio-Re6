@@ -151,12 +151,11 @@ lcdchar )
 		if ! grep -q 'dtparam=i2c_arm=on' $fileconfig; then
 				sed -i '$ a\dtparam=i2c_arm=on' $fileconfig
 				echo "$reboot" > $filereboot
-			fi
-			! grep -q 'i2c-bcm2708' $filemodule && echo "\
+		fi
+		! grep -q 'i2c-bcm2708' $filemodule && echo "\
 i2c-bcm2708
 i2c-dev" >> $filemodule
 			touch $dirsystem/lcdchar
-		fi
 	else
 		if [[ ! -e $dirsystem/lcd ]]; then
 			sed -i '/dtparam=i2c_arm=on/ d' $fileconfig
@@ -169,9 +168,11 @@ i2c-dev" >> $filemodule
 	;;
 lcdcharset )
 	cols=${args[1]}
-	chip=${args[2]}
+	charmap=${args[2]}
 	address=${args[3]}
-	charmap=${args[4]}
+	chip=${args[4]}
+	reboot=${args[5]}
+	unset args[-1] # remove reboot line
 	printf '%s\n' "${args[@]:1}" > $dirsystem/lcdcharset # array to multiline string
 	[[ $cols == 16 ]] && rows=2 || rows=4
 	filelcdchar=/srv/http/bash/lcdchar.py
@@ -194,8 +195,11 @@ lcdcharset )
 ' -e '/RPLCD.gpio/,/numbering_mode/ s/^#//
 ' $filelcdchar
 	fi
-	! grep -q 'dtparam=i2c_arm=on' $fileconfig && /srv/http/bash/system.sh lcdchar$'\n'true
-	pushRefresh
+	if ! grep -q 'dtparam=i2c_arm=on' $fileconfig; then
+		/srv/http/bash/system.sh lcdchar$'\n'true$'\n'"$reboot"
+	else
+		pushRefresh
+	fi
 	;;
 onboardaudio )
 	if [[ ${args[1]} == true ]]; then
