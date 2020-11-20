@@ -280,12 +280,8 @@ $( '#setting-lcd' ).click( function() {
 } );
 $( '#lcdchar' ).click( function() {
 	var checked = $( this ).prop( 'checked' )
-	if ( G.lcdcharset ) {
-		notify( 'Character LCD', checked, 'gear' );
-		bash( [ 'lcdchar', checked, G.reboot.join( '\n' ) ] );
-	} else {
-		$( '#setting-lcdchar' ).click();
-	}
+	notify( 'Character LCD', checked, 'gear' );
+	bash( [ 'lcdchar', checked, G.reboot.join( '\n' ) ] );
 } );
 var infolcdchar = heredoc( function() { /*
 	<div class="infotextlabel">
