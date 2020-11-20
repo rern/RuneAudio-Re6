@@ -121,7 +121,7 @@ case 'login':
 	$passwordfile = $dirsystem.'loginset';
 	if ( file_exists( $passwordfile ) ) {
 		$hash = rtrim( file_get_contents( $passwordfile ) );
-		if ( !password_verify( $_POST[ 'password' ], $hash ) ) die( '-1' );
+		if ( !password_verify( $_POST[ 'password' ], $hash ) ) die();
 	}
 	
 	if ( isset( $_POST[ 'pwdnew' ] ) ) {
@@ -133,6 +133,7 @@ case 'login':
 		session_start();
 		$_SESSION[ 'login' ] = 1;
 	}
+	pushstream( 'refresh', [ 'page' => 'features' ] );
 	break;
 case 'logout':
 	session_start();

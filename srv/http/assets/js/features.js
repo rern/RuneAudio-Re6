@@ -336,7 +336,7 @@ $( '#setting-login' ).click( function() {
 					  icon    : 'lock'
 					, title   : 'Change Password'
 					, nox     : 1
-					, message : ( std ? 'Password changed' : 'Wrong existing password' )
+					, message : ( std ? 'Password changed.' : 'Wrong existing password.' )
 				} );
 			} );
 		}
