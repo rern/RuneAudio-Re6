@@ -494,7 +494,7 @@ $( '#setting-soundprofile' ).click( function() {
 		, ok      : function() {
 			var soundprofileset = $( '#infoTextBox' ).val();
 			for ( i = 1; i < 4; i++ ) soundprofileset += ' '+ $( '#infoTextBox'+ i ).val();
-			if ( soundprofileset !== G.soundprofileset || !G.soundprofileset ) bash( ( 'soundprofileset '+ soundprofileset ).split( ' ' ) );
+			if ( soundprofileset !== G.soundprofileset ) bash( ( 'soundprofileset '+ soundprofileset ).split( ' ' ) );
 		}
 	} );
 } );
