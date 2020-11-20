@@ -59,11 +59,11 @@ $( '#setting-snapclient' ).click( function() {
 	info( {
 		  icon          : 'snapcast'
 		, title         : 'SnapClient'
-		, message       : 'Sync client to server:'
+		, message       : 'Sync SnapClient with SnapServer:'
 		, textlabel     : 'Latency <gr>(ms)</gr>'
 		, textvalue     : G.snaplatency || 800
 		, passwordlabel : 'Password'
-		, footer        : '<px40/>(If Snapcast server password '
+		, footer        : '<px40/>(If SSH password of SnapServer '
 						+'<br><px40/>not the same as this client.)'
 		, preshow       : function() {
 			$( '#infoPasswordBox' ).val( G.snapspassword );
