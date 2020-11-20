@@ -314,11 +314,11 @@ var infolcdchar = heredoc( function() { /*
 		<div class="i2c">
 			<div id="address" class="infocontent infohtml lcd">
 			</div>
-			<div id="chip" class="infocontent infohtml lcd">
-					<label><input type="radio" name="chip" value="PCF8574"> PCF8574</label>
-				<br><label><input type="radio" name="chip" value="MCP23008"> MCP23008</label>
-				<br><label><input type="radio" name="chip" value="MCP23017"> MCP23017</label>
-			</div>
+			<select id="chip" class="infocontent infohtml">
+				<option value="PCF8574"> PCF8574</option>
+				<option value="MCP23008"> MCP23008</option>
+				<option value="MCP23017"> MCP23017</option>
+			</select>
 		</div>
 	</div>
 */ } );
@@ -327,6 +327,7 @@ $( '#setting-lcdchar' ).click( function() {
 		  icon        : 'gear'
 		, title       : 'Character LCD'
 		, content     : infolcdchar
+		, boxwidth    : 173
 		, nofocus     : 1
 		, preshow     : function() {
 			var settings = G.lcdcharval.split( ' ' );
@@ -357,7 +358,6 @@ $( '#setting-lcdchar' ).click( function() {
 				$( '#address input[value='+ G.i2caddress +']' ).prop( 'checked', 1 );
 			}
 			$( '.lcd label' ).width( 80 );
-			$( '#chip label' ).width( 120 );
 		}
 		, cancel      : function() {
 			if ( !G.lcdcharset ) $( '#lcdchar' ).prop( 'checked', 0 );
