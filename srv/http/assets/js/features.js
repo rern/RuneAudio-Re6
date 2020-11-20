@@ -63,10 +63,18 @@ $( '#setting-snapclient' ).click( function() {
 		, textlabel     : 'Latency <gr>(ms)</gr>'
 		, textvalue     : G.snaplatency || 800
 		, passwordlabel : 'Password'
-		, footer        : '<px40/>(If SSH password of SnapServer '
-						+'<br><px40/>not the same as this client.)'
+		, checkbox      : { 'SnapServer different SSH password' : 1 }
 		, preshow       : function() {
-			$( '#infoPasswordBox' ).val( G.snapspassword );
+			if ( G.snapspassword ) {
+				$( '#infoPasswordBox' ).val( G.snapspassword );
+			} else {
+				$( '.infolabel:eq( 1 ), .infoinput:eq( 1 ), #infotextsuffix' ).hide();
+			}
+			$( '#infoCheckBox input' ).change( function() {
+				var checked = $( this ).prop( 'checked' );
+				$( '.infolabel:eq( 1 ), .infoinput:eq( 1 ), #infotextsuffix' ).toggle( checked );
+				$( '#infoPasswordBox' ).val( checked ? G.snapspassword : '' );
+			} );
 		}
 		, cancel        : function() {
 			if ( !G.snapclientset ) $( '#snapclient' ).prop( 'checked', 0 );
@@ -250,11 +258,12 @@ $( '#setting-smb' ).click( function() {
 		, ok       : function() {
 			var writesd = $( '#infoCheckBox input:eq( 0 )' ).prop( 'checked' );
 			var writeusb = $( '#infoCheckBox input:eq( 1 )' ).prop( 'checked' );
-			if ( writesd !== G.writesd || writeusb !== G.writeusb ) {
+			if ( writesd !== G.writesd || writeusb !== G.writeusb || !G.smbset ) {
 				G.writesd = writesd;
 				G.writeusb = writeusb;
 				notify( 'Samba - File Sharing', 'Change ...', 'network' );
 				bash( [ 'smbset', G.writesd, G.writeusb ] );
+				console.log( [ 'smbset', G.writesd, G.writeusb ] );
 			}
 		}
 	} );
@@ -272,7 +281,7 @@ $( '#setting-mpdscribble' ).click( function() {
 	var data = G.mpdscribbleval ? G.mpdscribbleval.split( '\n' ) : [ '', '' ];
 	info( {
 		  icon          : 'lastfm'
-		, title         : 'Scrobbler'
+		, title         : 'Last.fm Scrobbler'
 		, textlabel     : 'Username'
 		, textvalue     : data[ 0 ]
 		, passwordlabel : 'Password'
@@ -290,8 +299,8 @@ $( '#setting-mpdscribble' ).click( function() {
 				if ( std == -1 ) {
 					info( {
 						  icon    : 'lastfm'
-						, title   : 'Scrobbler'
-						, message : 'Lastfm Login failed.'
+						, title   : 'Last.fm Scrobbler'
+						, message : 'Last.fm Login failed.'
 					} );
 				}
 		} );
@@ -317,10 +326,13 @@ $( '#setting-login' ).click( function() {
 			if ( !G.loginset ) $( '#login' ).prop( 'checked', 0 );
 		}
 		, ok            : function() {
+			var password = $( '#infoPasswordBox' ).val();
+			var pwdnew = $( '#infoPasswordBox1' ).length ? $( '#infoPasswordBox1' ).val() : password;
+			notify( 'Password Login', 'Change ...', 'key' );
 			$.post( cmdphp, {
 				  cmd      : 'login'
-				, password : $( '#infoPasswordBox' ).val()
-				, pwdnew   : $( '#infoPasswordBox1' ).val()
+				, password : password
+				, pwdnew   : pwdnew
 			}, function( std ) {
 				info( {
 					  icon    : 'lock'
@@ -339,27 +351,31 @@ $( '#autoplay' ).click( function() {
 } );
 $( '#hostapd' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
-	if ( checked && G.wlanup ) {
+	if ( !G.hostapd && G.wlanconnect && ( checked || !G.hostapdset ) ) {
 		info( {
 			  icon      : 'network'
 			, title     : 'RPi Access Point'
 			, message   : '<wh>Wi-Fi is currently connected.</wh>'
 						 +'<br>Disconnect and continue?'
-			, ok        : function() {
-				$( '#setting-hostapd' ).removeClass( 'hide' );
-				notify( 'RPi Access Point', true, 'wifi-3' );
-				bash( [ 'hostapd', true, G.hostapdip ] );
+			, cancel    : function() {
+				if ( !G.hostapd ) $( '#hostapd' ).prop( 'checked', 0 );
 			}
-		} )
-		return
-	}
-	
-	var checked = $( this ).prop( 'checked' );
-	if ( G.hostapdset ) {
-		notify( 'RPi Access Point', checked, 'wifi-3' );
-		bash( [ 'hostapd', checked, G.hostapdip ] );
+			, ok        : function() {
+				if ( G.hostapdset ) {
+					notify( 'RPi Access Point', checked, 'wifi-3' );
+					bash( [ 'hostapd', checked, G.hostapdip ] );
+				} else {
+					$( '#setting-hostapd' ).click();
+				}
+			}
+		} );
 	} else {
-		$( '#setting-hostapd' ).click();
+		if ( G.hostapdset ) {
+			notify( 'RPi Access Point', checked, 'wifi-3' );
+			bash( [ 'hostapd', checked, G.hostapdip ] );
+		} else {
+			$( '#setting-hostapd' ).click();
+		}
 	}
 } );
 $( '#setting-hostapd' ).click( function() {

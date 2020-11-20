@@ -12,7 +12,7 @@ pushRefresh() {
 	curl -s -X POST http://127.0.0.1/pub?id=refresh -d '{ "page": "features" }'
 }
 featureSet() {
-	[[ -z $datarestore ]] && exit
+	[[ -n $datarestore ]] && exit
 	
 	feature=$1
 	set=$2
@@ -90,16 +90,6 @@ hostapdset )
 ' -e "s/\(wpa_passphrase=\).*/\1$password/
 " /etc/hostapd/hostapd.conf
 	featureSet hostapd "${args[@]:1}"
-	;;
-shairport-sync )
-	if [[ ${args[1]} == true ]]; then
-		systemctl enable --now shairport-sync
-		touch $dirsystem/shairport-sync
-	else
-		systemctl disable --now shairport-sync
-		rm -f $dirsystem/shairport-sync
-	fi
-	pushRefresh
 	;;
 aplaydevices )
 	aplay -L | grep -v '^\s\|^null' | head -c -1
@@ -186,6 +176,20 @@ rotatelcd )
 	rotatelcd ${args[1]}
 	pushRefresh
 	;;
+screenoff )
+	screenoff ${args[1]}
+	pushRefresh
+	;;
+shairport-sync )
+	if [[ ${args[1]} == true ]]; then
+		systemctl enable --now shairport-sync
+		touch $dirsystem/shairport-sync
+	else
+		systemctl disable --now shairport-sync
+		rm -f $dirsystem/shairport-sync
+	fi
+	pushRefresh
+	;;
 smb )
 	if [[ ${args[1]} == true ]]; then
 		systemctl enable --now smb
@@ -199,25 +203,9 @@ smb )
 smbset )
 	smbconf=/etc/samba/smb.conf
 	sed -i '/read only = no/ d' $smbconf
-	[[ ${args[1]} == true ]] && sed -i '/path = .*SD/ a\tread only = no' $smbconf
-	[[ ${args[2]} == true ]] && sed -i '/path = .*USB/ a\tread only = no' $smbconf
+	[[ ${args[1]} == true ]] && sed -i '/path = .*SD/ a\	read only = no' $smbconf
+	[[ ${args[2]} == true ]] && sed -i '/path = .*USB/ a\	read only = no' $smbconf
 	featureSet smb "${args[@]:1}"
-	;;
-screenoff )
-	screenoff ${args[1]}
-	pushRefresh
-	;;
-snapserver )
-	if [[ ${args[1]} == true ]]; then
-		systemctl enable --now snapserver
-		touch $dirsystem/snapcast
-	else
-		systemctl disable --now snapserver
-		rm -f $dirsystem/snapcast
-	fi
-	$dirbash/mpd-conf.sh
-	$dirbash/snapcast.sh serverstop
-	pushRefresh
 	;;
 snapclient )
 	if [[ ${args[1]} == true ]]; then
@@ -235,6 +223,18 @@ snapclientset )
 	sed -i '/OPTS=/ s/".*"/"--latency="'$latency'"/' /etc/default/snapclient
 	[[ -n $password ]] && echo $pwd > $dirsystem/snapclientpw
 	featureSet snapclient "${args[@]:1}"
+	;;
+snapserver )
+	if [[ ${args[1]} == true ]]; then
+		systemctl enable --now snapserver
+		touch $dirsystem/snapcast
+	else
+		systemctl disable --now snapserver
+		rm -f $dirsystem/snapcast
+	fi
+	$dirbash/mpd-conf.sh
+	$dirbash/snapcast.sh serverstop
+	pushRefresh
 	;;
 spotifyd )
 	if [[ ${args[1]} == true ]]; then
@@ -256,8 +256,8 @@ spotifydset )
 	;;
 streaming )
 	[[ ${args[1]} == true ]] && touch $dirsystem/streaming || rm -f $dirsystem/streaming
-	pushRefresh
 	$dirbash/mpd-conf.sh
+	pushRefresh
 	;;
 upmpdcli )
 	if [[ ${args[1]} == true ]]; then
