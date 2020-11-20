@@ -81,7 +81,7 @@ if grep -q 'dtparam=i2c_arm=on' /boot/config.txt; then
 					| grep . \
 					| sort -u )
 else
-	lcdcharaddr=0x27
+	lcdcharaddr=27
 fi
 
 data+='
