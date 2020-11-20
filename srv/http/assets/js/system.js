@@ -414,12 +414,16 @@ $( '#hostname' ).click( function() {
 		}
 	} );
 } );
+$( '#timezone' ).on( 'selectric-change', function( e ) {
+	bash( [ 'timezone', $( this ).val() ] );
+} );
 $( '#setting-regional' ).click( function() {
 	info( {
 		  icon      : 'gear'
 		, title     : 'Regional Settings'
 		, textlabel : [ 'NTP server', 'Regulatory domain' ]
 		, textvalue : [ G.ntp, G.regdom || '00' ]
+		, boxwidth  : 200
 		, footer    : '<px70/><px60/>00 - common for all regions'
 		, ok        : function() {
 			var ntp = $( '#infoTextBox' ).val();
@@ -432,9 +436,6 @@ $( '#setting-regional' ).click( function() {
 			}
 		}
 	} );
-} );
-$( '#timezone' ).on( 'selectric-change', function( e ) {
-	bash( [ 'timezone', $( this ).val() ] );
 } );
 $( '#soundprofile' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
