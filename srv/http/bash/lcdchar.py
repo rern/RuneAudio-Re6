@@ -104,14 +104,14 @@ rn = '\r\n'
 if len( sys.argv ) == 2: # rr - splash or single argument string (^ = linebreak)
     if argv1 == 'rr':
         file = open( '/srv/http/data/system/version' )
-        ver = file.read()
+        version = file.read()
         file.close()
         spaces = '       '
         splash = ''
         if rows == 4:
             spaces += '  '
             splash = rn
-        splash += spaces + irr + rn + spaces + ver
+        splash += spaces + irr + rn + spaces + version
         lcd.write_string( splash )
     else:
         lcd.auto_linebreaks = True
