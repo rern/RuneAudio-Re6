@@ -107,7 +107,7 @@ $( '#setting-spotifyd' ).click( function() {
 			, message : 'Audio output:'
 			, radio   : radio
 			, checked : G.spotifyddevice
-			, footer  : '<br>(Only if current one not working)'
+			, footer  : '<br>(Only if default one not working)'
 			, ok      : function() {
 				var spotifyddevice = $( '#infoSelectBox option:selected' ).text();
 				if ( spotifyddevice !== G.spotifyddevice ) {
