@@ -79,7 +79,7 @@
 </div>
 	<?php if ( file_exists( '/usr/bin/snapserver' ) ) { ?>
 <div data-status="snapserver" class="col-l double status">
-	<a>Synchronous
+	<a>SnapServer
 	<br><gr>Snapcast<?=$code?></gr></a><i class="fa fa-snapcast fa-lg"></i>
 </div>
 <div class="col-r">
