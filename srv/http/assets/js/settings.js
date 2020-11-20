@@ -22,7 +22,7 @@ var cmd = {
 	, mount        : 'mount | grep " / \\|MPD"'
 	, netctl       : '/srv/http/bash/system.sh statusnetctl'
 }
-var services = [ 'hostapd', 'localbrowser', 'mpd', 'mpdscribble', 'shairport-sync', 'smb', 'snapserver', 'spotifyd', 'upmpdcli' ];
+var services = [ 'hostapd', 'localbrowser', 'mpd', 'mpdscribble', 'shairport-sync', 'smb', 'snapclient', 'snapserver', 'spotifyd', 'upmpdcli' ];
 function codeToggle( id, target ) {
 	id === 'localbrowser' ? resetLocal( 7000 ) : resetLocal();
 	if ( $( target ).hasClass( 'help' ) || target.id === 'mpdrestart' ) return // question icon

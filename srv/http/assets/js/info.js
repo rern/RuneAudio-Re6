@@ -320,6 +320,7 @@ function info( O ) {
 			} else {
 				textvalue = [];
 			}
+			if ( typeof textsuffix !== 'object' ) textsuffix = [ textsuffix ];
 			var labelhtml = '';
 			var boxhtml = '';
 			var suffixhtml = '';
@@ -363,7 +364,7 @@ function info( O ) {
 			}
 			$( '#infotextlabel' ).append( labelhtml );
 			$( '#infotextbox' ).append( boxhtml );
-			$( '#infotextsuffix' ).append( suffixhtml );
+			$( '#infotextsuffix' ).append( suffixhtml.slice( 0, -4 ) );
 			$( '#infoText' ).removeClass( 'hide' );
 		}
 		if ( 'fileoklabel' in O ) {

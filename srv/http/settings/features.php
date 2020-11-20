@@ -4,7 +4,7 @@
 	<?php if ( file_exists( '/usr/bin/shairport-sync' ) ) { ?>
 <div data-status="shairport-sync" class="col-l double status">
 	<a>AirPlay
-	<br><gr>Shairport-sync<?=$code?></gr></a><i class="fa fa-airplay fa-lg"></i>
+	<br><gr>shairport-sync<?=$code?></gr></a><i class="fa fa-airplay fa-lg"></i>
 </div>
 <div class="col-r">
 	<input id="shairport-sync" type="checkbox">
@@ -17,9 +17,9 @@
 	<?php }
 		  if ( file_exists( '/usr/bin/snapserver' ) ) { ?>
 <div id="divsnapclient">
-	<div class="col-l double">
+	<div data-status="snapclient" class="col-l double status">
 		<a>SnapClient
-		<br><gr>Snapcast</gr></a><i class="fa fa-snapcast fa-lg"></i>
+		<br><gr>snapclient<?=$code?></gr></a><i class="fa fa-snapcast fa-lg"></i>
 	</div>
 	<div class="col-r">
 		<input id="snapclient" type="checkbox">
@@ -32,11 +32,12 @@
 		</span>
 	</div>
 </div>
+<pre id="codesnapclient" class="hide"></pre>
 	<?php }
 		  if ( file_exists( '/usr/bin/spotifyd' ) ) { ?>
 <div data-status="spotifyd" class="col-l double status">
 	<a>Spotify
-	<br><gr>Spotifyd<?=$code?></gr></a><i class="fa fa-spotify fa-lg"></i>
+	<br><gr>spotifyd<?=$code?></gr></a><i class="fa fa-spotify fa-lg"></i>
 </div>
 <div class="col-r">
 	<input id="spotifyd" type="checkbox">
@@ -80,7 +81,7 @@
 	<?php if ( file_exists( '/usr/bin/snapserver' ) ) { ?>
 <div data-status="snapserver" class="col-l double status">
 	<a>SnapServer
-	<br><gr>Snapcast<?=$code?></gr></a><i class="fa fa-snapcast fa-lg"></i>
+	<br><gr>snapserver<?=$code?></gr></a><i class="fa fa-snapcast fa-lg"></i>
 </div>
 <div class="col-r">
 	<input id="snapserver" type="checkbox">
@@ -100,7 +101,7 @@
 	<?php if ( file_exists( '/usr/bin/chromium' ) ) { ?>
 <div data-status="localbrowser" class="col-l double status">
 	<a>Browser on RPi
-	<br><gr>Chromium<?=$code?></gr></a><i class="fa fa-chromium fa-lg"></i>
+	<br><gr>localbrowser<?=$code?></gr></a><i class="fa fa-chromium fa-lg"></i>
 </div>
 <div class="col-r">
 	<input id="localbrowser" type="checkbox">
@@ -115,7 +116,7 @@
 		  if ( file_exists( '/usr/bin/smbd' ) ) { ?>
 <div data-status="smb" class="col-l double status">
 	<a>File Sharing
-	<br><gr>Samba<?=$code?></gr></a><i class="fa fa-networks fa-lg"></i>
+	<br><gr>smb<?=$code?></gr></a><i class="fa fa-networks fa-lg"></i>
 </div>
 <div class="col-r">
 	<input id="smb" type="checkbox">
@@ -144,7 +145,7 @@
 <pre id="codempdscribble" class="hide"></pre>
 <div class="col-l double">
 	<a>Password Login
-	<br><gr>Blowfish</gr></a><i class="fa fa-lock-circle fa-lg"></i>
+	<br><gr>PHP Blowfish</gr></a><i class="fa fa-lock-circle fa-lg"></i>
 </div>
 <div class="col-r">
 	<input id="login" type="checkbox"<?=( password_verify( 'rune', file_get_contents( '/srv/http/data/system/password' ) ) ? ' data-default="1"' : '' )?>>

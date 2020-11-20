@@ -509,6 +509,7 @@ input:checked + .switchlabel:after {
 .col-l a i.fa-code {
 	width: 20px;
 	vertical-align: 0;
+	text-align: center
 }
 .col-l.icon {
 	padding-top: 2px;
