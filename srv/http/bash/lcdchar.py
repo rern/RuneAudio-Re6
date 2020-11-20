@@ -177,7 +177,7 @@ while True: # play
     
     elapsed += 1
     progress = iplay + second2hhmmss( elapsed ) + totalhhmmss
-    if len( progress ) > 17: progress += '  '
+    if len( progress ) > ( cols - 3 ): progress += '  '
     lcd.cursor_pos = ( row, 0 )
     lcd.write_string( progress[ :cols ] )
     
