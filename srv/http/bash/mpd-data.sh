@@ -35,7 +35,7 @@ data='
 	, "bufferoutputval" : "'$( grep max_output_buffer_size /etc/mpd.conf | cut -d'"' -f2 )'"
 	, "crossfade"       : '$( [[ -e $dirsystem/mpd-crossfade ]] && echo true || echo false )'
 	, "crossfadeset"    : '$( [[ -e $dirsystem/mpd-crossfadeset ]] && echo true || echo false )'
-	, "crossfadeval"    : "'$( ( mpc crossfade 2> /dev/null || grep crossfade /srv/http/data/mpd/mpdstate ) | cut -d' ' -f2 )'"
+	, "crossfadeval"    : "'$( mpc crossfade | cut -d' ' -f2 )'"
 	, "custom"          : '$( [[ -e $dirsystem/mpd-custom ]] && echo true || echo false )'
 	, "customset"       : '$( [[ -e $dirsystem/mpd-customset ]] && echo true || echo false )'
 	, "customglobal"    : "'$( sed 's/^\t\| #custom$//g' $dirsystem/mpd-global 2> /dev/null )'"

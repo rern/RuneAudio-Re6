@@ -65,6 +65,13 @@ xset dpms $sec $sec $sec
 
 case ${args[0]} in
 
+aplaydevices )
+	aplay -L | grep -v '^\s\|^null' | head -c -1
+	;;
+autoplay )
+	[[ ${args[1]} == true ]] && touch $dirsystem/autoplay || rm -f $dirsystem/autoplay
+	pushRefresh
+	;;
 hostapd )
 	if [[ ${args[1]} == true ]]; then
 		netctl stop-all
@@ -90,13 +97,6 @@ hostapdset )
 ' -e "s/\(wpa_passphrase=\).*/\1$password/
 " /etc/hostapd/hostapd.conf
 	featureSet hostapd "${args[@]:1}"
-	;;
-aplaydevices )
-	aplay -L | grep -v '^\s\|^null' | head -c -1
-	;;
-autoplay )
-	[[ ${args[1]} == true ]] && touch $dirsystem/autoplay || rm -f $dirsystem/autoplay
-	pushRefresh
 	;;
 localbrowser )
 	if [[ ${args[1]} == true ]]; then
