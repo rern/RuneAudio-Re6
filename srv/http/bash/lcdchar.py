@@ -176,8 +176,7 @@ import subprocess
 
 prog = subprocess.getoutput( "mpc | awk '/^.playing/ {print $3}' | cut -d/ -f1" )
 elapsed = 0
-for each in prog.split( ':' ):
-    elapsed = elapsed * 60 + int( each )
+for each in prog.split( ':' ): elapsed = elapsed * 60 + int( each )
 row = rows - 1
 starttime = time.time()
 
