@@ -206,6 +206,10 @@ hr {
 	line-height: 35px;
 	text-align: left;
 }
+.infotextlabel,
+.infotextbox {
+	vertical-align: top;
+}
 .infotextsuffix,
 #infotextsuffix {
 	width: fit-content;

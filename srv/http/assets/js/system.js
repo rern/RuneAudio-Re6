@@ -291,7 +291,7 @@ var infolcdchar = heredoc( function() { /*
 	<div class="infotextlabel">
 		<a class="infolabel">Size</a>
 		<a class="infolabel">Interface</a>
-		<a class="infolabel">Character Map</a>
+		<a class="infolabel">&emsp;Character Map</a>
 		<div class="i2c">
 			<a class="infolabel">Address</a>
 			<a class="infolabel">I&#178;C Chip</a>
@@ -315,9 +315,9 @@ var infolcdchar = heredoc( function() { /*
 			<div id="address" class="infocontent infohtml lcd">
 			</div>
 			<div id="chip" class="infocontent infohtml lcd">
-				<label><input type="radio" name="chip" value="PCF8574"> 8574</label>
-				<label><input type="radio" name="chip" value="MCP23008"> 23008</label>
-				<label><input type="radio" name="chip" value="MCP23017"> 23017</label>
+					<label><input type="radio" name="chip" value="PCF8574"> PCF8574</label>
+				<br><label><input type="radio" name="chip" value="MCP23008"> MCP23008</label>
+				<br><label><input type="radio" name="chip" value="MCP23017"> MCP23017</label>
 			</div>
 		</div>
 	</div>
@@ -356,8 +356,8 @@ $( '#setting-lcdchar' ).click( function() {
 				$( '#address' ).html( opt );
 				$( '#address input[value='+ G.i2caddress +']' ).prop( 'checked', 1 );
 			}
-			$( '.lcdradio' ).css( 'vertical-align', '-14px' );
 			$( '.lcd label' ).width( 80 );
+			$( '#chip label' ).width( 120 );
 		}
 		, cancel      : function() {
 			if ( !G.lcdcharset ) $( '#lcdchar' ).prop( 'checked', 0 );

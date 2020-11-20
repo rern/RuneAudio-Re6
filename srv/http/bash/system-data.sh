@@ -73,7 +73,14 @@ dirsystem=/srv/http/data/system
 version=$( cat $dirsystem/version )
 snaplatency=$( grep OPTS= /etc/default/snapclient | sed 's/.*latency=\(.*\)"/\1/' )
 [[ -z $snaplatency ]] && snaplatency=0
-grep -q 'dtparam=i2c_arm=on' /boot/config.txt && lcdcharaddr=$( i2cdetect -y $( ls /dev/i2c* | tail -c 2 ) | grep -v '^\s' | cut -d' ' -f2- | tr -d ' \-' | grep . )
+if grep -q 'dtparam=i2c_arm=on' /boot/config.txt; then
+	lcdcharaddr=$( i2cdetect -y $( ls /dev/i2c* | tail -c 2 ) \
+					| grep -v '^\s' \
+					| cut -d' ' -f2- \
+					| tr -d ' \-' \
+					| grep . \
+					| sort -u )
+fi
 
 data+='
 	, "audioaplayname"  : "'$( cat $dirsystem/audio-aplayname 2> /dev/null )'"
