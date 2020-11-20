@@ -455,7 +455,7 @@ $( '#setting-soxr' ).click( function() {
 		, content     : soxrinfo
 		, nofocus     : 1
 		, preshow     : function() {
-			var soxrset = G.soxrset ? G.soxrset.split( ' ' ) : defaultval;
+			var soxrset = G.soxrval ? G.soxrval.split( ' ' ) : defaultval;
 			$( '#infoSelectBox option[value='+ soxrset[ 0 ] +']' ).prop( 'selected', 1 );
 			$( '#infoSelectBox1 option[value='+ soxrset[ 5 ] +']' ).prop( 'selected', 1 );
 			for ( i = 1; i < 5; i++ ) {
