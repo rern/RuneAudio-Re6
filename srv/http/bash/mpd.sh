@@ -123,7 +123,6 @@ crossfadeset )
 custom )
 	enable=${args[1]}
 	if [[ $enable == true ]]; then
-		[[ -e $dirsystem/mpd-custom-global ]] && /srv/http/bash/mpd.sh customset$'\n'$( cat $dirsystem/mpd-custom-global )
 		touch $dirsystem/mpd-custom
 	else
 		sed -i '/ #custom$/ d' /etc/mpd.conf
@@ -136,17 +135,25 @@ customset )
 	global=${args[1]}
 	output=${args[2]}
 	file=$dirsystem/mpd-custom
-	touch $file
 	sed -i '/ #custom$/ d' /etc/mpd.conf
 	if [[ -n $global ]]; then
 		echo "$global" > $file-global
 		global=$( echo "$global" | tr ^ '\n' | sed 's/$/ #custom/' )
 		sed -i "/^user/ a$global" /etc/mpd.conf
+	else
+		rm -f $file-global
 	fi
 	if [[ -n $output ]]; then
 		echo "$output" > $file-output
 	else
 		rm -f $file-output
+	fi
+	if [[ -z $global && -z $output ]]; then
+		rm -f $file
+		rm -f ${file}set
+	else
+		touch $file
+		touch ${file}set
 	fi
 	restartMPD
 	pushRefresh
