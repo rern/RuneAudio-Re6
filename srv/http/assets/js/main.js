@@ -1841,7 +1841,7 @@ $( '#pl-list' ).on( 'click', 'li', function( e ) {
 	$( '#menu-plaction' ).addClass( 'hide' );
 	if ( $this.hasClass( 'active' ) ) {
 		if ( G.status.state == 'play' ) {
-			if ( $this.find( '.fa-webradio' ).length ) {
+			if ( $this.find( '.lipath' ).text().slice( 0, 4 ) === 'http' ) {
 				$( '#stop' ).click();
 				$this.find( '.song' ).empty();
 				$( '.li1 .radioname' ).removeClass( 'hide' );

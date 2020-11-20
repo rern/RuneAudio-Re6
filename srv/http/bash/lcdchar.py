@@ -171,10 +171,19 @@ lcd.close()
     
 if state == 'stop' or state == 'pause': quit()
 
+# play
+import subprocess
+
+prog = subprocess.getoutput( "mpc | awk '/^.playing/ {print $3}' | cut -d/ -f1" )
+elapsed = 0
+for each in prog.split( ':' ):
+    elapsed = elapsed * 60 + int( each )
 row = rows - 1
-while True: # play
-    time.sleep( 1 )
-    
+starttime = time.time()
+
+while True:
+    sl = 1 - ( ( time.time() - starttime ) % 1 )
+    time.sleep( sl )
     elapsed += 1
     progress = iplay + second2hhmmss( elapsed ) + totalhhmmss
     if len( progress ) > ( cols - 3 ): progress += '  '
