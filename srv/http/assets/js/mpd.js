@@ -455,11 +455,11 @@ $( '#setting-soxr' ).click( function() {
 		, content     : soxrinfo
 		, nofocus     : 1
 		, preshow     : function() {
-			var soxrset = G.soxrval ? G.soxrval.split( ' ' ) : defaultval;
-			$( '#infoSelectBox option[value='+ soxrset[ 0 ] +']' ).prop( 'selected', 1 );
-			$( '#infoSelectBox1 option[value='+ soxrset[ 5 ] +']' ).prop( 'selected', 1 );
+			var soxrval = G.soxrval ? G.soxrval.split( ' ' ) : defaultval;
+			$( '#infoSelectBox option[value='+ soxrval[ 0 ] +']' ).prop( 'selected', 1 );
+			$( '#infoSelectBox1 option[value='+ soxrval[ 5 ] +']' ).prop( 'selected', 1 );
 			for ( i = 1; i < 5; i++ ) {
-				$( '#infoTextBox'+ i ).val( soxrset[ i ] );
+				$( '#infoTextBox'+ i ).val( soxrval[ i ] );
 			}
 			setTimeout( function() {
 			$( '#extra .selectric, #extra .selectric-wrapper' ).css( 'width', '185px' );
@@ -468,9 +468,8 @@ $( '#setting-soxr' ).click( function() {
 			$( '#infoButton' )
 				.off( 'click' )
 				.click( function() {
-					soxr = defaultval;
 					for ( i = 1; i < 5; i++ ) {
-						$( '#infoTextBox'+ i ).val( soxrset[ i ] );
+						$( '#infoTextBox'+ i ).val( defaultval[ i ] );
 					}
 				} );
 		}
@@ -488,7 +487,7 @@ $( '#setting-soxr' ).click( function() {
 				args.push( Number( $( '#infoTextBox'+ i ).val() ) );
 			}
 			args.push( $( '#infoSelectBox1' ).val() );
-			if ( args.toString().replace( /,/g, ' ' ) === G.soxrset ) return
+			if ( args.toString().replace( /,/g, ' ' ) === G.soxrval ) return
 			
 			var errors = '';
 			if ( args[ 1 ] < 0 || args[ 1 ] > 100 ) errors += '<br><w>Phase Response</w> is not 1-100';
