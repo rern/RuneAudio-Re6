@@ -38,8 +38,8 @@ data='
 	, "crossfadeval"    : "'$( mpc crossfade | cut -d' ' -f2 )'"
 	, "custom"          : '$( [[ -e $dirsystem/mpd-custom ]] && echo true || echo false )'
 	, "customset"       : '$( [[ -e $dirsystem/mpd-customset ]] && echo true || echo false )'
-	, "customglobal"    : "'$( sed 's/^\t\| #custom$//g' $dirsystem/mpd-global 2> /dev/null )'"
-	, "customoutput"    : "'$( sed 's/^\t\| #custom$//g' $dirsystem/mpd-output 2> /dev/null )'"
+	, "customglobal"    : "'$( cat $dirsystem/mpd-custom-global | sed 's/"/\\"/g' 2> /dev/null )'"
+	, "customoutput"    : "'$( cat $dirsystem/mpd-custom-output | sed 's/"/\\"/g' 2> /dev/null )'"
 	, "ffmpeg"          : '$( grep -A1 ffmpeg /etc/mpd.conf | grep -q yes && echo true || echo false )'
 	, "mixertype"       : "'$( grep mixer_type /etc/mpd.conf | cut -d'"' -f2 )'"
 	, "normalization"   : '$( grep -q 'volume_normalization.*yes' /etc/mpd.conf && echo true || echo false )'
