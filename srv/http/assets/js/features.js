@@ -97,20 +97,18 @@ $( '#spotifyd' ).click( function() {
 $( '#setting-spotifyd' ).click( function() {
 	bash( [ 'aplaydevices' ], function( devices ) {
 		var devices = devices.split( '\n' );
-		var select = {}
+		var radio = {}
 		devices.forEach( function( val ) {
-			select[ val ] = val;
+			radio[ val ] = val;
 		} );
 		info( {
-			  icon        : 'spotify'
-			, title       : 'Spotify Renderer'
-			, message     : 'Manually select audio output:'
-						   +'<br>(Only if current one not working)'
-			, selectlabel : 'Device'
-			, select      : select
-			, checked     : G.spotifyddevice
-			, boxwidth    : 'max'
-			, ok          : function() {
+			  icon    : 'spotify'
+			, title   : 'Spotify Renderer'
+			, message : 'Audio output:'
+			, radio   : radio
+			, checked : G.spotifyddevice
+			, footer  : '<br>(Only if current one not working)'
+			, ok      : function() {
 				var spotifyddevice = $( '#infoSelectBox option:selected' ).text();
 				if ( spotifyddevice !== G.spotifyddevice ) {
 					notify( 'Spotify Renderer', 'Change ...', 'spotify' );
