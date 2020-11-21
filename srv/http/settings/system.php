@@ -102,19 +102,9 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	</div>
 	<span class="help-block hide">I&#178;S modules are not plug-and-play capable. Select a driver for installed device.</span>
 </div>
-<div class="col-l">LCD - 420x320</div>
-<div class="col-r">
-	<input id="lcd" type="checkbox">
-	<div class="switchlabel" for="lcd"></div>
-	<i id="setting-lcd" class="setting fa fa-gear"></i>
-	<span class="help-block hide">
-		For 3.5" TFT LCD display.
-	<br><i class="fa fa-gear"></i>&ensp;Calibrate touchscreen precision.
-	</span>
-</div>
 <div class="col-l double status">
 	<a>LCD - Character
-	<br><gr>RPLCD</gr></a>
+	<br><gr>HD44780</gr></a>
 </div>
 <div class="col-r">
 	<input id="lcdchar" type="checkbox">
@@ -126,6 +116,19 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 		<br>I&#178;C board:
 		<br> &emsp; - 5V to 3.3V I&#178;C + 5V LCD: <a href="https://www.instructables.com/Raspberry-Pi-Using-1-I2C-LCD-Backpacks-for-1602-Sc/">Fixing the Incompatibility</a>
 		<br> &emsp; - Adjust contrast with blue potentiometer on I&#178;C board to display properly.
+	</span>
+</div>
+<div class="col-l double status">
+	<a>LCD - TFT
+	<br><gr>3.5" 420x320</gr></a>
+</div>
+<div class="col-r">
+	<input id="lcd" type="checkbox">
+	<div class="switchlabel" for="lcd"></div>
+	<i id="setting-lcd" class="setting fa fa-gear"></i>
+	<span class="help-block hide">
+		For 3.5" 420x320 pixels TFT LCD with resistive touchscreen.
+	<br><i class="fa fa-gear"></i>&ensp;Calibrate touchscreen precision.
 	</span>
 </div>
 <div class="col-l double status">
