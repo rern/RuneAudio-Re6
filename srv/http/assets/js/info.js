@@ -314,13 +314,9 @@ function info( O ) {
 			textlabel = 'textlabel' in O ? O.textlabel : '';
 			textvalue = 'textvalue' in O ? O.textvalue : '';
 			textsuffix = 'textsuffix' in O ? O.textsuffix : '';
-			if ( typeof textlabel !== 'object' ) textlabel = [ textlabel ];
-			if ( 'textvalue' in O ) {
-				if ( typeof textvalue !== 'object' ) textvalue = [ textvalue ];
-			} else {
-				textvalue = [];
-			}
-			if ( typeof textsuffix !== 'object' ) textsuffix = [ textsuffix ];
+			if ( textlabel && typeof textlabel !== 'object' ) textlabel = [ textlabel ];
+			if ( textvalue && typeof textvalue !== 'object' ) textvalue = [ textvalue ];
+			if ( textsuffix && typeof textsuffix !== 'object' ) textsuffix = [ textsuffix ];
 			var labelhtml = '';
 			var boxhtml = '';
 			var suffixhtml = '';
@@ -330,9 +326,9 @@ function info( O ) {
 				var labeltext = textlabel[ i ] || '';
 				labelhtml += '<a class="infolabel">'+ labeltext +'</a>';
 				boxhtml += '<input type="text" class="infoinput input" id="infoTextBox'+ iid +'"';
-				if ( textvalue.length ) boxhtml += textvalue[ i ] !== '' ? ' value="'+ textvalue[ i ].toString().replace( /"/g, '&quot;' ) +'"' : '';
+				if ( textvalue ) boxhtml += textvalue[ i ] !== '' ? ' value="'+ textvalue[ i ].toString().replace( /"/g, '&quot;' ) +'"' : '';
 				boxhtml += ' spellcheck="false">';
-				if ( textsuffix.length ) suffixhtml += textsuffix[ i ] !== '' ? '<gr>'+ textsuffix[ i ] +'</gr>' : '<gr>&nbsp;</gr>';
+				if ( textsuffix ) suffixhtml += textsuffix[ i ] !== '' ? '<gr>'+ textsuffix[ i ] +'</gr>' : '<gr>&nbsp;</gr>';
 			}
 			if ( textsuffix.length ) $( '#infotextbox' ).css( 'width', 'fit-content' );
 			$( '#infotextlabel' ).html( labelhtml );
