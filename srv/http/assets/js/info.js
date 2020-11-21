@@ -271,9 +271,9 @@ function info( O ) {
 			if ( 'cancelbutton' in O || 'cancellabel' in O ) $( '#infoCancel' ).removeClass( 'hide' );
 		}
 		if ( 'button' in O ) {
-			button = 'button' in O ? O.button : '';
-			buttonlabel = 'buttonlabel' in O ? O.buttonlabel : '';
-			buttoncolor = 'buttoncolor' in O ? O.buttoncolor : '';
+			var button = 'button' in O ? O.button : '';
+			var buttonlabel = 'buttonlabel' in O ? O.buttonlabel : '';
+			var buttoncolor = 'buttoncolor' in O ? O.buttoncolor : '';
 			if ( typeof button !== 'object' ) button = [ button ];
 			if ( typeof buttonlabel !== 'object' ) buttonlabel = [ buttonlabel ];
 			if ( typeof buttoncolor !== 'object' ) buttoncolor = [ buttoncolor ];
@@ -311,9 +311,9 @@ function info( O ) {
 		}
 		// inputs
 		if ( 'textlabel' in O || 'textvalue' in O ) {
-			textlabel = 'textlabel' in O ? O.textlabel : '';
-			textvalue = 'textvalue' in O ? O.textvalue : '';
-			textsuffix = 'textsuffix' in O ? O.textsuffix : '';
+			var textlabel = 'textlabel' in O ? O.textlabel : '';
+			var textvalue = 'textvalue' in O ? O.textvalue : '';
+			var textsuffix = 'textsuffix' in O ? O.textsuffix : '';
 			if ( textlabel && typeof textlabel !== 'object' ) textlabel = [ textlabel ];
 			if ( textvalue && typeof textvalue !== 'object' ) textvalue = [ textvalue ];
 			if ( textsuffix && typeof textsuffix !== 'object' ) textsuffix = [ textsuffix ];
@@ -346,7 +346,7 @@ function info( O ) {
 			}
 		}
 		if ( 'passwordlabel' in O ) {
-			passwordlabel = typeof O.passwordlabel !== 'object' ? [ O.passwordlabel ] : O.passwordlabel;
+			var passwordlabel = typeof O.passwordlabel !== 'object' ? [ O.passwordlabel ] : O.passwordlabel;
 			var labelhtml = '';
 			var boxhtml = '';
 			var suffixhtml = '';
