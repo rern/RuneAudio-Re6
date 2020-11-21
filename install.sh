@@ -11,6 +11,7 @@ getinstallzip
 dirsystem=/srv/http/data/system
 
 # system
+mv /srv/http/data/system/{gpio,relays} &> /dev/null
 files=$dirsystem/{ntp,wlanregdom}
 if [[ -e $dirsystem/ntp ]]; then
 	cat $files > $dirsystem/regional

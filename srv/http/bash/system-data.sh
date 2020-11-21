@@ -72,6 +72,7 @@ done
 dirsystem=/srv/http/data/system
 version=$( cat $dirsystem/version )
 snaplatency=$( grep OPTS= /etc/default/snapclient | sed 's/.*latency=\(.*\)"/\1/' )
+lcdcharset=$( grep '^address\|^chip\|^cols' /srv/http/bash/lcdchar.py | cut -d' ' -f3 | tr -d "'" )
 [[ -z $snaplatency ]] && snaplatency=0
 if grep -q 'dtparam=i2c_arm=on' /boot/config.txt; then
 	lcdcharaddr=$( i2cdetect -y $( ls /dev/i2c* | tail -c 2 ) \

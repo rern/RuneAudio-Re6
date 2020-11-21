@@ -188,4 +188,3 @@ while True:
     lcd.cursor_pos = ( row, 0 )
     lcd.write_string( progress[ :cols ] )
     elapsed += 1
-    

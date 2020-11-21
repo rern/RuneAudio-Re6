@@ -201,6 +201,37 @@ lcdcharset )
 		pushRefresh
 	fi
 	;;
+lcdchar )
+	enable=${args[1]}
+	if [[ $enable == true ]]; then
+		touch $dirsystem/lcdchar
+	else
+		rm $dirsystem/lcdchar
+	fi
+	pushRefresh
+	;;
+lcdcharset )
+	cols=${args[1]}
+	chip=${args[2]}
+	address=${args[3]}
+	[[ $cols == 16 ]] && rows=2 || rows=4
+	if [[ -n $chip ]]; then
+		sed -i -e "s/^\(address = \).*/\1$address
+" -e "s/^\(chip = \).*/\1'$chip'
+" -e "s/^\(cols = \).*/\1$cols
+" -e "s/^\(rows = \).*/\1$rows
+" -e '/i2c_expander/ s/^#//
+' -e '/numbering_mode/ s/^/#/
+' /srv/http/bash/lcdchar.py
+	else
+		sed -i "s/^\(cols = \).*/\1$cols
+" -e "s/^\(rows = \).*/\1$rows
+" -e '/i2c_expander/ s/^/#/
+' -e '/numbering_mode/ s/^#//
+' /srv/http/bash/lcdchargpio.py
+	fi
+	pushRefresh
+	;;
 onboardaudio )
 	if [[ ${args[1]} == true ]]; then
 		onoff=on
@@ -228,6 +259,15 @@ relays )
 		touch $dirsystem/relays
 	else
 		rm -f $dirsystem/relays
+	fi
+	pushRefresh
+	;;
+relays )
+	enable=${args[1]}
+	if [[ $enable == true ]]; then
+		touch $dirsystem/relays
+	else
+		rm $dirsystem/relays
 	fi
 	pushRefresh
 	;;
