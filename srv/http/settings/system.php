@@ -112,25 +112,33 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<br><i class="fa fa-gear"></i>&ensp;Calibrate touchscreen precision.
 	</span>
 </div>
-<div class="col-l">LCD - Character</div>
+<div class="col-l double status">
+	<a>LCD - Character
+	<br><gr>RPLCD</gr></a>
+</div>
 <div class="col-r">
 	<input id="lcdchar" type="checkbox">
 	<div class="switchlabel" for="lcdchar"></div>
 	<i id="setting-lcdchar" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
-		Support 16x2, 20x4 and 40x4 LCD modules via <a href="https://rplcd.readthedocs.io/en/latest/getting_started.html#wiring">I&#178;C and GPIO wiring</a>.
+		<a href="https://github.com/dbrgn/RPLCD">RPLCD</a> - Python library for Hitachi HD44780 controller.
+		<br>Support 16x2, 20x4 and 40x4 LCD modules via <a href="https://rplcd.readthedocs.io/en/latest/getting_started.html#wiring">I&#178;C and GPIO wiring</a>.
 		<br>I&#178;C board:
 		<br> &emsp; - 5V to 3.3V I&#178;C + 5V LCD: <a href="https://www.instructables.com/Raspberry-Pi-Using-1-I2C-LCD-Backpacks-for-1602-Sc/">Fixing the Incompatibility</a>
 		<br> &emsp; - Adjust contrast with blue potentiometer on I&#178;C board to display properly.
 	</span>
 </div>
-<div class="col-l">Relays</div>
+<div class="col-l double status">
+	<a>Relays
+	<br><gr>RPI.GPIO</gr></a>
+</div>
 <div class="col-r">
 	<input id="relays" type="checkbox">
 	<div class="switchlabel" for="relays"></div>
 	<i id="setting-relays" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
-		<a href="https://github.com/rern/RuneUI_GPIO/blob/master/README.md">RuneUI - GPIO</a> - Control GPIO-connected relay module for power on / off equipments.
+		<a href="https://sourceforge.net/projects/raspberry-gpio-python/">RPi.GPIO</a> - Python module to control GPIO.
+		<br><a href="https://github.com/rern/RuneUI_GPIO/blob/master/README.md">RuneUI - GPIO</a> - Control GPIO-connected relay module for power on / off equipments.
 	</span>
 </div>
 </div>
