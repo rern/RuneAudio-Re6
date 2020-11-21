@@ -111,7 +111,7 @@ pushstream.onmessage = function( data, id, channel ) {
 	}
 }
 function psRefresh( data ) {
-	if ( data.page === page ) refreshData();
+	if ( data.page === page || data.page === 'all' ) refreshData();
 }
 function psReload() {
 	if ( [ 'localhost', '127.0.0.1' ].indexOf( location.hostname ) !== -1 ) location.reload();
