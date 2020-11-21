@@ -728,7 +728,7 @@ $( '#coverT, #timeT' ).tap( function() {
 	G.guide = !$( this ).hasClass( 'mapshow' );
 	if ( $( this ).hasClass( 'mapshow' ) ) {
 		hideGuide();
-		$( '#coverTR' ).toggleClass( 'empty', !G.bars );
+		$( '#coverTR' ).toggleClass( 'empty', !G.status.playlistlength && !G.bars );
 		return
 	}
 	
@@ -740,14 +740,20 @@ $( '#coverT, #timeT' ).tap( function() {
 	$( '.timemap' ).toggleClass( 'mapshow', !G.display.cover );
 	$( '.volmap' ).toggleClass( 'mapshow', !G.display.volumenone && G.display.volume );
 	$( '#swipebar' ).toggleClass( 'transparent', G.bars );
-	if ( G.display.time || ( G.display.volume && !G.display.volumenone ) ) {
+	if ( window.innerWidth < 614 && !G.display.volume ) {
 		$( '#coverTL' )
-			.removeClass( 'fa-scale-dn' )
-			.addClass( 'fa-scale-up' );
+				.removeClass( 'fa-scale-dn' )
+				.addClass( 'fa-volume' );
 	} else {
-		$( '#coverTL' )
-			.removeClass( 'fa-scale-up' )
-			.addClass( 'fa-scale-dn' );
+		if ( G.display.time || ( G.display.volume && !G.display.volumenone ) ) {
+			$( '#coverTL' )
+				.removeClass( 'fa-scale-dn fa-volume' )
+				.addClass( 'fa-scale-up' );
+		} else {
+			$( '#coverTL' )
+				.removeClass( 'fa-scale-up' )
+				.addClass( 'fa-scale-dn' );
+		}
 	}
 	if ( G.status.mpd ) {
 		if ( !G.display.time && !G.status.webradio ) {
@@ -1835,7 +1841,7 @@ $( '#pl-list' ).on( 'click', 'li', function( e ) {
 	$( '#menu-plaction' ).addClass( 'hide' );
 	if ( $this.hasClass( 'active' ) ) {
 		if ( G.status.state == 'play' ) {
-			if ( $this.find( '.fa-webradio' ).length ) {
+			if ( $this.find( '.lipath' ).text().slice( 0, 4 ) === 'http' ) {
 				$( '#stop' ).click();
 				$this.find( '.song' ).empty();
 				$( '.li1 .radioname' ).removeClass( 'hide' );

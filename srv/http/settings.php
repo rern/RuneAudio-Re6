@@ -1,7 +1,7 @@
 <?php
 if ( file_exists( '/srv/http/data/system/login' ) ) {
 	session_start();
-	if ( !$_SESSION[ 'login' ] ) header( 'Location: /' );
+	if ( !isset( $_SESSION[ 'login' ] ) ) header( 'Location: /' );
 }
 $time = time();
 $localhost = in_array( $_SERVER[ 'REMOTE_ADDR' ], ['127.0.0.1', '::1'] );
@@ -70,7 +70,7 @@ include "settings/$page.php";
 <script src="/assets/js/settings.<?=$time?>.js"></script>
 	<?php if ( $page !== 'credits' && $page !== 'manual' ) { ?>
 <script src="/assets/js/<?=$page?>.<?=$time?>.js"></script>
-	<?php	if ( $page === 'mpd' || $page === 'system' ) { ?>
+	<?php	if ( in_array( $page, [ 'features', 'mpd', 'system' ] ) ) { ?>
 <script src="/assets/js/plugin/jquery.selectric.min.<?=$time?>.js"></script>
 	<?php	} else if ( $page === 'networks' ) { ?>
 <script src="/assets/js/plugin/qrcode.min.<?=$time?>.js"></script>

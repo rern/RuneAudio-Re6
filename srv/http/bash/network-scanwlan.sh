@@ -27,23 +27,25 @@ fi
 
 connectedssid=$( iwgetid $wlan -r )
 
-iwlistscan=$( iwlist $wlan scan | \
-	grep '^\s*Qu\|^\s*En\|^\s*ES\|WPA' | \
-	sed 's/^\s*//; s/Quality.*level\| dBm *\|En.*:\|ES.*://g; s/IE: .*\/\(.*\) .* .*/\1/' | \
-	tr '\n' ' ' | \
-	sed 's/=/\n/g' |
-	sort -V )
-iwlistscan=${iwlistscan:1} # remove leading \n
-readarray -t line <<<"$iwlistscan"
-for line in "${line[@]}"; do
-	line=( $line )
-	dbm=${line[0]}
-	encrypt=${line[1]}
-	ssid=${line[2]//\"}
-	ssid=${ssid/\\x00}
+iwlistscan=$( iwlist $wlan scan \
+				| grep '^\s*Qu\|^\s*En\|^\s*ES\|WPA \|WPA2' \
+				| sed 's/^\s*//; s/Quality.*level\| dBm *\|En.*:\|ES.*://g; s/IE: .*\(WPA.*\) .* .*/\1/' \
+				| sed 's/^"\|"$//g' \
+				| tr '\n' '^' \
+				| sed 's/=/\n/g' \
+				| sort -V )
+readarray -t lines <<<"${iwlistscan:1}" # remove leading \n
+for line in "${lines[@]}"; do
+	line=$( echo $line | tr '^' '\n' )
+	readarray -t val <<< "$line"
+	
+	ssid=${val[2]}
 	[[ -z $ssid ]] && continue
 	
-	[[ ${line[3]:0:3} == WPA ]] && wpa=wpa || wpa=
+	dbm=${val[0]}
+	encrypt=${val[1]}
+	[[ -n ${val[3]} ]] && wpa=wpa || wpa=
+	
 	file="/etc/netctl/$ssid"
 	if [[ -e "$file" ]]; then
 		profile=1
@@ -64,7 +66,7 @@ for line in "${line[@]}"; do
 		gateway=
 		ip=
 	fi
-	list+=',{"dbm":"'$dbm'","ssid":"'${ssid//\"/\\\"}'","encrypt":"'$encrypt'","wpa":"'$wpa'","profile":"'$profile'","dhcp":"'$dhcp'","connected":"'$connected'","gateway":"'$gateway'","ip":"'$ip'","password":"'$password'"}'
+	list+=',{"dbm":"'$dbm'","ssid":"'$ssid'","encrypt":"'$encrypt'","wpa":"'$wpa'","profile":"'$profile'","dhcp":"'$dhcp'","connected":"'$connected'","gateway":"'$gateway'","ip":"'$ip'","password":"'$password'"}'
 done
 
 echo [${list:1}] # 'remove leading ,

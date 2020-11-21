@@ -8,6 +8,13 @@
 # - mixer_device  - card index
 # - dop           - if set
 
+dirsystem=/srv/http/data/system
+
+if [[ -e $dirsystem/mpd-manualconf ]]; then
+	systemctl -q is-active mpd && systemctl restart mpd || systemctl start mpd
+	exit
+fi
+
 ! systemctl -q is-active nginx && exit 0 # udev rule trigger on startup
 
 pushstream() {
@@ -45,7 +52,6 @@ audio_output {
 fi
 pushstream refresh '{"page":"network"}'
 
-dirsystem=/srv/http/data/system
 audiooutput=$( cat $dirsystem/audio-output )
 audioaplayname=$( cat $dirsystem/audio-aplayname )
 mpdfile=/etc/mpd.conf
@@ -62,6 +68,7 @@ for (( i=0; i < cardL; i++ )); do
 	mixertype=${Amixertype[i]}
 	name=${Aname[i]}
 	aplayname=${Aaplayname[i]}
+	
 ########
 	mpdconf+='
 
@@ -96,6 +103,13 @@ audio_output {
 	dop            "yes"'
 	
 	fi
+	
+	if [[ -e $dirsystem/mpd-custom && -e $dirsystem/mpd-custom-output ]]; then
+########
+		mpdconf+="
+$( cat $dirsystem/mpd-custom-output | tr ^ '\n' | sed 's/^/\t/' )"
+	
+	fi
 ########
 	mpdconf+='
 }'
@@ -113,7 +127,7 @@ audio_output {
 }'
 fi
 
-if [[ -e /srv/http/data/system/streaming ]]; then
+if [[ -e $dirsystem/streaming ]]; then
 	mpdconf+='
 
 audio_output {
@@ -131,8 +145,6 @@ fi
 
 echo "$mpdconf" > $mpdfile
 
-usbdacfile=/srv/http/data/shm/usbdac
-
 systemctl restart mpd  # "restart" while not running = start + stop + start
 
 if [[ -e $dirsystem/updating ]]; then
@@ -140,15 +152,15 @@ if [[ -e $dirsystem/updating ]]; then
 	[[ $path == rescan ]] && mpc rescan || mpc update "$path"
 fi
 
-status=$( /srv/http/bash/status.sh )
-pushstream mpdplayer "$status"
+pushstream mpdplayer "$( /srv/http/bash/status.sh )"
 pushstream refresh '{"page":"mpd"}'
 
 # udev rules - usb dac
+usbdacfile=/srv/http/data/shm/usbdac
 if [[ $# -gt 0 && $1 != bt ]]; then
 	if [[ $1 == remove ]]; then
 		name=$audiooutput
-		card=$( echo "$aplay" \
+		card=$( aplay -l \
 			| grep "$audioaplayname" \
 			| head -1 \
 			| cut -c6 )
@@ -157,18 +169,22 @@ if [[ $# -gt 0 && $1 != bt ]]; then
 			| head -1 \
 			| cut -d"'" -f2 )
 		rm -f $usbdacfile /etc/asound.conf
-	else # added usb dac - last one
+	else
+		name=${Aname[@]: -1} # added usb dac = last one
+		card=${Acard[@]: -1}
+		mixertype=${Ahwmixer[@]: -1}
+		hwmixer=${Amixertype[@]: -1}
 		[[ $mixertype == 'none' && -n $hwmixer ]] && amixer -c $card sset "$hwmixer" 0dB
 		echo $aplayname > $usbdacfile # flag - active usb
-		echo "\
-defaults.pcm.card $card
-defaults.ctl.card $card" > /etc/asound.conf # set default card
 	fi
+	# set default card for bluetooth
+	echo "\
+defaults.pcm.card $card
+defaults.ctl.card $card" > /etc/asound.conf
 	
 	pushstream notify '{"title":"Audio Output","text":"'"$name"'","icon": "output"}'
 	
-	mixertype=$( sed -n "/$name/,/^}/ p" /etc/mpd.conf | grep mixer_type | cut -d\" -f2 )
-	[[ $mixertype == 'none' ]] && volumenone=true || volumenone=false
+	[[ $( sed -n "/$name/,/^}/ p" /etc/mpd.conf | grep mixer_type | cut -d\" -f2 ) == 'none' ]] && volumenone=true || volumenone=false
 	pushstream display '{"volumenone":'$volumenone'}'
 else
 	aplayname=$audioaplayname
@@ -201,12 +217,12 @@ fi
 
 if [[ -e /usr/bin/spotifyd ]]; then
 	if [[ -e $dirsystem/spotify-device ]]; then
-		device=$( cat $dirsystem/spotify-device )
+		device=$( cat $dirsystem/spotifydset )
 	else
 		if [[ -e $usbdacfile ]]; then
 			cardname=$( aplay -l | grep "^card.*$aplayname" | head -1 | cut -d' ' -f3 )
 		else
-			cardname=$( aplay -l | grep "^card ${Acard[i]}:" | head -1 | cut -d' ' -f3 ) # 'head -1" for on-board
+			cardname=$( aplay -l | grep "^card ${Acard[i]}:" | head -1 | cut -d' ' -f3 )
 		fi
 		device=$( aplay -L | grep "^default.*$cardname" )
 	fi

@@ -49,39 +49,9 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 </div>
 
 <div>
-<heading>Audio<?=$help?></heading>
-<div class="col-l">I&#178;S Module</div>
-<div class="col-r i2s">
-	<div id="divi2smodulesw">
-		<input id="i2smodulesw" type="checkbox">
-		<div class="switchlabel" for="i2smodulesw"></div>
-	</div>
-	<div id="divi2smodule">
-		<?=$selecti2s?>
-	</div>
-	<span class="help-block hide">I&#178;S modules are not plug-and-play capable. Select a driver for installed device.</span>
-</div>
-
-<div class="col-l">Sound Profile</div>
-<div class="col-r">
-	<input id="soundprofile" type="checkbox">
-	<div class="switchlabel" for="soundprofile"></div>
-	<i id="setting-soundprofile" class="setting fa fa-gear"></i>
-	<span class="help-block hide">Tweak system parameters:
-		<br><code>sysctl vm.swappiness=N</code>
-		<br><code>sysctl kernel.sched_latency_ns=NS</code>
-		<div id="eth0help">
-			<code>ip link set eth0 mtu BYTE</code>
-			<br><code>ip link set eth0 txqueuelen N</code>
-		</div>
-	</span>
-</div>
-</div>
-
-<div>
 <heading>On-board Devices<?=$help?></heading>
 <div id="divonboardaudio">
-	<div id="aplay" class="col-l icon status">Audio <i class="fa fa-code code"></i></div>
+	<div data-status="aplay" class="col-l icon status">Audio <i class="fa fa-code code"></i></div>
 	<div class="col-r">
 		<input id="onboardaudio" type="checkbox">
 		<div class="switchlabel" for="onboardaudio"></div>
@@ -93,7 +63,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 		$hwcode = substr( $code, -3, 2 );
 		if ( in_array( $hwcode, [ '0c', '08', '0e', '0d', '11' ] ) ) { # rpi with wireless
 			if ( file_exists( '/usr/bin/bluetoothctl' ) ) { ?>
-<div id="bluetoothctl" class="col-l icon status">Bluetooth <i class="fa fa-code code"></i></div>
+<div data-status="bluetoothctl" class="col-l icon status">Bluetooth <i class="fa fa-code code"></i></div>
 <div class="col-r">
 	<input id="bluetooth" type="checkbox">
 	<div class="switchlabel" for="bluetooth"></div>
@@ -107,7 +77,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 <pre id="codebluetoothctl" class="hide"></pre>
 		<?php $bluetooth = ', Bluetooth';
 			  } ?>
-<div id="ifconfig" class="col-l icon status">Wi-Fi <i class="fa fa-code code"></i></div>
+<div data-status="ifconfig" class="col-l icon status">Wi-Fi <i class="fa fa-code code"></i></div>
 <div class="col-r">
 	<input id="wlan" type="checkbox">
 	<div class="switchlabel" for="wlan"></div>
@@ -121,22 +91,38 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 
 <div>
 <heading>GPIO Devices<?=$help?></heading>
-<div class="col-l">3.5" LCD</div>
+<div class="col-l">Audio (I&#178;S)</div>
+<div class="col-r i2s">
+	<div id="divi2smodulesw">
+		<input id="i2smodulesw" type="checkbox">
+		<div class="switchlabel" for="i2smodulesw"></div>
+	</div>
+	<div id="divi2smodule">
+		<?=$selecti2s?>
+	</div>
+	<span class="help-block hide">I&#178;S modules are not plug-and-play capable. Select a driver for installed device.</span>
+</div>
+<div class="col-l">LCD - 420x320</div>
 <div class="col-r">
 	<input id="lcd" type="checkbox">
 	<div class="switchlabel" for="lcd"></div>
 	<i id="setting-lcd" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
-		For 3.5" 480x320 GPIO LCD display only.
+		For 3.5" TFT LCD display.
 	<br><i class="fa fa-gear"></i>&ensp;Calibrate touchscreen precision.
 	</span>
 </div>
-<div class="col-l">Character LCD</div>
+<div class="col-l">LCD - Character</div>
 <div class="col-r">
 	<input id="lcdchar" type="checkbox">
 	<div class="switchlabel" for="lcdchar"></div>
 	<i id="setting-lcdchar" class="setting fa fa-gear"></i>
-	<span class="help-block hide">Support 16x2, 20x4 and 40x4 LCD modules.</span>
+	<span class="help-block hide">
+		Support 16x2, 20x4 and 40x4 LCD modules via I&#178;C and GPIO wiring.
+		<br>I&#178;C board:
+		<br> &emsp; - 5V to 3.3V I&#178;C + 5V LCD: <a href="https://www.instructables.com/Raspberry-Pi-Using-1-I2C-LCD-Backpacks-for-1602-Sc/">Fixing the Incompatibility</a>
+		<br> &emsp; - Adjust contrast with blue potentiometer on I&#178;C board to display properly.
+	</span>
 </div>
 <div class="col-l">Relays</div>
 <div class="col-r">
@@ -168,16 +154,33 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 		<br>Active regulatory domian may be reassigned by connected router.</p>
 	</span>
 </div>
+<div class="col-l double">
+		<a>Sound Profile
+	<br><gr>kernel</gr></a>
+</div>
+<div class="col-r">
+	<input id="soundprofile" type="checkbox">
+	<div class="switchlabel" for="soundprofile"></div>
+	<i id="setting-soundprofile" class="setting fa fa-gear"></i>
+	<span class="help-block hide">Tweak system parameters:
+		<br><code>sysctl vm.swappiness=N</code>
+		<br><code>sysctl kernel.sched_latency_ns=NS</code>
+		<div id="eth0help">
+			<code>ip link set eth0 mtu BYTE</code>
+			<br><code>ip link set eth0 txqueuelen N</code>
+		</div>
+	</span>
+</div>
 </div>
 
 <div>
-<heading id="journalctl" class="status">Boot Log<i id="journalctlicon" class="fa fa-code"></i><?=$help?></heading>
+<heading data-status="journalctl" class="status">Boot Log<i id="journalctlicon" class="fa fa-code"></i><?=$help?></heading>
 <span class="help-block hide"><code>journalctl -b | sed -n '1,/Startup finished/ p'</code></span>
 <pre id="codejournalctl" class="hide"></pre>
 </div>
 
 <div>
-<heading id="configtxt" class="status">/boot/config.txt<i class="fa fa-code"></i><?=$help?></heading>
+<heading data-status="configtxt" class="status">/boot/config.txt<i class="fa fa-code"></i><?=$help?></heading>
 <span class="help-block hide"><code>cat /boot/config.txt</code></span>
 <pre id="codeconfigtxt" class="hide"></pre>
 </div>
@@ -215,8 +218,11 @@ $listruneos = [
 	, 'ply-image'                => 'https://chromium.googlesource.com/chromiumos/third_party/ply-image/+/refs/heads/master/README.chromium'
 	, 'Python'                   => 'https://www.python.org'
 	, 'raspi-rotate'             => 'https://github.com/colinleroy/raspi-rotate'
+	, 'RPi.GPIO'                 => 'https://sourceforge.net/projects/raspberry-gpio-python/'
+	, 'RPLCD'                    => 'https://github.com/dbrgn/RPLCD'
 	, 'Samba'                    => 'http://www.samba.org'
 	, 'Shairport-sync'           => 'https://github.com/mikebrady/shairport-sync'
+	, 'smbus2'                   => 'https://github.com/kplindegaard/smbus2'
 	, 'Snapcast'                 => 'https://github.com/badaix/snapcast'
 	, 'Spotifyd'                 => 'https://github.com/Spotifyd/spotifyd'
 	, 'Sudo'                     => 'https://www.sudo.ws/sudo'
@@ -231,8 +237,8 @@ foreach( $listruneos as $name => $link ) {
 	$runeoshtml.= '<a href="'.$link.'">'.$name.'</a><br>';
 }
 $listruneui = [
-	  'dragscroll'               => 'https://github.com/asvd/dragscroll'
-	, 'HTML5-Color-Picker'  => 'https://github.com/NC22/HTML5-Color-Picker'
+	  'HTML5-Color-Picker'  => 'https://github.com/NC22/HTML5-Color-Picker'
+	, 'Inconsolata font'    => 'https://www.levien.com/type/myfonts/inconsolata.html'
 	, 'jQuery'              => 'https://jquery.com/'
 	, 'jQuery Mobile'       => 'https://jquerymobile.com/'
 	, 'jQuery Selectric'    => 'https://github.com/lcdsantos/jQuery-Selectric'

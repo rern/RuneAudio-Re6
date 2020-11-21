@@ -11,12 +11,13 @@
 #    - from file if manually set
 #    - set as hardware if mixer device available
 #    - if nothing, set as software
+dirsystem=/srv/http/data/system
 
 aplay=$( aplay -l | grep '^card' )
 cardL=$( echo "$aplay" | wc -l )
 
 wm5102=( 'WM5102 - Line' 'WM5102 - S/PDIF' 'WM5102 - Headphone' 'WM5102 - Speaker' )
-audioaplayname=$( cat /srv/http/data/system/audio-aplayname )
+audioaplayname=$( cat $dirsystem/audio-aplayname )
 
 readarray -t lines <<<"$aplay"
 for line in "${lines[@]}"; do
@@ -34,7 +35,7 @@ for line in "${lines[@]}"; do
 		* )                    (( $device == 0 )) && name=$aplayname || name="$aplayname $device";;
 	esac
 	# user selected
-	hwmixerfile=/srv/http/data/system/mpd-hwmixer-$card
+	hwmixerfile=$dirsystem/mpd-hwmixer-$card
 	if [[ -e $hwmixerfile ]]; then
 		hwmixer=$( cat $hwmixerfile )
 		mixermanual=$hwmixer
@@ -59,7 +60,7 @@ for line in "${lines[@]}"; do
 		fi
 	fi
 	
-	mixertypefile="/srv/http/data/system/mpd-mixertype-$name"
+	mixertypefile="$dirsystem/mpd-mixertype-$name"
 	if [[ -e $mixertypefile ]]; then
 		mixertype=$( cat "$mixertypefile" )
 	elif [[ -n $hwmixer ]]; then
@@ -68,7 +69,7 @@ for line in "${lines[@]}"; do
 		mixertype=software
 	fi
 	
-	[[ -e "/srv/http/data/system/mpd-dop-$name" ]] && dop=1 || dop=0
+	[[ -e "$dirsystem/mpd-dop-$name" ]] && dop=1 || dop=0
 	
 	Aaplayname+=( "$aplayname" )
 	Acard+=( "$card" )

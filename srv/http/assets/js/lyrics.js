@@ -19,7 +19,7 @@ $( '#song, #guide-lyrics' ).tap( function() {
 		lyricsShow();
 		return
 	}
-	if ( G.status.mpd && file.slice( 0, 4 ) === 'http' ) {
+/*	if ( G.status.mpd && file.slice( 0, 4 ) === 'http' ) {
 		if ( title.indexOf( ': ' ) !== -1 ) {
 			var artist_title = title.split( ': ' );
 		} else {
@@ -27,7 +27,7 @@ $( '#song, #guide-lyrics' ).tap( function() {
 		}
 		var artist = artist_title[ 0 ].trim();
 		var title = artist_title[ 1 ].trim();
-	}
+	}*/
 	artist = artist.replace( /(["`])/g, '\\$1' );
 	title = title.replace( /(["`])/g, '\\$1' );
 	bash( [ 'lyrics', artist, title, 'local' ], function( data ) {

@@ -109,10 +109,11 @@ timedatectl set-timezone UTC
 echo 'bcm2835 Headphones' > $dirsystem/audio-aplayname
 echo 'On-board - Headphone' > $dirsystem/audio-output
 touch $dirsystem/{localbrowser,onboard-audio,onboard-wlan}
-# nowireless
-[[ $hwcode =~ ^(00|01|02|03|04|09)$ ]] && rm $dirsystem/onboard-wlan
-[[ $hwcode =~ ^(00|01|02|03|09|0c)$ ]] && rm $dirsystem/localbrowser
-echo RuneAudio | tee $dirsystem/{hostname,soundprofile} > /dev/null
+
+rm -f $dirsystem/soundprofile
+
+echo RuneAudio > $dirsystem/hostname
+
 echo '$2a$12$rNJSBU0FOJM/jP98tA.J7uzFWAnpbXFYx5q1pmNhPnXnUu3L1Zz6W' > $dirsystem/password
 # gpio
 echo '{
@@ -142,6 +143,14 @@ echo '{
   },
   "timer": 5
 }' > $dirsystem/gpio.json
+# mpd
+sed -i -e '/^auto_update\|^audio_buffer_size\| #custom$/ d
+' -e '/quality/,/}/ d
+' -e '/soxr/ a\
+	quality        "very high"\
+}
+' /etc/mpd.conf
+
 usermod -a -G root http # add user http to group root to allow /dev/gpiomem access
 
 # webradio default

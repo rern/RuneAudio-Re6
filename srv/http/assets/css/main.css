@@ -513,7 +513,11 @@ svg path.st1 {
 #swipeL {
 	left: 0;
 }
+#swipeR {
+	right: 0;
+}
 #swipebar {
+	font-size: 28px;
 	text-align: center;
 	background: var( --cga );
 	touch-action: manipulation; /* fix: Unable to preventDefault inside passive event listener */
@@ -525,7 +529,6 @@ svg path.st1 {
 .swipe {
 	width: 40px !important;
 	height: inherit;
-	text-align: center;
 	z-index: 10;
 }
 .content-top,
@@ -2717,4 +2720,8 @@ li.active .li2 bl {
 	#coverart-block { margin-bottom : 0; }
 	#divcover .edit,
 	#divcover .cover-save { top: 0; }
+	#swipebar {
+		height: 30px;
+		font-size: 22px;
+	}
 }

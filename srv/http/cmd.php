@@ -89,12 +89,10 @@ case 'bookmarkrename':
 	pushstream( 'bookmark', [ 'type' => 'rename', 'path' => $_POST[ 'path' ], 'name' => $rename ] );
 	break;
 case 'datarestore':
-	if ( $_FILES[ 'file' ][ 'error' ] != UPLOAD_ERR_OK ) exit;
+	if ( $_FILES[ 'file' ][ 'error' ] != UPLOAD_ERR_OK ) exit( '-1' );
 	
 	move_uploaded_file( $_FILES[ 'file' ][ 'tmp_name' ], $dirdata.'tmp/backup.gz' );
 	exec( $sudo.'/srv/http/bash/datarestore.sh' );
-	$reboot = @file_get_contents( '/tmp/reboot' );
-	echo $reboot ?: 'restored';
 	break;
 case 'displayset':
 	$data = json_decode( $_POST[ 'displayset' ] );
@@ -120,18 +118,22 @@ case 'imagereplace':
 	}
 	break;
 case 'login':
-	$passwordfile = $dirsystem.'password';
-	$hash = rtrim( file_get_contents( $passwordfile ) );
-	if ( !password_verify( $_POST[ 'password' ], $hash ) ) die( '-1' );
+	$passwordfile = $dirsystem.'loginset';
+	if ( file_exists( $passwordfile ) ) {
+		$hash = rtrim( file_get_contents( $passwordfile ) );
+		if ( !password_verify( $_POST[ 'password' ], $hash ) ) die();
+	}
 	
 	if ( isset( $_POST[ 'pwdnew' ] ) ) {
 		$hash = password_hash( $_POST[ 'pwdnew' ], PASSWORD_BCRYPT, [ 'cost' => 12 ] );
 		echo file_put_contents( $passwordfile, $hash );
+		touch( $dirsystem.'login' );
 	} else {
 		echo 1;
 		session_start();
 		$_SESSION[ 'login' ] = 1;
 	}
+	pushstream( 'refresh', [ 'page' => 'features' ] );
 	break;
 case 'logout':
 	session_start();

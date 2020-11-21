@@ -91,6 +91,7 @@ hr {
 }
 .container {
 	max-width: 768px;
+	margin: auto;
 	padding: 50px 55px 0 55px;
 }
 .container.progress {

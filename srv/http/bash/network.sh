@@ -71,7 +71,7 @@ Hidden=yes
 Address=$ip/24
 Gateway=$gw
 "
-		echo "$profile" > "/etc/netctl/$ssid"
+		echo "$profile" | "/etc/netctl/$ssid" > "$dirsystem/netctl-$ssid"
 	fi
 	
 	ifconfig $wlan down
@@ -92,7 +92,7 @@ disconnect )
 	ifconfig $wlan up
 	if [[ -n $ssid ]]; then
 		systemctl disable netctl-auto@$wlan
-		rm "/etc/netctl/$ssid" "/srv/http/data/system/netctl-$ssid"
+		rm -f "/etc/netctl/$ssid" "/srv/http/data/system/netctl-$ssid"
 	fi
 	pushRefresh
 	;;
@@ -109,7 +109,7 @@ DNSSEC=no
 		eth0+="\
 DHCP=yes
 "
-		rm /srv/http/data/system/eth0.network
+		rm -f /srv/http/data/system/eth0.network
 	else
 		arp -n | grep -q ^$ip && echo -1 && exit
 		

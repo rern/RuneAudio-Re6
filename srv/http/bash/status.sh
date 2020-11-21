@@ -89,6 +89,11 @@ elif [[ -e $playerfile-airplay ]]; then
 	exit
 fi
 
+if ! systemctl -q is-active mpd; then
+	echo -1
+	exit
+fi
+
 filter='^Album\|^Artist\|^audio\|^bitrate\|^consume\|^duration\|^elapsed\|^file\|^Name\|^playlistlength\|'
 filter+='^random\|^repeat\|^single\|^song:\|^state\|^Time\|^Title\|^updating_db\|^volume'
 
@@ -190,17 +195,23 @@ if [[ ${file:0:4} == http ]]; then
 		radiofile=/srv/http/data/webradios/$urlname
 		radiodata=$( cat $radiofile )
 		stationname=$( sed -n 1p <<< "$radiodata" )
-		[[ $state == stop ]] && Title=
+		[[ $state == stop ]] && titlename=
 		[[ $Name != $stationname ]] && albumname=$Name || albumname=$file 
 ########
 		status=$( sed '/^, "webradio".*/ d' <<< "$status" )
+		if [[ $state == play ]]; then
+			albumname=$stationname
+			readarray -t radioname <<< "$( sed 's/\s*$//; s/ - \|: /\n/g' <<< "$Title" )"
+			stationname=${radioname[0]}
+			titlename=${radioname[1]}
+		fi
 ########
 		status+='
 , "Album"    : "'$albumname'"
 , "Artist"   : "'$stationname'"
 , "Name"     : "'$Name'"
 , "Time"     : false
-, "Title"    : "'$Title'"
+, "Title"    : "'$titlename'"
 , "webradio" : 'true
 		systemctl start radiowatchdog
 	fi

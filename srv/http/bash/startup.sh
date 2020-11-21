@@ -17,11 +17,24 @@
 # check addons updates
 # continue mpd update if pending
 
+dirdata=/srv/http/data
+dirmpd=$dirdata/mpd
+dirsystem=$dirdata/system
+playerfile=$dirdata/shm/player
+
 # 1st boot only --------------------------------------------------------------
+if [[ -e /boot/backup.gz ]]; then
+	mv /boot/backup.gz $dirdata/tmp
+	/srv/http/bash/datarestore.sh
+	shutdown -r now
+fi
+
 if [[ -e /boot/lcd ]]; then
 	mv /boot/lcd{,0}
-	/srv/http/bash/system.sh lcd$'\n'true
-	shutdown -r now
+	if [[ ! -e $dirsystem/lcd ]]; then
+		/srv/http/bash/system.sh lcd$'\n'true
+		shutdown -r now
+	fi
 fi
 
 if [[ -e /boot/wifi ]]; then
@@ -37,17 +50,14 @@ fi
 [[ -e /boot/x.sh ]] && /boot/x.sh
 # ----------------------------------------------------------------------------
 
-dirdata=/srv/http/data
-dirmpd=$dirdata/mpd
-dirsystem=$dirdata/system
-playerfile=$dirdata/shm/player
+[[ -e $dirsystem/lcdchar ]] && /srv/http/bash/lcdchar.py rr
 
 echo '"mpd":true,"airplay":false,"snapclient":false,"spotify":false,"upnp":false' > $playerfile
 touch $playerfile-mpd
 
 [[ -e $dirsystem/onboard-wlan ]] && ifconfig wlan0 up || rmmod brcmfmac
 
-[[ -e $dirsystem/soundprofile ]] && /srv/http/bash/cmd-soundprofile.sh
+[[ -e $dirsystem/soundprofile ]] && /srv/http/bash/system.sh soundprofileset$'\n'"$( cat $dirsystem/soundprofileset )"
 
 /srv/http/bash/mpd-conf.sh # mpd start by this script
 

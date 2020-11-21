@@ -157,15 +157,27 @@ input[type="text"] {
 ul {
 	margin: 0;
 }
-pre {
+pre,
+textarea {
 	margin-top: 0;
 	padding: 5px;
-	max-height: 50vh;
+	max-height: 70vh;
 	tab-size: 4;
 	background: var( --cgd );
-	font-family: 'Inconsolata';
+	font-family: Inconsolata;
 	font-size: 15px;
+	line-height: 20px;
 	overflow-x: auto;
+}
+textarea {
+	width: 100%;
+	max-height: 100vh;
+	height: calc( 100vh - 280px );
+	color: var( --cw );
+	border-radius: 0;
+	border: none;
+	outline: none;
+	resize: none;
 }
 .btn {
 	margin-bottom: 5px !important;
@@ -196,6 +208,11 @@ pre {
 	margin-top: 0;
 	margin-bottom: 20px;
 	color: var( --cg75 );
+}
+.help-block .fa {
+	width: 20px;
+	line-height: 16px;
+	font-size: 16px !important;
 }
 w, wh, .wh { color: var( --cw ) !important; }
 bl, .bl, .blue { color: var( --cm ) !important; }
@@ -474,7 +491,7 @@ input:checked + .switchlabel:after {
 }
 .col-l {
 	display: inline-block;
-	width: 165px;
+	width: 170px;
 	text-align: right;
 	padding-right: 15px;
 	padding-top: 10px;
@@ -492,6 +509,7 @@ input:checked + .switchlabel:after {
 .col-l a i.fa-code {
 	width: 20px;
 	vertical-align: 0;
+	text-align: center
 }
 .col-l.icon {
 	padding-top: 2px;
@@ -515,7 +533,7 @@ input:checked + .switchlabel:after {
 	color: var( --cw );
 }
 .col-r {
-	width: calc( 100% - 165px );
+	width: calc( 100% - 170px );
 	min-width: 230px;
 	padding-right: 0;
 	padding-left: 0 !important;
@@ -593,7 +611,7 @@ input:checked + .switchlabel:after {
 	}
 	.col-l {
 		width: 100%;
-		padding-top: 5px;
+		padding: 5px 0;
 		text-align: left;
 	}
 	.col-l.text {
@@ -614,10 +632,8 @@ input:checked + .switchlabel:after {
 	}
 	.col-l.double i {
 		width: 30px;
+		margin-right: 10px;
 		line-height: 28px;
-	}
-	.col-l.double a {
-		margin-left: 10px;
 	}
 	.col-l i.fa-gear {
 		float: none;
@@ -668,6 +684,7 @@ input:checked + .switchlabel:after {
 	.status,
 	.switchlabel,
 	#close,
+	#filetype,
 	#help {
 		cursor: pointer;
 	}

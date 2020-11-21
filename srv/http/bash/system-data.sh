@@ -71,10 +71,19 @@ done
 
 dirsystem=/srv/http/data/system
 version=$( cat $dirsystem/version )
-soundprofile=$( cat $dirsystem/soundprofile )
 snaplatency=$( grep OPTS= /etc/default/snapclient | sed 's/.*latency=\(.*\)"/\1/' )
 lcdcharset=$( grep '^address\|^chip\|^cols' /srv/http/bash/lcdchar.py | cut -d' ' -f3 | tr -d "'" )
 [[ -z $snaplatency ]] && snaplatency=0
+if grep -q 'dtparam=i2c_arm=on' /boot/config.txt; then
+	lcdcharaddr=$( i2cdetect -y $( ls /dev/i2c* | tail -c 2 ) \
+					| grep -v '^\s' \
+					| cut -d' ' -f2- \
+					| tr -d ' \-' \
+					| grep . \
+					| sort -u )
+else
+	lcdcharaddr='27 3F'
+fi
 
 data+='
 	, "audioaplayname"  : "'$( cat $dirsystem/audio-aplayname 2> /dev/null )'"
@@ -85,7 +94,9 @@ data+='
 	, "kernel"          : "'$( uname -r )'"
 	, "lcd"             : '$( grep -q dtoverlay=tft35a /boot/config.txt && echo true || echo false )'
 	, "lcdchar"         : '$( [[ -e $dirsystem/lcdchar ]] && echo true || echo false )'
-	, "lcdcharset"      : "'$lcdcharset'"
+	, "lcdcharset"      : '$( [[ -e $dirsystem/lcdcharset ]] && echo true || echo false )'
+	, "lcdcharaddr"     : "'$lcdcharaddr'"
+	, "lcdcharval"      : "'$( grep '^cols\|^charmap\|^address\|^chip' /srv/http/bash/lcdchar.py | cut -d' ' -f3 | tr -d "'" )'"
 	, "mpd"             : "'$( pacman -Q mpd 2> /dev/null |  cut -d' ' -f2 )'"
 	, "mpdstats"        : "'$( jq '.song, .album, .artist' /srv/http/data/mpd/counts 2> /dev/null )'"
 	, "ntp"             : "'$( grep '^NTP' /etc/systemd/timesyncd.conf | cut -d= -f2 )'"
@@ -93,10 +104,11 @@ data+='
 	, "reboot"          : "'$( cat /srv/http/data/shm/reboot 2> /dev/null )'"
 	, "regdom"          : "'$( cat /etc/conf.d/wireless-regdom | cut -d'"' -f2 )'"
 	, "relays"          : '$( [[ -e $dirsystem/relays ]] && echo true || echo false )'
+	, "rpi01"           : "'$( [[ $soc == BCM2835 || $soc == BCM2836 ]] && rpi01=true || rpi01=false )'"
 	, "soc"             : "'$soc'"
-	, "soundprofile"    : "'$soundprofile'"
-	, "soundprofileval" : "'$( /srv/http/bash/cmd-soundprofile.sh getvalue )'"
-	, "soundprofilecus" : "'$( cat /srv/http/data/system/soundprofile-custom 2> /dev/null )'"
+	, "soundprofile"    : '$( [[ -e $dirsystem/soundprofile ]] && echo true || echo false )'
+	, "soundprofileset" : '$( [[ -e $dirsystem/soundprofileset ]] && echo true || echo false )'
+	, "soundprofileval" : "'$( cat $dirsystem/soundprofileset 2> /dev/null )'"
 	, "sources"         : '$( /srv/http/bash/sources-data.sh )'
 	, "timezone"        : "'$timezone'"
 	, "version"         : "'$version'"

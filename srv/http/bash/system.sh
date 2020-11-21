@@ -1,16 +1,28 @@
 #!/bin/bash
 
+
 dirdata=/srv/http/data
 dirsystem=$dirdata/system
 dirtmp=$dirdata/shm
 filebootlog=$dirtmp/bootlog
 filereboot=$dirtmp/reboot
+fileconfig=/boot/config.txt
+filemodule=/etc/modules-load.d/raspberrypi.conf
 
 # convert each line to each args
 readarray -t args <<< "$1"
 
 pushRefresh() {
 	curl -s -X POST http://127.0.0.1/pub?id=refresh -d '{ "page": "system" }'
+}
+soundprofile() {
+	val=( $1 )
+	if ifconfig | grep -q eth0; then
+		ip link set eth0 mtu ${val[0]}
+		ip link set eth0 txqueuelen ${val[1]}
+	fi
+	sysctl vm.swappiness=${val[2]}
+	sysctl kernel.sched_latency_ns=${val[3]}
 }
 
 case ${args[0]} in
@@ -23,17 +35,19 @@ btdiscoverable )
 	else
 		touch $dirsystem/btdiscoverno
 	fi
+	sleep 3
+	pushRefresh
 	;;
 bluetooth )
 	if [[ ${args[1]} == true ]]; then
-		sed -i '$ a\dtparam=krnbt=on' /boot/config.txt
+		sed -i '$ a\dtparam=krnbt=on' $fileconfig
 		systemctl enable --now bluetooth
 		echo "${args[2]}" > $filereboot
 		touch $dirsystem/onboard-bluetooth
 	else
-		sed -i '/dtparam=krnbt=on/ d' /boot/config.txt
+		sed -i '/dtparam=krnbt=on/ d' $fileconfig
 		systemctl disable --now bluetooth
-		rm $dirsystem/onboard-bluetooth
+		rm -f $dirsystem/onboard-bluetooth
 	fi
 	pushRefresh
 	;;
@@ -71,18 +85,18 @@ i2smodule )
 	aplayname=${args[1]}
 	output=${args[2]}
 	reboot=${args[3]}
-	dtoverlay=$( grep 'dtparam=i2c_arm=on\|dtparam=krnbt=on\|dtparam=spi=on\|dtoverlay=gpio\|dtoverlay=sdtweak,poll_once\|dtoverlay=tft35a\|hdmi_force_hotplug=1' /boot/config.txt )
-	sed -i '/dtparam=\|dtoverlay=\|^$/ d' /boot/config.txt
-	[[ -n $dtoverlay ]] && sed -i '$ r /dev/stdin' /boot/config.txt <<< "$dtoverlay"
+	dtoverlay=$( grep 'dtparam=i2c_arm=on\|dtparam=krnbt=on\|dtparam=spi=on\|dtoverlay=gpio\|dtoverlay=sdtweak,poll_once\|dtoverlay=tft35a\|hdmi_force_hotplug=1' $fileconfig )
+	sed -i '/dtparam=\|dtoverlay=\|^$/ d' $fileconfig
+	[[ -n $dtoverlay ]] && sed -i '$ r /dev/stdin' $fileconfig <<< "$dtoverlay"
 	if [[ ${aplayname:0:7} != bcm2835 ]]; then
 		lines="\
 dtparam=audio=off
 dtparam=i2s=on
 dtoverlay=${args[1]}"
-		sed -i '$ r /dev/stdin' /boot/config.txt <<< "$lines"
+		sed -i '$ r /dev/stdin' $fileconfig <<< "$lines"
 		rm -f $dirsystem/onboard-audio
 	else
-		sed -i '$ a\dtparam=audio=on' /boot/config.txt
+		sed -i '$ a\dtparam=audio=on' $fileconfig
 		touch $dirsystem/onboard-audio
 	fi
 	echo $aplayname > $dirsystem/audio-aplayname
@@ -92,36 +106,100 @@ dtoverlay=${args[1]}"
 	;;
 lcd )
 	enable=${args[1]}
+	reboot=${args[2]}
 	if [[ $enable == true ]]; then
 		sed -i '1 s/$/ fbcon=map:10 fbcon=font:ProFont6x11/' /boot/cmdline.txt
-		echo -n "\
+		config="\
 hdmi_force_hotplug=1
-dtparam=i2c_arm=on
 dtparam=spi=on
-dtoverlay=tft35a:rotate=0
-" >> /boot/config.txt
-		cp -f /etc/X11/{lcd0,xorg.conf.d/99-calibration.conf}
-		echo -n "\
+dtoverlay=tft35a:rotate=0"
+		! grep -q 'dtparam=i2c_arm=on' $fileconfig && config+="
+dtparam=i2c_arm=on"
+		echo -n "$config" >> $fileconfig
+		! grep -q 'i2c-bcm2708' $filemodule && echo -n "\
 i2c-bcm2708
 i2c-dev
-" >> /etc/modules-load.d/raspberrypi.conf
+" >> $filemodule
+		cp -f /etc/X11/{lcd0,xorg.conf.d/99-calibration.conf}
 		sed -i 's/fb0/fb1/' /etc/X11/xorg.conf.d/99-fbturbo.conf
-		echo "${args[2]}" > $filereboot
 		touch $dirsystem/lcd
 	else
 		sed -i '1 s/ fbcon=map:10 fbcon=font:ProFont6x11//' /boot/cmdline.txt
-		sed -i '/hdmi_force_hotplug\|i2c_arm=on\|spi=on\|tft35a/ d' /boot/config.txt
-		sed -i '/i2c-bcm2708\|i2c-dev/ d' /etc/modules-load.d/raspberrypi.conf
+		sed -i '/hdmi_force_hotplug\|i2c_arm=on\|spi=on\|tft35a/ d' $fileconfig
+		sed -i '/i2c-bcm2708\|i2c-dev/ d' $filemodule
 		sed -i 's/fb1/fb0/' /etc/X11/xorg.conf.d/99-fbturbo.conf
-		rm $dirsystem/lcd
+		rm -f $dirsystem/lcd
 	fi
+	echo "$reboot" > $filereboot
 	pushRefresh
 	;;
 lcdcalibrate )
-	touch /srv/http/data/shm/calibrate
-	degree=$( grep rotate /boot/config.txt | cut -d= -f3 )
+	degree=$( grep rotate $fileconfig | cut -d= -f3 )
 	cp -f /etc/X11/{lcd$degree,xorg.conf.d/99-calibration.conf}
-	systemctl restart localbrowser
+	systemctl stop localbrowser
+	value=$( DISPLAY=:0 xinput_calibrator | grep Calibration | cut -d'"' -f4 )
+	if [[ -n $value ]]; then
+		sed -i "s/\(Calibration\"  \"\).*/\1$value\"/" /etc/X11/xorg.conf.d/99-calibration.conf
+		systemctl start localbrowser
+		cp /etc/X11/xorg.conf.d/99-calibration.conf /srv/http/data/system/calibration
+	fi
+	;;
+lcdchar )
+	enable=${args[1]}
+	reboot=${args[2]}
+	if [[ $enable == true ]]; then
+		if ! grep -q 'dtparam=i2c_arm=on' $fileconfig; then
+				sed -i '$ a\dtparam=i2c_arm=on' $fileconfig
+				echo "$reboot" > $filereboot
+		fi
+		! grep -q 'i2c-bcm2708' $filemodule && echo "\
+i2c-bcm2708
+i2c-dev" >> $filemodule
+			touch $dirsystem/lcdchar
+	else
+		if [[ ! -e $dirsystem/lcd ]]; then
+			sed -i '/dtparam=i2c_arm=on/ d' $fileconfig
+			sed -i '/i2c-bcm2708\|i2c-dev/ d' $filemodule
+		fi
+		rm -f $dirsystem/lcdchar
+		echo "$reboot" > $filereboot
+	fi
+	pushRefresh
+	;;
+lcdcharset )
+	cols=${args[1]}
+	charmap=${args[2]}
+	address=${args[3]}
+	chip=${args[4]}
+	reboot=${args[5]}
+	unset args[-1] # remove reboot line
+	printf '%s\n' "${args[@]:1}" > $dirsystem/lcdcharset # array to multiline string
+	[[ $cols == 16 ]] && rows=2 || rows=4
+	filelcdchar=/srv/http/bash/lcdchar.py
+
+	sed -i -e '/address = /,/i2c_expander/ s/^#//
+' -e '/RPLCD.gpio/,/numbering_mode/ s/^#//
+' $filelcdchar
+	if [[ -n $chip ]]; then
+		sed -i -e "s/^\(address = '\).*/\1$address'/
+" -e "s/\(chip = '\).*/\1$chip'/
+" -e "s/\(cols = \).*/\1$cols/
+" -e "s/\(rows = \).*/\1$rows/
+" -e '/address = /,/i2c_expander/ s/^#//
+' -e '/RPLCD.gpio/,/numbering_mode/ s/^/#/
+' $filelcdchar
+	else
+		sed -i -e "s/\(cols = \).*/\1$cols/
+" -e "s/\(rows = \).*/\1$rows/
+" -e '/address = /,/i2c_expander/ s/^/#/
+' -e '/RPLCD.gpio/,/numbering_mode/ s/^#//
+' $filelcdchar
+	fi
+	if ! grep -q 'dtparam=i2c_arm=on' $fileconfig; then
+		/srv/http/bash/system.sh lcdchar$'\n'true$'\n'"$reboot"
+	else
+		pushRefresh
+	fi
 	;;
 lcdchar )
 	enable=${args[1]}
@@ -160,9 +238,9 @@ onboardaudio )
 		touch $dirsystem/onboard-audio
 	else
 		onoff=off
-		rm $dirsystem/onboard-audio
+		rm -f $dirsystem/onboard-audio
 	fi
-	sed -i "s/\(dtparam=audio=\).*/\1$onoff/" /boot/config.txt
+	sed -i "s/\(dtparam=audio=\).*/\1$onoff/" $fileconfig
 	echo "${args[2]}" > $filereboot
 	pushRefresh
 	;;
@@ -172,8 +250,16 @@ regional )
 	sed -i "s/^\(NTP=\).*/\1$ntp/" /etc/systemd/timesyncd.conf
 	sed -i 's/".*"/"'$regdom'"/' /etc/conf.d/wireless-regdom
 	iw reg set $regdom
-	[[ $ntp == pool.ntp.org ]] && rm $dirsystem/ntp || echo $ntp > $dirsystem/ntp
-	[[ $regdom == 00 ]] && rm $dirsystem/wlanregdom || echo $regdom > $dirsystem/wlanregdom
+	printf '%s\n' "${args[@]:1}" > $dirsystem/regional
+	pushRefresh
+	;;
+relays )
+	enable=${args[1]}
+	if [[ $enable == true ]]; then
+		touch $dirsystem/relays
+	else
+		rm -f $dirsystem/relays
+	fi
 	pushRefresh
 	;;
 relays )
@@ -186,24 +272,20 @@ relays )
 	pushRefresh
 	;;
 soundprofile )
-	if [[ ${args[1]} == true ]]; then
-		[[ -e $dirsystem/soundprofile-custom ]] && profile=custom || profile=RuneAudio
-		echo $profile > $dirsystem/soundprofile
+	enable=${args[1]}
+	if [[ $enable == true ]]; then
+		soundprofile "$( cat $dirsystem/soundprofileset )"
+		touch $dirsystem/soundprofile
 	else
-		profile=default
-		rm $dirsystem/soundprofile
+		soundprofile '1500 1000 60 18000000'
+		rm -f $dirsystem/soundprofile
 	fi
-	/srv/http/bash/cmd.sh soundprofile$'\n'"$profile"
 	pushRefresh
 	;;
 soundprofileset )
-	profile=${args[1]}
-	values=${args[2]}
-	customfile=$dirsystem/soundprofile-custom
-	echo $profile > $dirsystem/soundprofile
-	[[ -n $value ]] && echo $values > $customfile
-	[[ $profile == 'custom' && ! -e $customfile ]] && echo 1500 1000 60 18000000 > $customfile
-	/srv/http/bash/cmd.sh soundprofile$'\n'"$profile"
+	values=${args[@]:1}
+	printf '%s\n' "${args[@]:1}" > $dirsystem/soundprofileset
+	[[ ! -e $dirdata/shm/datarestore ]] && /srv/http/bash/system.sh soundprofile$'\n'true
 	pushRefresh
 	;;
 statusbootlog )
@@ -233,7 +315,7 @@ wlan )
 		touch $dirsystem/onboard-wlan
 	else
 		systemctl disable --now netctl-auto@wlan0
-		rm $dirsystem/onboard-wlan
+		rm -f $dirsystem/onboard-wlan
 		rmmod brcmfmac
 	fi
 	pushRefresh

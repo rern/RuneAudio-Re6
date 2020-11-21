@@ -47,7 +47,7 @@
 	</div>
 	
 	<div>
-	<heading id="netctl" class="status">Saved Profiles<i class="fa fa-code"></i><?=$help?></heading>
+	<heading data-status="netctl" class="status">Saved Profiles<i class="fa fa-code"></i><?=$help?></heading>
 	<span class="help-block hide"><code>cat /etc/netctl/SSID</code></span>
 	<pre id="codenetctl" class="hide"></pre>
 	</div>

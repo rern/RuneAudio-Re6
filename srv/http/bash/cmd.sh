@@ -109,8 +109,14 @@ pushstreamPlaylist() {
 	rm -f $flagpladd
 }
 pushstreamStatus() {
-	pushstream mpdplayer "$( $dirbash/status.sh )"
+	status=$( $dirbash/status.sh )
+	pushstream mpdplayer "$status"
 	rm -f $flag
+	if [[ -e /srv/http/data/system/lcdchar ]]; then
+		killall lcdchar.py &> /dev/null
+		readarray -t data <<< "$( echo "$status" | jq -r '.Artist, .Title, .Album, .elapsed, .Time, .state' | sed 's/^$/false/' )"
+		/srv/http/bash/lcdchar.py "${data[@]}" &
+	fi
 }
 pushstreamVolume() {
 	pushstream volume '{"type":"'$1'", "val":'$2' }'
@@ -365,10 +371,16 @@ mpcplayback )
 	mpc $command $pos
 	# webradio start - status.sh > 'file:' missing
 	if [[ $( mpc current -f %file% | cut -c1-4 ) == http ]]; then
+		webradio=1
 		sleep 0.6
 		touch $dirtmp/webradio
 	fi
 	pushstreamStatus
+	# fix webradio fast stop - start
+	if [[ -n $webradio && $command == play && -z $( echo "$status" | jq -r .Title ) ]]; then
+		sleep 3
+		/srv/http/bash/cmd.sh pushstatus
+	fi
 	;;
 mpcprevnext )
 	touch $flag
@@ -575,7 +587,11 @@ power )
 	$dirbash/ply-image /srv/http/assets/img/splash.png &> /dev/null
 	mount | grep -q /mnt/MPD/NAS && umount -l /mnt/MPD/NAS/* &> /dev/null
 	sleep 3
+	grep -q 'dtparam=i2c_arm=on' /boot/config.txt && $dirbash/lcdchar.py rr
 	[[ $type == off ]] && shutdown -h now || shutdown -r now
+	;;
+pushstatus )
+	pushstreamStatus
 	;;
 refreshbrowser )
 	pushstream reload 1

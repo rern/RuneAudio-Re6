@@ -1,3 +1,5 @@
+<div id="divmain"> <!-- ************************************************* -->
+
 <div>
 <heading>Audio Output<?=$help?></heading>
 <div class="col-l control-label">Device</div>
@@ -18,13 +20,13 @@
 </div>
 
 <div>
-<heading id="aplay" class="status">Devices<i class="fa fa-code"></i><?=$help?></heading>
+<heading data-status="aplay" class="status">Devices<i class="fa fa-code"></i><?=$help?></heading>
 <span class="help-block hide"><code>aplay -l</code></span>
 <pre id="codeaplay" class="hide"></pre>
 </div>
 
 <div id="divamixer">
-<heading id="amixer" class="status">Hardware Mixers<i class="fa fa-code"></i><?=$help?></heading>
+<heading data-status="amixer" class="status">Hardware Mixers<i class="fa fa-code"></i><?=$help?></heading>
 <span class="help-block hide"><code>amixer -c N</code></span>
 <pre id="codeamixer" class="hide"></pre>
 </div>
@@ -88,7 +90,10 @@
 
 <div>
 <heading>Options<?=$help?></heading>
-<div class="col-l">Auto Update</div>
+<div class="col-l double">
+	<a>Auto Update
+	<br><gr>Library</gr></a>
+</div>
 <div class="col-r">
 	<input id="autoupdate" type="checkbox">
 	<div class="switchlabel" for="autoupdate"></div>
@@ -97,56 +102,92 @@
 		<br>Automatic update MPD database when files changed.
 	</span>
 </div>
-<div class="col-l">Custom Audio Buffer</div>
+<div class="col-l double">
+	<a>FFmpeg
+	<br><gr>decoder</gr></a>
+</div>
+<div class="col-r">
+	<input id="ffmpeg" type="checkbox">
+	<div class="switchlabel" for="ffmpeg"></div>
+	<span class="help-block hide">
+			<code>enable "yes"</code>
+		<br>Should be disabled if not used for faster Sources update.
+		<br>Decoder for audio filetypes:&emsp;<i id="filetype" class="fa fa-question-circle"></i>
+		<div id="divfiletype" class="hide" style="margin-left: 20px"><?=( shell_exec( '/srv/http/bash/mpd.sh filetype' ) )?></div>
+	</span>
+</div>
+<div class="col-l double">
+	<a>Audio Buffer
+	<br><gr>custom size</gr></a>
+</div>
 <div class="col-r">
 	<input id="buffer" type="checkbox">
 	<div class="switchlabel" for="buffer"></div>
 	<i id="setting-buffer" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
-			<code>audio_buffer_size "N"</code>
+			<code>audio_buffer_size "kB"</code>
 		<br>Default buffer size: 4096 kB (24 seconds of CD-quality audio)
 		<br>Increase to fix intermittent audio.
 	</span>
 </div>
-<div class="col-l">Custom Output Buffer</div>
+<div class="col-l double">
+		<a>Output Buffer
+	<br><gr>custom size</gr></a>
+</div>
 <div class="col-r">
 	<input id="bufferoutput" type="checkbox">
 	<div class="switchlabel" for="bufferoutput"></div>
 	<i id="setting-bufferoutput" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
-			<code>max_output_buffer_size "N"</code>
+		<code>max_output_buffer_size "kB"</code>
 		<br>Default buffer size: 8192 kB
 		<br>Increase to fix missing Album list with large Library.
 	</span>
 </div>
-	<?php if ( file_exists( '/usr/bin/ffmpeg' ) ) { ?>
-<div class="col-l">FFmpeg Decoder</div>
+<div class="col-l double">
+		<a>Resampling
+	<br><gr>SoXR custom settings</gr></a>
+</div>
 <div class="col-r">
-	<input id="ffmpeg" type="checkbox">
-	<div class="switchlabel" for="ffmpeg"></div>
+	<input id="soxr" type="checkbox">
+	<div class="switchlabel" for="soxr"></div>
+	<i id="setting-soxr" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
-			<code>ffmpeg "yes"</code>
-		<br>Should be disabled if not used for faster Sources update.
-		<br>Decoder for audio filetypes:
-		<div style="margin-left: 20px">
-			<?php
-				$types = shell_exec(
-					'types=$( /usr/bin/mpd -V | awk \'/\[ffmpeg/ {$1=""; print}\' )'
-						.'; for index in {a..z}'
-						.'; do types=$( sed "s/ \($index\)/\n\1/" <<<"$types" )'
-						.'; done'
-						.'; echo "$types" | sort'
-				);
-				echo str_replace( "\n", '<br>', $types );
-			?>
-		</div>
+			<code>quality "custom"</code>
+		<br>Default quality: very high
+		<br>SoX Resampler custom settings:
+		<br>&bull; Precision - Conversion precision (20 = HQ)
+		<br>&bull; Phase Response (50 = Linear)
+		<br>&bull; Passband End - 0dB point bandwidth to preserve (100 = Nyquist)
+		<br>&bull; Stopband Begin - Aliasing/imaging control
+		<br>&bull; Attenuation - Lowers the source to prevent clipping
+		<br>&bull; Flags - Extra settings:
+		<br> &emsp; 0 - Rolloff - small (<= 0.01 dB)
+		<br> &emsp; 1 - Rolloff - medium (<= 0.35 dB)
+		<br> &emsp; 2 - Rolloff - none - For Chebyshev bandwidth
+		<br> &emsp; 8 - High precision - Increase irrational ratio accuracy
+		<br> &emsp; 16 - Double precision - even if Precision <= 20
+		<br> &emsp; 32 - Variable rate resampling
 	</span>
 </div>
-	<?php } ?>
+<div class="col-l">User's Custom Settings</div>
+<div class="col-r">
+	<input id="custom" type="checkbox">
+	<div class="switchlabel" for="custom"></div>
+	<i id="setting-custom" class="setting fa fa-gear"></i>
+	<span class="help-block hide">Insert settings into <code>/etc/mpd.conf</code>.</span>
+</div>
 </div>
 
+</div> <!-- divmain ****************************************** -->
+
 <div>
-<heading id="mpd" class="status">Status<i class="fa fa-code"></i><i id="mpdrestart" class="fa fa-reboot"></i><?=$help?></heading>
+<heading data-status="mpdconf" class="status">Configuration<i class="fa fa-code"></i><?=$help?></heading>
+<span class="help-block hide"><code>cat /etc/mpd.conf</code></span>
+<pre id="codempdconf" class="hide"></pre>
+
+<div>
+<heading data-status="mpd" class="status">Status<i class="fa fa-code"></i><i id="mpdrestart" class="fa fa-reboot"></i><?=$help?></heading>
 <span class="help-block hide">
 	<code>systemctl status mpd</code>
 	<br><i class="fa fa-reboot"></i>&ensp;Restart MPD
@@ -154,10 +195,20 @@
 <pre id="codempd" class="hide"></pre>
 </div>
 
-<div>
-<heading id="mpdconf" class="status">Configuration<i class="fa fa-code"></i><?=$help?></heading>
-<span class="help-block hide"><code>cat /etc/mpd.conf</code></span>
-<pre id="codempdconf" class="hide"></pre>
+<!--
+<div class="col-l">Manual Mode</div>
+<div class="col-r">
+	<input id="manualconf" type="checkbox">
+	<div class="switchlabel" for="manualconf"></div>
+	<i id="setting-manualconf" class="setting fa fa-save"></i>
+	<span class="help-block hide">
+			Manually set MPD configuration, <code>mpd.conf</code>. Once enabled, any further changes, options or audio devices, must be reconfigured manually.
+		<br>This will also disable:
+		<br>&emsp; &bull; USB DAC plug and play for MPD, AirPlay and Spotify.
+		<br>&emsp; &bull; Bluetooth auto connect.
+	</span>
 </div>
-
+<textarea id="codemanualconf" spellcheck="false"></textarea>
+</div>
+-->
 <div style="clear: both"></div>

@@ -28,6 +28,15 @@ function infoMount( formdata, cifs ) {
 			}
 			if ( G.autoupdate ) $( '#infoCheckBox' ).addClass( 'hide' );
 			if ( cifs ) $( '#infoRadio' ).hide();
+			$( '#infoRadio' ).change( function() {
+				if ( $( this ).find( 'input:checked' ).val() === 'nfs' ) {
+					$( '#sharename' ).text( 'Share path' );
+					$( '.guest' ).addClass( 'hide' );
+				} else {
+					$( '#sharename' ).text( 'Share name' );
+					$( '.guest' ).removeClass( 'hide' );
+				}
+			} );
 		}
 		, ok      : function() {
 			var formmount = $( '#formmount' ).serializeArray();
@@ -139,15 +148,6 @@ var html = heredoc( function() { /*
 */ } );
 $( '#addnas' ).click( function() {
 	infoMount();
-} );
-$( '#infoContent' ).on( 'click', '#infoRadio', function() {
-	if ( $( this ).find( 'input:checked' ).val() === 'nfs' ) {
-		$( '#sharename' ).text( 'Share path' );
-		$( '.guest' ).addClass( 'hide' );
-	} else {
-		$( '#sharename' ).text( 'Share name' );
-		$( '.guest' ).removeClass( 'hide' );
-	}
 } );
 $( '#list' ).on( 'click', 'li', function() {
 	var $this = $( this );

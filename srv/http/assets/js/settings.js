@@ -22,7 +22,7 @@ var cmd = {
 	, mount        : 'mount | grep " / \\|MPD"'
 	, netctl       : '/srv/http/bash/system.sh statusnetctl'
 }
-var services = [ 'hostapd', 'localbrowser', 'mpd', 'mpdscribble', 'shairport-sync', 'smb', 'snapserver', 'spotifyd', 'upmpdcli' ];
+var services = [ 'hostapd', 'localbrowser', 'mpd', 'mpdscribble', 'shairport-sync', 'smb', 'snapclient', 'snapserver', 'spotifyd', 'upmpdcli' ];
 function codeToggle( id, target ) {
 	id === 'localbrowser' ? resetLocal( 7000 ) : resetLocal();
 	if ( $( target ).hasClass( 'help' ) || target.id === 'mpdrestart' ) return // question icon
@@ -36,7 +36,7 @@ function codeToggle( id, target ) {
 			var command = 'systemctl status '+ id;
 			var systemctl = 1;
 		} else {
-			var command = cmd[ id ];
+			var command = cmd[ id ] +' 2> /dev/null';
 			var systemctl = 0;
 		}
 		var delay = target === 'status' ? 1000 : 0;
@@ -61,7 +61,6 @@ function codeToggle( id, target ) {
 	}
 }
 function notify( title, message, icon ) {
-	local = 1;
 	if ( typeof message === 'boolean' || typeof message === 'number' ) var message = message ? 'Enable ...' : 'Disable ...';
 	banner( title, message, icon +' blink', -1 );
 }
@@ -75,7 +74,6 @@ function getReset( callback ) {
 	}, 'json' );
 }
 function resetLocal( ms ) {
-	local = 0;
 	setTimeout( function() {
 		$( '#bannerIcon i' ).removeClass( 'blink' );
 		$( '#bannerMessage' ).text( 'Done' );
@@ -113,7 +111,7 @@ pushstream.onmessage = function( data, id, channel ) {
 	}
 }
 function psRefresh( data ) {
-	if ( data.page === page ) refreshData();
+	if ( data.page === page || data.page === 'all' ) refreshData();
 }
 function psReload() {
 	if ( [ 'localhost', '127.0.0.1' ].indexOf( location.hostname ) !== -1 ) location.reload();
@@ -159,7 +157,6 @@ onVisibilityChange( function( visible ) {
 } );
 //---------------------------------------------------------------------------------------
 G = {}
-var local = 0;
 var intervalcputime;
 var intervalscan;
 var page = location.href.split( '=' ).pop();
@@ -218,6 +215,6 @@ $( '.help' ).click( function() {
 	$( '#help' ).toggleClass( 'blue', $( '.help-block:not(.hide)' ).length !== 0 );
 } );
 $( '.status' ).click( function( e ) {
-	codeToggle( this.id, e.target );
+	codeToggle( $( this ).data( 'status' ), e.target );
 } );
 

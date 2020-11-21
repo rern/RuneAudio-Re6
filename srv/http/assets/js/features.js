@@ -4,17 +4,17 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 	bash( '/srv/http/bash/features-data.sh', function( list ) {
 		G = list;
 		G.reboot = list.reboot ? list.reboot.split( '\n' ) : [];
-		$( '#airplay' ).prop( 'checked', G.airplay );
-		$( '#spotify' ).prop( 'checked', G.spotify );
-		$( '#setting-spotify' ).toggleClass( 'hide', !G.spotify );
-		$( '#upnp' ).prop( 'checked', G.upnp );
+		$( '#shairport-sync' ).prop( 'checked', G[ 'shairport-sync' ] );
+		$( '#spotifydd' ).prop( 'checked', G.spotifyd );
+		$( '#setting-spotifyd' ).toggleClass( 'hide', !G.spotifyd );
+		$( '#upmpdcli' ).prop( 'checked', G.upmpdcli );
 //		$( '#setting-upnp' ).toggleClass( 'hide', !G.upnp );
-		$( '#chromium' ).prop( 'checked', G.chromium );
-		$( '#setting-chromium' ).toggleClass( 'hide', !G.chromium );
-		$( '#samba' ).prop( 'checked', G.samba );
-		$( '#setting-samba' ).toggleClass( 'hide', !G.samba );
-		$( '#snapcast' ).prop( 'checked', G.snapcast );
-		if ( G.snapcast ) {
+		$( '#localbrowser' ).prop( 'checked', G.localbrowser );
+		$( '#setting-localbrowser' ).toggleClass( 'hide', !G.localbrowser );
+		$( '#smb' ).prop( 'checked', G.smb );
+		$( '#setting-smb' ).toggleClass( 'hide', !G.smb );
+		$( '#snapserver' ).prop( 'checked', G.snapserver );
+		if ( G.snapserver ) {
 			$( '#divsnapclient' ).addClass( 'hide' );
 		} else {
 			$( '#divsnapclient' ).removeClass( 'hide' );
@@ -25,15 +25,13 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		}
 		$( '#streaming' ).prop( 'checked', G.streaming );
 		$( '#ip' ).text( G.streamingip +':8000' );
-		$( '#scrobbler' ).prop( 'checked', G.scrobbler );
-		$( '#setting-scrobbler' ).toggleClass( 'hide', !G.scrobbler );
+		$( '#mpdscribble' ).prop( 'checked', G.mpdscribble );
+		$( '#setting-mpdscribble' ).toggleClass( 'hide', !G.mpdscribble );
 		$( '#login' ).prop( 'checked', G.login );
 		$( '#setting-login' ).toggleClass( 'hide', !G.login );
-		$( '#avahi' ).prop( 'checked', G.avahi );
-		$( '#avahiname' ).text( G.hostname.toLowerCase() );
 		$( '#autoplay' ).prop( 'checked', G.autoplay );
-		$( '#accesspoint' ).prop( 'checked', G.hostapd );
-		$( '#setting-accesspoint' ).toggleClass( 'hide', !G.hostapd );
+		$( '#hostapd' ).prop( 'checked', G.hostapd );
+		$( '#setting-hostapd' ).toggleClass( 'hide', !G.hostapd );
 		services.forEach( function( id ) {
 			codeToggle( id, 'status' );
 		} );
@@ -43,106 +41,106 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 }
 refreshData();
 //---------------------------------------------------------------------------------------
-$( '#airplay' ).click( function( e ) {
-	G.airplay = $( this ).prop( 'checked' );
-	notify( 'AirPlay Renderer', G.airplay, 'airplay' );
-	bash( [ 'airplay', G.airplay ], codeToggle( 'shairport-sync', 'status' ) );
+$( '#shairport-sync' ).click( function( e ) {
+	var checked = $( this ).prop( 'checked' );
+	notify( 'AirPlay Renderer', checked, 'airplay' );
+	bash( [ 'shairport-sync', checked ] );
 } );
 $( '#snapclient' ).click( function( e ) {
-	G.snapclient = $( this ).prop( 'checked' );
-	$( '#setting-snapclient' ).toggleClass( 'hide', !G.snapclient );
-	notify( 'SnapClient Renderer', G.snapclient, 'snapcast' );
-	bash( [ 'snapclient', G.snapclient ], codeToggle( 'snapclient', 'status' ) );
+	var checked = $( this ).prop( 'checked' );
+	if ( G.snapclientset ) {
+		notify( 'SnapClient Renderer', checked, 'snapcast' );
+		bash( [ 'snapclient', checked ] );
+	} else {
+		$( '#setting-snapclient' ).click();
+	}
 } );
 $( '#setting-snapclient' ).click( function() {
 	info( {
 		  icon          : 'snapcast'
 		, title         : 'SnapClient'
-		, message       : 'Sync client to server:'
+		, message       : 'Sync SnapClient with SnapServer:'
 		, textlabel     : 'Latency <gr>(ms)</gr>'
-		, textvalue     : G.snaplatency
+		, textvalue     : G.snaplatency || 800
 		, passwordlabel : 'Password'
-		, footer        : '<px60/>*Snapserver - if not <wh>rune</wh>'
+		, checkbox      : { 'SnapServer different SSH password' : 1 }
+		, preshow       : function() {
+			if ( G.snapspassword ) {
+				$( '#infoPasswordBox' ).val( G.snapspassword );
+			} else {
+				$( '.infolabel:eq( 1 ), .infoinput:eq( 1 ), #infotextsuffix' ).hide();
+			}
+			$( '#infoCheckBox input' ).change( function() {
+				var checked = $( this ).prop( 'checked' );
+				$( '.infolabel:eq( 1 ), .infoinput:eq( 1 ), #infotextsuffix' ).toggle( checked );
+				$( '#infoPasswordBox' ).val( checked ? G.snapspassword : '' );
+			} );
+		}
+		, cancel        : function() {
+			if ( !G.snapclientset ) $( '#snapclient' ).prop( 'checked', 0 );
+		}
 		, ok            : function() {
-			var latency = Math.abs( $( '#infoTextBox' ).val() );
-			if ( latency !== G.snaplatency ) {
-				G.snaplatency = latency;
-				G.snapserverpw = $( '#infoPasswordBox' ).val();
+			var snaplatency = Math.abs( $( '#infoTextBox' ).val() );
+			var snapspassword = $( '#infoPasswordBox' ).val();
+			if ( snaplatency !== G.snaplatency || snapspassword !== G.snapspassword ) {
 				notify( 'Snapclient', 'Change ...', 'snapcast' );
-				bash( [ 'snapclientset', G.snaplatency, G.snapserverpw ], resetLocal );
+				bash( [ 'snapclientset', snaplatency, snapspassword ] );
 			}
 		}
 	} );
 } );
-$( '#spotify' ).click( function() {
-	G.spotify = $( this ).prop( 'checked' );
-	$( '#setting-spotify' ).toggleClass( 'hide', !G.spotify );
-	notify( 'Spotify Connect', G.spotify, 'spotify' );
-	bash( [ 'spotify', G.spotify ], codeToggle( 'spotifyd', 'status' ) );
+$( '#spotifyd' ).click( function() {
+	var checked = $( this ).prop( 'checked' );
+	notify( 'Spotify Connect', checked, 'spotify' );
+	bash( [ 'spotifyd', checked ] );
 } );
-$( '#setting-spotify' ).click( function() {
-	$.post( cmdphp, {
-		  cmd  : 'exec'
-		, exec : "aplay -L | grep -v '^\\s\\|^null'"
-	}, function( devices ) {
-		var select = {}
+$( '#setting-spotifyd' ).click( function() {
+	bash( [ 'aplaydevices' ], function( devices ) {
+		var devices = devices.split( '\n' );
+		var radio = {}
 		devices.forEach( function( val ) {
-			select[ val ] = val;
+			radio[ val ] = val;
 		} );
 		info( {
-			  icon        : 'spotify'
-			, title       : 'Spotify Renderer'
-			, message     : 'Manually select audio output:'
-						   +'<br>(Only if current one not working)'
-			, selectlabel : 'Device'
-			, select      : select
-			, checked     : G.spotifydevice
-			, preshow : function() {
-				$( '#infoSelectBox' )
-				$( '#infoOk' ).addClass( 'disabled' );
-				$( '#infoSelectBox' )
-					.selectric()
-					.on( 'selectric-change', function() {
-						$( '#infoOk' ).toggleClass( 'disabled', $( this ).val() === G.spotifydevice );
-					} );
-			}
-			, ok          : function() {
-				var device = $( '#infoSelectBox option:selected' ).text();
-				if ( device !== G.spotifydevice ) {
-					G.spotifydevice = device;
+			  icon    : 'spotify'
+			, title   : 'Spotify Renderer'
+			, message : 'Audio output:'
+			, radio   : radio
+			, checked : G.spotifyddevice
+			, footer  : '<br>(Only if default one not working)'
+			, ok      : function() {
+				var spotifyddevice = $( '#infoSelectBox option:selected' ).text();
+				if ( spotifyddevice !== G.spotifyddevice ) {
 					notify( 'Spotify Renderer', 'Change ...', 'spotify' );
-					bash( [ 'spotifyset', device ], resetLocal );
+					bash( [ 'spotifyset', spotifyddevice ] );
 				}
 			}
 		} );
-	}, 'json' );
+	} );
 } );
-$( '#upnp' ).click( function( e ) {
-	G.upnp = $( this ).prop( 'checked' );
-	notify( 'UPnP Renderer', G.upnp, 'upnp fa-s' );
-	bash( [ 'upnp', G.upnp ], codeToggle( 'upmpdcli', 'status' ) );
+$( '#upmpdcli' ).click( function( e ) {
+	var checked = $( this ).prop( 'checked' );
+	notify( 'UPnP Renderer', checked, 'upnp fa-s' );
+	bash( [ 'upmpdcli', checked ] );
 } );
-$( '#snapcast' ).click( function( e ) {
-	G.snapcast = $( this ).prop( 'checked' );
-	if ( G.snapcast ) {
-		if ( G.snapclient ) $( '#snapclient' ).click();
-		$( '#divsnapclient' ).addClass( 'hide' );
-	} else {
-		$( '#divsnapclient' ).removeClass( 'hide' );
-	}
-	notify( 'Snapcast - Sync Streaming Server', G.snapcast, 'snapcast' );
-	bash( [ 'snapcast', G.snapcast ], codeToggle( 'snapserver', 'status' ) );
+$( '#snapserver' ).click( function( e ) {
+	var checked = $( this ).prop( 'checked' );
+	notify( 'Snapcast - Sync Streaming Server', checked, 'snapcast' );
+	bash( [ 'snapserver', checked ] );
 } );
 $( '#streaming' ).click( function( e ) {
-	G.streaming = $( this ).prop( 'checked' );
-	notify( 'HTTP Streaming', G.streaming, 'mpd' );
-	bash( [ 'streaming', G.streaming ], resetLocal );
+	var checked = $( this ).prop( 'checked' );
+	notify( 'HTTP Streaming', checked, 'mpd' );
+	bash( [ 'streaming', checked ] );
 } );
-$( '#chromium' ).click( function( e ) {
-	G.localbrowser = $( this ).prop( 'checked' );
-	$( '#setting-chromium' ).toggleClass( 'hide', !G.localbrowser );
-	notify( 'Chromium - Browser on RPi', G.localbrowser, 'chromium blink' );
-	bash( [ 'localbrowser', G.localbrowser ], codeToggle( 'localbrowser', 'status' ) );
+$( '#localbrowser' ).click( function( e ) {
+	var checked = $( this ).prop( 'checked' );
+	if ( G.localbrowserset ) {
+		notify( 'Chromium - Browser on RPi', checked, 'chromium' );
+		bash( [ 'localbrowser',checked ] );
+	} else {
+		$( '#setting-localbrowser' ).click();
+	}
 } );
 var localbrowserinfo = heredoc( function() { /*
 	<div id="infoText" class="infocontent">
@@ -172,7 +170,7 @@ var localbrowserinfo = heredoc( function() { /*
 		<label><input type="checkbox">&ensp;Mouse pointer</label><br>
 	</div>
 */ } );
-$( '#setting-chromium' ).click( function( e ) {
+$( '#setting-localbrowser' ).click( function( e ) {
 	info( {
 		  icon        : 'chromium'
 		, title       : 'Browser on RPi'
@@ -190,6 +188,9 @@ $( '#setting-chromium' ).click( function( e ) {
 			bash( 'curl -s -X POST http://127.0.0.1/pub?id=reload -d 1' );
 		}
 		, buttonwidth : 1
+		, cancel      : function() {
+			if ( !G.localbrowserset ) $( '#localbrowser' ).prop( 'checked', 0 );
+		}
 		, ok          : function() {
 			var cursor    = $( '#infoCheckBox input:eq( 0 )' ).prop( 'checked' );
 			var rotate    = $( 'input[name=inforadio]:checked' ).val();
@@ -208,37 +209,38 @@ $( '#setting-chromium' ).click( function( e ) {
 			}
 			if ( cursor === G.cursor && rotate === '' && screenoff === '' && zoom === G.zoom ) return
 			
-			notify( 'Chromium - Browser on RPi', 'Change ...', 'chromium blink' );
+			notify( 'Chromium - Browser on RPi', 'Change ...', 'chromium' );
 			if ( rotate !== '' && cursor === G.cursor && screenoff === '' && zoom === G.zoom ) { // rotate only
 				if ( G.lcd ) {
 					var degree = { CW: 0, NORMAL: 90, CCW: 180, UD: 270 }
-					bash( [ 'rotatelcd', degree[ rotate ] ], resetLocal );
+					bash( [ 'rotatelcd', degree[ rotate ] ] );
 				} else {
-					bash( [ 'rotate', rotate ], resetLocal );
+					bash( [ 'rotate', rotate ] );
 				}
 				return
 			}
 			
 			if ( screenoff !== '' && cursor === G.cursor && rotate === '' && zoom === G.zoom ) { // screenoff only
-				bash( [ 'screenoff', screenoff ], resetLocal );
+				bash( [ 'screenoff', screenoff ] );
 				return
 			}
 			
 			G.cursor = cursor;
 			G.zoom = zoom;
-			bash( [ 'localbrowserset', rotate, screenoff, cursor, zoom ], function() {
-				resetLocal( 7000 );
-			} );
+			bash( [ 'localbrowserset', rotate, screenoff, cursor, zoom ] );
 		}
 	} );
 } );
-$( '#samba' ).click( function( e ) {
-	G.samba = $( this ).prop( 'checked' );
-	$( '#setting-samba' ).toggleClass( 'hide', !G.samba );
-	notify( 'Samba - File Sharing', G.samba, 'network blink' );
-	bash( [ 'samba', G.samba ], codeToggle( 'smb', 'status' ) );
+$( '#smb' ).click( function( e ) {
+	var checked = $( this ).prop( 'checked' );
+	if ( G.smbset ) {
+		notify( 'Samba - File Sharing', checked, 'network' );
+		bash( [ 'smb', checked ] );
+	} else {
+		$( '#setting-smb' ).click();
+	}
 } );
-$( '#setting-samba' ).click( function() {
+$( '#setting-smb' ).click( function() {
 	info( {
 		  icon     : 'network'
 		, title    : 'Samba File Sharing'
@@ -248,82 +250,93 @@ $( '#setting-samba' ).click( function() {
 			$( '#infoCheckBox input:eq( 0 )' ).prop( 'checked', G.writesd );
 			$( '#infoCheckBox input:eq( 1 )' ).prop( 'checked', G.writeusb );
 		}
+		, cancel   : function() {
+			if ( !G.smbset ) $( '#smb' ).prop( 'checked', 0 );
+		}
 		, ok       : function() {
 			var writesd = $( '#infoCheckBox input:eq( 0 )' ).prop( 'checked' );
 			var writeusb = $( '#infoCheckBox input:eq( 1 )' ).prop( 'checked' );
-			if ( writesd !== G.writesd || writeusb !== G.writeusb ) {
+			if ( writesd !== G.writesd || writeusb !== G.writeusb || !G.smbset ) {
 				G.writesd = writesd;
 				G.writeusb = writeusb;
-				notify( 'Samba - File Sharing', 'Change ...', 'network blink' );
-				bash( [ 'sambaset', G.writesd, G.writeusb ], resetLocal );
+				notify( 'Samba - File Sharing', 'Change ...', 'network' );
+				bash( [ 'smbset', G.writesd, G.writeusb ] );
+				console.log( [ 'smbset', G.writesd, G.writeusb ] );
 			}
 		}
 	} );
 } );
-$( '#scrobbler' ).click( function() {
-	var mpdscribble = $( this ).prop( 'checked' );
-	if ( mpdscribble && !G.mpdscribbleuser ) {
-		$( '#setting-scrobbler' ).click();
+$( '#mpdscribble' ).click( function() {
+	var checked = $( this ).prop( 'checked' );
+	if ( G.mpdscribbleset ) {
+		notify( 'Scrobbler', checked, 'lastfm' );
+		bash( [ 'mpdscribble', checked ] );
 	} else {
-		notify( 'Scrobbler', mpdscribble, 'lastfm' );
-		bash( [ 'mpdscribble', mpdscribble ], function( std ) {
-			G.mpdscribble = std != -1 ? true : false;
-			$( '#setting-scrobbler' ).toggleClass( 'hide', !G.mpdscribble );
-			codeToggle( 'mpdscribble', 'status' );
-		} );
+		$( '#setting-mpdscribble' ).click();
 	}
 } );
-$( '#setting-scrobbler' ).click( function() {
+$( '#setting-mpdscribble' ).click( function() {
+	var data = G.mpdscribbleval ? G.mpdscribbleval.split( '\n' ) : [ '', '' ];
 	info( {
 		  icon          : 'lastfm'
-		, title         : 'Scrobbler'
+		, title         : 'Last.fm Scrobbler'
 		, textlabel     : 'Username'
-		, textvalue     : G.mpdscribbleuser
+		, textvalue     : data[ 0 ]
 		, passwordlabel : 'Password'
+		, preshow       : function() {
+			$( '#infoPasswordBox' ).val( data[ 1 ] );
+		}
 		, cancel        : function() {
-			$( '#mpdscribble' ).prop( 'checked', G.mpdscribble );
+			if ( !G.mpdscribbleset ) $( '#mpdscribble' ).prop( 'checked', 0 );
 		}
 		, ok            : function() {
-			G.mpdscribbleuser = $( '#infoTextBox' ).val().replace( /(["&()\\])/g, '\$1' );
+			G.mpdscribbleset = $( '#infoTextBox' ).val().replace( /(["&()\\])/g, '\$1' );
 			var password = $( '#infoPasswordBox' ).val().replace( /(["&()\\])/g, '\$1' );
 			notify( 'Scrobbler', G.mpdscribble ? 'Change ...' : 'Enable ...', 'lastfm' );
-			bash( [ 'mpdscribbleset', G.mpdscribbleuser, password ], function( std ) {
-				G.mpdscribble = std != -1 ? true : false;
-				$( '#setting-mpdscribble' ).toggleClass( 'hide', !G.mpdscribble );
-				resetLocal();
+			bash( [ 'mpdscribbleset', G.mpdscribbleset, password ], function( std ) {
+				if ( std == -1 ) {
+					info( {
+						  icon    : 'lastfm'
+						, title   : 'Last.fm Scrobbler'
+						, message : 'Last.fm Login failed.'
+					} );
+				}
 		} );
 		}
 	} );
 } );
 $( '#login' ).click( function() {
-	G.login = $( this ).prop( 'checked' );
-	$( '#setting-login' ).toggleClass( 'hide', !G.login );
-	notify( 'Password Login', G.login, 'lock' );
-	bash( [ 'login', G.login ], resetLocal );
-	if ( G.login && G.passworddefault ) {
-		info( {
-			  icon    : 'lock'
-			, title   : 'Password'
-			, message : 'Default password is <wh>rune</wh>'
-		} );
+	var checked = $( this ).prop( 'checked' );
+	if ( G.loginset ) {
+		notify( 'Password Login', checked, 'key' );
+		bash( [ 'login', checked ] );
+	} else {
+		$( '#setting-login' ).click();
 	}
 } );
 $( '#setting-login' ).click( function() {
 	info( {
 		  icon          : 'lock'
 		, title         : 'Change Password'
-		, passwordlabel : [ 'Existing', 'New' ]
+		, passwordlabel : ( G.loginset ? [ 'Existing', 'New' ] : 'Password' )
+		, pwdrequired   : 1
+		, cancel        : function() {
+			if ( !G.loginset ) $( '#login' ).prop( 'checked', 0 );
+		}
 		, ok            : function() {
+			var password = $( '#infoPasswordBox' ).val();
+			var pwdnew = $( '#infoPasswordBox1' ).length ? $( '#infoPasswordBox1' ).val() : password;
+			notify( 'Password Login', 'Change ...', 'key' );
 			$.post( cmdphp, {
 				  cmd      : 'login'
-				, password : $( '#infoPasswordBox' ).val()
-				, pwdnew   : $( '#infoPasswordBox1' ).val()
+				, password : password
+				, pwdnew   : pwdnew
 			}, function( std ) {
 				info( {
 					  icon    : 'lock'
 					, title   : 'Change Password'
 					, nox     : 1
-					, message : ( std ? 'Password changed' : 'Wrong existing password' )
+					, message : ( std ? 'Password changed.' : 'Wrong existing password.' )
 				} );
 			} );
 		}
@@ -332,57 +345,64 @@ $( '#setting-login' ).click( function() {
 $( '#autoplay' ).click( function() {
 	G.autoplay = $( this ).prop( 'checked' );
 	notify( 'Play on Startup', G.autoplay, 'refresh-play' );
-	bash( [ 'autoplay', G.autoplay ], resetLocal );
+	bash( [ 'autoplay', G.autoplay ] );
 } );
-$( '#accesspoint' ).click( function() {
+$( '#hostapd' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
-	if ( checked && G.wlanup ) {
+	if ( !G.hostapd && G.wlanconnect && ( checked || !G.hostapdset ) ) {
 		info( {
 			  icon      : 'network'
 			, title     : 'RPi Access Point'
 			, message   : '<wh>Wi-Fi is currently connected.</wh>'
 						 +'<br>Disconnect and continue?'
-			, ok        : function() {
-				G.hostapd = true;
-				$( '#setting-accesspoint' ).removeClass( 'hide' );
-				notify( 'RPi Access Point', true, 'wifi-3' );
-				bash( [ 'accesspoint', true, G.hostapdip ], resetLocal );
+			, cancel    : function() {
+				if ( !G.hostapd ) $( '#hostapd' ).prop( 'checked', 0 );
 			}
-		} )
-		return
+			, ok        : function() {
+				if ( G.hostapdset ) {
+					notify( 'RPi Access Point', checked, 'wifi-3' );
+					bash( [ 'hostapd', checked, G.hostapdip ] );
+				} else {
+					$( '#setting-hostapd' ).click();
+				}
+			}
+		} );
+	} else {
+		if ( G.hostapdset ) {
+			notify( 'RPi Access Point', checked, 'wifi-3' );
+			bash( [ 'hostapd', checked, G.hostapdip ] );
+		} else {
+			$( '#setting-hostapd' ).click();
+		}
 	}
-	
-	G.hostapd = checked;
-	$( '#setting-accesspoint' ).toggleClass( 'hide', !G.hostapd );
-	notify( 'RPi Access Point', G.hostapd, 'wifi-3' );
-	bash( [ 'accesspoint', G.hostapd, G.hostapdip ], resetLocal );
 } );
-$( '#setting-accesspoint' ).click( function() {
+$( '#setting-hostapd' ).click( function() {
 	info( {
-		  icon      : 'network'
-		, title     : 'RPi Access Point Settings'
-		, message   : 'Password - at least 8 characters'
-		, textlabel : [ 'Password', 'IP' ]
-		, textvalue : [ G.passphrase, G.hostapdip ]
+		  icon         : 'network'
+		, title        : 'RPi Access Point Settings'
+		, message      : 'Password - at least 8 characters'
+		, textlabel    : [ 'Password', 'IP' ]
+		, textvalue    : [ G.hostapdpwd, G.hostapdip ]
 		, textrequired : [ 0, 1 ]
-		, ok      : function() {
+		, cancel       : function() {
+			if ( !G.hostapdset ) $( '#hostapd' ).prop( 'checked', 0 );
+		}
+		, ok           : function() {
 			var ip = $( '#infoTextBox1' ).val();
-			var passphrase = $( '#infoTextBox' ).val();
-			if ( ip === G.hostapdip && passphrase === G.passphrase ) return
+			var hostapdpwd = $( '#infoTextBox' ).val();
+			if ( ip === G.hostapdip && hostapdpwd === G.hostapdpwd ) return
 			
-			if ( passphrase.length < 8 ) {
+			if ( hostapdpwd.length < 8 ) {
 				info( 'Password must be at least 8 characters.' );
 				return
 			}
 			
-			G.hostapdip = ip;
-			G.passphrase = passphrase;
 			var ips = ip.split( '.' );
 			var ip3 = ips.pop();
 			var ip012 = ips.join( '.' );
 			var iprange = ip012 +'.'+ ( +ip3 + 1 ) +','+ ip012 +'.254,24h';
 			notify( 'RPi Access Point', 'Change ...', 'wifi-3' );
-			bash( [ 'accesspointset', iprange, ip, passphrase ], resetLocal );
+			bash( [ 'hostapdset', iprange, ip, hostapdpwd ] );
 		}
 	} );
 } );

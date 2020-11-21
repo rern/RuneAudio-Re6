@@ -4,7 +4,7 @@ function rebootText( enable, device ) {
 	G.reboot = G.reboot.filter( function( el ) {
 		return el.indexOf( device ) === -1
 	} );
-	G.reboot.push( enable +' '+ device );
+	G.reboot.push( ( enable ? 'Enable' : 'Disable' ) +' '+ device );
 }
 function renderStatus() {
 	var undervoltage = '';
@@ -21,16 +21,8 @@ function renderStatus() {
 		+'<br>'+ G.startup
 		+ undervoltage
 }
-function soundProfile( arg, callback ) {
-	var cmd = [ 'cmd-soundprofile.sh' ];
-	if ( arg ) cmd = cmd.concat( arg );
-	$.post( 'cmd.php', { cmd: 'sh', sh: cmd }, function( data ) {
-		G.soundprofilecus = data;
-		resetLocal();
-	} );
-}
 
-refreshData = function() { // system page: use resetLocal() to aviod delay
+refreshData = function() {
 	bash( '/srv/http/bash/system-data.sh', function( list ) {
 		G = list;
 		G.reboot = list.reboot ? list.reboot.split( '\n' ) : [];
@@ -92,6 +84,10 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		);
 		$( '#statuslabel' ).html( statuslabel );
 		$( '#status' ).html( renderStatus );
+		$( '#onboardaudio' ).prop( 'checked', G.onboardaudio );
+		$( '#bluetooth' ).prop( 'checked', G.bluetooth );
+		$( '#setting-bluetooth' ).toggleClass( 'hide', !G.bluetooth );
+		$( '#wlan' ).prop( 'checked', G.wlan );
 		$( '#i2smodule' ).val( 'none' );
 		$( '#i2smodule option' ).filter( function() {
 			var $this = $( this );
@@ -101,17 +97,11 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		var i2senabled = $( '#i2smodule' ).val() === 'none' ? false : true;
 		$( '#divi2smodulesw' ).toggleClass( 'hide', i2senabled );
 		$( '#divi2smodule' ).toggleClass( 'hide', !i2senabled );
-		$( '#soundprofile' ).prop( 'checked', G.soundprofile !== '' );
-		$( '#setting-soundprofile' ).toggleClass( 'hide', G.soundprofile === '' );
 		$( '#eth0help' ).toggleClass( 'hide', G.ip.slice( 0, 4 ) !== 'eth0' );
-		$( '#onboardaudio' ).prop( 'checked', G.onboardaudio );
-		$( '#bluetooth' ).prop( 'checked', G.bluetooth );
-		$( '#setting-bluetooth' ).toggleClass( 'hide', !G.bluetooth );
-		$( '#wlan' ).prop( 'checked', G.wlan );
-		$( '#lcd' ).prop( 'checked', G.lcd );
-		$( '#setting-lcd' ).toggleClass( 'hide', !G.lcd );
 		$( '#lcdchar' ).prop( 'checked', G.lcdchar );
 		$( '#setting-lcdchar' ).toggleClass( 'hide', !G.lcdchar );
+		$( '#lcd' ).prop( 'checked', G.lcd );
+		$( '#setting-lcd' ).toggleClass( 'hide', !G.lcd );
 		$( '#relays' ).prop( 'checked', G.relays );
 		$( '#setting-relays' ).toggleClass( 'hide', !G.relays );
 		$( '#hostname' ).val( G.hostname );
@@ -121,6 +111,8 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		[ 'ifconfig', 'configtxt', 'journalctl' ].forEach( function( id ) {
 			codeToggle( id, 'status' );
 		} );
+		$( '#soundprofile' ).prop( 'checked', G.soundprofile );
+		$( '#setting-soundprofile' ).toggleClass( 'hide', !G.soundprofile );
 		resetLocal();
 		showContent();
 	}, 'json' );
@@ -160,6 +152,71 @@ $( '#refresh' ).click( function( e ) {
 		banner( 'System Status', 'Refresh every 10 seconds.<br>Click again to stop.', 'sliders', 10000 );
 	}
 } );
+$( '#onboardaudio' ).click( function() {
+	if ( $( '#i2smodule' ).val() === 'none' ) {
+		info( {
+			  icon    : 'volume'
+			, title   : 'On-board Audio'
+			, message : 'No I²S Module installed.'
+						+'<br>On-board audio cannot be disabled.'
+		} );
+		$( this ).prop( 'checked', true )
+		return
+	}
+	
+	var checked = $( this ).prop( 'checked' );
+	if ( !checked && G.audioaplayname.slice( 0, 7 ) === 'bcm2835' ) {
+		info( {
+			  icon    : 'volume'
+			, title   : 'On-board Audio'
+			, message : 'On-board audio is currently in used.'
+		} );
+		$( '#onboardaudio' ).prop( 'checked', 1 );
+	} else {
+		rebootText( checked, 'on-board audio' );
+		bash( [ 'onboardaudio', checked, G.reboot.join( '\n' ) ] );
+	}
+} );
+$( '#bluetooth' ).click( function() {
+	var checked = $( this ).prop( 'checked' );
+	rebootText( checked, 'on-board Bluetooth' );
+	notify( 'On-board Bluetooth', checked, 'bluetooth' );
+	bash( [ 'bluetooth', checked, G.reboot.join( '\n' ) ] );
+} );
+$( '#setting-bluetooth' ).click( function() {
+	info( {
+		  icon     : 'bluetooth'
+		, title    : 'On-board Bluetooth'
+		, checkbox : { Discoverable: 1 }
+		, checked  : ( G.btdiscoverable ? 0 : 1 )
+		, ok       : function() {
+			G.btdiscoverable = $( '#infoCheckBox input' ).prop( 'checked' );
+			notify( 'Bluetooth Discoverable', G.btdiscoverable, 'bluetooth' );
+			bash( [ 'btdiscoverable', ( G.btdiscoverable ? 'yes' : 'no' ) ] );
+		}
+	} );
+} );
+$( '#wlan' ).click( function() {
+	var checked = $( this ).prop( 'checked' );
+	if ( !$( '#system .fa-wifi-3' ).length ) {
+		notify( 'On-board Wi-Fi', checked, 'wifi-3' );
+		bash( [ 'wlan', checked ] );
+	} else {
+		info( {
+			  icon    : 'wifi-3'
+			, title   : 'On-board Wi-Fi'
+			, message : 'This will disconnect Wi-Fi from router.'
+						+'<br>Continue?'
+			, cancel  : function() {
+				$( '#wlan' ).prop( 'checked', 1 );
+			}
+			, ok      : function() {
+				notify( 'On-board Wi-Fi', false, 'wifi-3' );
+				bash( [ 'wlan', false ] );
+			}
+		} );
+	}
+} );
 $( '#i2smodulesw' ).click( function() {
 	// delay to show switch sliding
 	setTimeout( function() {
@@ -173,7 +230,6 @@ $( '#i2smodulesw' ).click( function() {
 $( '#i2smodule' ).on( 'selectric-change', function() {
 	var audioaplayname = $( this ).val();
 	var audiooutput = $( this ).find( ':selected' ).text();
-	local = 1;
 	if ( audioaplayname !== 'none' ) {
 		G.audioaplayname = audioaplayname;
 		G.audiooutput = audiooutput;
@@ -181,7 +237,7 @@ $( '#i2smodule' ).on( 'selectric-change', function() {
 		$( '#onboardaudio' ).prop( 'checked', 0 );
 		$( '#divi2smodulesw' ).addClass( 'hide' );
 		$( '#divi2smodule, #divonboardaudio' ).removeClass( 'hide' );
-		rebootText( 'Enable', 'I&#178;S Module' );
+		rebootText( 1, 'Audio I&#178;S Module' );
 		notify( 'I&#178;S Module', 'Enable ...', 'volume' );
 	} else {
 		var audioaplayname = G.audioaplayname;
@@ -197,157 +253,22 @@ $( '#i2smodule' ).on( 'selectric-change', function() {
 		$( '#onboardaudio' ).prop( 'checked', 1 );
 		$( '#divi2smodulesw' ).removeClass( 'hide' );
 		$( '#divi2smodule, #divonboardaudio' ).addClass( 'hide' );
-		rebootText( 'Disable', 'I&#178;S Module' );
+		rebootText( 0, 'Audio I&#178;S Module' );
 		notify( 'I&#178;S Module', 'Disable ...', 'volume' );
 	}
-	bash( [ 'i2smodule', G.audioaplayname, G.audiooutput, G.reboot.join( '\n' ) ], function() {
-			resetLocal();
-			codeToggle( 'configtxt' );
-		} );
+	bash( [ 'i2smodule', G.audioaplayname, G.audiooutput, G.reboot.join( '\n' ) ] );
 	$( '#output' ).text( G.audiooutput );
 } );
-$( '#soundprofile' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	rebootText( checked ? 'Enable' : 'Disable', 'sound profile' );
-	notify( 'Sound Profile', checked, 'volume' );
-	soundProfile( '', function( data ) {
-		G.soundprofilecus = data;
-		resetLocal();
-	} );
-	$( '#setting-soundprofile' ).toggleClass( 'hide', !checked );
-	G.soundprofile = checked ? 'RuneAudio' : '';
-} );
-$( '#infoOverlay' ).on( 'click', '#custom', function() {
-	var val = G.soundprofilecus || G.soundprofileval;
-	info( {
-		  icon      : 'volume'
-		, title     : 'Sound Profile'
-		, message   : 'Custom value (Current value shown)'
-		, textlabel : [ 'eth0 mtu (byte)', 'eth0 txqueuelen', 'vm.swappiness (0-100)', 'kernel.sched_latency_ns (ns)' ]
-		, textvalue : val.split( ' ' )
-		, boxwidth  : 110
-		, preshow   : function() {
-			if ( G.ip.slice( 0, 4 ) !== 'eth0' ) $( '#infoTextBox, #infoTextBox1' ).hide();
-		}
-		, ok        : function() {
-			var soundprofileval = $( '#infoTextBox' ).val() || 0;
-			for ( i = 1; i < 4; i++ ) {
-				soundprofileval += ' '+ ( $( '#infoTextBox'+ i ).val() || 0 );
-			}
-			if ( soundprofileval != G.soundprofileval ) {
-				G.soundprofileval = soundprofileval;
-				G.soundprofile = 'custom';
-				notify( 'Sound Profile', 'Change ...', 'volume' );
-				soundProfile( [ 'custom', soundprofileval ], resetLocal );
-			}
-		}
-	} );
-} );
-$( '#setting-soundprofile' ).click( function() {
-	var radio= {
-		  RuneAudio : 'RuneAudio'
-		, ACX       : 'ACX'
-		, Orion     : 'Orion'
-		, 'Orion V2': 'OrionV2'
-		, Um3ggh1U  : 'Um3ggh1U'
-	}
-	if ( G.audioaplayname === 'snd_rpi_iqaudio_dac' ) radio[ 'IQaudio Pi-DAC' ] = 'OrionV3';
-	if ( G.audiooutput === 'BerryNOS' ) radio[ 'BerryNOS' ] = 'OrionV4';
-	radio[ 'Custom&ensp;<i id="custom" class="fa fa-gear"></i>' ] = 'custom';
-	info( {
-		  icon    : 'volume'
-		, title   : 'Sound Profile'
-		, radio   : radio
-		, checked : G.soundprofile
-		, cancel  : function() {
-			if ( !G.soundprofile ) {
-				$( '#soundprofile' ).prop( 'checked', 0 );
-				$( '#setting-soundprofile' ).addClass( 'hide' );
-			}
-		}
-		, preshow : function() {
-			$( '#infoRadio input[value=custom]' ).click( function( e ) {
-				if ( !G.soundprofilecus ) {
-					$( '#infoOverlay #custom' ).click();
-					return
-				}
-			} );
-		}
-		, ok      : function() {
-			var soundprofile = $( 'input[name=inforadio]:checked' ).val();
-			if ( soundprofile !== G.soundprofile ) {
-				rebootText( G.soundprofile ? 'Change' : 'Enable', 'sound profile' );
-				G.soundprofile = soundprofile;
-				notify( 'Sound Profile', 'Change ...', 'volume' );
-				soundProfile( [ soundprofile ], function( data ) {
-					G.soundprofileval = data;
-					resetLocal();
-				} );
-			}
-		}
-	} );
-} );
-$( '#onboardaudio' ).click( function() {
-	if ( $( '#i2smodule' ).val() === 'none' ) {
-		info( {
-			  icon    : 'volume'
-			, title   : 'On-board Audio'
-			, message : 'No I²S Module installed.'
-						+'<br>On-board audio cannot be disabled.'
-		} );
-		$( this ).prop( 'checked', true )
-		return
-	}
-	
-	var onboardaudio = $( this ).prop( 'checked' );
-	if ( !onboardaudio && G.audioaplayname.slice( 0, 7 ) === 'bcm2835' ) {
-		info( {
-			  icon    : 'volume'
-			, title   : 'On-board Audio'
-			, message : 'On-board audio is currently in used.'
-		} );
-		$( '#onboardaudio' ).prop( 'checked', 1 );
-	} else {
-		G.onboardaudio = onboardaudio;
-		rebootText( onboardaudio ? 'Enable' : 'Disable', 'on-board audio' );
-		local = 1;
-		bash( [ 'onboardaudio', G.onboardaudio, G.reboot.join( '\n' ) ], resetLocal );
-	}
-} );
-$( '#bluetooth' ).click( function() {
-	G.bluetooth = $( this ).prop( 'checked' );
-	rebootText( G.bluetooth ? 'Enable' : 'Disable', 'on-board Bluetooth' );
-	notify( 'On-board Bluetooth', G.bluetooth, 'bluetooth' );
-	bash( [ 'bluetooth', G.bluetooth, G.reboot.join( '\n' ) ], resetLocal );
-} );
-$( '#setting-bluetooth' ).click( function() {
-	info( {
-		  icon     : 'bluetooth'
-		, title    : 'On-board Bluetooth'
-		, checkbox : { Discoverable: 1 }
-		, checked  : ( G.btdiscoverable ? 0 : 1 )
-		, ok       : function() {
-			G.btdiscoverable = $( '#infoCheckBox input' ).prop( 'checked' );
-			notify( 'Bluetooth Discoverable', G.btdiscoverable, 'bluetooth' );
-			bash( [ 'btdiscoverable', ( G.btdiscoverable ? 'yes' : 'no' ) ], resetLocal( 3000 ) );
-		}
-	} );
-} );
-$( '#wlan' ).click( function() {
-	G.wlan = $( this ).prop( 'checked' );
-	notify( 'On-board Wi-Fi', G.wlan, 'wifi-3' );
-	bash( [ 'wlan', G.wlan ], resetLocal );
-} );
 $( '#lcd' ).click( function() {
-	G.lcd = $( this ).prop( 'checked' );
-	rebootText( G.lcd ? 'Enable' : G.lcd, 'GPIO 3.5" LCD' );
-	notify( 'GPIO 3.5" LCD', G.lcd, 'gear' );
-	bash( [ 'lcd', G.lcd, G.reboot.join( '\n' ) ], resetLocal );
+	var checked = $( this ).prop( 'checked' );
+	rebootText( checked, '480x320 LCD' );
+	notify( '480x320 LCD', checked, 'gear' );
+	bash( [ 'lcd', checked, G.reboot.join( '\n' ) ] );
 } );
 $( '#setting-lcd' ).click( function() {
 	info( {
 		  icon        : 'edit'
-		, title       : 'GPIO 3.5" LCD'
+		, title       : '480x320 LCD'
 		, message     : 'Calibrate touchscreen?'
 						+'<br>(Get stylus ready.)'
 		, oklabel     : 'Start'
@@ -358,81 +279,120 @@ $( '#setting-lcd' ).click( function() {
 	} );
 } );
 $( '#lcdchar' ).click( function() {
-	G.lcdchar = $( this ).prop( 'checked' );
-	rebootText( G.lcdchar ? 'Enable' : G.lcdchar, 'GPIO Character LCD' );
-	notify( 'GPIO Character LCD', G.lcdchar, 'gear' );
-	bash( [ 'lcdchar', G.lcdchar, G.reboot.join( '\n' ) ], resetLocal );
+	var checked = $( this ).prop( 'checked' )
+	if ( G.lcdcharset ) {
+		notify( 'Character LCD', checked, 'gear' );
+		bash( [ 'lcdchar', checked, G.reboot.join( '\n' ) ] );
+	} else {
+		$( '#setting-lcdchar' ).click();
+	}
 } );
-var content = heredoc( function() { /*
-	<div id="infoRadio" class="infocontent infohtml">
-		<px50/>Size&emsp;<label><input type="radio" value="16"> 16x2</label>&ensp;
-		<label><input type="radio" value="20"> 20x4</label>&ensp;
-		<label><input type="radio" value="40"> 40x4</label>
+var infolcdchar = heredoc( function() { /*
+	<div class="infotextlabel">
+		<a class="infolabel">Size</a>
+		<a class="infolabel">Interface</a>
+		<a class="infolabel">&emsp;Character Map</a>
+		<div class="i2c">
+			<a class="infolabel">Address</a>
+			<a class="infolabel">I&#178;C Chip</a>
+		</div>
 	</div>
-	<div id="infoRadio1" class="infocontent infohtml">
-		&emsp;Interface&emsp;<label><input type="radio" value="true"> I&#178;C</label>&ensp;<px20/>
-		<label><input type="radio" value="false"> GPIO</label><px70/>
-	</div>
-	<div id="divi2c">
-		<br>
-		<px20/>&nbsp;<a id="infoSelectLabel" class="infolabel">Expander</a>
-		<select class="infohtml" id="infoSelectBox">
-			<option value="PCF8574">PCF8574</option>
-			<option value="MCP23008">MCP23008</option>
-			<option value="MCP23017">MCP23017</option>
-		</select><br>
-		<div id="infotextlabel"><a class="infolabel">Address</a></div>
-		<input id="infoTextBox" type="text" class="infoinput" spellcheck="false">
+	<div class="infotextbox lcdradio" style="width: 250px">
+		<div id="cols" class="infocontent infohtml lcd">
+			<label><input type="radio" name="size" value="16"> 16x2</label>
+			<label><input type="radio" name="size" value="20"> 20x4</label>
+			<label><input type="radio" name="size" value="40"> 40x4</label>
+		</div>
+		<div id="inf" class="infocontent infohtml lcd">
+			<label><input type="radio" name="interface" value="i2c"> I&#178;C</label>
+			<label><input type="radio" name="interface" value="gpio"> GPIO</label>
+		</div>
+		<div id="charmap" class="infocontent infohtml lcd">
+			<label><input type="radio" name="charmap" value="A00"> A00</label>
+			<label><input type="radio" name="charmap" value="A02"> A02</label>
+		</div>
+		<div class="i2c">
+			<div id="address" class="infocontent infohtml lcd">
+			</div>
+			<select id="chip" class="infocontent infohtml">
+				<option value="PCF8574"> PCF8574</option>
+				<option value="MCP23008"> MCP23008</option>
+				<option value="MCP23017"> MCP23017</option>
+			</select>
+		</div>
 	</div>
 */ } );
 $( '#setting-lcdchar' ).click( function() {
 	info( {
-		  icon    : 'gear'
-		, title   : 'GPIO Character LCD'
-		, content : content
-		, boxwidth : 200
-		, preshow : function() {
-			var settings = G.lcdcharset.split( ' ' );
-			if (  settings.length > 1 ) {
-				G.i2c = true;
-				G.i2ccols = settings[ 0 ];
-				G.i2caddress = settings[ 1 ];
-				G.i2cchip = settings[ 2 ];
-				$( '#infoSelectBox option[value='+ G.i2cchip +']' ).prop( 'selected', 1 );
-				$( '#infoTextBox' ).val( G.i2caddress );
+		  icon        : 'gear'
+		, title       : 'Character LCD'
+		, content     : infolcdchar
+		, boxwidth    : 173
+		, nofocus     : 1
+		, preshow     : function() {
+			var settings = G.lcdcharval.split( ' ' );
+			G.cols = settings[ 0 ];
+			G.charmap = settings[ 1 ];
+			$( '#charmap input[value='+ G.charmap +']' ).prop( 'checked', 1 );
+			if (  settings.length > 2 ) {
+				G.inf = 'i2c';
+				G.i2caddress = settings[ 2 ];
+				G.i2cchip = settings[ 3 ];
+				$( '#chip input[value='+ G.i2cchip +']' ).prop( 'checked', 1 );
 			} else {
-				G.i2c = false;
-				G.i2ccols = settings;
-				$( '#divi2c' ).hide();
+				G.inf = 'gpio';
 			}
-			$( '#infoRadio input[value='+ G.i2ccols +']' ).prop( 'checked', 1 )
-			$( '#infoRadio1 input[value='+ G.i2c +']' ).prop( 'checked', 1 )
-			$( '#infoSelectBox' ).selectric();
-			$( '#infoRadio1' ).click( function() {
-				$( '#divi2c' ).toggleClass( 'hide', $( '#infoRadio1 input:checked' ).val() );
+			$( '#cols input[value='+ G.cols +']' ).prop( 'checked', 1 )
+			$( '#inf input[value='+ G.inf +']' ).prop( 'checked', 1 )
+			$( '#divi2c' ).toggleClass( 'hide', G.inf === 'gpio' );
+			$( '#inf' ).change( function() {
+				$( '.i2c' ).toggleClass( 'hide', $( '#inf input:checked' ).val() === 'gpio' );
 			} );
-		}
-		, ok      : function() {
-			var cols = $( '#infoRadio input:checked' ).val();
-			var chip = $( '#infoSelectBox').val();
-			var address = $( '#infoTextBox').val();
-			if ( cols === G.i2ccols && chip === G.i2cchip && address === G.i2caddress ) return
-			
-			var args = cols;
-			if ( $( '#infoRadio1 input:checked' ).val() ) {
-				args += "$'\n'"+ chip;
-				args += "$'\n'"+ address;
+			if ( G.lcdcharaddr ) {
+				var addr = G.lcdcharaddr.split( ' ' );
+				var opt = '';
+				addr.forEach( function( el ) {
+					opt += '<label><input type="radio" name="address" value="0x'+ el +'"> 0x'+ el +'</label>';
+				} );
+				$( '#address' ).html( opt );
+				$( '#address input[value='+ G.i2caddress +']' ).prop( 'checked', 1 );
 			}
-			notify( 'GPIO Character LCD', 'Change ...', 'gear' );
-			bash( [ 'lcdcharset', args ] );
+			$( '.lcd label' ).width( 80 );
+		}
+		, cancel      : function() {
+			if ( !G.lcdcharset ) $( '#lcdchar' ).prop( 'checked', 0 );
+		}
+		, buttonlabel : [ 'Splash', 'Off' ]
+		, buttoncolor : [ '#448822',       '#de810e' ]
+		, button      : [ 
+			  function() { bash( '/srv/http/bash/lcdchar.py rr' ) }
+			, function() { bash( '/srv/http/bash/lcdchar.py off' ) }
+		]
+		, ok          : function() {
+			var cols = $( '#cols input:checked' ).val();
+			var charmap = $( '#charmap input:checked').val();
+			var changed = !G.lcdchar || cols !== G.cols || charmap !== G.charmap;
+			var inf = $( '#inf input:checked' ).val();
+			if ( inf === 'i2c' ) {
+				var chip = $( '#chip').val();
+				var address = $( '#address input:checked').val();
+				changed = changed || inf !== G.inf || chip !== G.i2cchip || address !== G.i2caddress;
+			}
+			if ( changed || !G.lcdcharset ) {
+				rebootText( 1, 'Character LCD' );
+				var cmd = [ 'lcdcharset', cols, charmap ];
+				if ( inf === 'i2c' ) cmd.push( address, chip );
+				cmd.push( G.reboot.join( '\n' ) );
+				bash( cmd );
+				notify( 'Character LCD', 'Change ...', 'gear' );
+			}
 		}
 	} );
 } );
 $( '#relays' ).click( function() {
-	G.relays = $( this ).prop( 'checked' );
-	$( '#setting-relays' ).toggleClass( 'hide', !G.relays );
-	notify( 'GPIO Relay', G.relays, 'gpio blink' );
-	bash( [ 'relays', G.relays ], resetLocal );
+	var checked = $( this ).prop( 'checked' );
+	notify( 'GPIO Relay', checked, 'gpio' );
+	bash( [ 'relays', checked ] );
 } );
 $( '#setting-relays' ).click( function() {
 	location.href = '/settings/relays.php';
@@ -449,10 +409,13 @@ $( '#hostname' ).click( function() {
 				G.hostname = hostname;
 				$( '#hostname' ).val( hostname );
 				notify( 'Name', 'Change ...', 'sliders' );
-				bash( [ 'hostname', hostname ], resetLocal );
+				bash( [ 'hostname', hostname ] );
 			}
 		}
 	} );
+} );
+$( '#timezone' ).on( 'selectric-change', function( e ) {
+	bash( [ 'timezone', $( this ).val() ] );
 } );
 $( '#setting-regional' ).click( function() {
 	info( {
@@ -460,6 +423,7 @@ $( '#setting-regional' ).click( function() {
 		, title     : 'Regional Settings'
 		, textlabel : [ 'NTP server', 'Regulatory domain' ]
 		, textvalue : [ G.ntp, G.regdom || '00' ]
+		, boxwidth  : 200
 		, footer    : '<px70/><px60/>00 - common for all regions'
 		, ok        : function() {
 			var ntp = $( '#infoTextBox' ).val();
@@ -468,14 +432,76 @@ $( '#setting-regional' ).click( function() {
 				G.ntp = ntp;
 				G.regdom = regdom;
 				notify( 'Regional Settings', 'Change ...', 'gear' );
-				bash( [ 'regional', ntp, regdom ], resetLocal );
+				bash( [ 'regional', ntp, regdom ] );
 			}
 		}
 	} );
 } );
-$( '#timezone' ).on( 'selectric-change', function( e ) {
-	G.timezone = $( this ).val();
-	bash( [ 'timezone', G.timezone ] );
+$( '#soundprofile' ).click( function() {
+	var checked = $( this ).prop( 'checked' );
+	if ( G.soundprofileset ) {
+		notify( "Kernel Sound Profile", checked, 'volume' );
+		bash( [ 'soundprofile', checked ] );
+	} else {
+		$( '#setting-soundprofile' ).click();
+	}
+} );
+$( '#setting-soundprofile' ).click( function() {
+	var defaultval = '1500 1000 60 18000000';
+	var data = G.soundprofileset ? G.soundprofileset.split( ' ' ) : defaultval.split( ' ' );
+	if ( G.rpi01 ) {
+		var lat = [ 1500000, 850000, 500000, 120000, 500000, 1500000, 145655, 6000000 ];
+	} else {
+		var lat = [ 4500000, 3500075, 1000000, 2000000, 3700000, 1500000, 145655, 6000000 ];
+	}
+	var radio = {
+		  _Default  : defaultval
+		, RuneAudio : '1500 1000 0 '+ lat[ 0 ]
+		, _ACX      : '1500 4000 0 '+ lat[ 1 ]
+		, Orion     : '1000 4000 20 '+ lat[ 2 ]
+		, _OrionV2  : '1000 4000 0 '+ lat[ 3 ]
+		, OrionV3   : '1000 4000 0 '+ lat[ 5 ]
+		, _OrionV4  : '1000 4000 60 '+ lat[ 6 ]
+		, Um3ggh1U  : '1500 1000 0 '+ lat[ 4 ]
+		, _Custom   : 0
+	}
+	var values = Object.values( radio );
+	if ( G.soundprofileset ) {
+		var checked = values.indexOf( G.soundprofileset ) !== -1 ? G.soundprofileset : 0;
+	} else {
+		var checked = defaultval;
+	}
+	info( {
+		  icon    : 'volume'
+		, title   : 'Kernel Sound Profile'
+		, textlabel : [ 'eth0 mtu <gr>(byte)</gr>', 'eth0 txqueuelen', 'vm.swappiness', 'kernel.sched_latency_ns <gr>(ns)</gr>' ]
+		, textvalue : data
+		, boxwidth  : 110
+		, radio   : radio
+		, checked : checked
+		, preshow : function() {
+			$( '#infoRadio input' ).last().prop( 'disabled', 1 );
+			$( '#infoRadio' ).change( function() {
+				var val = $( '#infoRadio input:checked' ).val().split( ' ' );
+				for ( i = 0; i < 4; i++ ) $( '#infoTextBox'+ ( i !== 0 ? i : '' ) ).val( val[ i ] );
+			} );
+			$( '.infoinput' ).on( 'keyup', function() {
+				if (  $( this ).val() !== data[ $( '.infoinput' ).index() ] ) {
+					$( '#infoRadio input' ).last().prop( 'checked', 1 );
+				} else {
+					$( '#infoRadio input[value="'+ checked +'"]' ).prop( 'checked', 1 );
+				}
+			} );
+		}
+		, cancel  : function() {
+			if ( !G.soundprofileset ) $( '#soundprofile' ).prop( 'checked', 0 );
+		}
+		, ok      : function() {
+			var soundprofileset = $( '#infoTextBox' ).val();
+			for ( i = 1; i < 4; i++ ) soundprofileset += ' '+ $( '#infoTextBox'+ i ).val();
+			if ( soundprofileset !== G.soundprofileset ) bash( ( 'soundprofileset '+ soundprofileset ).split( ' ' ) );
+		}
+	} );
 } );
 $( '#backuprestore' ).click( function( e ) {
 	if ( $( e.target ).hasClass( 'help' ) ) return
@@ -499,10 +525,10 @@ $( '#backuprestore' ).click( function( e ) {
 		, buttonlabel : 'Backup'
 		, buttoncolor : '#0a8c68'
 		, button      : function() {
-			notify( backuptitle, 'Backup ...', 'sd blink', -1 );
+			notify( backuptitle, 'Backup ...', 'sd' );
 			bash( [ 'databackup' ], function( data ) {
 				if ( data == 1 ) {
-					notify( backuptitle, 'Download ...', 'sd blink' );
+					notify( backuptitle, 'Download ...', 'sd' );
 					fetch( '/data/tmp/backup.gz' )
 						.then( response => response.blob() )
 						.then( blob => {
@@ -564,7 +590,7 @@ $( '#backuprestore' ).click( function( e ) {
 					} );
 				}
 				, ok          : function() {
-					notify( restoretitle, 'Restore ...', 'sd blink', -1 );
+					notify( restoretitle, 'Restore ...', 'sd' );
 					var checked = $( '#infoRadio input:checked' ).val();
 					if ( checked === 'reset' ) {
 						bash( '/srv/http/bash/datareset.sh', bannerHide );
@@ -580,9 +606,7 @@ $( '#backuprestore' ).click( function( e ) {
 							, processData : false  // no - process the data
 							, contentType : false  // no - contentType
 							, success     : function( data ) {
-								if ( data ) {
-									if ( data !== 'restored' ) G.reboot = data.split( '\n' );
-								} else {
+								if ( data == -1 ) {
 									info( {
 										  icon    : icon
 										, title   : restoretitle
