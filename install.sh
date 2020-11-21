@@ -8,17 +8,25 @@ installstart "$1"
 
 getinstallzip
 
-echo "[Unit]
+file=/etc/systemd/system/dnsmasq.service.d/override.conf
+if [[ !-e $file ]]; then
+	echo "[Unit]
 Requires=hostapd.service
-After=hostapd.service" > /etc/systemd/system/dnsmasq.service.d/override.conf
-echo "[Unit]
+After=hostapd.service" > $file
+	echo "[Unit]
 BindsTo=dnsmasq.service" > /etc/systemd/system/hostapd.service.d/override.conf
+	systemctl try-restart hostapd
+fi
 
-echo "[Unit]
-BindsTo=wsdd.service" > /etc/systemd/system/smb.service.d/override.conf
-sed -i -e '/After=/ s/$/ smb.service/
+file=/etc/systemd/system/smb.service.d/override.conf
+if [[ !-e $file ]]; then
+	echo "[Unit]
+BindsTo=wsdd.service" > $file
+	sed -i -e '/After=/ s/$/ smb.service/
 ' -e '/Wants=/ a\Requires=smb.service
 ' /etc/systemd/system/wsdd.service
+	systemctl try-restart smb
+fi
 
 dirsystem=/srv/http/data/system
 
