@@ -10,7 +10,7 @@ getinstallzip
 
 file=/etc/systemd/system/dnsmasq.service.d/override.conf
 if [[ ! -e $file ]]; then
-	mkdir -p /etc/systemd/system/dnsmasq.service.d
+	mkdir -p /etc/systemd/system/{dnsmasq,hostapd}.service.d
 	echo "[Unit]
 Requires=hostapd.service
 After=hostapd.service" > $file
