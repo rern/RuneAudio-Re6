@@ -118,7 +118,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<div class="switchlabel" for="lcdchar"></div>
 	<i id="setting-lcdchar" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
-		Support 16x2, 20x4 and 40x4 LCD modules via I&#178;C and GPIO wiring.
+		Support 16x2, 20x4 and 40x4 LCD modules via <a href="https://rplcd.readthedocs.io/en/latest/getting_started.html#wiring">I&#178;C and GPIO wiring</a>.
 		<br>I&#178;C board:
 		<br> &emsp; - 5V to 3.3V I&#178;C + 5V LCD: <a href="https://www.instructables.com/Raspberry-Pi-Using-1-I2C-LCD-Backpacks-for-1602-Sc/">Fixing the Incompatibility</a>
 		<br> &emsp; - Adjust contrast with blue potentiometer on I&#178;C board to display properly.
