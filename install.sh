@@ -10,6 +10,7 @@ getinstallzip
 
 file=/etc/systemd/system/dnsmasq.service.d/override.conf
 if [[ ! -e $file ]]; then
+	mkdir -p /etc/systemd/system/dnsmasq.service.d
 	echo "[Unit]
 Requires=hostapd.service
 After=hostapd.service" > $file
@@ -20,6 +21,7 @@ fi
 
 file=/etc/systemd/system/smb.service.d/override.conf
 if [[ ! -e $file ]]; then
+	mkdir -p /etc/systemd/system/smb.service.d
 	echo "[Unit]
 BindsTo=wsdd.service" > $file
 	sed -i -e '/After=/ s/$/ smb.service/
