@@ -5,7 +5,7 @@ foreach( $i2slist as $name => $sysname ) {
 	$selecti2s.= '<option value="'.$sysname.'">'.$name.'</option>';
 }
 $selecti2s.= '</select>';
-$timezone = exec( "timedatectl | awk '/zone:/ {print $3}'" );
+$timezone = exec( "timedatectl • awk '/zone:/ {print $3}'" );
 date_default_timezone_set( $timezone );
 $timezonelist = timezone_identifiers_list();
 $selecttimezone = '<select id="timezone">';
@@ -113,17 +113,17 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<span class="help-block hide">
 		<a href="https://github.com/dbrgn/RPLCD">RPLCD</a> - Python library for Hitachi HD44780 controller. Support 16x2, 20x4 and 40x4 LCD modules.
 		<br>Via I&²C board:
-		<br> - 5V to 3.3V I²C + 5V LCD: <a href="https://www.instructables.com/Raspberry-Pi-Using-1-I2C-LCD-Backpacks-for-1602-Sc/">Fixing the Incompatibility</a>
+		<br> - For <a href="https://www.instructables.com/Raspberry-Pi-Using-1-I2C-LCD-Backpacks-for-1602-Sc/">5V to 3.3V I²C + 5V LCD Mod</a> only.
 		<br><pre>
-LCD:  2 |...............
-I²C:  ↕ |GND|VCC|SDA|SCL
-J8:   4 | 6 | 1 | 3 | 5</pre>
+LCD: • 2 •...............
+I²C: • ↕ •GND•VCC•SDA•SCL•
+J8:  • 4 • 6 • 1 • 3 • 5 •</pre>
 		Direct:
 		<br> - Use I²C board if possible.
 		<br><pre>
-LCD: 1| 2| 3| 4| 5| 6|11|12|13|14|15|16
-J8:  6| 4| ↕|15|18|16|21|22|23|24| 4| 6
-VR:  L| R| M</pre>
+LCD: • 1• 2• 3• 4• 5• 6•  •11•12•13•14•15•16•
+J8:  • 6• 4• ↕•15•18•16•  •21•22•23•24• 4• 6•
+VR:  • L• R• M•</pre>
 	</span>
 </div>
 <div class="col-l double status">
@@ -194,7 +194,7 @@ VR:  L| R| M</pre>
 
 <div>
 <heading data-status="journalctl" class="status">Boot Log<i id="journalctlicon" class="fa fa-code"></i><?=$help?></heading>
-<span class="help-block hide"><code>journalctl -b | sed -n '1,/Startup finished/ p'</code></span>
+<span class="help-block hide"><code>journalctl -b • sed -n '1,/Startup finished/ p'</code></span>
 <pre id="codejournalctl" class="hide"></pre>
 </div>
 

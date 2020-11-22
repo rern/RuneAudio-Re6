@@ -139,7 +139,7 @@ body {
 .hide{ display: none !important; }
 a,
 a:hover {
-	color: var( --cm );
+	color: var( --cml );
 	text-decoration: none !important;
 }
 input[type="text"] {
