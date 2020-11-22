@@ -238,12 +238,12 @@ snapserver )
 	;;
 spotifyd )
 	if [[ ${args[1]} == true ]]; then
-		[[ -e $dirsystem/spotifyset ]] && $dirbash/features.sh spotifyset$'\n'$( cat $dirsystem/spotifyset )
+		[[ -e $dirsystem/spotifydset ]] && $dirbash/features.sh spotifydset$'\n'$( cat $dirsystem/spotifydset )
 		systemctl enable --now spotifyd
-		touch $dirsystem/spotify
+		touch $dirsystem/spotifyd
 	else
 		systemctl disable --now spotifyd
-		rm -f $dirsystem/spotify
+		rm -f $dirsystem/spotifyd
 	fi
 	pushRefresh
 	;;
