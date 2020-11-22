@@ -112,18 +112,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<i id="setting-lcdchar" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
 		<a href="https://github.com/dbrgn/RPLCD">RPLCD</a> - Python library for Hitachi HD44780 controller. Support 16x2, 20x4 and 40x4 LCD modules.
-		<br>Via I&²C board:
-		<br> - For <a href="https://www.instructables.com/Raspberry-Pi-Using-1-I2C-LCD-Backpacks-for-1602-Sc/">5V to 3.3V I²C + 5V LCD Mod</a> only.
-		<br><pre>
-LCD: • 2 •...............
-I²C: • | •GND•VCC•SDA•SCL•
-J8:  • 4 • 6 • 1 • 3 • 5 •</pre>
-		Direct:
-		<br> - Use I²C board if possible.
-		<br><pre>
-LCD: • 1• 2• 3• 4• 5• 6•  •11•12•13•14•15•16•
-J8:  • 6• 4• |•15•18•16•  •21•22•23•24• 4• 6•
-VR:  • L• R• M•</pre>
+		<br><a href="https://github.com/rern/RuneAudio/blob/master/LCD_Character/README.md#wiring">5V to 3.3V I²C + 5V LCD Mod and wiring</a>
 	</span>
 </div>
 <div class="col-l double status">
