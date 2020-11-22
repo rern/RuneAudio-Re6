@@ -83,6 +83,12 @@ img {
 @keyframes blinkopaque {
 	50% { opacity: 0; }
 }
+hr {
+	margin-top: 20px;
+	margin-bottom: 20px;
+	border: 0;
+	border-top: 1px solid #eee
+}
 .container {
 	max-width: 768px;
 	margin: auto;
@@ -195,10 +201,8 @@ heading {
 }
 .revisiontext {
 	display:none;
-	margin: 0;
-	padding: 10px 20px;
-	line-height: 20px;
-	border-bottom: 1px solid var( --cg );
+	padding-left: 20px;
+	    line-height: 20px;
 }
 .detailtext i {
 	color: var( --cg60 );
