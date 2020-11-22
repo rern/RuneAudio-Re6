@@ -5,7 +5,7 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		G = list;
 		G.reboot = list.reboot ? list.reboot.split( '\n' ) : [];
 		$( '#shairport-sync' ).prop( 'checked', G[ 'shairport-sync' ] );
-		$( '#spotifydd' ).prop( 'checked', G.spotifyd );
+		$( '#spotifyd' ).prop( 'checked', G.spotifyd );
 		$( '#setting-spotifyd' ).toggleClass( 'hide', !G.spotifyd );
 		$( '#upmpdcli' ).prop( 'checked', G.upmpdcli );
 //		$( '#setting-upnp' ).toggleClass( 'hide', !G.upnp );
