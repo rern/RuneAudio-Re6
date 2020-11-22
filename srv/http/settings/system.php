@@ -91,7 +91,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 
 <div>
 <heading>GPIO Devices<?=$help?></heading>
-<div class="col-l">Audio (I&#178;S)</div>
+<div class="col-l">Audio (I²S)</div>
 <div class="col-r i2s">
 	<div id="divi2smodulesw">
 		<input id="i2smodulesw" type="checkbox">
@@ -100,7 +100,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<div id="divi2smodule">
 		<?=$selecti2s?>
 	</div>
-	<span class="help-block hide">I&#178;S modules are not plug-and-play capable. Select a driver for installed device.</span>
+	<span class="help-block hide">I²S audio modules are not plug-and-play capable. Select a driver for installed device.</span>
 </div>
 <div class="col-l double status">
 	<a>LCD - Character
@@ -111,18 +111,19 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<div class="switchlabel" for="lcdchar"></div>
 	<i id="setting-lcdchar" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
-		<a href="https://github.com/dbrgn/RPLCD">RPLCD</a> - Python library for Hitachi HD44780 controller.
-		<br>Support 16x2, 20x4 and 40x4 LCD modules.
-		<br>(Use I&#178;C board if possible.)
-		<br>I&#178;C board:
-		<br><code>I2C:      GND|VCC|SDA|SCL</code>
-		<br><code>J8 :&nbsp; 6 | 4 | 3 | 5&nbsp;</code>
-		<br> &emsp; - 5V to 3.3V I&#178;C + 5V LCD: <a href="https://www.instructables.com/Raspberry-Pi-Using-1-I2C-LCD-Backpacks-for-1602-Sc/">Fixing the Incompatibility</a>
-		<br> &emsp; - Adjust contrast with blue potentiometer on I&#178;C board to display properly.
-		<br>GPIO:
-		<br><code>GPIO:      1| 2| 3| 4| 5| 6|11|12|13|14|15|16</code>
-		<br><code>J8 &nbsp;: 6| 4| *|15|18|16|21|22|23|24| 4| 6</code>
-		<br> &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &ensp;* Connect contrast VR
+		<a href="https://github.com/dbrgn/RPLCD">RPLCD</a> - Python library for Hitachi HD44780 controller. Support 16x2, 20x4 and 40x4 LCD modules.
+		<br>Via I&²C board:
+		<br> - 5V to 3.3V I²C + 5V LCD: <a href="https://www.instructables.com/Raspberry-Pi-Using-1-I2C-LCD-Backpacks-for-1602-Sc/">Fixing the Incompatibility</a>
+		<br><pre>
+LCD:  2 |...............
+I²C:  ↕ |GND|VCC|SDA|SCL
+J8:   4 | 6 | 1 | 3 | 5</pre>
+		Direct:
+		<br> - Use I²C board if possible.
+		<br><pre>
+LCD: 1| 2| 3| 4| 5| 6|11|12|13|14|15|16
+J8:  6| 4| ↕|15|18|16|21|22|23|24| 4| 6
+VR:  L| R| M</pre>
 	</span>
 </div>
 <div class="col-l double status">
