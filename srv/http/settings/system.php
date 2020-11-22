@@ -112,10 +112,17 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<i id="setting-lcdchar" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
 		<a href="https://github.com/dbrgn/RPLCD">RPLCD</a> - Python library for Hitachi HD44780 controller.
-		<br>Support 16x2, 20x4 and 40x4 LCD modules via <a href="https://rplcd.readthedocs.io/en/latest/getting_started.html#wiring">I&#178;C and GPIO wiring</a>.
+		<br>Support 16x2, 20x4 and 40x4 LCD modules.
+		<br>(Use I&#178;C board if possible.)
 		<br>I&#178;C board:
+		<br><code>I2C:      GND|VCC|SDA|SCL</code>
+		<br><code>J8 :&nbsp; 6 | 4 | 3 | 5&nbsp;</code>
 		<br> &emsp; - 5V to 3.3V I&#178;C + 5V LCD: <a href="https://www.instructables.com/Raspberry-Pi-Using-1-I2C-LCD-Backpacks-for-1602-Sc/">Fixing the Incompatibility</a>
 		<br> &emsp; - Adjust contrast with blue potentiometer on I&#178;C board to display properly.
+		<br>GPIO:
+		<br><code>GPIO:      1| 2| 3| 4| 5| 6|11|12|13|14|15|16</code>
+		<br><code>J8 &nbsp;: 6| 4| *|15|18|16|21|22|23|24| 4| 6</code>
+		<br> &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &ensp;* Connect contrast VR
 	</span>
 </div>
 <div class="col-l double status">
