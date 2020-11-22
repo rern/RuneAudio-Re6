@@ -195,7 +195,7 @@
 <heading data-status="mpdconf" class="status">Configuration<i class="fa fa-code"></i><?=$help?></heading>
 <span class="help-block hide"><code>cat /etc/mpd.conf</code></span>
 <pre id="codempdconf" class="hide"></pre>
-
+</div>
 <div>
 <heading data-status="mpd" class="status">Status<i class="fa fa-code"></i><i id="mpdrestart" class="fa fa-reboot"></i><?=$help?></heading>
 <span class="help-block hide">
