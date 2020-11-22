@@ -295,13 +295,13 @@ soxr )
 	pushRefresh
 	;;
 soxrset )
-	echo '\tquality        "custom"
-	\tprecision      "'${args[1]}'"
-	\tphase_response "'${args[2]}'"
-	\tpassband_end   "'${args[3]}'"
-	\tstopband_begin "'${args[4]}'"
-	\tattenuation    "'${args[5]}'"
-	\tflags          "'${args[6]}'"
+	echo '	quality        "custom"
+	precision      "'${args[1]}'"
+	phase_response "'${args[2]}'"
+	passband_end   "'${args[3]}'"
+	stopband_begin "'${args[4]}'"
+	attenuation    "'${args[5]}'"
+	flags          "'${args[6]}'"
 }' > $dirsystem/mpd-soxrset
 		sed -i -e '/quality/,/}/ d
 ' -e "/soxr/ r $dirsystem/mpd-soxrset
