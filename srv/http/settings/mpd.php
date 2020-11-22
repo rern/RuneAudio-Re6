@@ -57,7 +57,10 @@
 
 <div>
 <heading>Volume<?=$help?></heading>
-<div class="col-l">Crossfade</div>
+<div data-status="crossfade" class="col-l double status">
+	<a>Crossfade
+	<br><gr>mpc<i class="fa fa-code"></i></gr></a>
+</div>
 <div class="col-r">
 	<input id="crossfade" class="switch" type="checkbox">
 	<div class="switchlabel" for="crossfade"></div>
@@ -67,7 +70,11 @@
 		<br>Fade-out to fade-in between songs.
 	</span>
 </div>
-<div class="col-l">Normalization</div>
+<pre id="codecrossfade" class="hide"></pre>
+<div class="col-l double">
+	<a>Normalization
+	<br><gr>option</gr></a>
+</div>
 <div class="col-r">
 	<input id="normalization" type="checkbox">
 	<div class="switchlabel" for="normalization"></div>
@@ -76,7 +83,10 @@
 		<br>Normalize the volume level of songs as they play.
 	</span>
 </div>
-<div class="col-l">Replay Gain</div>
+<div class="col-l double">
+	<a>Replay Gain
+	<br><gr>option</gr></a>
+</div>
 <div class="col-r">
 	<input id="replaygain" type="checkbox">
 	<div class="switchlabel" for="replaygain"></div>
@@ -185,7 +195,7 @@
 <heading data-status="mpdconf" class="status">Configuration<i class="fa fa-code"></i><?=$help?></heading>
 <span class="help-block hide"><code>cat /etc/mpd.conf</code></span>
 <pre id="codempdconf" class="hide"></pre>
-
+</div>
 <div>
 <heading data-status="mpd" class="status">Status<i class="fa fa-code"></i><i id="mpdrestart" class="fa fa-reboot"></i><?=$help?></heading>
 <span class="help-block hide">

@@ -15,6 +15,7 @@ var cmd = {
 	  aplay        : 'aplay -l'
 	, bluetoothctl : 'systemctl -q is-active bluetooth && bluetoothctl show'
 	, configtxt    : 'cat /boot/config.txt'
+	, crossfade    : 'mpc crossfade'
 	, fstab        : 'cat /etc/fstab'
 	, ifconfig     : 'ifconfig wlan0'
 	, journalctl   : '/srv/http/bash/system.sh statusbootlog'

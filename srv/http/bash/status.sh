@@ -197,18 +197,19 @@ if [[ ${file:0:4} == http ]]; then
 		stationname=$( sed -n 1p <<< "$radiodata" )
 		[[ $state == stop ]] && titlename=
 		[[ $Name != $stationname ]] && albumname=$Name || albumname=$file 
-########
-		status=$( sed '/^, "webradio".*/ d' <<< "$status" )
 		if [[ $state == play ]]; then
 			albumname=$stationname
 			readarray -t radioname <<< "$( sed 's/\s*$//; s/ - \|: /\n/g' <<< "$Title" )"
-			stationname=${radioname[0]}
+			artistname=${radioname[0]}
 			titlename=${radioname[1]}
+		else
+			artistname=$stationname
 		fi
 ########
+		status=$( sed '/^, "webradio".*/ d' <<< "$status" )
 		status+='
 , "Album"    : "'$albumname'"
-, "Artist"   : "'$stationname'"
+, "Artist"   : "'$artistname'"
 , "Name"     : "'$Name'"
 , "Time"     : false
 , "Title"    : "'$titlename'"

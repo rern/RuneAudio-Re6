@@ -127,7 +127,7 @@ refreshData = function() {
 		$( '#setting-custom' ).toggleClass( 'hide', !G.custom );
 		$( '#soxr' ).prop( 'checked', G.soxr );
 		$( '#setting-soxr' ).toggleClass( 'hide', !G.soxr );
-		[ 'aplay', 'amixer', 'mpd', 'mpdconf' ].forEach( function( id ) {
+		[ 'aplay', 'amixer', 'crossfade', 'mpd', 'mpdconf' ].forEach( function( id ) {
 			codeToggle( id, 'status' );
 		} );
 		resetLocal();
@@ -244,8 +244,8 @@ $( '#dop' ).click( function() {
 $( '#crossfade' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( G.crossfadeset ) {
-		notify( 'Crossfade', 'Disable ...', 'mpd' );
-		bash( [ 'crossfade', 0 ] );
+		notify( 'Crossfade', checked, 'mpd' );
+		checked && bash( [ 'crossfadeset', G.crossfadeset ] ) || bash( [ 'crossfadedisable' ] );
 	} else {
 		$( '#setting-crossfade' ).click();
 	}
@@ -256,7 +256,7 @@ $( '#setting-crossfade' ).click( function() {
 		, title   : 'Crossfade'
 		, message : 'Seconds:'
 		, radio   : { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5 }
-		, checked : G.crossfadeset || 2
+		, checked : G.crossfadeset || 1
 		, cancel    : function() {
 			if ( !G.crossfadeset ) $( '#crossfade' ).prop( 'checked', 0 );
 		}
@@ -277,8 +277,8 @@ $( '#normalization' ).click( function() {
 $( '#replaygain' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( G.replaygainset ) {
-		notify( 'Replay Gain', 'Disable ...', 'mpd' );
-		bash( [ 'replaygain' ] );
+		notify( 'Replay Gain', checked, 'mpd' );
+		checked && bash( [ 'replaygainset', G.replaygainset ] ) || bash( [ 'replaygaindisable' ] );
 	} else {
 		$( '#setting-replaygain' ).click();
 	}
@@ -314,8 +314,8 @@ $( '#ffmpeg' ).click( function() {
 $( '#buffer' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( G.bufferset ) {
-		notify( 'Custom Audio Buffer', 'Disable ...', 'mpd' );
-		bash( [ 'buffer', 0 ] );
+		notify( 'Custom Audio Buffer', checked, 'mpd' );
+		checked && bash( [ 'bufferset', G.bufferset ] ) || bash( [ 'bufferdisable' ] );
 	} else {
 		$( '#setting-buffer' ).click();
 	}
@@ -326,7 +326,7 @@ $( '#setting-buffer' ).click( function() {
 		, title     : 'Custom Audio Buffer'
 		, message   : '<code>audio_buffer_size</code> (default: 4096)'
 		, textlabel : 'Size <gr>(kB)</gr>'
-		, textvalue : G.bufferset || 4096
+		, textvalue : G.bufferval || 4096
 		, cancel    : function() {
 			if ( !G.bufferset ) $( '#buffer' ).prop( 'checked', 0 );
 		}
@@ -345,7 +345,7 @@ $( '#setting-buffer' ).click( function() {
 				if ( !G.bufferset ) $( '#buffer' ).prop( 'checked', 0 );
 			} else if ( bufferset !== G.bufferset ) {
 				notify( 'Audio Buffer', 'Change ...', 'mpd' );
-				bash( [ 'bufferset', G.bufferset ] );
+				bash( [ 'bufferset', bufferset ] );
 			}
 		}
 	} );
@@ -353,8 +353,8 @@ $( '#setting-buffer' ).click( function() {
 $( '#bufferoutput' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( G.bufferoutputset ) {
-		notify( 'Custom Output Buffer', 'Disable ...', 'mpd' );
-		bash( [ 'bufferoutput' ] );
+		notify( 'Custom Output Buffer', checked, 'mpd' );
+		checked && bash( [ 'bufferoutputset', G.bufferoutputset ] ) && bash( [ 'bufferoutputdisable' ] );
 	} else {
 		$( '#setting-bufferoutput' ).click();
 	}
@@ -365,7 +365,7 @@ $( '#setting-bufferoutput' ).click( function() {
 		, title     : 'Custom Output Buffer'
 		, message   : '<code>max_output_buffer_size</code> (default: 8192)'
 		, textlabel : 'Size <gr>(kB)</gr>'
-		, textvalue : G.bufferoutputset || 8192
+		, textvalue : G.bufferoutputval || 8192
 		, cancel    : function() {
 			if ( !G.bufferoutputset ) $( '#bufferoutput' ).prop( 'checked', 0 );
 		}
