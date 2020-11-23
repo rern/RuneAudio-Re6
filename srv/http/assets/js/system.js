@@ -503,7 +503,7 @@ $( '#setting-soundprofile' ).click( function() {
 			var soundprofileval = $( '#infoTextBox' ).val();
 			for ( i = 1; i < 4; i++ ) soundprofileval += ' '+ $( '#infoTextBox'+ i ).val();
 			if ( !G.soundprofileset || soundprofileval !== G.soundprofileval ) {
-				bash( ( 'soundprofileset '+ soundprofileval ).split( ' ' ) );
+				bash( [ 'soundprofileset' ].concat( soundprofileval.split( ' ' ).map( n => +n ) ) );
 				notify( 'Kernel Sound Profile', 'Change ...', 'gear' );
 			}
 		}

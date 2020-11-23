@@ -38,9 +38,7 @@ data='
 	, "crossfadeval"    : '$( cat $dirsystem/mpd-crossfadeset 2> /dev/null || echo false )'
 	, "custom"          : '$( [[ -e $dirsystem/mpd-custom ]] && echo true || echo false )'
 	, "customset"       : '$( [[ -e $dirsystem/mpd-customset ]] && echo true || echo false )'
-	, "customglobal"    : "'$( cat $dirsystem/mpd-custom-global | sed 's/"/\\"/g' 2> /dev/null )'"
-	, "customoutput"    : "'$( cat $dirsystem/mpd-custom-output | sed 's/"/\\"/g' 2> /dev/null )'"
-	, "ffmpeg"          : '$( grep -A1 '^ffmpeg' /etc/mpd.conf | grep -q yes && echo true || echo false )'
+	, "ffmpeg"          : '$( grep -A1 'plugin.*ffmpeg' /etc/mpd.conf | grep -q yes && echo true || echo false )'
 	, "normalization"   : '$( grep -q 'volume_normalization.*yes' /etc/mpd.conf && echo true || echo false )'
 	, "reboot"          : "'$( cat /srv/http/data/shm/reboot 2> /dev/null )'"
 	, "replaygain"      : '$( grep -q '^replaygain.*off' /etc/mpd.conf && echo false || echo true )'

@@ -78,7 +78,8 @@ refreshData = function() {
 				return $this.text() === G.audiooutput && $this.val() === G.audioaplayname;
 			} ).prop( 'selected', true );
 		}
-		if ( $( '#audiooutput option:selected' ).data( 'hwmixer' ) ) {
+		var $selected = $( '#audiooutput option:selected' );
+		if ( $selected.data( 'hwmixer' ) ) {
 			var mixerhtml =  '<option value="none">Disable</option>'
 							+'<option value="hardware">DAC hardware</option>'
 							+'<option value="software">MPD software</option>';
@@ -88,9 +89,8 @@ refreshData = function() {
 							+'<option value="software">MPD software</option>';
 			$( '#hwmixertxt' ).hide();
 		}
-		var $selected = $( '#audiooutput option:selected' );
-		cmd.amixer = 'amixer -c '+ $( '#audiooutput option:selected' ).data( 'card' );
-		$( '#mixertype' ).html( mixerhtml ).val( $selected.data( 'mixertype' ) );
+		var mixertype = $selected.data( 'mixertype' );
+		$( '#mixertype' ).html( mixerhtml ).val( mixertype );
 		$( '#audiooutput, #mixertype' ).selectric( 'refresh' );
 		if ( $( '#mixertype' ).val() === 'hardware' && $selected.data( 'mixercount' ) > 1 ) {
 			$( '.hwmixer' ).removeClass( 'hide' );
@@ -98,12 +98,7 @@ refreshData = function() {
 			$( '.hwmixer' ).addClass( 'hide' );
 		}
 		$( '#divmixer' ).toggleClass( 'hide', $selected.data( 'hwmixer' ) === '' );
-		var $selected = $( '#audiooutput option:selected' );
-		if ( $( '#mixertype' ).val() === 'none'
-			&& G.crossfade === 0
-			&& G.normalization === false
-			&& G.replaygain === 'off'
-		) {
+		if ( mixertype === 'none' && !G.crossfade && !G.normalization && !G.replaygain ) {
 			G.novolume = true;
 		} else {
 			G.novolume = false;
@@ -406,7 +401,7 @@ $( '#soxr' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( G.soxrset ) {
 		notify( 'Custom SoX Resampler', checked, 'mpd' );
-		checked && bash( [ 'soxrset', G.soxrval ] ) || bash( [ 'soxrdisable' ] );
+		checked && bash( [ 'soxrset' ].concat( G.soxrval.split( ' ' ).map( n => +n ) ) ) || bash( [ 'soxrdisable' ] );
 	} else {
 		$( '#setting-soxr' ).click();
 	}
@@ -555,6 +550,7 @@ var custominfo = heredoc( function() { /*
 	</p>
 */ } );
 $( '#setting-custom' ).click( function() {
+	var valglobal, valoutput;
 	info( {
 		  icon     : 'mpd'
 		, title    : "User's Custom Settings"
@@ -562,8 +558,13 @@ $( '#setting-custom' ).click( function() {
 		, msgalign : 'left'
 		, boxwidth : 'max'
 		, preshow  : function() {
-			$( '#global' ).val( G.customglobal );
-			$( '#output' ).val( G.customoutput );
+			bash( [ 'customget' ], function( data ) {
+				var val = data.split( '\n' );
+				valglobal = val[ 0 ] || '';
+				valoutput = val[ 1 ] || '';
+				$( '#global' ).val( valglobal );
+				$( '#output' ).val( valoutput );
+			} );
 			$( '.msg' ).css( {
 				  width          : '100%'
 				, margin         : 0
@@ -579,7 +580,7 @@ $( '#setting-custom' ).click( function() {
 		, ok       : function() {
 			var customglobal = lines2line( $( '#global' ).val() );
 			var customoutput = lines2line( $( '#output' ).val() );
-			if ( !G.custom || customglobal !== G.customglobal || customoutput !== G.customoutput ) {
+			if ( !G.custom || customglobal !== valglobal || customoutput !== valoutput ) {
 				var file = '/srv/http/data/system/mpd-custom';
 				notify( "User's Custom Settings", 'Change ...', 'mpd' );
 				bash( [ 'customset', customglobal, customoutput ] );

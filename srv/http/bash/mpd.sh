@@ -42,7 +42,7 @@ audiooutput )
 	;;
 autoupdate )
 	if [[ ${args[1]} == true ]]; then
-		sed -i '1 i\auto_update          "yes"' /etc/mpd.conf
+		sed -i '1 i\auto_update            "yes"' /etc/mpd.conf
 		touch $dirsystem/mpd-autoupdate
 	else
 		sed -i '/^auto_update/ d' /etc/mpd.conf
@@ -59,11 +59,13 @@ bufferdisable )
 	;;
 bufferset )
 	buffer=${args[1]}
-	sed -i -e '/^audio_buffer_size/ d
-' -e '1 i\audio_buffer_size    "'$buffer'"' /etc/mpd.conf
+	sed -i '/^audio_buffer_size/ d' /etc/mpd.conf
+	sleep 1
+	sed -i '1 i\audio_buffer_size      "'$buffer'"' /etc/mpd.conf
 	echo $buffer > $dirsystem/mpd-bufferset
 	touch $dirsystem/mpd-buffer
 	restartMPD
+	sleep 1
 	pushRefresh
 	;;
 bufferoutputdisable )
@@ -74,11 +76,14 @@ bufferoutputdisable )
 	;;
 bufferoutputset )
 	buffer=${args[1]}
-	sed -i -e '/^max_output_buffer_size/ d
-' -e '1 i\max_output_buffer_size "'$buffer'"' /etc/mpd.conf
+	sed -i '/^max_output_buffer_size/ d' /etc/mpd.conf
+	sleep 1
+	sed -i '1 i\max_output_buffer_size "'$buffer'"' /etc/mpd.conf
 	echo $buffer > $dirsystem/mpd-bufferoutputset
 	touch $dirsystem/mpd-bufferoutput
+	sleep 1
 	restartMPD
+	sleep 1
 	pushRefresh
 	;;
 count )
@@ -112,9 +117,10 @@ crossfadedisable )
 crossfadeset )
 	crossfade=${args[1]}
 	mpc crossfade $crossfade
+	# fix: sometime not properly set
+	[[ $( mpc crossfade | cut -d' ' -f2 ) != $crossfade ]] && mpc crossfade $crossfade
 	echo $crossfade > $dirsystem/mpd-crossfadeset
 	touch $dirsystem/mpd-crossfade
-	sleep 3
 	pushRefresh
 	;;
 customdisable )
@@ -122,6 +128,11 @@ customdisable )
 	rm -f $dirsystem/mpd-custom
 	restartMPD
 	pushRefresh
+	;;
+customget )
+	val=$( cat /srv/http/data/system/mpd-custom-global )
+	val+=$'\n'$( cat /srv/http/data/system/mpd-custom-output )
+	echo "$val"
 	;;
 customset )
 	global=${args[1]}
@@ -180,19 +191,6 @@ filetype )
 	done
 	echo "${list:0:-4}"
 	;;
-manualconf )
-	if [[ ${args[1]} == true ]]; then
-		cat /etc/mpd.conf | tee $dirsystem/mpd-manualconf
-	else
-		rm -f $dirsystem/mpd-manualconf
-	fi
-	pushRefresh
-	;;
-manualconfsave )
-	printf '%s\n' "${args[@]:1}" | tee /etc/mpd.conf $dirsystem/mpd-manualconf
-	restartMPD
-	pushRefresh
-	;;
 mixerhw )
 	output=${args[1]}
 	mixer=${args[2]}
@@ -230,7 +228,7 @@ mixerset )
 	;;
 normalization )
 	if [[ ${args[1]} == true ]]; then
-		sed -i '/^user/ a\volume_normalization "yes"' /etc/mpd.conf
+		sed -i '/^user/ a\volume_normalization   "yes"' /etc/mpd.conf
 		touch $dirsystem/mpd-normalization
 	else
 		sed -i '/^volume_normalization/ d' /etc/mpd.conf
@@ -287,10 +285,11 @@ soxrset )
 	attenuation    "'${args[5]}'"
 	flags          "'${args[6]}'"
 }' > $dirsystem/mpd-soxrset
-	sed -i -e '/quality/,/}/ d
-' -e "/soxr/ r $dirsystem/mpd-soxrset
-" /etc/mpd.conf
+	sed -i -e '/quality/,/}/ d' /etc/mpd.conf
+	sleep 1
+	sed -i "/soxr/ r $dirsystem/mpd-soxrset" /etc/mpd.conf
 	restartMPD
+	sleep 1
 	pushRefresh
 	;;
 
