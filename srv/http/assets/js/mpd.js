@@ -139,14 +139,14 @@ var warning = '<wh><i class="fa fa-warning fa-lg"></i>&ensp;Lower amplifier volu
 			 +'<br>Too high volume can damage speakers and ears';
 $( '#audiooutput' ).on( 'selectric-change', function() {
 	var $selected = $( this ).find( ':selected' );
-	var audiooutput = $selected.text();
-	var audioaplayname = $selected.val();
+	var output = $selected.text();
+	var aplayname = $selected.val();
 	var card = $selected.data( 'card' );
 	var hwmixer = $selected.data( 'hwmixer' );
 	notify( 'Audio Output Device', 'Change ...', 'mpd' );
-	audioaplayname = audiooutput !== G.usbdac ? audioaplayname : '';
-	bash( [ 'audiooutput', audioaplayname, card, audiooutput, hwmixer ] );
-	$( '#divdop' ).toggleClass( 'hide', audioaplayname.slice( 0, 7 ) === 'bcm2835' );
+	aplayname = output !== G.usbdac ? aplayname : '';
+	bash( [ 'audiooutput', aplayname, card, output, hwmixer ] );
+	$( '#divdop' ).toggleClass( 'hide', aplayname.slice( 0, 7 ) === 'bcm2835' );
 } );
 $( '#mixertype' ).on( 'selectric-change', function() {
 	var mixertype = $( this ).val();
