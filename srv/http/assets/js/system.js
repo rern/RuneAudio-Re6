@@ -361,7 +361,7 @@ $( '#setting-lcdchar' ).click( function() {
 			$( '.lcd label' ).width( 80 );
 		}
 		, cancel        : function() {
-			if ( !G.lcdcharset ) $( '#lcdchar' ).prop( 'checked', 0 );
+			if ( !G.lcdchar ) $( '#lcdchar' ).prop( 'checked', 0 );
 		}
 		, buttonlabel   : [ 'Splash', 'Off' ]
 		, buttoncolor   : [ '#448822',       '#de810e' ]
@@ -388,6 +388,8 @@ $( '#setting-lcdchar' ).click( function() {
 				}
 				bash( cmd );
 				notify( 'Character LCD', 'Change ...', 'gear' );
+			} else {
+				if ( !G.lcdchar ) $( '#lcdchar' ).prop( 'checked', 0 );
 			}
 		}
 	} );
@@ -497,7 +499,7 @@ $( '#setting-soundprofile' ).click( function() {
 			} );
 		}
 		, cancel  : function() {
-			if ( !G.soundprofileset ) $( '#soundprofile' ).prop( 'checked', 0 );
+			if ( !G.soundprofile ) $( '#soundprofile' ).prop( 'checked', 0 );
 		}
 		, ok      : function() {
 			var soundprofileval = $( '#infoTextBox' ).val();
@@ -505,6 +507,8 @@ $( '#setting-soundprofile' ).click( function() {
 			if ( !G.soundprofileset || soundprofileval !== G.soundprofileval ) {
 				bash( [ 'soundprofileset' ].concat( soundprofileval.split( ' ' ).map( n => +n ) ) );
 				notify( 'Kernel Sound Profile', 'Change ...', 'gear' );
+			} else {
+				if ( !G.soundprofile ) $( '#soundprofile' ).prop( 'checked', 0 );
 			}
 		}
 	} );

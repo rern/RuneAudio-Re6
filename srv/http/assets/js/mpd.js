@@ -261,7 +261,7 @@ $( '#setting-crossfade' ).click( function() {
 				notify( 'Crossfade', 'Change ...', 'mpd' );
 				bash( [ 'crossfadeset', crossfadeval ] );
 			} else {
-				$( '#infoX' ).click();
+				if ( !G.crossfade ) $( '#crossfade' ).prop( 'checked', 0 );
 			}
 		}
 	} );
@@ -295,7 +295,7 @@ $( '#setting-replaygain' ).click( function() {
 				notify( 'Replay Gain', 'Change ...', 'mpd' );
 				bash( [ 'replaygainset', replaygainval ] );
 			} else {
-				$( '#infoX' ).click();
+				if ( !G.replaygain ) $( '#replaygain' ).prop( 'checked', 0 );
 			}
 		}
 	} );
@@ -349,7 +349,7 @@ $( '#setting-buffer' ).click( function() {
 					notify( 'Audio Buffer', G.bufferset ? 'Change ...' : 'Disable ...', 'mpd' );
 					bash( [ 'bufferset', bufferval ] );
 				} else {
-					$( '#infoX' ).click();
+					if ( !G.buffer ) $( '#buffer' ).prop( 'checked', 0 );
 				}
 			}
 		}
@@ -391,7 +391,7 @@ $( '#setting-bufferoutput' ).click( function() {
 					notify( 'Output Buffer', 'Change ...', 'mpd' );
 					bash( [ 'bufferoutputset', bufferoutputval ] );
 				} else {
-					$( '#infoX' ).click();
+					if ( !G.bufferoutput ) $( '#bufferoutput' ).prop( 'checked', 0 );
 				}
 			}
 		}
@@ -512,7 +512,7 @@ $( '#setting-soxr' ).click( function() {
 					bash( soxrval );
 				}
 			} else {
-				$( '#infoX' ).click();
+				if ( !G.soxr ) $( '#soxr' ).prop( 'checked', 0 );
 			}
 		}
 	} );
@@ -585,7 +585,7 @@ $( '#setting-custom' ).click( function() {
 				notify( "User's Custom Settings", 'Change ...', 'mpd' );
 				bash( [ 'customset', customglobal, customoutput ] );
 			} else {
-				$( '#infoX' ).click();
+				if ( !G.custom ) $( '#custom' ).prop( 'checked', 0 );
 			}
 		}
 	} );
