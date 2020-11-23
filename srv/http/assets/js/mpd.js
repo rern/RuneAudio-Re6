@@ -146,7 +146,6 @@ $( '#audiooutput' ).on( 'selectric-change', function() {
 	notify( 'Audio Output Device', 'Change ...', 'mpd' );
 	aplayname = output !== G.usbdac ? aplayname : '';
 	bash( [ 'audiooutput', aplayname, card, output, hwmixer ] );
-	$( '#divdop' ).toggleClass( 'hide', aplayname.slice( 0, 7 ) === 'bcm2835' );
 } );
 $( '#mixertype' ).on( 'selectric-change', function() {
 	var mixertype = $( this ).val();
@@ -212,12 +211,8 @@ $( '#novolume' ).click( function() {
 			, title   : 'Mixer Control'
 			, message : warning
 			, ok      : function() {
-				G.crossfade === 0;
-				G.normalization === false;
-				G.replaygain === 'off';
-				var name = $( '#audiooutput option:selected' ).text();
 				notify( 'No Volume', 'Enable ...', 'mpd' );
-				bash( [ 'novolume', name ] );
+				bash( [ 'novolume', $( '#audiooutput option:selected' ).text() ] );
 			}
 		} );
 	} else {
