@@ -76,7 +76,7 @@ hostname )
 	sed -i "s/^\(friendlyname = \).*/\1${args[1]}/" /etc/upmpdcli.conf
 	rm -f /root/.config/chromium/SingletonLock
 	systemctl daemon-reload
-	systemctl try-restart avahi-daemon hostapd mpd smb wsdd shairport-sync shairport-meta upmpdcli
+	systemctl try-restart avahi-daemon hostapd mpd smb shairport-sync shairport-meta upmpdcli
 	systemctl -q is-active bluetooth && bluetoothctl system-alias $hostname
 	echo $hostname > $dirsystem/hostname
 	pushRefresh
