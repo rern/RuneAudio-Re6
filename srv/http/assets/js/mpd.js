@@ -521,7 +521,7 @@ $( '#custom' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( G.customset ) {
 		notify( "User's Custom Settings", checked, 'mpd' );
-		checked && bash( [ 'customset', G.customglobal, G.customoutput ] ) || bash( [ 'customdisable' ] );
+		checked && bash( [ 'customset' ] ) || bash( [ 'customdisable' ] );
 	} else {
 		$( '#setting-custom' ).click();
 	}

@@ -130,14 +130,20 @@ customdisable )
 	pushRefresh
 	;;
 customget )
-	val=$( cat /srv/http/data/system/mpd-custom-global )
-	val+=$'\n'$( cat /srv/http/data/system/mpd-custom-output )
+	file=$dirsystem/mpd-custom
+	val=$( cat $file-global )
+	val+=$'\n'$( cat $file-output )
 	echo "$val"
 	;;
 customset )
-	global=${args[1]}
-	output=${args[2]}
 	file=$dirsystem/mpd-custom
+	if (( ${#args[@]} > 1 )); then
+		global=${args[1]}
+		output=${args[2]}
+	else
+		global=$( cat $file-global 2> /dev/null )
+		output=$( cat $file-output 2> /dev/null )
+	fi
 	sed -i '/ #custom$/ d' /etc/mpd.conf
 	if [[ -n $global ]]; then
 		echo "$global" > $file-global
@@ -277,6 +283,7 @@ soxrdisable )
 	pushRefresh
 	;;
 soxrset )
+	sed -i -e '/quality/,/}/ d' /etc/mpd.conf
 	echo '	quality        "custom"
 	precision      "'${args[1]}'"
 	phase_response "'${args[2]}'"
@@ -285,7 +292,6 @@ soxrset )
 	attenuation    "'${args[5]}'"
 	flags          "'${args[6]}'"
 }' > $dirsystem/mpd-soxrset
-	sed -i -e '/quality/,/}/ d' /etc/mpd.conf
 	sleep 1
 	sed -i "/soxr/ r $dirsystem/mpd-soxrset" /etc/mpd.conf
 	restartMPD
