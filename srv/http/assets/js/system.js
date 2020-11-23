@@ -325,12 +325,12 @@ var infolcdchar = heredoc( function() { /*
 */ } );
 $( '#setting-lcdchar' ).click( function() {
 	info( {
-		  icon        : 'gear'
-		, title       : 'Character LCD'
-		, content     : infolcdchar
-		, boxwidth    : 173
-		, nofocus     : 1
-		, preshow     : function() {
+		  icon          : 'gear'
+		, title         : 'Character LCD'
+		, content       : infolcdchar
+		, boxwidth      : 173
+		, nofocus       : 1
+		, preshow       : function() {
 			var settings = G.lcdcharval.split( ' ' );
 			G.cols = settings[ 0 ];
 			G.charmap = settings[ 1 ];
@@ -360,16 +360,17 @@ $( '#setting-lcdchar' ).click( function() {
 			}
 			$( '.lcd label' ).width( 80 );
 		}
-		, cancel      : function() {
+		, cancel        : function() {
 			if ( !G.lcdcharset ) $( '#lcdchar' ).prop( 'checked', 0 );
 		}
-		, buttonlabel : [ 'Splash', 'Off' ]
-		, buttoncolor : [ '#448822',       '#de810e' ]
-		, button      : [ 
+		, buttonlabel   : [ 'Splash', 'Off' ]
+		, buttoncolor   : [ '#448822',       '#de810e' ]
+		, button        : [ 
 			  function() { bash( '/srv/http/bash/lcdchar.py rr' ) }
 			, function() { bash( '/srv/http/bash/lcdchar.py off' ) }
 		]
-		, ok          : function() {
+		, buttonnoreset : 1
+		, ok            : function() {
 			var cols = $( '#cols input:checked' ).val();
 			var charmap = $( '#charmap input:checked').val();
 			var changed = !G.lcdcharset || cols !== G.cols || charmap !== G.charmap;

@@ -450,11 +450,11 @@ var soxrinfo = heredoc( function() { /*
 $( '#setting-soxr' ).click( function() {
 	var defaultval = [ 20, 50, 91.3, 100, 0, 0, ];
 	info( {
-		  icon        : 'mpd'
-		, title       : 'Custom SoX Resampler'
-		, content     : soxrinfo
-		, nofocus     : 1
-		, preshow     : function() {
+		  icon          : 'mpd'
+		, title         : 'Custom SoX Resampler'
+		, content       : soxrinfo
+		, nofocus       : 1
+		, preshow       : function() {
 			var val = G.soxrval ? G.soxrval.split( ' ' ) : defaultval;
 			$( '#infoSelectBox option[value='+ val[ 0 ] +']' ).prop( 'selected', 1 );
 			$( '#infoSelectBox1 option[value='+ val[ 5 ] +']' ).prop( 'selected', 1 );
@@ -465,23 +465,21 @@ $( '#setting-soxr' ).click( function() {
 			$( '#extra .selectric, #extra .selectric-wrapper' ).css( 'width', '185px' );
 			$( '#extra .selectric-items' ).css( 'min-width', '185px' );
 			}, 0 );
-			$( '#infoButton' )
-				.off( 'click' )
-				.click( function() {
-					for ( i = 1; i < 5; i++ ) {
-						$( '#infoTextBox'+ i ).val( defaultval[ i ] );
-					}
-				} );
 		}
-		, boxwidth    : 70
-		, buttonlabel : '<i class="fa fa-undo"></i>Default'
-		, buttoncolor : '#de810e'
-		, button      : 1
-		, buttonwidth : 1
-		, cancel      : function() {
+		, boxwidth      : 70
+		, buttonlabel   : '<i class="fa fa-undo"></i>Default'
+		, buttoncolor   : '#de810e'
+		, button        : function() {
+			for ( i = 1; i < 5; i++ ) {
+				$( '#infoTextBox'+ i ).val( defaultval[ i ] );
+			}
+		}
+		, buttonnoreset : 1
+		, buttonwidth   : 1
+		, cancel        : function() {
 			if ( !G.soxrset ) $( '#soxr' ).prop( 'checked', 0 );
 		}
-		, ok          : function() {
+		, ok            : function() {
 			var soxrval = [ $( '#infoSelectBox' ).val() ];
 			for ( i = 1; i < 5; i++ ) {
 				soxrval.push( Number( $( '#infoTextBox'+ i ).val() ) );

@@ -286,7 +286,11 @@ function info( O ) {
 									.click( button[ i ] );
 			}
 		}
-		$( '.infobtn' ).click( infoReset );
+		if ( 'buttonnoreset' in O ) {
+			$( '#infoOk, #infoCancel' ).click( infoReset );
+		} else {
+			$( '.infobtn' ).click( infoReset );
+		}
 	}
 	$( '#infoX, #infoCancel' ).click( function() {
 		$( '#infoOverlay' ).addClass( 'hide' );
