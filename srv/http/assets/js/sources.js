@@ -4,20 +4,19 @@ function infoMount( formdata, cifs ) {
 	info( {
 		  icon    : 'network'
 		, title   : 'Mount Share'
-		, content : html
-		, boxwidth : 200
+		, content : htmlmount
 		, preshow : function() {
 			if ( $.isEmptyObject( formdata ) ) {
-				$( '#infoRadio input' ).eq( 0 ).prop( 'checked', 1 );
+				$( 'input[name=protocol]:eq( 0 )' ).prop( 'checked', 1 );
 				$( '#infotextbox input:eq( 1 )' ).val( '192.168.1.' );
 				$( '#infoCheckBox input' ).prop( 'checked', true );
 			} else {
 				if ( formdata.protocol === 'cifs' ) {
-					$( '#infoRadio input' ).eq( 0 ).prop( 'checked', 1 );
+					$( 'input[name=protocol]:eq( 0 )' ).prop( 'checked', 1 );
 					$( '#infotextbox input:eq( 3 )' ).val( formdata.user );
 					$( '#infotextbox input:eq( 4 )' ).val( formdata.password );
 				} else {
-					$( '#infoRadio input' ).eq( 1 ).prop( 'checked', 1 );
+					$( 'input[name=protocol]:eq( 1 )' ).prop( 'checked', 1 );
 					$( '.guest' ).addClass( 'hide' );
 				}
 				$( '#infotextbox input:eq( 0 )' ).val( formdata.name );
@@ -28,8 +27,9 @@ function infoMount( formdata, cifs ) {
 			}
 			if ( G.autoupdate ) $( '#infoCheckBox' ).addClass( 'hide' );
 			if ( cifs ) $( '#infoRadio' ).hide();
-			$( '#infoRadio' ).change( function() {
-				if ( $( this ).find( 'input:checked' ).val() === 'nfs' ) {
+			$( '.eye.guest' ).css( 'margin-top', '210px' );
+			$( 'input[name=protocol]' ).change( function() {
+				if ( $( this ).val() === 'nfs' ) {
 					$( '#sharename' ).text( 'Share path' );
 					$( '.guest' ).addClass( 'hide' );
 				} else {
@@ -113,15 +113,12 @@ refreshData = function() {
 refreshData();
 //---------------------------------------------------------------------------------------
 var formdata = {}
-var html = heredoc( function() { /*
+var htmlmount = heredoc( function() { /*
 	<form id="formmount">
-		<div id="infoRadio" class="infocontent infohtml">
-			Type&emsp;<label><input type="radio" name="protocol" value="cifs"> CIFS</label>&emsp;
-			<label><input type="radio" name="protocol" value="nfs"> NFS</label>&emsp;
-		</div>
 		<div id="infoText" class="infocontent">
-			<div id="infotextlabel">
-				<px50/>Name<br>
+			<div class="infotextlabel">
+				Type<br>
+				Name<br>
 				IP<br>
 				<span id="sharename">Share name</span><br>
 				<span class="guest">
@@ -130,18 +127,23 @@ var html = heredoc( function() { /*
 				</span>
 				Options
 			</div>
-			<div id="infotextbox">
+			<div class="infotextbox">
+				<label><input type="radio" name="protocol" value="cifs"> CIFS</label>&emsp;
+				<label><input type="radio" name="protocol" value="nfs"> NFS</label>&emsp;
 				<input type="text" class="infoinput" name="name" spellcheck="false">
 				<input type="text" class="infoinput" name="ip" spellcheck="false">
 				<input type="text" class="infoinput" name="directory" spellcheck="false">
 				<div class="guest">
-				<input type="text" class="infoinput" name="user" spellcheck="false">
-				<input type="password" class="infoinput" name="password"><i class="eye fa fa-eye fa-lg"></i>
+					<input type="text" class="infoinput" name="user" spellcheck="false">
+					<input type="password" class="infoinput" name="password">
 				</div>
 				<input type="text" class="infoinput" name="options" spellcheck="false">
 			</div>
+			<div class="infotextsuffix">
+				<i class="eye fa fa-eye fa-lg guest"></i>
+			</div>
 			<div id="infoCheckBox" class="infocontent infocheckbox infohtml">
-				<px40/><label><input type="checkbox" name="update" value="true" checked>&ensp;Update Library on mount</label>
+				<label><input type="checkbox" name="update" value="true" checked>&ensp;Update Library on mount</label>
 			</div>
 		</div>
 	</form>
