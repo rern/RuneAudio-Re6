@@ -3,7 +3,7 @@ $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 function infoMount( formdata, cifs ) {
 	info( {
 		  icon    : 'network'
-		, title   : 'Mount Share'
+		, title   : 'Network Share'
 		, content : htmlmount
 		, preshow : function() {
 			if ( $.isEmptyObject( formdata ) ) {
