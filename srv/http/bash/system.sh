@@ -144,26 +144,12 @@ lcdcalibrate )
 		cp /etc/X11/xorg.conf.d/99-calibration.conf /srv/http/data/system/calibration
 	fi
 	;;
-lcdchar )
-	enable=${args[1]}
-	reboot=${args[2]}
-	if [[ $enable == true ]]; then
-		if ! grep -q 'dtparam=i2c_arm=on' $fileconfig; then
-				sed -i '$ a\dtparam=i2c_arm=on' $fileconfig
-				echo "$reboot" > $filereboot
-		fi
-		! grep -q 'i2c-bcm2708' $filemodule && echo "\
-i2c-bcm2708
-i2c-dev" >> $filemodule
-			touch $dirsystem/lcdchar
-	else
-		if [[ ! -e $dirsystem/lcd ]]; then
-			sed -i '/dtparam=i2c_arm=on/ d' $fileconfig
-			sed -i '/i2c-bcm2708\|i2c-dev/ d' $filemodule
-		fi
-		rm -f $dirsystem/lcdchar
-		echo "$reboot" > $filereboot
+lcdchardisable )
+	if [[ ! -e $dirsystem/lcd ]]; then
+		sed -i '/dtparam=i2c_arm=on/ d' $fileconfig
+		sed -i '/i2c-bcm2708\|i2c-dev/ d' $filemodule
 	fi
+	rm -f $dirsystem/lcdchar
 	pushRefresh
 	;;
 lcdcharset )
@@ -172,8 +158,6 @@ lcdcharset )
 	address=${args[3]}
 	chip=${args[4]}
 	reboot=${args[5]}
-	unset args[-1] # remove reboot line
-	printf '%s\n' "${args[@]:1}" > $dirsystem/lcdcharset # array to multiline string
 	[[ $cols == 16 ]] && rows=2 || rows=4
 	filelcdchar=/srv/http/bash/lcdchar.py
 
@@ -181,6 +165,13 @@ lcdcharset )
 ' -e '/RPLCD.gpio/,/numbering_mode/ s/^#//
 ' $filelcdchar
 	if [[ -n $chip ]]; then
+		if ! grep -q 'dtparam=i2c_arm=on' $fileconfig; then
+			sed -i '$ a\dtparam=i2c_arm=on' $fileconfig
+			echo "\
+i2c-bcm2708
+i2c-dev" >> $filemodule
+			echo "$reboot" > $filereboot
+		fi
 		sed -i -e "s/^\(address = '\).*/\1$address'/
 " -e "s/\(chip = '\).*/\1$chip'/
 " -e "s/\(cols = \).*/\1$cols/
@@ -195,41 +186,10 @@ lcdcharset )
 ' -e '/RPLCD.gpio/,/numbering_mode/ s/^#//
 ' $filelcdchar
 	fi
-	if ! grep -q 'dtparam=i2c_arm=on' $fileconfig; then
-		/srv/http/bash/system.sh lcdchar$'\n'true$'\n'"$reboot"
-	else
-		pushRefresh
-	fi
-	;;
-lcdchar )
-	enable=${args[1]}
-	if [[ $enable == true ]]; then
-		touch $dirsystem/lcdchar
-	else
-		rm $dirsystem/lcdchar
-	fi
-	pushRefresh
-	;;
-lcdcharset )
-	cols=${args[1]}
-	chip=${args[2]}
-	address=${args[3]}
-	[[ $cols == 16 ]] && rows=2 || rows=4
-	if [[ -n $chip ]]; then
-		sed -i -e "s/^\(address = \).*/\1$address
-" -e "s/^\(chip = \).*/\1'$chip'
-" -e "s/^\(cols = \).*/\1$cols
-" -e "s/^\(rows = \).*/\1$rows
-" -e '/i2c_expander/ s/^#//
-' -e '/numbering_mode/ s/^/#/
-' /srv/http/bash/lcdchar.py
-	else
-		sed -i "s/^\(cols = \).*/\1$cols
-" -e "s/^\(rows = \).*/\1$rows
-" -e '/i2c_expander/ s/^/#/
-' -e '/numbering_mode/ s/^#//
-' /srv/http/bash/lcdchargpio.py
-	fi
+	! grep -q 'dtparam=i2c_arm=on' $fileconfig && /srv/http/bash/system.sh lcdchar$'\n'true$'\n'"$reboot"
+	unset args[-1] # remove reboot line
+	printf '%s\n' "${args[@]:1}" > $dirsystem/lcdcharset # array to multiline string
+	touch $dirsystem/lcdchar
 	pushRefresh
 	;;
 onboardaudio )
@@ -271,21 +231,16 @@ relays )
 	fi
 	pushRefresh
 	;;
-soundprofile )
-	enable=${args[1]}
-	if [[ $enable == true ]]; then
-		soundprofile "$( cat $dirsystem/soundprofileset )"
-		touch $dirsystem/soundprofile
-	else
-		soundprofile '1500 1000 60 18000000'
-		rm -f $dirsystem/soundprofile
-	fi
+soundprofiledisable )
+	soundprofile '1500 1000 60 18000000'
+	rm -f $dirsystem/soundprofile
 	pushRefresh
 	;;
 soundprofileset )
 	values=${args[@]:1}
+	soundprofile $value
 	printf '%s\n' "${args[@]:1}" > $dirsystem/soundprofileset
-	[[ ! -e $dirdata/shm/datarestore ]] && /srv/http/bash/system.sh soundprofile$'\n'true
+	touch $dirsystem/soundprofile
 	pushRefresh
 	;;
 statusbootlog )

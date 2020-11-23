@@ -41,12 +41,12 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 }
 refreshData();
 //---------------------------------------------------------------------------------------
-$( '#shairport-sync' ).click( function( e ) {
+$( '#shairport-sync' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	notify( 'AirPlay Renderer', checked, 'airplay' );
 	bash( [ 'shairport-sync', checked ] );
 } );
-$( '#snapclient' ).click( function( e ) {
+$( '#snapclient' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( G.snapclientset ) {
 		notify( 'SnapClient Renderer', checked, 'snapcast' );
@@ -82,7 +82,7 @@ $( '#setting-snapclient' ).click( function() {
 		, ok            : function() {
 			var snaplatency = Math.abs( $( '#infoTextBox' ).val() );
 			var snapspassword = $( '#infoPasswordBox' ).val();
-			if ( snaplatency !== G.snaplatency || snapspassword !== G.snapspassword ) {
+			if ( !G.snapclientset || snaplatency !== G.snaplatency || snapspassword !== G.snapspassword ) {
 				notify( 'Snapclient', 'Change ...', 'snapcast' );
 				bash( [ 'snapclientset', snaplatency, snapspassword ] );
 			}
@@ -118,29 +118,25 @@ $( '#setting-spotifyd' ).click( function() {
 		} );
 	} );
 } );
-$( '#upmpdcli' ).click( function( e ) {
+$( '#upmpdcli' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	notify( 'UPnP Renderer', checked, 'upnp fa-s' );
 	bash( [ 'upmpdcli', checked ] );
 } );
-$( '#snapserver' ).click( function( e ) {
+$( '#snapserver' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	notify( 'Snapcast - Sync Streaming Server', checked, 'snapcast' );
 	bash( [ 'snapserver', checked ] );
 } );
-$( '#streaming' ).click( function( e ) {
+$( '#streaming' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	notify( 'HTTP Streaming', checked, 'mpd' );
 	bash( [ 'streaming', checked ] );
 } );
-$( '#localbrowser' ).click( function( e ) {
+$( '#localbrowser' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
-	if ( G.localbrowserset ) {
-		notify( 'Chromium - Browser on RPi', checked, 'chromium' );
-		bash( [ 'localbrowser',checked ] );
-	} else {
-		$( '#setting-localbrowser' ).click();
-	}
+	notify( 'Chromium - Browser on RPi', checked, 'chromium' );
+	bash( [ 'localbrowser', checked ] );
 } );
 var localbrowserinfo = heredoc( function() { /*
 	<div id="infoText" class="infocontent">
@@ -170,7 +166,7 @@ var localbrowserinfo = heredoc( function() { /*
 		<label><input type="checkbox">&ensp;Mouse pointer</label><br>
 	</div>
 */ } );
-$( '#setting-localbrowser' ).click( function( e ) {
+$( '#setting-localbrowser' ).click( function() {
 	info( {
 		  icon        : 'chromium'
 		, title       : 'Browser on RPi'
@@ -231,7 +227,7 @@ $( '#setting-localbrowser' ).click( function( e ) {
 		}
 	} );
 } );
-$( '#smb' ).click( function( e ) {
+$( '#smb' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( G.smbset ) {
 		notify( 'Samba - File Sharing', checked, 'network' );
@@ -256,12 +252,11 @@ $( '#setting-smb' ).click( function() {
 		, ok       : function() {
 			var writesd = $( '#infoCheckBox input:eq( 0 )' ).prop( 'checked' );
 			var writeusb = $( '#infoCheckBox input:eq( 1 )' ).prop( 'checked' );
-			if ( writesd !== G.writesd || writeusb !== G.writeusb || !G.smbset ) {
+			if ( !G.smbset || writesd !== G.writesd || writeusb !== G.writeusb || !G.smbset ) {
 				G.writesd = writesd;
 				G.writeusb = writeusb;
 				notify( 'Samba - File Sharing', 'Change ...', 'network' );
 				bash( [ 'smbset', G.writesd, G.writeusb ] );
-				console.log( [ 'smbset', G.writesd, G.writeusb ] );
 			}
 		}
 	} );
@@ -280,7 +275,7 @@ $( '#setting-mpdscribble' ).click( function() {
 	info( {
 		  icon          : 'lastfm'
 		, title         : 'Last.fm Scrobbler'
-		, textlabel     : 'Username'
+		, textlabel     : 'User'
 		, textvalue     : data[ 0 ]
 		, passwordlabel : 'Password'
 		, preshow       : function() {
@@ -290,10 +285,10 @@ $( '#setting-mpdscribble' ).click( function() {
 			if ( !G.mpdscribbleset ) $( '#mpdscribble' ).prop( 'checked', 0 );
 		}
 		, ok            : function() {
-			G.mpdscribbleset = $( '#infoTextBox' ).val().replace( /(["&()\\])/g, '\$1' );
+			var user = $( '#infoTextBox' ).val().replace( /(["&()\\])/g, '\$1' );
 			var password = $( '#infoPasswordBox' ).val().replace( /(["&()\\])/g, '\$1' );
 			notify( 'Scrobbler', G.mpdscribble ? 'Change ...' : 'Enable ...', 'lastfm' );
-			bash( [ 'mpdscribbleset', G.mpdscribbleset, password ], function( std ) {
+			bash( [ 'mpdscribbleset', user, password ], function( std ) {
 				if ( std == -1 ) {
 					info( {
 						  icon    : 'lastfm'
@@ -317,7 +312,8 @@ $( '#login' ).click( function() {
 $( '#setting-login' ).click( function() {
 	info( {
 		  icon          : 'lock'
-		, title         : 'Change Password'
+		, title         : 'Password Login'
+		, message       : 'Change password:'
 		, passwordlabel : ( G.loginset ? [ 'Existing', 'New' ] : 'Password' )
 		, pwdrequired   : 1
 		, cancel        : function() {
@@ -334,7 +330,7 @@ $( '#setting-login' ).click( function() {
 			}, function( std ) {
 				info( {
 					  icon    : 'lock'
-					, title   : 'Change Password'
+					, title   : 'Password Login'
 					, nox     : 1
 					, message : ( std ? 'Password changed.' : 'Wrong existing password.' )
 				} );

@@ -245,7 +245,7 @@ $( '#crossfade' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( G.crossfadeset ) {
 		notify( 'Crossfade', checked, 'mpd' );
-		checked && bash( [ 'crossfadeset', G.crossfadeset ] ) || bash( [ 'crossfadedisable' ] );
+		checked && bash( [ 'crossfadeset', G.crossfadeval ] ) || bash( [ 'crossfadedisable' ] );
 	} else {
 		$( '#setting-crossfade' ).click();
 	}
@@ -261,10 +261,10 @@ $( '#setting-crossfade' ).click( function() {
 			if ( !G.crossfadeset ) $( '#crossfade' ).prop( 'checked', 0 );
 		}
 		, ok      : function() {
-			crossfadeset = $( 'input[name=inforadio]:checked' ).val();
-			if ( crossfadeset !== G.crossfadeset ) {
+			crossfadeval = $( 'input[name=inforadio]:checked' ).val();
+			if ( !G.crossfadeset || crossfadeval !== G.crossfadeval ) {
 				notify( 'Crossfade', 'Change ...', 'mpd' );
-				bash( [ 'crossfadeset', crossfadeset ] );
+				bash( [ 'crossfadeset', crossfadeval ] );
 			}
 		}
 	} );
@@ -278,7 +278,7 @@ $( '#replaygain' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( G.replaygainset ) {
 		notify( 'Replay Gain', checked, 'mpd' );
-		checked && bash( [ 'replaygainset', G.replaygainset ] ) || bash( [ 'replaygaindisable' ] );
+		checked && bash( [ 'replaygainset', G.replaygainval ] ) || bash( [ 'replaygaindisable' ] );
 	} else {
 		$( '#setting-replaygain' ).click();
 	}
@@ -293,10 +293,10 @@ $( '#setting-replaygain' ).click( function() {
 			if ( !G.replaygainset ) $( '#replaygain' ).prop( 'checked', 0 );
 		}
 		, ok      : function() {
-			replaygainset = $( 'input[name=inforadio]:checked' ).val();
-			if ( replaygainset !== G.replaygainset ) {
+			replaygainval = $( 'input[name=inforadio]:checked' ).val();
+			if ( !G.replaygainset || replaygainval !== G.replaygainval ) {
 				notify( 'Replay Gain', 'Change ...', 'mpd' );
-				bash( [ 'replaygainset', replaygainset ] );
+				bash( [ 'replaygainset', replaygainval ] );
 			}
 		}
 	} );
@@ -318,7 +318,7 @@ $( '#buffer' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( G.bufferset ) {
 		notify( 'Custom Audio Buffer', checked, 'mpd' );
-		checked && bash( [ 'bufferset', G.bufferset ] ) || bash( [ 'bufferdisable' ] );
+		checked && bash( [ 'bufferset', G.bufferval ] ) || bash( [ 'bufferdisable' ] );
 	} else {
 		$( '#setting-buffer' ).click();
 	}
@@ -334,8 +334,8 @@ $( '#setting-buffer' ).click( function() {
 			if ( !G.bufferset ) $( '#buffer' ).prop( 'checked', 0 );
 		}
 		, ok        : function() {
-			var bufferset = $( '#infoTextBox' ).val().replace( /\D/g, '' );
-			if ( bufferset < 4097 ) {
+			var bufferval = $( '#infoTextBox' ).val().replace( /\D/g, '' );
+			if ( bufferval < 4097 ) {
 				info( {
 					  icon    : 'mpd'
 					, title   : 'Audio Buffer'
@@ -346,9 +346,9 @@ $( '#setting-buffer' ).click( function() {
 					}
 				} );
 				if ( !G.bufferset ) $( '#buffer' ).prop( 'checked', 0 );
-			} else if ( bufferset !== G.bufferset ) {
-				notify( 'Audio Buffer', 'Change ...', 'mpd' );
-				bash( [ 'bufferset', bufferset ] );
+			} else if ( !G.bufferset || bufferval !== G.bufferval ) {
+				notify( 'Audio Buffer', G.bufferset ? 'Change ...' : 'Disable ...', 'mpd' );
+				bash( [ 'bufferset', bufferval ] );
 			}
 		}
 	} );
@@ -357,7 +357,7 @@ $( '#bufferoutput' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( G.bufferoutputset ) {
 		notify( 'Custom Output Buffer', checked, 'mpd' );
-		checked && bash( [ 'bufferoutputset', G.bufferoutputset ] ) || bash( [ 'bufferoutputdisable' ] );
+		checked && bash( [ 'bufferoutputset', G.bufferoutputval ] ) || bash( [ 'bufferoutputdisable' ] );
 	} else {
 		$( '#setting-bufferoutput' ).click();
 	}
@@ -373,8 +373,8 @@ $( '#setting-bufferoutput' ).click( function() {
 			if ( !G.bufferoutputset ) $( '#bufferoutput' ).prop( 'checked', 0 );
 		}
 		, ok        : function() {
-			var bufferoutputset = $( '#infoTextBox' ).val().replace( /\D/g, '' );
-			if ( bufferoutputset < 8192 ) {
+			var bufferoutputval = $( '#infoTextBox' ).val().replace( /\D/g, '' );
+			if ( bufferoutputval < 8192 ) {
 				info( {
 					  icon    : 'mpd'
 					, title   : 'Custom Output Buffer'
@@ -385,9 +385,9 @@ $( '#setting-bufferoutput' ).click( function() {
 					}
 				} );
 				if ( !G.bufferoutputset ) $( '#bufferoutput' ).prop( 'checked', 0 );
-			} else if ( bufferoutputset !== G.bufferoutputset ) {
+			} else if ( !G.bufferoutputset || bufferoutputval !== G.bufferoutputval ) {
 				notify( 'Output Buffer', 'Change ...', 'mpd' );
-				bash( [ 'bufferoutputset', bufferoutputset ] );
+				bash( [ 'bufferoutputset', bufferoutputval ] );
 			}
 		}
 	} );
@@ -396,8 +396,7 @@ $( '#soxr' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( G.soxrset ) {
 		notify( 'Custom SoX Resampler', checked, 'mpd' );
-		checked && bash( [ 'soxrset', G.soxrset ] ) || bash( [ 'soxrdisable' ] );
-		bash( [ 'soxr', checked ] );
+		checked && bash( [ 'soxrset', G.soxrval ] ) || bash( [ 'soxrdisable' ] );
 	} else {
 		$( '#setting-soxr' ).click();
 	}
@@ -456,11 +455,11 @@ $( '#setting-soxr' ).click( function() {
 		, content     : soxrinfo
 		, nofocus     : 1
 		, preshow     : function() {
-			var soxrval = G.soxrval ? G.soxrval.split( ' ' ) : defaultval;
-			$( '#infoSelectBox option[value='+ soxrval[ 0 ] +']' ).prop( 'selected', 1 );
-			$( '#infoSelectBox1 option[value='+ soxrval[ 5 ] +']' ).prop( 'selected', 1 );
+			var val = G.soxrval ? G.soxrval.split( ' ' ) : defaultval;
+			$( '#infoSelectBox option[value='+ val[ 0 ] +']' ).prop( 'selected', 1 );
+			$( '#infoSelectBox1 option[value='+ val[ 5 ] +']' ).prop( 'selected', 1 );
 			for ( i = 1; i < 5; i++ ) {
-				$( '#infoTextBox'+ i ).val( soxrval[ i ] );
+				$( '#infoTextBox'+ i ).val( val[ i ] );
 			}
 			setTimeout( function() {
 			$( '#extra .selectric, #extra .selectric-wrapper' ).css( 'width', '185px' );
@@ -483,18 +482,18 @@ $( '#setting-soxr' ).click( function() {
 			if ( !G.soxrset ) $( '#soxr' ).prop( 'checked', 0 );
 		}
 		, ok          : function() {
-			var args = [ $( '#infoSelectBox' ).val() ];
+			var soxrval = [ $( '#infoSelectBox' ).val() ];
 			for ( i = 1; i < 5; i++ ) {
-				args.push( Number( $( '#infoTextBox'+ i ).val() ) );
+				soxrval.push( Number( $( '#infoTextBox'+ i ).val() ) );
 			}
-			args.push( $( '#infoSelectBox1' ).val() );
-			if ( args.toString().replace( /,/g, ' ' ) === G.soxrval ) return
+			soxrval.push( $( '#infoSelectBox1' ).val() );
+			if ( G.soxrset && soxrval.toString().replace( /,/g, ' ' ) === G.soxrval ) return
 			
 			var errors = '';
-			if ( args[ 1 ] < 0 || args[ 1 ] > 100 ) errors += '<br><w>Phase Response</w> is not 1-100';
-			if ( args[ 2 ] < 0 || args[ 2 ] > 100 ) errors += '<br><w>Passband End</w> is not 1-100<br>';
-			if ( args[ 3 ] < 100 || args[ 3 ] > 150 ) errors += '<br><w>Stopband Begin</w> is not 100-150';
-			if ( args[ 4 ] < 0 || args[ 4 ] > 30 ) errors += '<br><w>Attenuation</w> is not 0-30<br>';
+			if ( soxrval[ 1 ] < 0 || soxrval[ 1 ] > 100 ) errors += '<br><w>Phase Response</w> is not 1-100';
+			if ( soxrval[ 2 ] < 0 || soxrval[ 2 ] > 100 ) errors += '<br><w>Passband End</w> is not 1-100<br>';
+			if ( soxrval[ 3 ] < 100 || soxrval[ 3 ] > 150 ) errors += '<br><w>Stopband Begin</w> is not 100-150';
+			if ( soxrval[ 4 ] < 0 || soxrval[ 4 ] > 30 ) errors += '<br><w>Attenuation</w> is not 0-30<br>';
 			if ( errors ) {
 				info( {
 					  icon    : 'mpd'
@@ -508,9 +507,9 @@ $( '#setting-soxr' ).click( function() {
 				return
 			}
 			
-			args.unshift( 'soxrset' );
+			soxrval.unshift( 'soxrset' );
 			notify( 'Custom SoX Resampler', 'Change ...', 'mpd' );
-			bash( args );
+			bash( soxrval );
 		}
 	} );
 } );
@@ -518,7 +517,6 @@ $( '#custom' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( G.customset ) {
 		notify( "User's Custom Settings", checked, 'mpd' );
-		bash( [ 'custom', checked ] );
 		checked && bash( [ 'customset', G.customglobal, G.customoutput ] ) || bash( [ 'customdisable' ] );
 	} else {
 		$( '#setting-custom' ).click();
@@ -572,17 +570,13 @@ $( '#setting-custom' ).click( function() {
 		, ok       : function() {
 			var customglobal = lines2line( $( '#global' ).val() );
 			var customoutput = lines2line( $( '#output' ).val() );
-			if ( customglobal !== G.customglobal || customoutput !== G.customoutput ) {
+			if ( !G.customset || customglobal !== G.customglobal || customoutput !== G.customoutput ) {
 				var file = '/srv/http/data/system/mpd-custom';
 				notify( "User's Custom Settings", 'Change ...', 'mpd' );
 				bash( [ 'customset', customglobal, customoutput ] );
 			}
 		}
 	} );
-} );
-$( '#setting-manualconf' ).click( function() {
-	notify( 'Manual Configure', 'Change ...', 'mpd' );
-	bash( [ 'manualconfsave', $( '#codemanualconf' ).val() ] );
 } );
 $( '#mpdrestart' ).click( function() {
 	$this = $( this );
@@ -595,21 +589,6 @@ $( '#mpdrestart' ).click( function() {
 			bash( [ 'restart' ] );
 		}
 	} );
-} );
-$( '#manualconf' ).click( function() {
-	if ( $( this ).prop( 'checked' ) ) {
-		info( {
-			  icon    : 'mpd'
-			, title   : 'Manual Mode'
-			, message : 'Once enabled, any further changes must be reconfigured manually.'
-						+'<br><br>Continue?'
-			, ok      : function() {
-				bash( [ 'manualconf', true ] );
-			}
-		} );
-	} else {
-		bash( [ 'manualconf', false ] );
-	}
 } );
 
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

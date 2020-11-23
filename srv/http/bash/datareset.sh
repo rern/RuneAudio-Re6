@@ -114,7 +114,13 @@ rm -f $dirsystem/soundprofile
 
 echo RuneAudio > $dirsystem/hostname
 
-echo '$2a$12$rNJSBU0FOJM/jP98tA.J7uzFWAnpbXFYx5q1pmNhPnXnUu3L1Zz6W' > $dirsystem/password
+echo "\
+NORMAL
+0
+true
+1
+" > $dirsystem/localbrowserset
+
 # gpio
 echo '{
   "name": {

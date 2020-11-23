@@ -261,14 +261,14 @@ $( '#i2smodule' ).on( 'selectric-change', function() {
 } );
 $( '#lcd' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
-	rebootText( checked, '480x320 LCD' );
-	notify( '480x320 LCD', checked, 'gear' );
+	notify( 'TFT LCD', checked, 'gear' );
+	rebootText( checked, 'TFT LCD' );
 	bash( [ 'lcd', checked, G.reboot.join( '\n' ) ] );
 } );
 $( '#setting-lcd' ).click( function() {
 	info( {
 		  icon        : 'edit'
-		, title       : '480x320 LCD'
+		, title       : 'TFT LCD'
 		, message     : 'Calibrate touchscreen?'
 						+'<br>(Get stylus ready.)'
 		, oklabel     : 'Start'
@@ -279,10 +279,11 @@ $( '#setting-lcd' ).click( function() {
 	} );
 } );
 $( '#lcdchar' ).click( function() {
-	var checked = $( this ).prop( 'checked' )
+	var checked = $( this ).prop( 'checked' );
 	if ( G.lcdcharset ) {
 		notify( 'Character LCD', checked, 'gear' );
-		bash( [ 'lcdchar', checked, G.reboot.join( '\n' ) ] );
+		rebootText( checked, 'Character LCD' );
+		checked && bash( [ 'lcdcharset', G.lcdcharval, G.reboot.join( '\n' ) ] ) || bash( [ 'lcdchardisable' ] );
 	} else {
 		$( '#setting-lcdchar' ).click();
 	}
@@ -371,18 +372,19 @@ $( '#setting-lcdchar' ).click( function() {
 		, ok          : function() {
 			var cols = $( '#cols input:checked' ).val();
 			var charmap = $( '#charmap input:checked').val();
-			var changed = !G.lcdchar || cols !== G.cols || charmap !== G.charmap;
+			var changed = !G.lcdcharset || cols !== G.cols || charmap !== G.charmap;
 			var inf = $( '#inf input:checked' ).val();
 			if ( inf === 'i2c' ) {
 				var chip = $( '#chip').val();
 				var address = $( '#address input:checked').val();
 				changed = changed || inf !== G.inf || chip !== G.i2cchip || address !== G.i2caddress;
 			}
-			if ( changed || !G.lcdcharset ) {
-				rebootText( 1, 'Character LCD' );
+			if ( changed ) {
 				var cmd = [ 'lcdcharset', cols, charmap ];
-				if ( inf === 'i2c' ) cmd.push( address, chip );
-				cmd.push( G.reboot.join( '\n' ) );
+				if ( inf === 'i2c' ) {
+					rebootText( 1, 'Character LCD' );
+					cmd.push( address, chip, G.reboot.join( '\n' ) );
+				}
 				bash( cmd );
 				notify( 'Character LCD', 'Change ...', 'gear' );
 			}
@@ -441,14 +443,14 @@ $( '#soundprofile' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( G.soundprofileset ) {
 		notify( "Kernel Sound Profile", checked, 'volume' );
-		bash( [ 'soundprofile', checked ] );
+		checked && bash( [ 'soundprofileset', G.soundprofileval ] ) || bash( [ 'soundprofiledisable' ] );
 	} else {
 		$( '#setting-soundprofile' ).click();
 	}
 } );
 $( '#setting-soundprofile' ).click( function() {
 	var defaultval = '1500 1000 60 18000000';
-	var data = G.soundprofileset ? G.soundprofileset.split( ' ' ) : defaultval.split( ' ' );
+	var data = G.soundprofileset ? G.soundprofileval.split( ' ' ) : defaultval.split( ' ' );
 	if ( G.rpi01 ) {
 		var lat = [ 1500000, 850000, 500000, 120000, 500000, 1500000, 145655, 6000000 ];
 	} else {
@@ -467,7 +469,7 @@ $( '#setting-soundprofile' ).click( function() {
 	}
 	var values = Object.values( radio );
 	if ( G.soundprofileset ) {
-		var checked = values.indexOf( G.soundprofileset ) !== -1 ? G.soundprofileset : 0;
+		var checked = values.indexOf( G.soundprofileval ) !== -1 ? G.soundprofileval : 0;
 	} else {
 		var checked = defaultval;
 	}
@@ -497,9 +499,12 @@ $( '#setting-soundprofile' ).click( function() {
 			if ( !G.soundprofileset ) $( '#soundprofile' ).prop( 'checked', 0 );
 		}
 		, ok      : function() {
-			var soundprofileset = $( '#infoTextBox' ).val();
-			for ( i = 1; i < 4; i++ ) soundprofileset += ' '+ $( '#infoTextBox'+ i ).val();
-			if ( soundprofileset !== G.soundprofileset ) bash( ( 'soundprofileset '+ soundprofileset ).split( ' ' ) );
+			var soundprofileval = $( '#infoTextBox' ).val();
+			for ( i = 1; i < 4; i++ ) soundprofileval += ' '+ $( '#infoTextBox'+ i ).val();
+			if ( !G.soundprofileset || soundprofileval !== G.soundprofileval ) {
+				bash( ( 'soundprofileset '+ soundprofileval ).split( ' ' ) );
+				notify( 'Kernel Sound Profile', 'Change ...', 'gear' );
+			}
 		}
 	} );
 } );
