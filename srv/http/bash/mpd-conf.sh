@@ -178,6 +178,7 @@ if [[ $# -gt 0 && $1 != bt ]]; then
 		echo $aplayname > $usbdacfile # flag - active usb
 	fi
 	# set default card for bluetooth
+	[[ -z $card ]] && card=0
 	echo "\
 defaults.pcm.card $card
 defaults.ctl.card $card" > /etc/asound.conf
