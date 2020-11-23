@@ -288,7 +288,7 @@ $( '#setting-replaygain' ).click( function() {
 		  icon    : 'mpd'
 		, title   : 'Replay Gain'
 		, radio   : { Auto: 'auto', Album: 'album', Track: 'track' }
-		, checked : G.replaygainset || 'auto'
+		, checked : G.replaygainval || 'auto'
 		, cancel  : function() {
 			if ( !G.replaygainset ) $( '#replaygain' ).prop( 'checked', 0 );
 		}
