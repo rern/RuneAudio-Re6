@@ -44,9 +44,9 @@ data='
 	, "replaygain"      : '$( grep -q '^replaygain.*off' /etc/mpd.conf && echo false || echo true )'
 	, "replaygainset"   : '$( [[ -e $dirsystem/mpd-replaygainset ]] && echo true || echo false )'
 	, "replaygainval"   : "'$( cat $dirsystem/mpd-replaygainset 2> /dev/null )'"
-	, "usbdac"          : "'$( cat /srv/http/data/shm/usbdac 2> /dev/null )'"
 	, "soxr"            : '$( grep -q "quality.*custom" /etc/mpd.conf && echo true || echo false )'
 	, "soxrset"         : '$( [[ -e $dirsystem/mpd-soxrset ]] && echo true || echo false )'
 	, "soxrval"         : "'$( grep -v 'quality\|}' $dirsystem/mpd-soxrset 2> /dev/null | cut -d'"' -f2 )'"
+	, "usbdac"          : "'$( cat /srv/http/data/shm/usbdac 2> /dev/null )'"
 '
 echo {$data}

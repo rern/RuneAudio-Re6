@@ -30,7 +30,7 @@ audiooutput )
 	output=${args[3]}
 	mixer=${args[4]}
 	[[ ${output:0:7} == WM5102 ]] && /srv/http/bash/mpd-wm5102.sh $card ${output/*-} &> /dev/null
-	if [[ $aplayname != $( cat /srv/http/data/shm/usbdac 2> /dev/null ) ]]; then
+	if [[ -n $aplayname ]]; then
 		echo $aplayname > $dirsystem/audio-aplayname
 		echo $output > $dirsystem/audio-output
 		mv /srv/http/data/shm/usbdac{,.backup} &> /dev/null
