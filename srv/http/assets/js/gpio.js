@@ -137,7 +137,7 @@ $( '#gpiosave' ).click( function() {
 			, off   : off
 			, timer : timer
 		}
-		$.post( 'cmd.php', {
+		$.post( '../cmd.php', {
 			  cmd : 'sh'
 			, sh  : [ 'cmd.sh', 'gpioset', JSON.stringify( gpiojson ) ]
 		} );
