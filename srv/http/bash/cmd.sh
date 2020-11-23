@@ -268,7 +268,7 @@ coversave )
 	jpgThumbnail coverart "$source" "$coverfile"
 	;;
 displayget )
-	output=$( cat $dirsystem/usbdac 2> /dev/null )
+	output=$( cat $dirtmp/usbdac 2> /dev/null )
 	[[ -z $output ]] && output=$( cat $dirsystem/audio-output )
 	volume=$( sed -n "/$output/,/^}/ p" /etc/mpd.conf \
 		| awk -F '\"' '/mixer_type/ {print $2}' )
