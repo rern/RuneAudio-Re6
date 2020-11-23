@@ -77,7 +77,7 @@ $( '#setting-snapclient' ).click( function() {
 			} );
 		}
 		, cancel        : function() {
-			if ( !G.snapclientset ) $( '#snapclient' ).prop( 'checked', 0 );
+			if ( !G.snapclient ) $( '#snapclient' ).prop( 'checked', 0 );
 		}
 		, ok            : function() {
 			var snaplatency = Math.abs( $( '#infoTextBox' ).val() );
@@ -85,6 +85,8 @@ $( '#setting-snapclient' ).click( function() {
 			if ( !G.snapclientset || snaplatency !== G.snaplatency || snapspassword !== G.snapspassword ) {
 				notify( 'Snapclient', 'Change ...', 'snapcast' );
 				bash( [ 'snapclientset', snaplatency, snapspassword ] );
+			} else {
+				if ( !G.snapclient ) $( '#snapclient' ).prop( 'checked', 0 );
 			}
 		}
 	} );
@@ -185,7 +187,7 @@ $( '#setting-localbrowser' ).click( function() {
 		}
 		, buttonwidth : 1
 		, cancel      : function() {
-			if ( !G.localbrowserset ) $( '#localbrowser' ).prop( 'checked', 0 );
+			if ( !G.localbrowser ) $( '#localbrowser' ).prop( 'checked', 0 );
 		}
 		, ok          : function() {
 			var cursor    = $( '#infoCheckBox input:eq( 0 )' ).prop( 'checked' );
@@ -203,7 +205,10 @@ $( '#setting-localbrowser' ).click( function() {
 			} else {
 				screenoff = ''
 			}
-			if ( cursor === G.cursor && rotate === '' && screenoff === '' && zoom === G.zoom ) return
+			if ( G.localbrowser && cursor === G.cursor && rotate === '' && screenoff === '' && zoom === G.zoom ) {
+				if ( !G.localbrowser ) $( '#localbrowser' ).prop( 'checked', 0 );
+				return
+			}
 			
 			notify( 'Chromium - Browser on RPi', 'Change ...', 'chromium' );
 			if ( rotate !== '' && cursor === G.cursor && screenoff === '' && zoom === G.zoom ) { // rotate only
@@ -247,7 +252,7 @@ $( '#setting-smb' ).click( function() {
 			$( '#infoCheckBox input:eq( 1 )' ).prop( 'checked', G.writeusb );
 		}
 		, cancel   : function() {
-			if ( !G.smbset ) $( '#smb' ).prop( 'checked', 0 );
+			if ( !G.smb ) $( '#smb' ).prop( 'checked', 0 );
 		}
 		, ok       : function() {
 			var writesd = $( '#infoCheckBox input:eq( 0 )' ).prop( 'checked' );
@@ -257,6 +262,8 @@ $( '#setting-smb' ).click( function() {
 				G.writeusb = writeusb;
 				notify( 'Samba - File Sharing', 'Change ...', 'network' );
 				bash( [ 'smbset', G.writesd, G.writeusb ] );
+			} else {
+				if ( !G.smb ) $( '#smb' ).prop( 'checked', 0 );
 			}
 		}
 	} );
@@ -282,7 +289,7 @@ $( '#setting-mpdscribble' ).click( function() {
 			$( '#infoPasswordBox' ).val( data[ 1 ] );
 		}
 		, cancel        : function() {
-			if ( !G.mpdscribbleset ) $( '#mpdscribble' ).prop( 'checked', 0 );
+			if ( !G.mpdscribble ) $( '#mpdscribble' ).prop( 'checked', 0 );
 		}
 		, ok            : function() {
 			var user = $( '#infoTextBox' ).val().replace( /(["&()\\])/g, '\$1' );
@@ -295,6 +302,7 @@ $( '#setting-mpdscribble' ).click( function() {
 						, title   : 'Last.fm Scrobbler'
 						, message : 'Last.fm Login failed.'
 					} );
+					if ( !G.mpdscribble ) $( '#mpdscribble' ).prop( 'checked', 0 );
 				}
 		} );
 		}
@@ -317,7 +325,7 @@ $( '#setting-login' ).click( function() {
 		, passwordlabel : ( G.loginset ? [ 'Existing', 'New' ] : 'Password' )
 		, pwdrequired   : 1
 		, cancel        : function() {
-			if ( !G.loginset ) $( '#login' ).prop( 'checked', 0 );
+			if ( !G.login ) $( '#login' ).prop( 'checked', 0 );
 		}
 		, ok            : function() {
 			var password = $( '#infoPasswordBox' ).val();
@@ -334,6 +342,7 @@ $( '#setting-login' ).click( function() {
 					, nox     : 1
 					, message : ( std ? 'Password changed.' : 'Wrong existing password.' )
 				} );
+				if ( !G.login ) $( '#login' ).prop( 'checked', 0 );
 			} );
 		}
 	} );
@@ -381,24 +390,26 @@ $( '#setting-hostapd' ).click( function() {
 		, textvalue    : [ G.hostapdpwd, G.hostapdip ]
 		, textrequired : [ 0, 1 ]
 		, cancel       : function() {
-			if ( !G.hostapdset ) $( '#hostapd' ).prop( 'checked', 0 );
+			if ( !G.hostapd ) $( '#hostapd' ).prop( 'checked', 0 );
 		}
 		, ok           : function() {
 			var ip = $( '#infoTextBox1' ).val();
 			var hostapdpwd = $( '#infoTextBox' ).val();
-			if ( ip === G.hostapdip && hostapdpwd === G.hostapdpwd ) return
-			
-			if ( hostapdpwd.length < 8 ) {
-				info( 'Password must be at least 8 characters.' );
-				return
+			if ( !G.hostapd || ip !== G.hostapdip || hostapdpwd !== G.hostapdpwd ) {
+				if ( hostapdpwd.length < 8 ) {
+					info( 'Password must be at least 8 characters.' );
+					return
+				}
+				
+				var ips = ip.split( '.' );
+				var ip3 = ips.pop();
+				var ip012 = ips.join( '.' );
+				var iprange = ip012 +'.'+ ( +ip3 + 1 ) +','+ ip012 +'.254,24h';
+				notify( 'RPi Access Point', 'Change ...', 'wifi-3' );
+				bash( [ 'hostapdset', iprange, ip, hostapdpwd ] );
+			} else {
+				if ( !G.hostapd ) $( '#hostapd' ).prop( 'checked', 0 );
 			}
-			
-			var ips = ip.split( '.' );
-			var ip3 = ips.pop();
-			var ip012 = ips.join( '.' );
-			var iprange = ip012 +'.'+ ( +ip3 + 1 ) +','+ ip012 +'.254,24h';
-			notify( 'RPi Access Point', 'Change ...', 'wifi-3' );
-			bash( [ 'hostapdset', iprange, ip, hostapdpwd ] );
 		}
 	} );
 } );
