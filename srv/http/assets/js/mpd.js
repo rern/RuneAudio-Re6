@@ -258,13 +258,15 @@ $( '#setting-crossfade' ).click( function() {
 		, radio   : { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5 }
 		, checked : G.crossfadeval || 1
 		, cancel    : function() {
-			if ( !G.crossfadeset ) $( '#crossfade' ).prop( 'checked', 0 );
+			if ( !G.crossfade ) $( '#crossfade' ).prop( 'checked', 0 );
 		}
 		, ok      : function() {
 			crossfadeval = $( 'input[name=inforadio]:checked' ).val();
-			if ( !G.crossfadeset || crossfadeval !== G.crossfadeval ) {
+			if ( !G.crossfade || crossfadeval !== G.crossfadeval ) {
 				notify( 'Crossfade', 'Change ...', 'mpd' );
 				bash( [ 'crossfadeset', crossfadeval ] );
+			} else {
+				$( '#infoX' ).click();
 			}
 		}
 	} );
@@ -290,13 +292,15 @@ $( '#setting-replaygain' ).click( function() {
 		, radio   : { Auto: 'auto', Album: 'album', Track: 'track' }
 		, checked : G.replaygainval || 'auto'
 		, cancel  : function() {
-			if ( !G.replaygainset ) $( '#replaygain' ).prop( 'checked', 0 );
+			if ( !G.replaygain ) $( '#replaygain' ).prop( 'checked', 0 );
 		}
 		, ok      : function() {
 			replaygainval = $( 'input[name=inforadio]:checked' ).val();
-			if ( !G.replaygainset || replaygainval !== G.replaygainval ) {
+			if ( !G.replaygain || replaygainval !== G.replaygainval ) {
 				notify( 'Replay Gain', 'Change ...', 'mpd' );
 				bash( [ 'replaygainset', replaygainval ] );
+			} else {
+				$( '#infoX' ).click();
 			}
 		}
 	} );
@@ -331,7 +335,7 @@ $( '#setting-buffer' ).click( function() {
 		, textlabel : 'Size <gr>(kB)</gr>'
 		, textvalue : G.bufferval || 4096
 		, cancel    : function() {
-			if ( !G.bufferset ) $( '#buffer' ).prop( 'checked', 0 );
+			if ( !G.buffer ) $( '#buffer' ).prop( 'checked', 0 );
 		}
 		, ok        : function() {
 			var bufferval = $( '#infoTextBox' ).val().replace( /\D/g, '' );
@@ -345,10 +349,13 @@ $( '#setting-buffer' ).click( function() {
 						$( '#setting-buffer' ).click();
 					}
 				} );
-				if ( !G.bufferset ) $( '#buffer' ).prop( 'checked', 0 );
-			} else if ( !G.bufferset || bufferval !== G.bufferval ) {
-				notify( 'Audio Buffer', G.bufferset ? 'Change ...' : 'Disable ...', 'mpd' );
-				bash( [ 'bufferset', bufferval ] );
+			} else {
+				if ( !G.buffer || bufferval !== G.bufferval ) {
+					notify( 'Audio Buffer', G.bufferset ? 'Change ...' : 'Disable ...', 'mpd' );
+					bash( [ 'bufferset', bufferval ] );
+				} else {
+					$( '#infoX' ).click();
+				}
 			}
 		}
 	} );
@@ -370,7 +377,7 @@ $( '#setting-bufferoutput' ).click( function() {
 		, textlabel : 'Size <gr>(kB)</gr>'
 		, textvalue : G.bufferoutputval || 8192
 		, cancel    : function() {
-			if ( !G.bufferoutputset ) $( '#bufferoutput' ).prop( 'checked', 0 );
+			if ( !G.bufferoutput ) $( '#bufferoutput' ).prop( 'checked', 0 );
 		}
 		, ok        : function() {
 			var bufferoutputval = $( '#infoTextBox' ).val().replace( /\D/g, '' );
@@ -384,10 +391,13 @@ $( '#setting-bufferoutput' ).click( function() {
 						$( '#setting-bufferoutput' ).click();
 					}
 				} );
-				if ( !G.bufferoutputset ) $( '#bufferoutput' ).prop( 'checked', 0 );
-			} else if ( !G.bufferoutputset || bufferoutputval !== G.bufferoutputval ) {
-				notify( 'Output Buffer', 'Change ...', 'mpd' );
-				bash( [ 'bufferoutputset', bufferoutputval ] );
+			} else {
+				if ( !G.bufferoutput || bufferoutputval !== G.bufferoutputval ) {
+					notify( 'Output Buffer', 'Change ...', 'mpd' );
+					bash( [ 'bufferoutputset', bufferoutputval ] );
+				} else {
+					$( '#infoX' ).click();
+				}
 			}
 		}
 	} );
@@ -477,7 +487,7 @@ $( '#setting-soxr' ).click( function() {
 		, buttonnoreset : 1
 		, buttonwidth   : 1
 		, cancel        : function() {
-			if ( !G.soxrset ) $( '#soxr' ).prop( 'checked', 0 );
+			if ( !G.soxr ) $( '#soxr' ).prop( 'checked', 0 );
 		}
 		, ok            : function() {
 			var soxrval = [ $( '#infoSelectBox' ).val() ];
@@ -485,29 +495,30 @@ $( '#setting-soxr' ).click( function() {
 				soxrval.push( Number( $( '#infoTextBox'+ i ).val() ) );
 			}
 			soxrval.push( $( '#infoSelectBox1' ).val() );
-			if ( G.soxrset && soxrval.toString().replace( /,/g, ' ' ) === G.soxrval ) return
-			
-			var errors = '';
-			if ( soxrval[ 1 ] < 0 || soxrval[ 1 ] > 100 ) errors += '<br><w>Phase Response</w> is not 1-100';
-			if ( soxrval[ 2 ] < 0 || soxrval[ 2 ] > 100 ) errors += '<br><w>Passband End</w> is not 1-100<br>';
-			if ( soxrval[ 3 ] < 100 || soxrval[ 3 ] > 150 ) errors += '<br><w>Stopband Begin</w> is not 100-150';
-			if ( soxrval[ 4 ] < 0 || soxrval[ 4 ] > 30 ) errors += '<br><w>Attenuation</w> is not 0-30<br>';
-			if ( errors ) {
-				info( {
-					  icon    : 'mpd'
-					, title   : 'Custom SoX Resampler'
-					, message : '<i class="fa fa-warning fa-lg wh"></i> Warning<br>'
-							   + errors
-					, ok      : function() {
-						$( '#setting-soxr' ).click();
-					}
-				} );
-				return
+			if ( !G.soxr || soxrval.toString().replace( /,/g, ' ' ) !== G.soxrval ) {
+				var errors = '';
+				if ( soxrval[ 1 ] < 0 || soxrval[ 1 ] > 100 ) errors += '<br><w>Phase Response</w> is not 1-100';
+				if ( soxrval[ 2 ] < 0 || soxrval[ 2 ] > 100 ) errors += '<br><w>Passband End</w> is not 1-100<br>';
+				if ( soxrval[ 3 ] < 100 || soxrval[ 3 ] > 150 ) errors += '<br><w>Stopband Begin</w> is not 100-150';
+				if ( soxrval[ 4 ] < 0 || soxrval[ 4 ] > 30 ) errors += '<br><w>Attenuation</w> is not 0-30<br>';
+				if ( errors ) {
+					info( {
+						  icon    : 'mpd'
+						, title   : 'Custom SoX Resampler'
+						, message : '<i class="fa fa-warning fa-lg wh"></i> Warning<br>'
+								   + errors
+						, ok      : function() {
+							$( '#setting-soxr' ).click();
+						}
+					} );
+				} else {
+					soxrval.unshift( 'soxrset' );
+					notify( 'Custom SoX Resampler', 'Change ...', 'mpd' );
+					bash( soxrval );
+				}
+			} else {
+				$( '#infoX' ).click();
 			}
-			
-			soxrval.unshift( 'soxrset' );
-			notify( 'Custom SoX Resampler', 'Change ...', 'mpd' );
-			bash( soxrval );
 		}
 	} );
 } );
@@ -563,15 +574,17 @@ $( '#setting-custom' ).click( function() {
 			$( '#output' ).css( 'padding-left', '39px' )
 		}
 		, cancel   : function() {
-			if ( !G.customset ) $( '#custom' ).prop( 'checked', 0 );
+			if ( !G.custom ) $( '#custom' ).prop( 'checked', 0 );
 		}
 		, ok       : function() {
 			var customglobal = lines2line( $( '#global' ).val() );
 			var customoutput = lines2line( $( '#output' ).val() );
-			if ( !G.customset || customglobal !== G.customglobal || customoutput !== G.customoutput ) {
+			if ( !G.custom || customglobal !== G.customglobal || customoutput !== G.customoutput ) {
 				var file = '/srv/http/data/system/mpd-custom';
 				notify( "User's Custom Settings", 'Change ...', 'mpd' );
 				bash( [ 'customset', customglobal, customoutput ] );
+			} else {
+				$( '#infoX' ).click();
 			}
 		}
 	} );

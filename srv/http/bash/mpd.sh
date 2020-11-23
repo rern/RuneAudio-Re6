@@ -114,6 +114,7 @@ crossfadeset )
 	mpc crossfade $crossfade
 	echo $crossfade > $dirsystem/mpd-crossfadeset
 	touch $dirsystem/mpd-crossfade
+	sleep 3
 	pushRefresh
 	;;
 customdisable )
@@ -258,7 +259,7 @@ replaygaindisable )
 replaygainset )
 	replaygain=${args[1]}
 	sed -i '/^replaygain/ s/".*"/"'$replaygain'"/' /etc/mpd.conf
-	echo $replaygain $dirsystem/mpd-replaygainset
+	echo $replaygain > $dirsystem/mpd-replaygainset
 	touch $dirsystem/mpd-replaygain
 	restartMPD
 	pushRefresh

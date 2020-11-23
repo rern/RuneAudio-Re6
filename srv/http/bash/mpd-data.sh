@@ -26,27 +26,26 @@ data='
 	  "devices"         : ['$devices']
 	, "audiooutput"     : "'$( cat $dirsystem/audio-output )'"
 	, "audioaplayname"  : "'$( cat $dirsystem/audio-aplayname )'"
-	, "autoupdate"      : '$( grep -q "auto_update.*yes" /etc/mpd.conf && echo true || echo false )'
-	, "buffer"          : '$( [[ -e $dirsystem/mpd-buffer ]] && echo true || echo false )'
+	, "autoupdate"      : '$( grep -q '^auto_update.*yes' /etc/mpd.conf && echo true || echo false )'
+	, "buffer"          : '$( grep -q '^audio_buffer_size' /etc/mpd.conf && echo true || echo false )'
 	, "bufferset"       : '$( [[ -e $dirsystem/mpd-bufferset ]] && echo true || echo false )'
-	, "bufferval"       : "'$( grep audio_buffer_size /etc/mpd.conf | cut -d'"' -f2 )'"
-	, "bufferoutput"    : '$( [[ -e $dirsystem/mpd-bufferoutput ]] && echo true || echo false )'
+	, "bufferval"       : '$( cat $dirsystem/mpd-bufferset 2> /dev/null || echo false )'
+	, "bufferoutput"    : '$( grep -q '^max_output_buffer_size' /etc/mpd.conf && echo true || echo false )'
 	, "bufferoutputset" : '$( [[ -e $dirsystem/mpd-bufferoutputset ]] && echo true || echo false )'
-	, "bufferoutputval" : "'$( grep max_output_buffer_size /etc/mpd.conf | cut -d'"' -f2 )'"
-	, "crossfade"       : '$( [[ -e $dirsystem/mpd-crossfade ]] && echo true || echo false )'
+	, "bufferoutputval" : '$( cat $dirsystem/mpd-bufferoutputset 2> /dev/null || echo false )'
+	, "crossfade"       : '$( [[ $( mpc crossfade | cut -d' ' -f2 ) != 0 ]] && echo true || echo false )'
 	, "crossfadeset"    : '$( [[ -e $dirsystem/mpd-crossfadeset ]] && echo true || echo false )'
-	, "crossfadeval"    : "'$( mpc crossfade | cut -d' ' -f2 )'"
+	, "crossfadeval"    : '$( cat $dirsystem/mpd-crossfadeset 2> /dev/null || echo false )'
 	, "custom"          : '$( [[ -e $dirsystem/mpd-custom ]] && echo true || echo false )'
 	, "customset"       : '$( [[ -e $dirsystem/mpd-customset ]] && echo true || echo false )'
 	, "customglobal"    : "'$( cat $dirsystem/mpd-custom-global | sed 's/"/\\"/g' 2> /dev/null )'"
 	, "customoutput"    : "'$( cat $dirsystem/mpd-custom-output | sed 's/"/\\"/g' 2> /dev/null )'"
-	, "ffmpeg"          : '$( grep -A1 ffmpeg /etc/mpd.conf | grep -q yes && echo true || echo false )'
-	, "mixertype"       : "'$( grep mixer_type /etc/mpd.conf | cut -d'"' -f2 )'"
+	, "ffmpeg"          : '$( grep -A1 '^ffmpeg' /etc/mpd.conf | grep -q yes && echo true || echo false )'
 	, "normalization"   : '$( grep -q 'volume_normalization.*yes' /etc/mpd.conf && echo true || echo false )'
 	, "reboot"          : "'$( cat /srv/http/data/shm/reboot 2> /dev/null )'"
-	, "replaygain"      : '$( [[ -e $dirsystem/mpd-replaygain ]] && echo true || echo false )'
+	, "replaygain"      : '$( grep -q '^replaygain.*off' /etc/mpd.conf && echo false || echo true )'
 	, "replaygainset"   : '$( [[ -e $dirsystem/mpd-replaygainset ]] && echo true || echo false )'
-	, "replaygainval"   : "'$( grep replaygain /etc/mpd.conf | cut -d'"' -f2 )'"
+	, "replaygainval"   : "'$( cat $dirsystem/mpd-replaygainset 2> /dev/null )'"
 	, "usbdac"          : "'$( cat /srv/http/data/shm/usbdac 2> /dev/null )'"
 	, "soxr"            : '$( grep -q "quality.*custom" /etc/mpd.conf && echo true || echo false )'
 	, "soxrset"         : '$( [[ -e $dirsystem/mpd-soxrset ]] && echo true || echo false )'
