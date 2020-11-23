@@ -175,7 +175,7 @@ $( '#setting-mixertype' ).click( function() { // hardware mixer
 	var hwmixer = $selectedoutput.data( 'hwmixer' );
 	var select = $selectedoutput.data( 'mixermanual' ) ? { 'Auto select': 'auto' } : {};
 	bash( [ 'amixer', card ], function( data ) {
-		var devices = data.slice( 0, -1 ).split( '\n' );
+		var devices = data.split( '\n' );
 		devices.forEach( function( val ) {
 			select[ val ] = val;
 		} );
@@ -187,6 +187,7 @@ $( '#setting-mixertype' ).click( function() { // hardware mixer
 			, selectlabel : 'Device'
 			, select      : select
 			, checked     : hwmixer
+			, boxwidth    : 280
 			, preshow     : function() {
 				$( '#infoOk' ).addClass( 'disabled' );
 				$( '#infoSelectBox' ).on( 'selectric-change', function() {
@@ -202,7 +203,7 @@ $( '#setting-mixertype' ).click( function() { // hardware mixer
 				bash( [ 'mixerhw', name, mixer, mixermanual, card ] );
 			}
 		} );
-	}, 'json' );
+	} );
 } );
 $( '#novolume' ).click( function() {
 	var checked = $( this ).prop( 'checked' );

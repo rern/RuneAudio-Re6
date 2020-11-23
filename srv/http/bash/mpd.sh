@@ -15,7 +15,7 @@ restartMPD() {
 case ${args[0]} in
 
 amixer )
-	amixer -c ${args[1]}scontents \
+	amixer -c ${args[1]} scontents \
 		| grep -A2 'Simple mixer control' \
 		| grep -v 'Capabilities' \
 		| tr -d '\n' \
