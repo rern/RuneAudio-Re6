@@ -33,6 +33,9 @@ audiooutput )
 	if [[ $aplayname != $( cat /srv/http/data/shm/usbdac 2> /dev/null ) ]]; then
 		echo $aplayname > $dirsystem/audio-aplayname
 		echo $output > $dirsystem/audio-output
+		mv /srv/http/data/shm/usbdac{,.backup} &> /dev/null
+	else
+		mv /srv/http/data/shm/usbdac{.backup,} &> /dev/null
 	fi
 	sed -i -e '/output_device = / s/".*"/"hw:'$card'"/
 	' -e '/mixer_control_name = / s/".*"/"'$mixer'"/

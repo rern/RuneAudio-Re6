@@ -168,7 +168,7 @@ if [[ $# -gt 0 && $1 != bt ]]; then
 			| grep -B1 'pvolume' \
 			| head -1 \
 			| cut -d"'" -f2 )
-		rm -f $usbdacfile /etc/asound.conf
+		rm -f $usbdacfile*
 	else
 		name=${Aname[@]: -1} # added usb dac = last one
 		card=${Acard[@]: -1}
