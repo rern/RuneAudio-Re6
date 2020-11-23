@@ -51,13 +51,9 @@ autoupdate )
 	restartMPD
 	pushRefresh
 	;;
-buffer )
-	if [[ ${args[1]} == true ]]; then
-		touch $dirsystem/mpd-buffer
-	else
-		sed -i '/^audio_buffer_size/ d' /etc/mpd.conf
-		rm -f $dirsystem/mpd-buffer
-	fi
+bufferdisable )
+	sed -i '/^audio_buffer_size/ d' /etc/mpd.conf
+	rm -f $dirsystem/mpd-buffer
 	restartMPD
 	pushRefresh
 	;;
@@ -66,14 +62,13 @@ bufferset )
 	sed -i -e '/^audio_buffer_size/ d
 ' -e '1 i\audio_buffer_size    "'$buffer'"' /etc/mpd.conf
 	echo $buffer > $dirsystem/mpd-bufferset
+	touch $dirsystem/mpd-buffer
+	restartMPD
+	pushRefresh
 	;;
-bufferoutput )
-	if [[ ${args[1]} == true ]]; then
-		touch $dirsystem/mpd-bufferoutput
-	else
-		sed -i '/^max_output_buffer_size/ d' /etc/mpd.conf
-		rm -f $dirsystem/mpd-bufferoutput
-	fi
+bufferoutputdisable )
+	sed -i '/^max_output_buffer_size/ d' /etc/mpd.conf
+	rm -f $dirsystem/mpd-bufferoutput
 	restartMPD
 	pushRefresh
 	;;
@@ -82,6 +77,9 @@ bufferoutputset )
 	sed -i -e '/^max_output_buffer_size/ d
 ' -e '1 i\max_output_buffer_size "'$buffer'"' /etc/mpd.conf
 	echo $buffer > $dirsystem/mpd-bufferoutputset
+	touch $dirsystem/mpd-bufferoutput
+	restartMPD
+	pushRefresh
 	;;
 count )
 	albumartist=$( mpc list albumartist | awk NF | wc -l )
@@ -106,28 +104,21 @@ count )
 	echo {$data}
 	echo $albumartist $composer $genre > /srv/http/data/system/mpddb
 	;;
-crossfade )
-	if [[ ${args[1]} == true ]]; then
-		touch $dirsystem/mpd-crossfade
-	else
-		mpc crossfade 0
-		rm -f $dirsystem/mpd-crossfade
-	fi
+crossfadedisable )
+	mpc crossfade 0
+	rm -f $dirsystem/mpd-crossfade
 	pushRefresh
 	;;
 crossfadeset )
 	crossfade=${args[1]}
 	mpc crossfade $crossfade
 	echo $crossfade > $dirsystem/mpd-crossfadeset
+	touch $dirsystem/mpd-crossfade
+	pushRefresh
 	;;
-custom )
-	enable=${args[1]}
-	if [[ $enable == true ]]; then
-		touch $dirsystem/mpd-custom
-	else
-		sed -i '/ #custom$/ d' /etc/mpd.conf
-		rm -f $dirsystem/mpd-custom
-	fi
+customdisable )
+	sed -i '/ #custom$/ d' /etc/mpd.conf
+	rm -f $dirsystem/mpd-custom
 	restartMPD
 	pushRefresh
 	;;
@@ -258,13 +249,9 @@ novolume )
 	pushRefresh
 	curl -s -X POST http://127.0.0.1/pub?id=volumenone -d '{ "pvolumenone": "1" }'
 	;;
-replaygain )
-	if [[ ${args[1]} == true ]]; then
-		touch $dirsystem/mpd-replaygain
-	else
-		sed -i '/^replaygain/ s/".*"/"off"/' /etc/mpd.conf
-		rm -f $dirsystem/mpd-replaygain
-	fi
+replaygaindisable )
+	sed -i '/^replaygain/ s/".*"/"off"/' /etc/mpd.conf
+	rm -f $dirsystem/mpd-replaygain
 	restartMPD
 	pushRefresh
 	;;
@@ -272,25 +259,21 @@ replaygainset )
 	replaygain=${args[1]}
 	sed -i '/^replaygain/ s/".*"/"'$replaygain'"/' /etc/mpd.conf
 	echo $replaygain $dirsystem/mpd-replaygainset
+	touch $dirsystem/mpd-replaygain
+	restartMPD
+	pushRefresh
 	;;
 restart )
 	restartMPD
 	pushRefresh
 	;;
-soxr )
-	if [[ ${args[1]} == true ]]; then
-		sed -i -e '/quality/,/}/ d
-' -e "/soxr/ r $dirsystem/mpd-soxrset
-" /etc/mpd.conf
-		touch $dirsystem/mpd-soxr
-	else
-		sed -i -e '/quality/,/}/ d
+soxrdisable )
+	sed -i -e '/quality/,/}/ d
 ' -e '/soxr/ a\
 	quality        "very high"\
 }
 ' /etc/mpd.conf
-		rm -f $dirsystem/mpd-soxr
-	fi
+	rm -f $dirsystem/mpd-soxr
 	restartMPD
 	pushRefresh
 	;;
@@ -303,7 +286,7 @@ soxrset )
 	attenuation    "'${args[5]}'"
 	flags          "'${args[6]}'"
 }' > $dirsystem/mpd-soxrset
-		sed -i -e '/quality/,/}/ d
+	sed -i -e '/quality/,/}/ d
 ' -e "/soxr/ r $dirsystem/mpd-soxrset
 " /etc/mpd.conf
 	restartMPD

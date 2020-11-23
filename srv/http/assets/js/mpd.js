@@ -256,7 +256,7 @@ $( '#setting-crossfade' ).click( function() {
 		, title   : 'Crossfade'
 		, message : 'Seconds:'
 		, radio   : { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5 }
-		, checked : G.crossfadeset || 1
+		, checked : G.crossfadeval || 1
 		, cancel    : function() {
 			if ( !G.crossfadeset ) $( '#crossfade' ).prop( 'checked', 0 );
 		}
@@ -311,6 +311,9 @@ $( '#ffmpeg' ).click( function() {
 	notify( 'FFmpeg Decoder', checked, 'mpd' );
 	bash( [ 'ffmpeg', checked ] );
 } );
+$( '#filetype' ).click( function() {
+	$( '#divfiletype' ).toggleClass( 'hide' );
+} );
 $( '#buffer' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( G.bufferset ) {
@@ -354,7 +357,7 @@ $( '#bufferoutput' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( G.bufferoutputset ) {
 		notify( 'Custom Output Buffer', checked, 'mpd' );
-		checked && bash( [ 'bufferoutputset', G.bufferoutputset ] ) && bash( [ 'bufferoutputdisable' ] );
+		checked && bash( [ 'bufferoutputset', G.bufferoutputset ] ) || bash( [ 'bufferoutputdisable' ] );
 	} else {
 		$( '#setting-bufferoutput' ).click();
 	}
@@ -389,13 +392,11 @@ $( '#setting-bufferoutput' ).click( function() {
 		}
 	} );
 } );
-$( '#filetype' ).click( function() {
-	$( '#divfiletype' ).toggleClass( 'hide' );
-} );
 $( '#soxr' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( G.soxrset ) {
 		notify( 'Custom SoX Resampler', checked, 'mpd' );
+		checked && bash( [ 'soxrset', G.soxrset ] ) || bash( [ 'soxrdisable' ] );
 		bash( [ 'soxr', checked ] );
 	} else {
 		$( '#setting-soxr' ).click();
@@ -518,6 +519,7 @@ $( '#custom' ).click( function() {
 	if ( G.customset ) {
 		notify( "User's Custom Settings", checked, 'mpd' );
 		bash( [ 'custom', checked ] );
+		checked && bash( [ 'customset', G.customglobal, G.customoutput ] ) || bash( [ 'customdisable' ] );
 	} else {
 		$( '#setting-custom' ).click();
 	}
