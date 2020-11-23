@@ -1,8 +1,6 @@
 #!/usr/bin/python
 
 import sys
-import time
-import math
 
 if len( sys.argv ) == 1: quit()
 
@@ -122,6 +120,9 @@ if len( sys.argv ) == 2: # rr - splash or single argument string (^ = linebreak)
 
 lcd.clear()
 
+import math
+import unicodedata
+
 def second2hhmmss( sec ):
     hh = math.floor( sec / 3600 )
     mm = math.floor( ( sec % 3600 ) / 60 )
@@ -165,6 +166,8 @@ if progl <= cols - 3: progress += ' ' * ( cols - progl - 2 ) + irr
 
 if artist == 'false': artist = idots
 lines = rows == 2 and title or artist + rn + title + rn + album
+# remove accents
+lines = ''.join( c for c in unicodedata.normalize( 'NFD', lines ) if unicodedata.category( c ) != 'Mn' )
 
 lcd.write_string( lines + rn + progress[ :cols ] )
 lcd.close()
@@ -173,6 +176,7 @@ if state == 'stop' or state == 'pause': quit()
 
 # play
 import subprocess
+import time
 
 prog = subprocess.getoutput( "mpc | awk '/^.playing/ {print $3}' | cut -d/ -f1" )
 elapsed = 0
