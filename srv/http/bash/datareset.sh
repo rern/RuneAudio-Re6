@@ -102,24 +102,15 @@ echo '[
 ]' > $dirsystem/order
 echo '"mpd":true,"airplay":false,"snapclient":false,"spotify":false,"upnp":false' > $dirdata/shm/player
 # system
-hostnamectl set-hostname runeaudio
-sed -i 's/#NTP=.*/NTP=pool.ntp.org/' /etc/systemd/timesyncd.conf
-timedatectl set-timezone UTC
-# on-board audio
 echo 'bcm2835 Headphones' > $dirsystem/audio-aplayname
 echo 'On-board - Headphone' > $dirsystem/audio-output
-touch $dirsystem/{localbrowser,onboard-audio,onboard-wlan}
-
-rm -f $dirsystem/soundprofile
-
 echo RuneAudio > $dirsystem/hostname
-
-echo "\
-NORMAL
-0
-true
-1
-" > $dirsystem/localbrowserset
+touch $dirsystem/{localbrowser,onboard-audio,onboard-wlan}
+rm -f $dirsystem/{lcd,lcdchar,relays,soundprofile}
+hostnamectl set-hostname runeaudio
+sed -i 's/#NTP=.*/NTP=pool.ntp.org/' /etc/systemd/timesyncd.conf
+sed -i 's/".*"/"00"/' /etc/conf.d/wireless-regdom
+timedatectl set-timezone UTC
 
 # gpio
 echo '{
