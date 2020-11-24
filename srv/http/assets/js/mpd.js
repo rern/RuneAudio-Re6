@@ -315,23 +315,11 @@ $( '#setting-buffer' ).click( function() {
 		}
 		, ok        : function() {
 			var bufferval = $( '#infoTextBox' ).val().replace( /\D/g, '' );
-			if ( bufferval < 4097 ) {
-				info( {
-					  icon    : 'mpd'
-					, title   : 'Audio Buffer'
-					, message : '<i class="fa fa-warning fa-lg wh"></i> Warning<br>'
-							   +'<br>Audio buffer must be greater than <wh>4096 kB</wh>.'
-					, ok      : function() {
-						$( '#setting-buffer' ).click();
-					}
-				} );
+			if ( !G.buffer || bufferval !== G.bufferval ) {
+				notify( 'Audio Buffer', G.bufferset ? 'Change ...' : 'Disable ...', 'mpd' );
+				bash( [ 'bufferset', bufferval ] );
 			} else {
-				if ( !G.buffer || bufferval !== G.bufferval ) {
-					notify( 'Audio Buffer', G.bufferset ? 'Change ...' : 'Disable ...', 'mpd' );
-					bash( [ 'bufferset', bufferval ] );
-				} else {
-					if ( !G.buffer ) $( '#buffer' ).prop( 'checked', 0 );
-				}
+				if ( !G.buffer ) $( '#buffer' ).prop( 'checked', 0 );
 			}
 		}
 	} );
@@ -348,23 +336,11 @@ $( '#setting-bufferoutput' ).click( function() {
 		}
 		, ok        : function() {
 			var bufferoutputval = $( '#infoTextBox' ).val().replace( /\D/g, '' );
-			if ( bufferoutputval < 8192 ) {
-				info( {
-					  icon    : 'mpd'
-					, title   : 'Custom Output Buffer'
-					, message : '<i class="fa fa-warning fa-lg wh"></i> Warning<br>'
-							   +'<br>Output buffer must be greater than <wh>8192 kB</wh>.'
-					, ok      : function() {
-						$( '#setting-bufferoutput' ).click();
-					}
-				} );
+			if ( !G.bufferoutput || bufferoutputval !== G.bufferoutputval ) {
+				notify( 'Output Buffer', 'Change ...', 'mpd' );
+				bash( [ 'bufferoutputset', bufferoutputval ] );
 			} else {
-				if ( !G.bufferoutput || bufferoutputval !== G.bufferoutputval ) {
-					notify( 'Output Buffer', 'Change ...', 'mpd' );
-					bash( [ 'bufferoutputset', bufferoutputval ] );
-				} else {
-					if ( !G.bufferoutput ) $( '#bufferoutput' ).prop( 'checked', 0 );
-				}
+				if ( !G.bufferoutput ) $( '#bufferoutput' ).prop( 'checked', 0 );
 			}
 		}
 	} );
@@ -417,6 +393,7 @@ var soxrinfo = heredoc( function() { /*
 */ } );
 $( '#setting-soxr' ).click( function() {
 	var defaultval = [ 20, 50, 91.3, 100, 0, 0, ];
+	var soxrval;
 	info( {
 		  icon          : 'mpd'
 		, title         : 'SoXR Custom Settings'
@@ -430,9 +407,25 @@ $( '#setting-soxr' ).click( function() {
 				$( '#infoTextBox'+ i ).val( val[ i ] );
 			}
 			setTimeout( function() {
-			$( '#extra .selectric, #extra .selectric-wrapper' ).css( 'width', '185px' );
-			$( '#extra .selectric-items' ).css( 'min-width', '185px' );
+				$( '#extra .selectric, #extra .selectric-wrapper' ).css( 'width', '185px' );
+				$( '#extra .selectric-items' ).css( 'min-width', '185px' );
 			}, 30 );
+			if ( G.soxr ) {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '.infoinput' ).keyup( function() {
+					soxrval = $( '#infoSelectBox' ).val();
+					for ( i = 1; i < 5; i++ ) soxrval += ' '+ $( '#infoTextBox'+ i ).val();
+					soxrval += ' '+ $( '#infoSelectBox1' ).val();
+					var v = soxrval.split( ' ' );
+					var errors = false;
+					if (   ( v[ 1 ] < 0 || v[ 1 ] > 100 )
+						|| ( v[ 2 ] < 0 || v[ 2 ] > 100 )
+						|| ( v[ 3 ] < 100 || v[ 3 ] > 150 )
+						|| ( v[ 4 ] < 0 || v[ 4 ] > 30 )
+					) errors = true;
+					$( '#infoOk' ).toggleClass( 'disabled', soxrval === G.soxrval || errors );
+				} );
+			}
 		}
 		, boxwidth      : 70
 		, buttonlabel   : '<i class="fa fa-undo"></i>Default'
@@ -448,33 +441,8 @@ $( '#setting-soxr' ).click( function() {
 			if ( !G.soxr ) $( '#soxr' ).prop( 'checked', 0 );
 		}
 		, ok            : function() {
-			var soxrval = $( '#infoSelectBox' ).val();
-			for ( i = 1; i < 5; i++ ) soxrval += ' '+ $( '#infoTextBox'+ i ).val();
-			soxrval += ' '+ $( '#infoSelectBox1' ).val();
-			if ( !G.soxr || soxrval !== G.soxrval ) {
-				var val = soxrval.split( ' ' );
-				var errors = '';
-				if ( val[ 1 ] < 0 || val[ 1 ] > 100 ) errors += '<br><w>Phase Response</w> is not 1-100';
-				if ( val[ 2 ] < 0 || val[ 2 ] > 100 ) errors += '<br><w>Passband End</w> is not 1-100<br>';
-				if ( val[ 3 ] < 100 || val[ 3 ] > 150 ) errors += '<br><w>Stopband Begin</w> is not 100-150';
-				if ( val[ 4 ] < 0 || val[ 4 ] > 30 ) errors += '<br><w>Attenuation</w> is not 0-30<br>';
-				if ( errors ) {
-					info( {
-						  icon    : 'mpd'
-						, title   : 'SoXR Custom Settings'
-						, message : '<i class="fa fa-warning fa-lg wh"></i> Warning<br>'
-								   + errors
-						, ok      : function() {
-							$( '#setting-soxr' ).click();
-						}
-					} );
-				} else {
-					notify( 'SoXR Custom Settings', 'Change ...', 'mpd' );
-					bash( [ 'soxrset', soxrval ] );
-				}
-			} else {
-				if ( !G.soxr ) $( '#soxr' ).prop( 'checked', 0 );
-			}
+			notify( 'SoXR Custom Settings', 'Change ...', 'mpd' );
+			bash( [ 'soxrset', soxrval ] );
 		}
 	} );
 } );
