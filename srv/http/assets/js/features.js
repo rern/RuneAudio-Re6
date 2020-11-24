@@ -30,7 +30,7 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		$( '#login' ).prop( 'checked', G.login );
 		$( '#setting-login' ).toggleClass( 'hide', !G.login );
 		$( '#autoplay' ).prop( 'checked', G.autoplay );
-		$( '#hostapd' ).prop( 'checked', G.hostapd );
+		$( '#hostapd, #hostapdchk' ).prop( 'checked', G.hostapd );
 		$( '#setting-hostapd' ).toggleClass( 'hide', !G.hostapd );
 		services.forEach( function( id ) {
 			codeToggle( id, 'status' );
@@ -41,20 +41,41 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 }
 refreshData();
 //---------------------------------------------------------------------------------------
-$( '#shairport-sync' ).click( function() {
+$( '.enable' ).click( function() {
+	var idname = {
+		  hostapd     : [ 'RPi Access Point',     'wifi-3' ]
+		, login       : [ 'Password Login',       'key' ]
+		, mpdscribble : [ 'Last.fm Scrobbler',    'lastfm' ]
+		, smb         : [ 'Samba - File Sharing', 'network' ]
+		, snapclient  : [ 'SnapClient Renderer',  'snapcast' ]
+	}
 	var checked = $( this ).prop( 'checked' );
-	notify( 'AirPlay Renderer', checked, 'airplay' );
-	bash( [ 'shairport-sync', checked ] );
-} );
-$( '#snapclient' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.snapclientset ) {
-		notify( 'SnapClient Renderer', checked, 'snapcast' );
-		bash( [ 'snapclient', checked ] );
+	var id = this.id;
+	if ( G[ id +'set' ] ) {
+		var nameicon = idname[ id ];
+		notify( nameicon[ 0 ], checked, nameicon[ 1 ] );
+		bash( [ id, checked ] );
 	} else {
-		$( '#setting-snapclient' ).click();
+		$( '#setting-'+ id ).click();
 	}
 } );
+$( '.enablenoset' ).click( function() {
+	var idname = {
+		  autoplay         : [ 'Play on Startup',                  'refresh-play' ]
+		, localbrowser     : [ 'Chromium - Browser on RPi',        'chromium' ]
+		, 'shairport-sync' : [ 'AirPlay Renderer',                 'airplay' ]
+		, snapserver       : [ 'Snapcast - Sync Streaming Server', 'snapcast' ]
+		, spotifyd         : [ 'Spotify Connect',                  'spotify' ]
+		, streaming        : [ 'HTTP Streaming',                   'mpd' ]
+		, upmpdcli         : [ 'UPnP Renderer',                    'upnp' ]
+	}
+	var checked = $( this ).prop( 'checked' );
+	var id = this.id;
+	var nameicon = idname[ id ];
+	notify( nameicon[ 0 ], checked, nameicon[ 1 ] );
+	bash( [ id, checked ] );
+} );
+
 $( '#setting-snapclient' ).click( function() {
 	info( {
 		  icon          : 'snapcast'
@@ -91,11 +112,6 @@ $( '#setting-snapclient' ).click( function() {
 		}
 	} );
 } );
-$( '#spotifyd' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	notify( 'Spotify Connect', checked, 'spotify' );
-	bash( [ 'spotifyd', checked ] );
-} );
 $( '#setting-spotifyd' ).click( function() {
 	bash( [ 'aplaydevices' ], function( devices ) {
 		var devices = devices.split( '\n' );
@@ -119,26 +135,6 @@ $( '#setting-spotifyd' ).click( function() {
 			}
 		} );
 	} );
-} );
-$( '#upmpdcli' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	notify( 'UPnP Renderer', checked, 'upnp fa-s' );
-	bash( [ 'upmpdcli', checked ] );
-} );
-$( '#snapserver' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	notify( 'Snapcast - Sync Streaming Server', checked, 'snapcast' );
-	bash( [ 'snapserver', checked ] );
-} );
-$( '#streaming' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	notify( 'HTTP Streaming', checked, 'mpd' );
-	bash( [ 'streaming', checked ] );
-} );
-$( '#localbrowser' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	notify( 'Chromium - Browser on RPi', checked, 'chromium' );
-	bash( [ 'localbrowser', checked ] );
 } );
 var localbrowserinfo = heredoc( function() { /*
 	<div id="infoText" class="infocontent">
@@ -232,15 +228,6 @@ $( '#setting-localbrowser' ).click( function() {
 		}
 	} );
 } );
-$( '#smb' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.smbset ) {
-		notify( 'Samba - File Sharing', checked, 'network' );
-		bash( [ 'smb', checked ] );
-	} else {
-		$( '#setting-smb' ).click();
-	}
-} );
 $( '#setting-smb' ).click( function() {
 	info( {
 		  icon     : 'network'
@@ -267,15 +254,6 @@ $( '#setting-smb' ).click( function() {
 			}
 		}
 	} );
-} );
-$( '#mpdscribble' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.mpdscribbleset ) {
-		notify( 'Scrobbler', checked, 'lastfm' );
-		bash( [ 'mpdscribble', checked ] );
-	} else {
-		$( '#setting-mpdscribble' ).click();
-	}
 } );
 $( '#setting-mpdscribble' ).click( function() {
 	var data = G.mpdscribbleval ? G.mpdscribbleval.split( '\n' ) : [ '', '' ];
@@ -308,15 +286,6 @@ $( '#setting-mpdscribble' ).click( function() {
 		}
 	} );
 } );
-$( '#login' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.loginset ) {
-		notify( 'Password Login', checked, 'key' );
-		bash( [ 'login', checked ] );
-	} else {
-		$( '#setting-login' ).click();
-	}
-} );
 $( '#setting-login' ).click( function() {
 	info( {
 		  icon          : 'lock'
@@ -347,12 +316,7 @@ $( '#setting-login' ).click( function() {
 		}
 	} );
 } );
-$( '#autoplay' ).click( function() {
-	G.autoplay = $( this ).prop( 'checked' );
-	notify( 'Play on Startup', G.autoplay, 'refresh-play' );
-	bash( [ 'autoplay', G.autoplay ] );
-} );
-$( '#hostapd' ).click( function() {
+$( '#hostapdchk' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( !G.hostapd && G.wlanconnect && ( checked || !G.hostapdset ) ) {
 		info( {
@@ -364,28 +328,18 @@ $( '#hostapd' ).click( function() {
 				if ( !G.hostapd ) $( '#hostapd' ).prop( 'checked', 0 );
 			}
 			, ok        : function() {
-				if ( G.hostapdset ) {
-					notify( 'RPi Access Point', checked, 'wifi-3' );
-					bash( [ 'hostapd', checked, G.hostapdip ] );
-				} else {
-					$( '#setting-hostapd' ).click();
-				}
+				$( '#hostapd' ).click();
 			}
 		} );
 	} else {
-		if ( G.hostapdset ) {
-			notify( 'RPi Access Point', checked, 'wifi-3' );
-			bash( [ 'hostapd', checked, G.hostapdip ] );
-		} else {
-			$( '#setting-hostapd' ).click();
-		}
+		$( '#hostapd' ).click();
 	}
 } );
 $( '#setting-hostapd' ).click( function() {
 	info( {
 		  icon         : 'network'
 		, title        : 'RPi Access Point Settings'
-		, message      : 'Password - at least 8 characters'
+		, message      : 'Password - 8 characters or more'
 		, textlabel    : [ 'Password', 'IP' ]
 		, textvalue    : [ G.hostapdpwd, G.hostapdip ]
 		, textrequired : [ 0, 1 ]
