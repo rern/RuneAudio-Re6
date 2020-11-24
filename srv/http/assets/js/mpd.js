@@ -130,6 +130,25 @@ refreshData = function() {
 }
 refreshData();
 //---------------------------------------------------------------------------------------
+$( '.enable' ).click( function() {
+	var idname = {
+		  buffer       : 'Custom Audio Buffer'
+		, bufferoutput : 'Custom Output Buffer'
+		, crossfade    : 'Crossfade'
+		, custom       : "User's Custom Settings"
+		, replaygain   : 'Replay Gain'
+		, soxr         : 'SoXR Custom Settings'
+	}
+	var checked = $( this ).prop( 'checked' );
+	var id = this.id;
+	if ( G[ id +'set' ] ) {
+		notify( idname[ id ], checked, 'mpd' );
+		checked ? bash( [ id +'set', G[ id +'val' ] ] ) : bash( [ id +'disable' ] );
+	} else {
+		$( '#setting-'+ id ).click();
+	}
+} );
+
 $( '#audiooutput, #mixertype' ).selectric();
 $( '.selectric-input' ).prop( 'readonly', 1 ); // fix - suppress screen keyboard
 var setmpdconf = '/srv/http/bash/mpd-conf.sh';
@@ -231,15 +250,6 @@ $( '#dop' ).click( function() {
 	notify( 'DSP over PCM', checked, 'mpd' );
 	bash( [ 'dop', checked, name ] );
 } );
-$( '#crossfade' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.crossfadeset ) {
-		notify( 'Crossfade', checked, 'mpd' );
-		checked && bash( [ 'crossfadeset', G.crossfadeval ] ) || bash( [ 'crossfadedisable' ] );
-	} else {
-		$( '#setting-crossfade' ).click();
-	}
-} );
 $( '#setting-crossfade' ).click( function() {
 	info( {
 		  icon    : 'mpd'
@@ -265,15 +275,6 @@ $( '#normalization' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	notify( 'Normalization', checked, 'mpd' );
 	bash( [ 'normalization', checked ] );
-} );
-$( '#replaygain' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.replaygainset ) {
-		notify( 'Replay Gain', checked, 'mpd' );
-		checked && bash( [ 'replaygainset', G.replaygainval ] ) || bash( [ 'replaygaindisable' ] );
-	} else {
-		$( '#setting-replaygain' ).click();
-	}
 } );
 $( '#setting-replaygain' ).click( function() {
 	info( {
@@ -308,15 +309,6 @@ $( '#ffmpeg' ).click( function() {
 $( '#filetype' ).click( function() {
 	$( '#divfiletype' ).toggleClass( 'hide' );
 } );
-$( '#buffer' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.bufferset ) {
-		notify( 'Custom Audio Buffer', checked, 'mpd' );
-		checked && bash( [ 'bufferset', G.bufferval ] ) || bash( [ 'bufferdisable' ] );
-	} else {
-		$( '#setting-buffer' ).click();
-	}
-} );
 $( '#setting-buffer' ).click( function() {
 	info( {
 		  icon      : 'mpd'
@@ -350,15 +342,6 @@ $( '#setting-buffer' ).click( function() {
 		}
 	} );
 } );
-$( '#bufferoutput' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.bufferoutputset ) {
-		notify( 'Custom Output Buffer', checked, 'mpd' );
-		checked && bash( [ 'bufferoutputset', G.bufferoutputval ] ) || bash( [ 'bufferoutputdisable' ] );
-	} else {
-		$( '#setting-bufferoutput' ).click();
-	}
-} );
 $( '#setting-bufferoutput' ).click( function() {
 	info( {
 		  icon      : 'mpd'
@@ -391,15 +374,6 @@ $( '#setting-bufferoutput' ).click( function() {
 			}
 		}
 	} );
-} );
-$( '#soxr' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.soxrset ) {
-		notify( 'Custom SoX Resampler', checked, 'mpd' );
-		checked && bash( [ 'soxrset' ].concat( G.soxrval.split( ' ' ).map( n => +n ) ) ) || bash( [ 'soxrdisable' ] );
-	} else {
-		$( '#setting-soxr' ).click();
-	}
 } );
 var soxrinfo = heredoc( function() { /*
 	<div id="infoText" class="infocontent">
@@ -451,7 +425,7 @@ $( '#setting-soxr' ).click( function() {
 	var defaultval = [ 20, 50, 91.3, 100, 0, 0, ];
 	info( {
 		  icon          : 'mpd'
-		, title         : 'Custom SoX Resampler'
+		, title         : 'SoXR Custom Settings'
 		, content       : soxrinfo
 		, nofocus       : 1
 		, preshow       : function() {
@@ -464,7 +438,7 @@ $( '#setting-soxr' ).click( function() {
 			setTimeout( function() {
 			$( '#extra .selectric, #extra .selectric-wrapper' ).css( 'width', '185px' );
 			$( '#extra .selectric-items' ).css( 'min-width', '185px' );
-			}, 0 );
+			}, 30 );
 		}
 		, boxwidth      : 70
 		, buttonlabel   : '<i class="fa fa-undo"></i>Default'
@@ -480,21 +454,20 @@ $( '#setting-soxr' ).click( function() {
 			if ( !G.soxr ) $( '#soxr' ).prop( 'checked', 0 );
 		}
 		, ok            : function() {
-			var soxrval = [ $( '#infoSelectBox' ).val() ];
-			for ( i = 1; i < 5; i++ ) {
-				soxrval.push( Number( $( '#infoTextBox'+ i ).val() ) );
-			}
-			soxrval.push( $( '#infoSelectBox1' ).val() );
-			if ( !G.soxr || soxrval.toString().replace( /,/g, ' ' ) !== G.soxrval ) {
+			var soxrval = $( '#infoSelectBox' ).val();
+			for ( i = 1; i < 5; i++ ) soxrval += ' '+ $( '#infoTextBox'+ i ).val();
+			soxrval += ' '+ $( '#infoSelectBox1' ).val();
+			if ( !G.soxr || soxrval !== G.soxrval ) {
+				var val = soxrval.split( ' ' );
 				var errors = '';
-				if ( soxrval[ 1 ] < 0 || soxrval[ 1 ] > 100 ) errors += '<br><w>Phase Response</w> is not 1-100';
-				if ( soxrval[ 2 ] < 0 || soxrval[ 2 ] > 100 ) errors += '<br><w>Passband End</w> is not 1-100<br>';
-				if ( soxrval[ 3 ] < 100 || soxrval[ 3 ] > 150 ) errors += '<br><w>Stopband Begin</w> is not 100-150';
-				if ( soxrval[ 4 ] < 0 || soxrval[ 4 ] > 30 ) errors += '<br><w>Attenuation</w> is not 0-30<br>';
+				if ( val[ 1 ] < 0 || val[ 1 ] > 100 ) errors += '<br><w>Phase Response</w> is not 1-100';
+				if ( val[ 2 ] < 0 || val[ 2 ] > 100 ) errors += '<br><w>Passband End</w> is not 1-100<br>';
+				if ( val[ 3 ] < 100 || val[ 3 ] > 150 ) errors += '<br><w>Stopband Begin</w> is not 100-150';
+				if ( val[ 4 ] < 0 || val[ 4 ] > 30 ) errors += '<br><w>Attenuation</w> is not 0-30<br>';
 				if ( errors ) {
 					info( {
 						  icon    : 'mpd'
-						, title   : 'Custom SoX Resampler'
+						, title   : 'SoXR Custom Settings'
 						, message : '<i class="fa fa-warning fa-lg wh"></i> Warning<br>'
 								   + errors
 						, ok      : function() {
@@ -502,24 +475,14 @@ $( '#setting-soxr' ).click( function() {
 						}
 					} );
 				} else {
-					soxrval.unshift( 'soxrset' );
-					notify( 'Custom SoX Resampler', 'Change ...', 'mpd' );
-					bash( soxrval );
+					notify( 'SoXR Custom Settings', 'Change ...', 'mpd' );
+					bash( [ 'soxrset', soxrval ] );
 				}
 			} else {
 				if ( !G.soxr ) $( '#soxr' ).prop( 'checked', 0 );
 			}
 		}
 	} );
-} );
-$( '#custom' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.customset ) {
-		notify( "User's Custom Settings", checked, 'mpd' );
-		checked && bash( [ 'customset' ] ) || bash( [ 'customdisable' ] );
-	} else {
-		$( '#setting-custom' ).click();
-	}
 } );
 var custominfo = heredoc( function() { /*
 	<p class="infomessage msg">

@@ -283,7 +283,7 @@ $( '#lcdchar' ).click( function() {
 	if ( G.lcdcharset ) {
 		notify( 'Character LCD', checked, 'gear' );
 		rebootText( checked, 'Character LCD' );
-		checked && bash( [ 'lcdcharset', G.lcdcharval, G.reboot.join( '\n' ) ] ) || bash( [ 'lcdchardisable' ] );
+		checked ? bash( [ 'lcdcharset', G.lcdcharval, G.reboot.join( '\n' ) ] ) : bash( [ 'lcdchardisable' ] );
 	} else {
 		$( '#setting-lcdchar' ).click();
 	}
@@ -446,7 +446,7 @@ $( '#soundprofile' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( G.soundprofileset ) {
 		notify( "Kernel Sound Profile", checked, 'volume' );
-		checked && bash( [ 'soundprofileset', G.soundprofileval ] ) || bash( [ 'soundprofiledisable' ] );
+		checked ? bash( [ 'soundprofileset', G.soundprofileval ] ) : bash( [ 'soundprofiledisable' ] );
 	} else {
 		$( '#setting-soundprofile' ).click();
 	}

@@ -62,7 +62,7 @@
 	<br><gr>mpc<i class="fa fa-code"></i></gr></a>
 </div>
 <div class="col-r">
-	<input id="crossfade" class="switch" type="checkbox">
+	<input id="crossfade" class="enable" type="checkbox">
 	<div class="switchlabel" for="crossfade"></div>
 	<i id="setting-crossfade" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
@@ -88,7 +88,7 @@
 	<br><gr>option</gr></a>
 </div>
 <div class="col-r">
-	<input id="replaygain" type="checkbox">
+	<input id="replaygain" class="enable" type="checkbox">
 	<div class="switchlabel" for="replaygain"></div>
 	<i id="setting-replaygain" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
@@ -131,7 +131,7 @@
 	<br><gr>custom size</gr></a>
 </div>
 <div class="col-r">
-	<input id="buffer" type="checkbox">
+	<input id="buffer" class="enable" type="checkbox">
 	<div class="switchlabel" for="buffer"></div>
 	<i id="setting-buffer" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
@@ -145,7 +145,7 @@
 	<br><gr>custom size</gr></a>
 </div>
 <div class="col-r">
-	<input id="bufferoutput" type="checkbox">
+	<input id="bufferoutput" class="enable" type="checkbox">
 	<div class="switchlabel" for="bufferoutput"></div>
 	<i id="setting-bufferoutput" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
@@ -159,7 +159,7 @@
 	<br><gr>SoXR custom settings</gr></a>
 </div>
 <div class="col-r">
-	<input id="soxr" type="checkbox">
+	<input id="soxr" class="enable" type="checkbox">
 	<div class="switchlabel" for="soxr"></div>
 	<i id="setting-soxr" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
@@ -182,7 +182,7 @@
 </div>
 <div class="col-l">User's Custom Settings</div>
 <div class="col-r">
-	<input id="custom" type="checkbox">
+	<input id="custom" class="enable" type="checkbox">
 	<div class="switchlabel" for="custom"></div>
 	<i id="setting-custom" class="setting fa fa-gear"></i>
 	<span class="help-block hide">Insert settings into <code>/etc/mpd.conf</code>.</span>
