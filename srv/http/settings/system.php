@@ -65,7 +65,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 			if ( file_exists( '/usr/bin/bluetoothctl' ) ) { ?>
 <div data-status="bluetoothctl" class="col-l icon status">Bluetooth <i class="fa fa-code code"></i></div>
 <div class="col-r">
-	<input id="bluetooth" type="checkbox">
+	<input id="bluetooth" class="enablenoset" type="checkbox">
 	<div class="switchlabel" for="bluetooth"></div>
 	<i id="setting-bluetooth" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
@@ -122,7 +122,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<br><gr>3.5" 420x320</gr></a>
 </div>
 <div class="col-r">
-	<input id="lcd" type="checkbox">
+	<input id="lcd" class="enablenoset" type="checkbox">
 	<div class="switchlabel" for="lcd"></div>
 	<i id="setting-lcd" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
@@ -135,7 +135,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<br><gr>RPI.GPIO</gr></a>
 </div>
 <div class="col-r">
-	<input id="relays" type="checkbox">
+	<input id="relays" class="enablenoset" type="checkbox">
 	<div class="switchlabel" for="relays"></div>
 	<i id="setting-relays" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
