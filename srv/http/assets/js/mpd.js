@@ -148,7 +148,7 @@ $( '.enable' ).click( function() {
 		$( '#setting-'+ id ).click();
 	}
 } );
-$( '.enabletoggle' ).click( function() {
+$( '.enablenoset' ).click( function() {
 	var idname = {
 		  autoupdate    : 'Auto Update'
 		, ffmpeg        : 'FFmpeg Decoder'
