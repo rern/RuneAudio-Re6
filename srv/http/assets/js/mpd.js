@@ -238,7 +238,7 @@ $( '#novolume' ).click( function() {
 	if ( checked ) {
 		info( {
 			  icon    : 'volume'
-			, title   : 'Mixer Control'
+			, title   : 'No Volume'
 			, message : warning
 			, ok      : function() {
 				notify( 'No Volume', 'Enable ...', 'mpd' );
@@ -248,8 +248,11 @@ $( '#novolume' ).click( function() {
 	} else {
 		info( {
 			  icon    : 'volume'
-			, title   : 'Mixer Control'
-			, message : 'Enable any volume features - disable <wh>No volume</wh>.'
+			, title   : 'No Volume'
+			, message : '<wh>No volume</wh> will be disabled on:'
+						+'<br>&emsp; &bull; Select a Mixer Control'
+						+'<br>&emsp; &bull; Enable any Volume options'
+			, msgalign : 'left'
 		} );
 		$( this ).prop( 'checked', 1 );
 	}
