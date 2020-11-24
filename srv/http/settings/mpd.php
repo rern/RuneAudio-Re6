@@ -11,10 +11,11 @@
 	<select id="mixertype" data-style="btn-default btn-lg"></select>
 	<i id="setting-mixertype" class="settingedit fa fa-gear hwmixer"></i><br>
 	<span class="hwmixer"><span class="help-block hide"><i class="fa fa-gear"></i>&ensp;Manually select hardware mixer only if the current one is not working.</span></span>
-	<span class="help-block hide">Set volume/mixer control for each device.
-		<br>Disable: best sound quality. <span id="hwmixertxt">(DAC hardware volume will be reset to 0dB.)
-		<br>DAC hardware: good and convenient.</span>
-		<br>MPD software: depends on users preferences.
+	<span class="help-block hide">
+			Set volume/mixer control for each device.
+		<br>&bull; Disable: best sound quality. <span id="hwmixertxt">(DAC hardware volume will be reset to 0dB.)
+		<br>&bull; DAC hardware: good and convenient.</span>
+		<br>&bull; MPD software: depends on users preferences.
 	</span>
 </div>
 </div>
@@ -39,7 +40,12 @@
 <div class="col-r">
 	<input id="novolume" type="checkbox">
 	<div class="switchlabel" for="novolume"></div>
-	<span class="help-block hide">Disable all software volume manipulations for bit-perfect stream from MPD to DAC and reset DAC hardware volume to 0dB to preserve full amplitude stream.</span>
+	<span class="help-block hide">
+		Disable all software volume manipulations for bit-perfect stream from MPD to DAC.
+		<br>&bull; Disable Mixer Control.
+		<br>&bull; Reset DAC hardware volume to 0dB to preserve full amplitude stream.
+		<br>&bull; Disable Crossfade, Normalization and Replay Gain.
+	</span>
 </div>
 
 <div id="divdop">
