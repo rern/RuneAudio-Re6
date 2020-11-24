@@ -80,21 +80,17 @@ audio_output {
 	auto_format    "no"
 	mixer_type     "'$mixertype'"'
 	
-	if [[ $mixertype != none ]]; then
-		if [[ -n $mixermanual ]]; then # mixer_device must be card index
-########
-			mpdconf+='
-	mixer_control  "'$mixermanual'"
-	mixer_device   "hw:'$card'"'
-		
+	if [[ $mixertype == hardware ]]; then # mixer_device must be card index
+		if [[ -n $mixermanual ]]; then
+			mixercontrol=$mixermanual
 		elif [[ -n $hwmixer ]]; then
-			device=$( amixer -c $card scontrols | cut -d',' -f2 )
+			mixercontrol=$hwmixer
+		fi
 ########
-			mpdconf+='
-	mixer_control  "'$hwmixer'"
+		mpdconf+='
+	mixer_control  "'$mixercontrol'"
 	mixer_device   "hw:'$card'"'
 		
-		fi
 	fi
 	
 	if [[ $dop == 1 ]]; then
@@ -146,6 +142,11 @@ fi
 
 echo "$mpdconf" > $mpdfile
 
+# set default card for bluetooth
+echo "\
+defaults.pcm.card $card
+defaults.ctl.card $card" > /etc/asound.conf
+
 systemctl restart mpd  # "restart" while not running = start + stop + start
 
 if [[ -e $dirsystem/updating ]]; then
@@ -178,11 +179,6 @@ if [[ $# -gt 0 && $1 != bt ]]; then
 		[[ $mixertype == 'none' && -n $hwmixer ]] && amixer -c $card sset "$hwmixer" 0dB
 		echo $aplayname > $usbdacfile # flag - active usb
 	fi
-	# set default card for bluetooth
-	[[ -z $card ]] && card=0
-	echo "\
-defaults.pcm.card $card
-defaults.ctl.card $card" > /etc/asound.conf
 	
 	pushstream notify '{"title":"Audio Output","text":"'"$name"'","icon": "output"}'
 	
