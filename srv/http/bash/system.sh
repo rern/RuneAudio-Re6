@@ -239,8 +239,12 @@ soundprofiledisable )
 soundprofileset )
 	values=${args[@]:1}
 	soundprofile $value
-	printf '%s\n' "${args[@]:1}" > $dirsystem/soundprofileset
-	touch $dirsystem/soundprofile
+	if [[ $values == '1500 1000 60 18000000' ]]; then
+		rm -f $dirsystem/soundprofile*
+	else
+		printf '%s\n' "${args[@]:1}" > $dirsystem/soundprofileset
+		touch $dirsystem/soundprofile
+	fi
 	pushRefresh
 	;;
 statusbootlog )

@@ -505,8 +505,8 @@ $( '#setting-soundprofile' ).click( function() {
 			var soundprofileval = $( '#infoTextBox' ).val();
 			for ( i = 1; i < 4; i++ ) soundprofileval += ' '+ $( '#infoTextBox'+ i ).val();
 			if ( !G.soundprofileset || soundprofileval !== G.soundprofileval ) {
-				bash( [ 'soundprofileset' ].concat( soundprofileval.split( ' ' ).map( n => +n ) ) );
-				notify( 'Kernel Sound Profile', 'Change ...', 'gear' );
+				bash( [ 'soundprofileset', soundprofileval ] );
+				notify( 'Kernel Sound Profile', ( soundprofileval !== defaultval ? 'Change ...' : 'Default ...' ), 'volume' );
 			} else {
 				if ( !G.soundprofile ) $( '#soundprofile' ).prop( 'checked', 0 );
 			}
