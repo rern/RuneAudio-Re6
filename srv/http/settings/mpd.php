@@ -76,7 +76,7 @@
 	<br><gr>option</gr></a>
 </div>
 <div class="col-r">
-	<input id="normalization" type="checkbox">
+	<input id="normalization" class="enabletoggle" type="checkbox">
 	<div class="switchlabel" for="normalization"></div>
 	<span class="help-block hide">
 			<code>volume_normalization "yes"</code>
@@ -105,7 +105,7 @@
 	<br><gr>Library</gr></a>
 </div>
 <div class="col-r">
-	<input id="autoupdate" type="checkbox">
+	<input id="autoupdate"  class="enabletoggle" type="checkbox">
 	<div class="switchlabel" for="autoupdate"></div>
 	<span class="help-block hide">
 			<code>auto_update "yes"</code>
@@ -117,7 +117,7 @@
 	<br><gr>decoder</gr></a>
 </div>
 <div class="col-r">
-	<input id="ffmpeg" type="checkbox">
+	<input id="ffmpeg"  class="enabletoggle" type="checkbox">
 	<div class="switchlabel" for="ffmpeg"></div>
 	<span class="help-block hide">
 			<code>enable "yes"</code>

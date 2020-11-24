@@ -148,6 +148,17 @@ $( '.enable' ).click( function() {
 		$( '#setting-'+ id ).click();
 	}
 } );
+$( '.enabletoggle' ).click( function() {
+	var idname = {
+		  autoupdate    : 'Auto Update'
+		, ffmpeg        : 'FFmpeg Decoder'
+		, normalization : 'Normalization'
+	}
+	var checked = $( this ).prop( 'checked' );
+	var id = this.id;
+	notify( idname[ id ], checked, 'mpd' );
+	bash( [ id, checked ] );
+} );
 
 $( '#audiooutput, #mixertype' ).selectric();
 $( '.selectric-input' ).prop( 'readonly', 1 ); // fix - suppress screen keyboard
@@ -245,10 +256,8 @@ $( '#novolume' ).click( function() {
 } );
 $( '#dop' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
-	var $selected = $( '#audiooutput option:selected' );
-	var name = $selected.text();
 	notify( 'DSP over PCM', checked, 'mpd' );
-	bash( [ 'dop', checked, name ] );
+	bash( [ 'dop', checked, $( '#audiooutput option:selected' ).text() ] );
 } );
 $( '#setting-crossfade' ).click( function() {
 	info( {
@@ -271,11 +280,6 @@ $( '#setting-crossfade' ).click( function() {
 		}
 	} );
 } );
-$( '#normalization' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	notify( 'Normalization', checked, 'mpd' );
-	bash( [ 'normalization', checked ] );
-} );
 $( '#setting-replaygain' ).click( function() {
 	info( {
 		  icon    : 'mpd'
@@ -295,16 +299,6 @@ $( '#setting-replaygain' ).click( function() {
 			}
 		}
 	} );
-} );
-$( '#autoupdate' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	notify( 'Auto Update', checked, 'mpd' );
-	bash( [ 'autoupdate', checked ] );
-} );
-$( '#ffmpeg' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	notify( 'FFmpeg Decoder', checked, 'mpd' );
-	bash( [ 'ffmpeg', checked ] );
 } );
 $( '#filetype' ).click( function() {
 	$( '#divfiletype' ).toggleClass( 'hide' );
