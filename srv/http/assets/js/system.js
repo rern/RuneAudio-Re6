@@ -108,7 +108,7 @@ refreshData = function() {
 		$( '#timezone' )
 			.val( G.timezone )
 			.selectric( 'refresh' );
-		[ 'ifconfig', 'configtxt', 'journalctl' ].forEach( function( id ) {
+		[ 'bluetoothctl', 'ifconfig', 'configtxt', 'journalctl' ].forEach( function( id ) {
 			codeToggle( id, 'status' );
 		} );
 		$( '#soundprofile' ).prop( 'checked', G.soundprofile );
