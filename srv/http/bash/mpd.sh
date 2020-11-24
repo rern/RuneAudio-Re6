@@ -119,11 +119,11 @@ customdisable )
 	rm -f $dirsystem/mpd-custom
 	restartMPD
 	;;
-customget )
-	file=$dirsystem/mpd-custom
-	val=$( cat $file-global )
-	val+=$'\n'$( cat $file-output )
-	echo "$val"
+customgetglobal )
+	cat $dirsystem/mpd-custom-global
+	;;
+customgetoutput )
+	cat "$dirsystem/mpd-custom-output-${args[1]}"
 	;;
 customset )
 	file=$dirsystem/mpd-custom
@@ -133,8 +133,9 @@ customset )
 	else
 		global=${args[1]}
 		output=${args[2]}
+		outputname=${args[3]}
 		[[ -n $global ]] && echo "$global" > $file-global || rm -f $file-global
-		[[ -n $output ]] && echo "$output" > $file-output || rm -f $file-output
+		[[ -n $output ]] && echo "$output" > "$file-output-$outputname" || rm -f "$file-output-$outputname"
 		[[ -n $global || -n $output ]] && touch $file ${file}set
 	fi
 	sed -i '/ #custom$/ d' /etc/mpd.conf

@@ -474,6 +474,7 @@ var custominfo = heredoc( function() { /*
 */ } );
 $( '#setting-custom' ).click( function() {
 	var valglobal, valoutput;
+	var output = $( '#audiooutput option:selected' ).text();
 	info( {
 		  icon     : 'mpd'
 		, title    : "User's Custom Settings"
@@ -481,12 +482,13 @@ $( '#setting-custom' ).click( function() {
 		, msgalign : 'left'
 		, boxwidth : 'max'
 		, preshow  : function() {
-			bash( [ 'customget' ], function( data ) {
-				var val = data.split( '\n' );
-				valglobal = val[ 0 ] || '';
-				valoutput = val[ 1 ] || '';
-				$( '#global' ).val( valglobal );
-				$( '#output' ).val( valoutput );
+			bash( [ 'customgetglobal' ], function( data ) { // get directly to keep white spaces
+				valglobal = data || '';
+				bash( [ 'customgetoutput', output ], function( data ) {
+					valoutput = data || '';
+					$( '#global' ).val( valglobal );
+					$( '#output' ).val( valoutput );
+				} );
 			} );
 			$( '.msg' ).css( {
 				  width          : '100%'
@@ -506,7 +508,7 @@ $( '#setting-custom' ).click( function() {
 			if ( !G.custom || customglobal !== valglobal || customoutput !== valoutput ) {
 				var file = '/srv/http/data/system/mpd-custom';
 				notify( "User's Custom Settings", 'Change ...', 'mpd' );
-				bash( [ 'customset', customglobal, customoutput ] );
+				bash( [ 'customset', customglobal, customoutput, output ] );
 			} else {
 				if ( !G.custom ) $( '#custom' ).prop( 'checked', 0 );
 			}

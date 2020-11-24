@@ -103,11 +103,12 @@ audio_output {
 	dop            "yes"'
 	
 	fi
-	
-	if [[ -e $dirsystem/mpd-custom && -e $dirsystem/mpd-custom-output ]]; then
+	mpdcustom=$dirsystem/mpd-custom
+	customfile="$mpdcustom-output-$name"
+	if [[ -e $mpdcustom && -e "$customfile" ]]; then
 ########
 		mpdconf+="
-$( cat $dirsystem/mpd-custom-output | tr ^ '\n' | sed 's/^/\t/' )"
+$( cat "$customfile" | tr ^ '\n' | sed 's/^/\t/' )"
 	
 	fi
 ########
