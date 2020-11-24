@@ -81,11 +81,7 @@ audio_output {
 	mixer_type     "'$mixertype'"'
 	
 	if [[ $mixertype == hardware ]]; then # mixer_device must be card index
-		if [[ -n $mixermanual ]]; then
-			mixercontrol=$mixermanual
-		elif [[ -n $hwmixer ]]; then
-			mixercontrol=$hwmixer
-		fi
+		[[ -n $mixermanual ]] && mixercontrol=$mixermanual || mixercontrol=$hwmixer
 ########
 		mpdconf+='
 	mixer_control  "'$mixercontrol'"
