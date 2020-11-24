@@ -504,7 +504,12 @@ $( '#setting-soundprofile' ).click( function() {
 		, ok      : function() {
 			var soundprofileval = $( '#infoTextBox' ).val();
 			for ( i = 1; i < 4; i++ ) soundprofileval += ' '+ $( '#infoTextBox'+ i ).val();
-			if ( !G.soundprofileset || soundprofileval !== G.soundprofileval ) {
+			if ( !G.soundprofile && soundprofileval === defaultval ) {
+				$( '#soundprofile' ).prop( 'checked', 0 );
+				return
+			}
+			
+			if ( soundprofileval !== G.soundprofileval ) {
 				bash( [ 'soundprofileset', soundprofileval ] );
 				notify( 'Kernel Sound Profile', ( soundprofileval !== defaultval ? 'Change ...' : 'Default ...' ), 'volume' );
 			} else {
