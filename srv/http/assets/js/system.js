@@ -119,6 +119,20 @@ refreshData = function() {
 }
 refreshData();
 //---------------------------------------------------------------------------------------
+$( '.enablenoset' ).click( function() {
+	var idname = {
+		  bluetooth : [ 'On-board Bluetooth', 'bluetooth' ]
+		, lcd       : [ 'TFT LCD',            'gear' ]
+		, relays    : [ 'GPIO Relay',         'gpio' ]
+	}
+	var checked = $( this ).prop( 'checked' );
+	var id = this.id;
+	var nameicon = idname[ id ];
+	notify( nameicon[ 0 ], checked, nameicon[ 1 ] );
+	if ( id !== 'relays' ) rebootText( checked, nameicon[ 0 ] );
+	bash( [ id, checked, G.reboot.join( '\n' ) ] );
+} );
+
 $( '#timezone, #i2smodule' ).selectric( { maxHeight: 400 } );
 $( '.selectric-input' ).prop( 'readonly', 1 ); // fix - suppress screen keyboard
 
@@ -176,12 +190,6 @@ $( '#onboardaudio' ).click( function() {
 		rebootText( checked, 'on-board audio' );
 		bash( [ 'onboardaudio', checked, G.reboot.join( '\n' ) ] );
 	}
-} );
-$( '#bluetooth' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	rebootText( checked, 'on-board Bluetooth' );
-	notify( 'On-board Bluetooth', checked, 'bluetooth' );
-	bash( [ 'bluetooth', checked, G.reboot.join( '\n' ) ] );
 } );
 $( '#setting-bluetooth' ).click( function() {
 	info( {
@@ -258,12 +266,6 @@ $( '#i2smodule' ).on( 'selectric-change', function() {
 	}
 	bash( [ 'i2smodule', G.audioaplayname, G.audiooutput, G.reboot.join( '\n' ) ] );
 	$( '#output' ).text( G.audiooutput );
-} );
-$( '#lcd' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	notify( 'TFT LCD', checked, 'gear' );
-	rebootText( checked, 'TFT LCD' );
-	bash( [ 'lcd', checked, G.reboot.join( '\n' ) ] );
 } );
 $( '#setting-lcd' ).click( function() {
 	info( {
@@ -393,11 +395,6 @@ $( '#setting-lcdchar' ).click( function() {
 			}
 		}
 	} );
-} );
-$( '#relays' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	notify( 'GPIO Relay', checked, 'gpio' );
-	bash( [ 'relays', checked ] );
 } );
 $( '#setting-relays' ).click( function() {
 	location.href = '/settings/relays.php';
