@@ -318,14 +318,14 @@ $( '#setting-login' ).click( function() {
 } );
 $( '#hostapdchk' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
-	if ( !G.hostapd && G.wlanconnect && ( checked || !G.hostapdset ) ) {
+	if ( !G.hostapd && G.wlanconnect && checked ) {
 		info( {
 			  icon      : 'network'
 			, title     : 'RPi Access Point'
 			, message   : '<wh>Wi-Fi is currently connected.</wh>'
 						 +'<br>Disconnect and continue?'
 			, cancel    : function() {
-				if ( !G.hostapd ) $( '#hostapd' ).prop( 'checked', 0 );
+				if ( !G.hostapd ) $( '#hostapd, #hostapdchk' ).prop( 'checked', 0 );
 			}
 			, ok        : function() {
 				$( '#hostapd' ).click();
