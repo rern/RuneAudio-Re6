@@ -216,13 +216,14 @@ $( '#setting-mixertype' ).click( function() { // hardware mixer
 $( '#novolume' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( checked ) {
+		var $output = $( '#audiooutput option:selected' );
 		info( {
 			  icon    : 'volume'
 			, title   : 'No Volume'
 			, message : warning
 			, ok      : function() {
 				notify( 'No Volume', 'Enable ...', 'mpd' );
-				bash( [ 'novolume', $( '#audiooutput option:selected' ).text() ] );
+				bash( [ 'novolume', $output.text(), $output.data( 'card' ), $output.data( 'hwmixer' ) ] );
 			}
 		} );
 	} else {

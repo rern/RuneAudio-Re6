@@ -217,11 +217,15 @@ normalization )
 	restartMPD
 	;;
 novolume )
+	name=${args[1]}
+	card=${args[2]}
+	hwmixer=${args[3]}
 	sed -i -e '/volume_normalization/ d
 	' -e '/^replaygain/ s/".*"/"off"/
 	' /etc/mpd.conf
-	echo none > "$dirsystem/mpd-mixertype-${args[1]}"
 	mpc crossfade 0
+	amixer -c $card sset $hwmixer 0dB
+	echo none > "$dirsystem/mpd-mixertype-$name"
 	rm -f $dirsystem/{mpd-crossfade,mpd-replaygain,mpd-normalization}
 	restartMPD
 	curl -s -X POST http://127.0.0.1/pub?id=volumenone -d '{ "pvolumenone": "1" }'
