@@ -31,7 +31,6 @@ refreshData = function() {
 				+'value="'+ this.aplayname +'" '
 				+'data-card="'+ this.card +'" '
 				+'data-device="'+ this.device +'" '
-				+'data-device="'+ this.device +'" '
 			if ( this.mixercount ) {
 				htmldevices += 'data-hwmixer="'+ this.hwmixer +'" '
 							  +'data-mixercount="'+ this.mixercount +'" '
