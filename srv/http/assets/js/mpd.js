@@ -395,7 +395,7 @@ $( '#setting-soxr' ).click( function() {
 				$( '#extra .selectric-items' ).css( 'min-width', '185px' );
 			}, 30 );
 			if ( G.soxr ) {
-				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#infoOk' ).toggleClass( 'disabled', G.soxrset );
 				$( '.infoinput' ).keyup( function() {
 					soxrval = $( '#infoSelectBox' ).val();
 					for ( i = 1; i < 5; i++ ) soxrval += ' '+ $( '#infoTextBox'+ i ).val();
