@@ -575,6 +575,7 @@ plsimilar )
 power )
 	type=${args[1]}
 	mpc stop
+	[[ -e $dirsystem/lcdchar ]] && $dirbash/lcdchar.py rr
 	[[ -e $dirtmp/gpiotimer ]] && $dirbash/gpio.py off && sleep 2
 	if [[ $type == off ]]; then
 		pushstream notify '{"title":"Power","text":"Off ...","icon":"power blink","delay":-1}'
@@ -582,9 +583,10 @@ power )
 		pushstream notify '{"title":"Power","text":"Reboot ...","icon":"reboot blink","delay":-1}'
 	fi
 	$dirbash/ply-image /srv/http/assets/img/splash.png &> /dev/null
-	mount | grep -q /mnt/MPD/NAS && umount -l /mnt/MPD/NAS/* &> /dev/null
-	sleep 3
-	grep -q 'dtparam=i2c_arm=on' /boot/config.txt && $dirbash/lcdchar.py rr
+	if mount | grep -q /mnt/MPD/NAS; then
+		umount -l /mnt/MPD/NAS/* &> /dev/null
+		sleep 3
+	fi
 	[[ $type == off ]] && shutdown -h now || shutdown -r now
 	;;
 pushstatus )
