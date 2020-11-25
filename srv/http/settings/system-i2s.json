@@ -54,7 +54,7 @@
     "HiFiBerry Digi+": "hifiberry-digi",
     "HiFiBerry Digi+ Pro": "hifiberry-digi-pro",
     "HiFiBox DAC": "hifiberry-dacplus",
-    "InnoMaker HiFi DAC": "allo-boss-dac-pcm512x-audio"
+    "InnoMaker HiFi DAC": "allo-boss-dac-pcm512x-audio",
     "IQaudIO Amp": "iqaudio-dacplus",
     "IQaudIO Amp (with auto mute)": "iqaudio-dacplus,auto_mute_amp",
     "IQaudIO Amp (with unmute)": "iqaudio-dacplus,unmute_amp",
