@@ -305,9 +305,6 @@ ignoredir )
 	mpc update "$mpdpath" #1 get .mpdignore into database
 	mpc update "$mpdpath" #2 after .mpdignore was in database
 	;;
-randomfile )
-	randomfile
-	;;
 librandom )
 	enable=${args[1]}
 	if [[ $enable == false ]]; then
@@ -592,6 +589,9 @@ power )
 	;;
 pushstatus )
 	pushstreamStatus
+	;;
+randomfile )
+	randomfile
 	;;
 refreshbrowser )
 	pushstream reload 1
