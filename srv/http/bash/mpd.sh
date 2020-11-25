@@ -189,11 +189,11 @@ mixerhw )
 	restartMPD
 	;;
 mixerget )
-	readarray -t cards <<< "$( aplay -l | grep ^card | sed 's/card \(.*\): .*\[\(.*\)\], .*/\1\2/' )"
+	readarray -t cards <<< "$( aplay -l | grep ^card )"
 	for card in "${cards[@]}"; do
-		mixer+=$'\n'${card:1}
+		mixer+=$'\n'"$card"
 		mixer+='<hr>'
-		mixer+=$( amixer -c ${card:0:1} )$'\n'
+		mixer+=$( amixer -c ${card:5:1} )$'\n'
 	done
 	echo "${mixer:1}"
 	;;
