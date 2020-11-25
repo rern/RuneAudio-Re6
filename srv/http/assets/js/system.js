@@ -361,6 +361,16 @@ $( '#setting-lcdchar' ).click( function() {
 			$( '#address' ).html( opt );
 			$( '#address input[value='+ i2caddress +']' ).prop( 'checked', 1 );
 			$( '.lcd label' ).width( 80 );
+			if ( G.lcdcharset ) $( '#infoOk' ).addClass( 'disabled' );
+			$( '#cols, #inf, #charmap, #address, #chip' ).change( function() {
+				var lcdcharval = $( '#cols input:checked' ).val();
+				lcdcharval += ' '+ $( '#charmap input:checked' ).val();
+				if ( $( '#inf input:checked' ).val() === 'i2c' ) {
+					lcdcharval += ' '+ $( '#address input:checked' ).val();
+					lcdcharval += ' '+ $( '#chip option:selected' ).val();
+				}
+				if ( G.lcdcharset ) $( '#infoOk' ).toggleClass( 'disabled', G.lcdcharset && lcdcharval === G.lcdcharval );
+			} );
 		}
 		, cancel        : function() {
 			if ( !G.lcdchar ) $( '#lcdchar' ).prop( 'checked', 0 );
@@ -374,23 +384,18 @@ $( '#setting-lcdchar' ).click( function() {
 		, buttonnoreset : 1
 		, ok            : function() {
 			var lcdcharval = $( '#cols input:checked' ).val();
-			lcdcharval += ' '+ $( '#charmap input:checked').val();
-			var inf = $( '#inf input:checked' ).val();
+			lcdcharval += ' '+ $( '#charmap input:checked' ).val();
+			if ( $( '#inf input:checked' ).val() === 'i2c' ) {
+				lcdcharval += ' '+ $( '#address input:checked' ).val();
+				lcdcharval += ' '+ $( '#chip option:selected' ).val();
+			}
 			if ( inf === 'i2c' ) {
-				lcdcharval += ' '+ $( '#address input:checked').val();
-				lcdcharval += ' '+ $( '#chip').val();
-			}
-			if ( !G.lcdcharset || lcdcharval !== G.lcdcharval ) {
-				if ( inf === 'i2c' ) {
-					rebootText( 1, 'Character LCD' );
-					bash( [ 'lcdcharset', lcdcharval, G.reboot.join( '\n' ) ] );
-				} else {
-					bash( [ 'lcdcharset', lcdcharval ] );
-				}
-				notify( 'Character LCD', 'Change ...', 'gear' );
+				rebootText( 1, 'Character LCD' );
+				bash( [ 'lcdcharset', lcdcharval, G.reboot.join( '\n' ) ] );
 			} else {
-				if ( !G.lcdchar ) $( '#lcdchar' ).prop( 'checked', 0 );
+				bash( [ 'lcdcharset', lcdcharval ] );
 			}
+			notify( 'Character LCD', 'Change ...', 'gear' );
 		}
 	} );
 } );
@@ -481,16 +486,23 @@ $( '#setting-soundprofile' ).click( function() {
 		, checked : checked
 		, preshow : function() {
 			$( '#infoRadio input' ).last().prop( 'disabled', 1 );
+			if ( G.soundprofileset ) $( '#infoOk' ).addClass( 'disabled' );
 			$( '#infoRadio' ).change( function() {
-				var val = $( '#infoRadio input:checked' ).val().split( ' ' );
-				for ( i = 0; i < 4; i++ ) $( '#infoTextBox'+ ( i !== 0 ? i : '' ) ).val( val[ i ] );
+				var soundprofileval = $( '#infoRadio input:checked' ).val();
+				if ( G.soundprofileset ) $( '#infoOk' ).toggleClass( 'disabled', soundprofileval === G.soundprofileval );
+				var val = soundprofileval.split( ' ' );
+				for ( i = 0; i < 4; i++ ) $( '.infoinput' ).eq( i ).val( val[ i ] );
 			} );
-			$( '.infoinput' ).on( 'keyup', function() {
-				if (  $( this ).val() !== data[ $( '.infoinput' ).index() ] ) {
-					$( '#infoRadio input' ).last().prop( 'checked', 1 );
+			$( '.infoinput' ).keyup( function() {
+				var soundprofileval = $( '#infoTextBox' ).val();
+				for ( i = 1; i < 4; i++ ) soundprofileval += ' '+ $( '#infoTextBox'+ i ).val();
+				if ( values.indexOf( soundprofileval ) !== -1 ) {
+					$( '#infoRadio input[value="'+ soundprofileval +'"]' ).prop( 'checked', 1 );
+					$( '#infoRadio input' ).last().prop( 'checked', 0 );
 				} else {
-					$( '#infoRadio input[value="'+ checked +'"]' ).prop( 'checked', 1 );
+					$( '#infoRadio input' ).last().prop( 'checked', 1 );
 				}
+				if ( G.soundprofileset ) $( '#infoOk' ).toggleClass( 'disabled', G.soundprofileset && soundprofileval === G.soundprofileval );
 			} );
 		}
 		, cancel  : function() {
@@ -499,17 +511,8 @@ $( '#setting-soundprofile' ).click( function() {
 		, ok      : function() {
 			var soundprofileval = $( '#infoTextBox' ).val();
 			for ( i = 1; i < 4; i++ ) soundprofileval += ' '+ $( '#infoTextBox'+ i ).val();
-			if ( !G.soundprofile && soundprofileval === defaultval ) {
-				$( '#soundprofile' ).prop( 'checked', 0 );
-				return
-			}
-			
-			if ( soundprofileval !== G.soundprofileval ) {
-				bash( [ 'soundprofileset', soundprofileval ] );
-				notify( 'Kernel Sound Profile', ( soundprofileval !== defaultval ? 'Change ...' : 'Default ...' ), 'volume' );
-			} else {
-				if ( !G.soundprofile ) $( '#soundprofile' ).prop( 'checked', 0 );
-			}
+			bash( [ 'soundprofileset', soundprofileval ] );
+			notify( 'Kernel Sound Profile', ( soundprofileval !== defaultval ? 'Change ...' : 'Default ...' ), 'volume' );
 		}
 	} );
 } );
