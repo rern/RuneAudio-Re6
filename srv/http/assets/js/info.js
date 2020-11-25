@@ -270,7 +270,7 @@ function info( O ) {
 				.css( 'background-color', 'cancelcolor' in O ? O.cancelcolor : '' );
 			if ( 'cancelbutton' in O || 'cancellabel' in O ) $( '#infoCancel' ).removeClass( 'hide' );
 		}
-		if ( 'button' in O ) {
+		if ( 'button' in O && O.button ) {
 			var button = 'button' in O ? O.button : '';
 			var buttonlabel = 'buttonlabel' in O ? O.buttonlabel : '';
 			var buttoncolor = 'buttoncolor' in O ? O.buttoncolor : '';
