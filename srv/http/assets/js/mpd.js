@@ -250,17 +250,21 @@ $( '#setting-crossfade' ).click( function() {
 		, message : 'Seconds:'
 		, radio   : { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5 }
 		, checked : G.crossfadeval || 1
+		, preshow       : function() {
+			if ( G.crossfadeset ) {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#infoRadio' ).change( function() {
+					$( '#infoOk' ).toggleClass( 'disabled', +$( this ).find( 'input:checked' ).val() === G.crossfadeval );
+				} );
+			}
+		}
 		, cancel    : function() {
 			if ( !G.crossfade ) $( '#crossfade' ).prop( 'checked', 0 );
 		}
 		, ok      : function() {
 			crossfadeval = $( 'input[name=inforadio]:checked' ).val();
-			if ( !G.crossfade || crossfadeval !== G.crossfadeval ) {
-				notify( 'Crossfade', 'Change ...', 'mpd' );
-				bash( [ 'crossfadeset', crossfadeval ] );
-			} else {
-				if ( !G.crossfade ) $( '#crossfade' ).prop( 'checked', 0 );
-			}
+			notify( 'Crossfade', 'Change ...', 'mpd' );
+			bash( [ 'crossfadeset', crossfadeval ] );
 		}
 	} );
 } );
@@ -270,17 +274,21 @@ $( '#setting-replaygain' ).click( function() {
 		, title   : 'Replay Gain'
 		, radio   : { Auto: 'auto', Album: 'album', Track: 'track' }
 		, checked : G.replaygainval || 'auto'
+		, preshow       : function() {
+			if ( G.replaygainset ) {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#infoRadio' ).change( function() {
+					$( '#infoOk' ).toggleClass( 'disabled', $( this ).find( 'input:checked' ).val() === G.replaygainval );
+				} );
+			}
+		}
 		, cancel  : function() {
 			if ( !G.replaygain ) $( '#replaygain' ).prop( 'checked', 0 );
 		}
 		, ok      : function() {
 			replaygainval = $( 'input[name=inforadio]:checked' ).val();
-			if ( !G.replaygain || replaygainval !== G.replaygainval ) {
-				notify( 'Replay Gain', 'Change ...', 'mpd' );
-				bash( [ 'replaygainset', replaygainval ] );
-			} else {
-				if ( !G.replaygain ) $( '#replaygain' ).prop( 'checked', 0 );
-			}
+			notify( 'Replay Gain', 'Change ...', 'mpd' );
+			bash( [ 'replaygainset', replaygainval ] );
 		}
 	} );
 } );
@@ -294,17 +302,21 @@ $( '#setting-buffer' ).click( function() {
 		, message   : '<code>audio_buffer_size</code> (default: 4096)'
 		, textlabel : 'Size <gr>(kB)</gr>'
 		, textvalue : G.bufferval || 4096
+		, preshow       : function() {
+			if ( G.bufferset ) {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#infoTextBox' ).keyup( function() {
+					$( '#infoOk' ).toggleClass( 'disabled', +$( this ).val() === G.bufferval );
+				} );
+			}
+		}
 		, cancel    : function() {
 			if ( !G.buffer ) $( '#buffer' ).prop( 'checked', 0 );
 		}
 		, ok        : function() {
 			var bufferval = $( '#infoTextBox' ).val().replace( /\D/g, '' );
-			if ( !G.buffer || bufferval !== G.bufferval ) {
-				notify( 'Audio Buffer', G.bufferset ? 'Change ...' : 'Disable ...', 'mpd' );
-				bash( [ 'bufferset', bufferval ] );
-			} else {
-				if ( !G.buffer ) $( '#buffer' ).prop( 'checked', 0 );
-			}
+			notify( 'Audio Buffer', G.bufferset ? 'Change ...' : 'Disable ...', 'mpd' );
+			bash( [ 'bufferset', bufferval ] );
 		}
 	} );
 } );
@@ -318,9 +330,8 @@ $( '#setting-bufferoutput' ).click( function() {
 		, preshow       : function() {
 			if ( G.bufferoutputset ) {
 				$( '#infoOk' ).addClass( 'disabled' );
-				$( '#infoSelectBox' ).change( function() {
-					var val = $( '#infoSelectBox option:selectd' ).val();
-					$( '#infoOk' ).toggleClass( 'disabled', val === G.bufferoutputval );
+				$( '#infoTextBox' ).keyup( function() {
+					$( '#infoOk' ).toggleClass( 'disabled', +$( this ).val() === G.bufferoutputval );
 				} );
 			}
 		}
@@ -329,12 +340,8 @@ $( '#setting-bufferoutput' ).click( function() {
 		}
 		, ok        : function() {
 			var bufferoutputval = $( '#infoTextBox' ).val().replace( /\D/g, '' );
-			if ( !G.bufferoutput || bufferoutputval !== G.bufferoutputval ) {
-				notify( 'Output Buffer', 'Change ...', 'mpd' );
-				bash( [ 'bufferoutputset', bufferoutputval ] );
-			} else {
-				if ( !G.bufferoutput ) $( '#bufferoutput' ).prop( 'checked', 0 );
-			}
+			notify( 'Output Buffer', 'Change ...', 'mpd' );
+			bash( [ 'bufferoutputset', bufferoutputval ] );
 		}
 	} );
 } );
