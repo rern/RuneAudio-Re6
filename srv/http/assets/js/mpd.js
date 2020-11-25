@@ -377,7 +377,6 @@ var soxrinfo = heredoc( function() { /*
 */ } );
 $( '#setting-soxr' ).click( function() {
 	var defaultval = [ 20, 50, 91.3, 100, 0, 0, ];
-	var soxrval;
 	info( {
 		  icon          : 'mpd'
 		, title         : 'SoXR Custom Settings'
@@ -394,22 +393,26 @@ $( '#setting-soxr' ).click( function() {
 				$( '#extra .selectric, #extra .selectric-wrapper' ).css( 'width', '185px' );
 				$( '#extra .selectric-items' ).css( 'min-width', '185px' );
 			}, 30 );
-			if ( G.soxr ) {
-				$( '#infoOk' ).toggleClass( 'disabled', G.soxrset );
-				$( '.infoinput' ).keyup( function() {
-					soxrval = $( '#infoSelectBox' ).val();
-					for ( i = 1; i < 5; i++ ) soxrval += ' '+ $( '#infoTextBox'+ i ).val();
-					soxrval += ' '+ $( '#infoSelectBox1' ).val();
-					var v = soxrval.split( ' ' );
-					var errors = false;
-					if (   ( v[ 1 ] < 0 || v[ 1 ] > 100 )
-						|| ( v[ 2 ] < 0 || v[ 2 ] > 100 )
-						|| ( v[ 3 ] < 100 || v[ 3 ] > 150 )
-						|| ( v[ 4 ] < 0 || v[ 4 ] > 30 )
-					) errors = true;
-					$( '#infoOk' ).toggleClass( 'disabled', soxrval === G.soxrval || errors );
-				} );
-			}
+			if ( G.soxrset ) $( '#infoOk' ).addClass( 'disabled' );
+			$( '#infoSelectBox, #infoSelectBox1' ).change( function() {
+				var soxrval = $( '#infoSelectBox' ).val();
+				for ( i = 1; i < 5; i++ ) soxrval += ' '+ $( '#infoTextBox'+ i ).val();
+				soxrval += ' '+ $( '#infoSelectBox1' ).val();
+				if ( G.soxrset ) $( '#infoOk' ).toggleClass( 'disabled', soxrval === G.soxrval );
+			} );
+			$( '.infoinput' ).keyup( function() {
+				var soxrval = $( '#infoSelectBox' ).val();
+				for ( i = 1; i < 5; i++ ) soxrval += ' '+ $( '#infoTextBox'+ i ).val();
+				soxrval += ' '+ $( '#infoSelectBox1' ).val();
+				var v = soxrval.split( ' ' );
+				var errors = false;
+				if (   ( v[ 1 ] < 0 || v[ 1 ] > 100 )
+					|| ( v[ 2 ] < 0 || v[ 2 ] > 100 )
+					|| ( v[ 3 ] < 100 || v[ 3 ] > 150 )
+					|| ( v[ 4 ] < 0 || v[ 4 ] > 30 )
+				) errors = true;
+				if ( G.soxrset ) $( '#infoOk' ).toggleClass( 'disabled', soxrval === G.soxrval || errors );
+			} );
 		}
 		, boxwidth      : 70
 		, buttonlabel   : '<i class="fa fa-undo"></i>Default'
@@ -425,6 +428,9 @@ $( '#setting-soxr' ).click( function() {
 			if ( !G.soxr ) $( '#soxr' ).prop( 'checked', 0 );
 		}
 		, ok            : function() {
+			var soxrval = $( '#infoSelectBox' ).val();
+			for ( i = 1; i < 5; i++ ) soxrval += ' '+ $( '#infoTextBox'+ i ).val();
+			soxrval += ' '+ $( '#infoSelectBox1' ).val();
 			notify( 'SoXR Custom Settings', 'Change ...', 'mpd' );
 			bash( [ 'soxrset', soxrval ] );
 		}
