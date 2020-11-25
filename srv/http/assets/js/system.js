@@ -333,33 +333,33 @@ $( '#setting-lcdchar' ).click( function() {
 		, boxwidth      : 173
 		, nofocus       : 1
 		, preshow       : function() {
-			var settings = G.lcdcharval.split( ' ' );
-			G.cols = settings[ 0 ];
-			G.charmap = settings[ 1 ];
-			$( '#charmap input[value='+ G.charmap +']' ).prop( 'checked', 1 );
+			var val = G.lcdcharaddr ? G.lcdcharval : '20 A00 0x27 PCF8574'
+			var settings = val.split( ' ' );
+			var cols = settings[ 0 ];
+			var charmap = settings[ 1 ];
+			$( '#charmap input[value='+ charmap +']' ).prop( 'checked', 1 );
 			if (  settings.length > 2 ) {
-				G.inf = 'i2c';
-				G.i2caddress = settings[ 2 ];
-				G.i2cchip = settings[ 3 ];
-				$( '#chip input[value='+ G.i2cchip +']' ).prop( 'checked', 1 );
+				var inf = 'i2c';
+				var i2caddress = settings[ 2 ];
+				var i2cchip = settings[ 3 ];
+				$( '#chip input[value='+ i2cchip +']' ).prop( 'checked', 1 );
 			} else {
-				G.inf = 'gpio';
+				var inf = 'gpio';
 			}
-			$( '#cols input[value='+ G.cols +']' ).prop( 'checked', 1 )
-			$( '#inf input[value='+ G.inf +']' ).prop( 'checked', 1 )
-			$( '#divi2c' ).toggleClass( 'hide', G.inf === 'gpio' );
+			$( '#cols input[value='+ cols +']' ).prop( 'checked', 1 )
+			$( '#inf input[value='+ inf +']' ).prop( 'checked', 1 )
+			$( '#divi2c' ).toggleClass( 'hide', inf === 'gpio' );
 			$( '#inf' ).change( function() {
 				$( '.i2c' ).toggleClass( 'hide', $( '#inf input:checked' ).val() === 'gpio' );
 			} );
-			if ( G.lcdcharaddr ) {
-				var addr = G.lcdcharaddr.split( ' ' );
-				var opt = '';
-				addr.forEach( function( el ) {
-					opt += '<label><input type="radio" name="address" value="0x'+ el +'"> 0x'+ el +'</label>';
-				} );
-				$( '#address' ).html( opt );
-				$( '#address input[value='+ G.i2caddress +']' ).prop( 'checked', 1 );
-			}
+			var lcdcharaddr = G.lcdcharaddr || '27 3F';
+			var addr = lcdcharaddr.split( ' ' );
+			var opt = '';
+			addr.forEach( function( el ) {
+				opt += '<label><input type="radio" name="address" value="0x'+ el +'"> 0x'+ el +'</label>';
+			} );
+			$( '#address' ).html( opt );
+			$( '#address input[value='+ i2caddress +']' ).prop( 'checked', 1 );
 			$( '.lcd label' ).width( 80 );
 		}
 		, cancel        : function() {
@@ -367,28 +367,26 @@ $( '#setting-lcdchar' ).click( function() {
 		}
 		, buttonlabel   : [ 'Splash', 'Off' ]
 		, buttoncolor   : [ '#448822',       '#de810e' ]
-		, button        : [ 
+		, button        : !G.lcdchar ? '' : [ 
 			  function() { bash( '/srv/http/bash/lcdchar.py rr' ) }
 			, function() { bash( '/srv/http/bash/lcdchar.py off' ) }
 		]
 		, buttonnoreset : 1
 		, ok            : function() {
-			var cols = $( '#cols input:checked' ).val();
-			var charmap = $( '#charmap input:checked').val();
-			var changed = !G.lcdcharset || cols !== G.cols || charmap !== G.charmap;
+			var lcdcharval = $( '#cols input:checked' ).val();
+			lcdcharval += ' '+ $( '#charmap input:checked').val();
 			var inf = $( '#inf input:checked' ).val();
 			if ( inf === 'i2c' ) {
-				var chip = $( '#chip').val();
-				var address = $( '#address input:checked').val();
-				changed = changed || inf !== G.inf || chip !== G.i2cchip || address !== G.i2caddress;
+				lcdcharval += ' '+ $( '#address input:checked').val();
+				lcdcharval += ' '+ $( '#chip').val();
 			}
-			if ( changed ) {
-				var cmd = [ 'lcdcharset', cols, charmap ];
+			if ( !G.lcdcharset || lcdcharval !== G.lcdcharval ) {
 				if ( inf === 'i2c' ) {
 					rebootText( 1, 'Character LCD' );
-					cmd.push( address, chip, G.reboot.join( '\n' ) );
+					bash( [ 'lcdcharset', lcdcharval, G.reboot.join( '\n' ) ] );
+				} else {
+					bash( [ 'lcdcharset', lcdcharval ] );
 				}
-				bash( cmd );
 				notify( 'Character LCD', 'Change ...', 'gear' );
 			} else {
 				if ( !G.lcdchar ) $( '#lcdchar' ).prop( 'checked', 0 );

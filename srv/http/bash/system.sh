@@ -153,11 +153,13 @@ lcdchardisable )
 	pushRefresh
 	;;
 lcdcharset )
-	cols=${args[1]}
-	charmap=${args[2]}
-	address=${args[3]}
-	chip=${args[4]}
-	reboot=${args[5]}
+	val=( ${args[1]} )
+	reboot=${args[2]}
+	
+	cols=${val[0]}
+	charmap=${val[1]}
+	address=${val[2]}
+	chip=${val[3]}
 	[[ $cols == 16 ]] && rows=2 || rows=4
 	filelcdchar=/srv/http/bash/lcdchar.py
 
