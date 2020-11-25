@@ -315,6 +315,15 @@ $( '#setting-bufferoutput' ).click( function() {
 		, message   : '<code>max_output_buffer_size</code> (default: 8192)'
 		, textlabel : 'Size <gr>(kB)</gr>'
 		, textvalue : G.bufferoutputval || 8192
+		, preshow       : function() {
+			if ( G.bufferoutputset ) {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#infoSelectBox' ).change( function() {
+					var val = $( '#infoSelectBox option:selectd' ).val();
+					$( '#infoOk' ).toggleClass( 'disabled', val === G.bufferoutputval );
+				} );
+			}
+		}
 		, cancel    : function() {
 			if ( !G.bufferoutput ) $( '#bufferoutput' ).prop( 'checked', 0 );
 		}
@@ -393,13 +402,16 @@ $( '#setting-soxr' ).click( function() {
 				$( '#extra .selectric, #extra .selectric-wrapper' ).css( 'width', '185px' );
 				$( '#extra .selectric-items' ).css( 'min-width', '185px' );
 			}, 30 );
-			if ( G.soxrset ) $( '#infoOk' ).addClass( 'disabled' );
-			$( '#infoSelectBox, #infoSelectBox1' ).change( function() {
-				var soxrval = $( '#infoSelectBox' ).val();
-				for ( i = 1; i < 5; i++ ) soxrval += ' '+ $( '#infoTextBox'+ i ).val();
-				soxrval += ' '+ $( '#infoSelectBox1' ).val();
-				if ( G.soxrset ) $( '#infoOk' ).toggleClass( 'disabled', soxrval === G.soxrval );
-			} );
+			// verify
+			if ( G.soxrset ) {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#infoSelectBox, #infoSelectBox1' ).change( function() {
+					var soxrval = $( '#infoSelectBox' ).val();
+					for ( i = 1; i < 5; i++ ) soxrval += ' '+ $( '#infoTextBox'+ i ).val();
+					soxrval += ' '+ $( '#infoSelectBox1' ).val();
+					$( '#infoOk' ).toggleClass( 'disabled', soxrval === G.soxrval );
+				} );
+			}
 			$( '.infoinput' ).keyup( function() {
 				var soxrval = $( '#infoSelectBox' ).val();
 				for ( i = 1; i < 5; i++ ) soxrval += ' '+ $( '#infoTextBox'+ i ).val();
@@ -411,7 +423,11 @@ $( '#setting-soxr' ).click( function() {
 					|| ( v[ 3 ] < 100 || v[ 3 ] > 150 )
 					|| ( v[ 4 ] < 0 || v[ 4 ] > 30 )
 				) errors = true;
-				if ( G.soxrset ) $( '#infoOk' ).toggleClass( 'disabled', soxrval === G.soxrval || errors );
+				if ( G.soxrset ) {
+					$( '#infoOk' ).toggleClass( 'disabled', soxrval === G.soxrval || errors );
+				} else {
+					$( '#infoOk' ).toggleClass( 'disabled', errors );
+				}
 			} );
 		}
 		, boxwidth      : 70
@@ -485,6 +501,14 @@ $( '#setting-custom' ).click( function() {
 			} );
 			$( '.msg, #global, #output' ).css( 'font-family', 'Inconsolata' );
 			$( '#output' ).css( 'padding-left', '39px' )
+			// verify
+			if ( G.customset ) {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#global, #output' ).keyup( function() {
+					var changed = $( '#global' ).val() !== valglobal || $( '#output' ).val() !== valoutput;
+					$( '#infoOk' ).toggleClass( 'disabled', !changed );
+				} );
+			}
 		}
 		, cancel   : function() {
 			if ( !G.custom ) $( '#custom' ).prop( 'checked', 0 );
@@ -492,13 +516,8 @@ $( '#setting-custom' ).click( function() {
 		, ok       : function() {
 			var customglobal = lines2line( $( '#global' ).val() );
 			var customoutput = lines2line( $( '#output' ).val() );
-			if ( !G.custom || customglobal !== valglobal || customoutput !== valoutput ) {
-				var file = '/srv/http/data/system/mpd-custom';
-				notify( "User's Custom Settings", 'Change ...', 'mpd' );
-				bash( [ 'customset', customglobal, customoutput, output ] );
-			} else {
-				if ( !G.custom ) $( '#custom' ).prop( 'checked', 0 );
-			}
+			notify( "User's Custom Settings", 'Change ...', 'mpd' );
+			bash( [ 'customset', customglobal, customoutput, output ] );
 		}
 	} );
 } );

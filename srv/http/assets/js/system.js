@@ -361,16 +361,19 @@ $( '#setting-lcdchar' ).click( function() {
 			$( '#address' ).html( opt );
 			$( '#address input[value='+ i2caddress +']' ).prop( 'checked', 1 );
 			$( '.lcd label' ).width( 80 );
-			if ( G.lcdcharset ) $( '#infoOk' ).addClass( 'disabled' );
-			$( '#cols, #inf, #charmap, #address, #chip' ).change( function() {
-				var lcdcharval = $( '#cols input:checked' ).val();
-				lcdcharval += ' '+ $( '#charmap input:checked' ).val();
-				if ( $( '#inf input:checked' ).val() === 'i2c' ) {
-					lcdcharval += ' '+ $( '#address input:checked' ).val();
-					lcdcharval += ' '+ $( '#chip option:selected' ).val();
-				}
-				if ( G.lcdcharset ) $( '#infoOk' ).toggleClass( 'disabled', G.lcdcharset && lcdcharval === G.lcdcharval );
-			} );
+			// verify
+			if ( G.lcdcharset ) {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#cols, #inf, #charmap, #address, #chip' ).change( function() {
+					var lcdcharval = $( '#cols input:checked' ).val();
+					lcdcharval += ' '+ $( '#charmap input:checked' ).val();
+					if ( $( '#inf input:checked' ).val() === 'i2c' ) {
+						lcdcharval += ' '+ $( '#address input:checked' ).val();
+						lcdcharval += ' '+ $( '#chip option:selected' ).val();
+					}
+					$( '#infoOk' ).toggleClass( 'disabled', G.lcdcharset && lcdcharval === G.lcdcharval );
+				} );
+			}
 		}
 		, cancel        : function() {
 			if ( !G.lcdchar ) $( '#lcdchar' ).prop( 'checked', 0 );
@@ -486,23 +489,24 @@ $( '#setting-soundprofile' ).click( function() {
 		, checked : checked
 		, preshow : function() {
 			$( '#infoRadio input' ).last().prop( 'disabled', 1 );
+			// verify
 			if ( G.soundprofileset ) $( '#infoOk' ).addClass( 'disabled' );
 			$( '#infoRadio' ).change( function() {
 				var soundprofileval = $( '#infoRadio input:checked' ).val();
-				if ( G.soundprofileset ) $( '#infoOk' ).toggleClass( 'disabled', soundprofileval === G.soundprofileval );
+				$( '#infoOk' ).toggleClass( 'disabled', soundprofileval === G.soundprofileval );
 				var val = soundprofileval.split( ' ' );
 				for ( i = 0; i < 4; i++ ) $( '.infoinput' ).eq( i ).val( val[ i ] );
 			} );
 			$( '.infoinput' ).keyup( function() {
 				var soundprofileval = $( '#infoTextBox' ).val();
 				for ( i = 1; i < 4; i++ ) soundprofileval += ' '+ $( '#infoTextBox'+ i ).val();
+				if ( G.soundprofileset ) $( '#infoOk' ).toggleClass( 'disabled', G.soundprofileset && soundprofileval === G.soundprofileval );
 				if ( values.indexOf( soundprofileval ) !== -1 ) {
 					$( '#infoRadio input[value="'+ soundprofileval +'"]' ).prop( 'checked', 1 );
 					$( '#infoRadio input' ).last().prop( 'checked', 0 );
 				} else {
 					$( '#infoRadio input' ).last().prop( 'checked', 1 );
 				}
-				if ( G.soundprofileset ) $( '#infoOk' ).toggleClass( 'disabled', G.soundprofileset && soundprofileval === G.soundprofileval );
 			} );
 		}
 		, cancel  : function() {
