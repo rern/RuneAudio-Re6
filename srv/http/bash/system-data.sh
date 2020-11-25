@@ -79,6 +79,7 @@ if grep -q 'dtparam=i2c_arm=on' /boot/config.txt; then
 					| grep -v '^\s' \
 					| cut -d' ' -f2- \
 					| tr -d ' \-' \
+					| grep -v UU
 					| grep . \
 					| sort -u )
 fi
