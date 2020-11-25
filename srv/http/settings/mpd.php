@@ -1,6 +1,4 @@
-<div id="divmain"> <!-- ************************************************* -->
-
-<div>
+<div> <!-- ---------------------------------------------------------- -->
 <heading>Audio Output<?=$help?></heading>
 <div class="col-l control-label">Device</div>
 <div class="col-r">
@@ -18,7 +16,7 @@
 		<br>&bull; MPD software: depends on users preferences.
 	</span>
 </div>
-</div>
+</div> <!-- ---------------------------------------------------------- -->
 
 <div>
 <heading data-status="aplay" class="status">Devices<i class="fa fa-code"></i><?=$help?></heading>
@@ -34,7 +32,7 @@
 
 <div style="clear: both;"></div>
 	
-<div>
+<div> <!-- ---------------------------------------------------------- -->
 <heading>Bit-Perfect<?=$help?></heading>
 <div class="col-l">No Volume</div>
 <div class="col-r">
@@ -59,9 +57,9 @@
 			<br>On-board audio and non-DSD devices will always get DSD converted to PCM stream, no bit-perfect</span>
 	</div>
 </div>
-</div>
+</div> <!-- ---------------------------------------------------------- -->
 
-<div>
+<div> <!-- ---------------------------------------------------------- -->
 <heading>Volume<?=$help?></heading>
 <div data-status="crossfade" class="col-l double status">
 	<a>Crossfade
@@ -102,9 +100,9 @@
 		<br>Set gain control to setting in replaygain tag. Currently only FLAC, Ogg Vorbis, Musepack, and MP3 (through ID3v2 ReplayGain tags, not APEv2) are supported.
 	</span>
 </div>
-</div>
+</div> <!-- ---------------------------------------------------------- -->
 
-<div>
+<div> <!-- ---------------------------------------------------------- -->
 <heading>Options<?=$help?></heading>
 <div class="col-l double">
 	<a>Auto Update
@@ -193,9 +191,8 @@
 	<i id="setting-custom" class="setting fa fa-gear"></i>
 	<span class="help-block hide">Insert settings into <code>/etc/mpd.conf</code>.</span>
 </div>
-</div>
 
-</div> <!-- divmain ****************************************** -->
+</div> <!-- ---------------------------------------------------------- -->
 
 <div>
 <heading data-status="mpdconf" class="status">Configuration<i class="fa fa-code"></i><?=$help?></heading>
