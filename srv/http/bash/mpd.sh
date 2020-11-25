@@ -188,6 +188,15 @@ mixerhw )
 	systemctl try-restart shairport-sync shairport-meta
 	restartMPD
 	;;
+mixerget )
+	readarray -t cards <<< "$( aplay -l | grep ^card | sed 's/card \(.*\): .*\[\(.*\)\], .*/\1\2/' )"
+	for card in "${cards[@]}"; do
+		mixer+=$'\n'${card:1}
+		mixer+='<hr>'
+		mixer+=$( amixer -c ${card:0:1} )$'\n'
+	done
+	echo "${mixer:1}"
+	;;
 mixerset )
 	mixer=${args[1]}
 	output=${args[2]}

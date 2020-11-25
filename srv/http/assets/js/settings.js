@@ -12,7 +12,8 @@ function bash( command, callback, json ) {
 	);
 }
 var cmd = {
-	  aplay        : 'aplay -l'
+	  amixer       : '/srv/http/bash/mpd.sh mixerget'
+	, aplay        : 'aplay -l'
 	, bluetoothctl : 'systemctl -q is-active bluetooth && bluetoothctl show'
 	, configtxt    : 'cat /boot/config.txt'
 	, crossfade    : 'mpc crossfade'
