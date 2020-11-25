@@ -25,25 +25,6 @@ refreshData = function() {
 	bash( '/srv/http/bash/mpd-data.sh', function( list ) {
 		G = list;
 		G.reboot = list.reboot ? list.reboot.split( '\n' ) : [];
-		if ( G.manualconf ) {
-			bash( 'cat /etc/mpd.conf', function( data ) {
-				$( '.container' ).css( 'padding-bottom', '30px' );
-				$( '#manualconf' ).prop( 'checked', 1 );
-				$( '#divmain, #mpdconf .fa-code' ).addClass( 'hide' );
-				$( '#setting-manualconf, #codemanualconf' ).removeClass( 'hide' );
-				$( '#codemanualconf' ).text( data );
-				codeToggle( 'mpd', 'status' );
-				showContent();
-			} );
-			return
-			
-		} else {
-			$( '.container' ).css( 'padding-bottom', '' );
-			$( '#manualconf' ).prop( 'checked', 0 );
-			$( '#divmain, #mpdconf .fa-code' ).removeClass( 'hide' );
-			$( '#setting-manualconf, #codemanualconf' ).addClass( 'hide' );
-			$( '#codemanualconf' ).empty();
-		}
 		var htmldevices = '';
 		$.each( G.devices, function() {
 			htmldevices += '<option '
