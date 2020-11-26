@@ -307,7 +307,7 @@ heading i.fa-question-circle {
 	max-height: 90vh;
 	white-space: pre-wrap;
 }
-#swipebar {
+#bottom-bar {
 	position: fixed;
 	bottom: 0;
 	width: 100%;

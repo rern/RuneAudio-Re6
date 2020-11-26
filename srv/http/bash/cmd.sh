@@ -598,12 +598,6 @@ randomfile )
 refreshbrowser )
 	pushstream reload 1
 	;;
-pagedata )
-	data=$( /srv/http/bash/${args[1]}-data.sh )
-	data+='<hr>'
-	data+=$( echo $data | jq . )
-	echo "$data"
-	;;
 thumbgif )
 	type=${args[1]}
 	source=${args[2]}

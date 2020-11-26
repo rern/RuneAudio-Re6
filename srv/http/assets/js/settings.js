@@ -75,6 +75,24 @@ function getReset( callback ) {
 		if ( callback ) callback();
 	}, 'json' );
 }
+function list2JSON( list ) {
+		try {
+			G = JSON.parse( list );
+		} catch( e ) {
+			var msg = e.message.split( ' ' );
+			var pos = msg.pop();
+			var errors = '<red>Errors:</red> '+ msg.join( ' ' ) +' <red>'+ pos +'</red>'
+						+'<hr>'
+						+ list.slice( 0, pos ) +'<red>&#9646;</red>'+ list.slice( pos );
+			$( '.container' ).addClass( 'hide' );
+			$( '.codepage' ).html( errors ).removeClass( 'hide' );
+			$( '#loader' ).addClass( 'hide' );
+			$( '.head' ).removeClass( 'hide' );
+			return false
+		}
+		if ( 'reboot' in G ) G.reboot = G.reboot ? G.reboot.split( '\n' ) : [];
+		return true
+}
 function resetLocal( ms ) {
 	setTimeout( function() {
 		$( '#bannerIcon i' ).removeClass( 'blink' );
@@ -88,6 +106,7 @@ function showContent() {
 		$( '.head, .container' ).removeClass( 'hide' );
 	}, 300 );
 }
+
 var pushstream = new PushStream( { modes: 'websocket' } );
 var streams = [ 'refresh', 'reload', 'restore', ];
 streams.forEach( function( stream ) {
@@ -201,11 +220,13 @@ $( '#close' ).click( function() {
 	}
 } );
 $( '.page-icon' ).click( function() {
+	if ( !G ) return
+	
 	if( $( '.codepage' ).hasClass( 'hide' ) ) {
-		bash( "/srv/http/bash/cmd.sh pagedata$'\n'"+ page, function( list ) {
-			$( '.container' ).addClass( 'hide' );
-			$( '.codepage' ).html( list ).removeClass( 'hide' );
-		} );
+		$( '.container' ).addClass( 'hide' );
+		$( '.codepage' )
+			.html( 'Page Data:<hr>'+ JSON.stringify( G, null, 2 ) )
+			.removeClass( 'hide' );
 	} else {
 		$( '.container' ).removeClass( 'hide' );
 		$( '.codepage' ).addClass( 'hide' );
@@ -228,10 +249,10 @@ $( '.status' ).click( function( e ) {
 	codeToggle( $( this ).data( 'status' ), e.target );
 } );
 var timer;
-$( '#swipebar' ).on( 'mousedown touchdown', function() {
+$( '#bottom-bar' ).on( 'mousedown touchdown', function() {
 	timer = setTimeout( function() {
 		location.reload();
-	}, 2000 );
+	}, 1000 );
 } ).on( 'mouseup mouseleave touchup touchleave', function() {
 	clearTimeout( timer );
 } );

@@ -23,8 +23,9 @@ function setMixerType( mixertype ) {
 }
 refreshData = function() {
 	bash( '/srv/http/bash/mpd-data.sh', function( list ) {
-		G = list;
-		G.reboot = list.reboot ? list.reboot.split( '\n' ) : [];
+		var list2G = list2JSON( list );
+		if ( !list2G ) return
+		
 		var htmldevices = '';
 		$.each( G.devices, function() {
 			htmldevices += '<option '
@@ -106,7 +107,7 @@ refreshData = function() {
 		} );
 		resetLocal();
 		showContent();
-	}, 'json' );
+	} );
 }
 refreshData();
 //---------------------------------------------------------------------------------------

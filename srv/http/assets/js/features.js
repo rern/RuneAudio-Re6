@@ -2,8 +2,9 @@ $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 refreshData = function() { // system page: use resetLocal() to aviod delay
 	bash( '/srv/http/bash/features-data.sh', function( list ) {
-		G = list;
-		G.reboot = list.reboot ? list.reboot.split( '\n' ) : [];
+		var list2G = list2JSON( list );
+		if ( !list2G ) return
+		
 		$( '#shairport-sync' ).prop( 'checked', G[ 'shairport-sync' ] );
 		$( '#spotifyd' ).prop( 'checked', G.spotifyd );
 		$( '#setting-spotifyd' ).toggleClass( 'hide', !G.spotifyd );
@@ -37,7 +38,7 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		} );
 		resetLocal();
 		showContent();
-	}, 'json' );
+	} );
 }
 refreshData();
 //---------------------------------------------------------------------------------------

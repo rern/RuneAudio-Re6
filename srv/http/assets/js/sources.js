@@ -84,11 +84,14 @@ function infoMount( formdata, cifs ) {
 refreshData = function() {
 	$( '#refreshing' ).removeClass( 'hide' );
 	bash( '/srv/http/bash/sources-data.sh', function( list ) {
-		G.autoupdate = list.pop();
-		reboot = list.pop();
+		var list2G = list2JSON( list );
+		if ( !list2G ) return
+		
+		G.autoupdate = G.pop();
+		reboot = G.pop();
 		G.reboot = reboot ? reboot.split( '\n' ) : [];
 		var html = '';
-		$.each( list, function( i, val ) {
+		$.each( G, function( i, val ) {
 			if ( val.mounted ) {
 				var dataunmounted = '';
 				var dot = '<grn>&ensp;&bull;&ensp;</grn>';
@@ -108,7 +111,7 @@ refreshData = function() {
 		} );
 		resetLocal();
 		showContent();
-	}, 'json' );
+	} );
 }
 refreshData();
 //---------------------------------------------------------------------------------------

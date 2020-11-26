@@ -24,8 +24,9 @@ function renderStatus() {
 
 refreshData = function() {
 	bash( '/srv/http/bash/system-data.sh', function( list ) {
-		G = list;
-		G.reboot = list.reboot ? list.reboot.split( '\n' ) : [];
+		var list2G = list2JSON( list );
+		if ( !list2G ) return
+		
 		var systemlabel =
 			 'RuneAudio<br>'
 			+'Hardware<br>'
@@ -115,7 +116,7 @@ refreshData = function() {
 		$( '#setting-soundprofile' ).toggleClass( 'hide', !G.soundprofile );
 		resetLocal();
 		showContent();
-	}, 'json' );
+	} );
 }
 refreshData();
 //---------------------------------------------------------------------------------------

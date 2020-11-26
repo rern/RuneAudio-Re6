@@ -258,12 +258,15 @@ function infoConnect( $this ) {
 }
 function nicsStatus() {
 	bash( '/srv/http/bash/network-data.sh', function( list ) {
-		var extra = list.pop();
+		var list2G = list2JSON( list );
+		if ( !list2G ) return
+		
+		var extra = G.pop();
 		if ( extra.hostapd ) {
-			G = extra.hostapd;
-			$( '#ssid' ).text( G.ssid );
-			$( '#passphrase' ).text( G.passphrase )
-			$( '#ipwebuiap' ).text( G.hostapdip );
+			G.hostapd = extra.hostapd;
+			$( '#ssid' ).text( G.hostapd.ssid );
+			$( '#passphrase' ).text( G.hostapd.passphrase )
+			$( '#ipwebuiap' ).text( G.hostapd.hostapdip );
 		}
 		G.reboot = extra.reboot ? extra.reboot.split( '\n' ) : [];
 		if ( 'bluetooth' in extra ) G.bluetooth = extra.bluetooth;
@@ -272,7 +275,7 @@ function nicsStatus() {
 		var htmllan = '';
 		var htmlwl = '';
 		var htmlbt = '';
-		$.each( list, function( i, val ) {
+		$.each( G, function( i, val ) {
 			html = '<li class="'+ val.interface +'"';
 			html += val.ip ? ' data-ip="'+ val.ip +'"' : '';
 			html += val.gateway ? ' data-gateway="'+ val.gateway +'"' : '';
@@ -292,8 +295,8 @@ function nicsStatus() {
 				
 				G.wlcurrent = val.interface;
 				htmlwl = html;
-				if ( G.ssid ) {
-					htmlwl += '<grn>&bull;</grn>&ensp;<gr>RPi access point&ensp;&laquo;&ensp;</gr>'+ G.hostapdip
+				if ( G.hostapd.ssid ) {
+					htmlwl += '<grn>&bull;</grn>&ensp;<gr>RPi access point&ensp;&laquo;&ensp;</gr>'+ G.hostapd.hostapdip
 				} else {
 					G.wlconnected = val.interface;
 					htmlwl += '<grn>&bull;</grn>&ensp;'+ val.ip +'<gr>&ensp;&raquo;&ensp;'+ val.gateway +'&ensp;&bull;&ensp;</gr>'+ val.ssid;
@@ -322,7 +325,7 @@ function nicsStatus() {
 		bannerHide();
 		codeToggle( 'netctl', 'status' );
 		showContent();
-	}, 'json' );
+	} );
 }
 function qr( msg ) {
 	return new QRCode( {
