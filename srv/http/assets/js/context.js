@@ -425,15 +425,20 @@ function webRadioEdit() {
 		, textvalue    : [ name, url ]
 		, textrequired : [ 0, 1 ]
 		, boxwidth     : 'max'
+		, preshow       : function() {
+			$( '#infoOk' ).addClass( 'disabled' );
+			$( '#infoTextBox, #infoTextBox1' ).keyup( function() {
+				var changed = $( '#infoTextBox' ).val() !== name || $( '#infoTextBox1' ).val() !== url;
+				$( '#infoOk' ).toggleClass( 'disabled', !changed );
+			} );
+		}
 		, oklabel      : '<i class="fa fa-save"></i>Save'
 		, ok           : function() {
 			var newname = $( '#infoTextBox' ).val();
 			var newurl = $( '#infoTextBox1' ).val().toString().replace( /\/\s*$/, '' ); // omit trailling / and space
-			if ( newname !== name || newurl !== url ) {
-				bash( [ 'webradioedit', url, newname, newurl ], function( data ) {
-					data ? webRadioExists( data, url ) : $( '#mode-webradio' ).click();
-				} );
-			}
+			bash( [ 'webradioedit', url, newname, newurl ], function( data ) {
+				data ? webRadioExists( data, url ) : $( '#mode-webradio' ).click();
+			} );
 		}
 	} );
 }
