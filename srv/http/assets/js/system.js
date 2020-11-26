@@ -393,7 +393,6 @@ $( '#setting-lcdchar' ).click( function() {
 				lcdcharval += ' '+ $( '#address input:checked' ).val();
 				lcdcharval += ' '+ $( '#chip option:selected' ).val();
 				rebootText( 1, 'Character LCD' );
-				console.log(lcdcharval);
 				bash( [ 'lcdcharset', lcdcharval, G.reboot.join( '\n' ) ] );
 			} else {
 				bash( [ 'lcdcharset', lcdcharval ] );
