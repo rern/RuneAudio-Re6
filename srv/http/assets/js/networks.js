@@ -301,7 +301,7 @@ function nicsStatus() {
 				htmllan += val.gateway ? '<gr>&ensp;&raquo;&ensp;'+ val.gateway +'&ensp;</gr>' : '';
 				htmllan += '</li>';
 			} else if ( val.interface.slice( 0, 4 ) === 'wlan' ) {
-				if ( !val.ip ) return
+				if ( !val.ip && !G.hostapd.hostapdip ) return
 				
 				G.wlcurrent = val.interface;
 				htmlwl = html;
