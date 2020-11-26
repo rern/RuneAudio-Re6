@@ -56,7 +56,7 @@ mv $dirsystem/{snapcast,snapserver} &> /dev/null
 mv $dirsystem/spotify{,d} &> /dev/null
 mv $dirsystem/spotify{-device,dset} &> /dev/null
 mv $dirsystem/{upnp,upmpdcli} &> /dev/null
-if [[ -e $dirsystem/localbrowser ]]; then
+if [[ -e /usr/bin/chromium && -e $dirsystem/localbrowser && ! -e $dirsystem/localbrowserset ]]; then
 	file=/etc/X11/xorg.conf.d/99-raspi-rotate.conf
 	[[ -e $file ]] && rotate=$( grep rotate $file 2> /dev/null | cut -d'"' -f4 ) || rotate=NORMAL
 	xinitrc=/etc/X11/xinit/xinitrc
@@ -80,13 +80,13 @@ fi
 
 # mpd
 crossfade=$( mpc crossfade | cut -d' ' -f2 )
-[[ $crossfade != 0 ]] && echo $crossfade > $dirsystem/mpd-crossfadeset
+[[ ! -e $dirsystem/mpd-crossfadeset && $crossfade != 0 ]] && echo $crossfade > $dirsystem/mpd-crossfadeset
 replaygain=$( grep replaygain /etc/mpd.conf | cut -d'"' -f2 )
-[[ -n $replaygain ]] && echo $replaygain > $dirsystem/mpd-replaygainset
+[[ ! -e $dirsystem/mpd-replaygainset && $replaygain != off ]] && echo $replaygain > $dirsystem/mpd-replaygainset
 buffer=$( grep audio_buffer_size /etc/mpd.conf | cut -d'"' -f2 )
-[[ -n $buffer ]] && echo $buffer > $dirsystem/mpd-bufferset
+[[ ! -e $dirsystem/mpd-bufferset && -n $buffer ]] && echo $buffer > $dirsystem/mpd-bufferset
 bufferoutput=$( grep max_output_buffer_size /etc/mpd.conf | cut -d'"' -f2 )
-[[ -n $bufferoutput ]] && echo $bufferoutput > $dirsystem/mpd-bufferoutputset
+[[ ! -e $dirsystem/mpd-bufferoutputset && -n $bufferoutput ]] && echo $bufferoutput > $dirsystem/mpd-bufferoutputset
 
 if [[ $( upmpdcli -v 2> /dev/null | cut -d' ' -f2 ) == 1.4.14 ]]; then
 	pacman -R --noconfirm libnpupnp libupnpp upmpdcli
