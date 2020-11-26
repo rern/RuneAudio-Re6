@@ -307,6 +307,13 @@ heading i.fa-question-circle {
 	max-height: 90vh;
 	white-space: pre-wrap;
 }
+#swipebar {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	height: 40px;
+	z-index: 105;
+}
 .title {
 	margin-left: 15px;
 	line-height: 40px;

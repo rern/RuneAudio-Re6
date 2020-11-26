@@ -227,4 +227,12 @@ $( '.help' ).click( function() {
 $( '.status' ).click( function( e ) {
 	codeToggle( $( this ).data( 'status' ), e.target );
 } );
+var timer;
+$( '#swipebar' ).on( 'mousedown touchdown', function() {
+	timer = setTimeout( function() {
+		location.reload();
+	}, 2000 );
+} ).on( 'mouseup mouseleave touchup touchleave', function() {
+	clearTimeout( timer );
+} );
 

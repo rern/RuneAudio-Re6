@@ -60,6 +60,8 @@ $help = '<i class="help fa fa-question-circle"></i>';
 include "settings/$page.php";
 ?>
 </div>
+<div id="swipebar"></div>
+
 	<?php if ( $localhost ) { ?>
 <input class="input hide">
 <div id="keyboard" class="hide"><div class="simple-keyboard"></div></div>
