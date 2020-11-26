@@ -46,13 +46,11 @@ data='
 
 hwcode=$( awk '/Revision/ {print $NF}' <<< "$( cat /proc/cpuinfo )" )
 case ${hwcode: -3:2} in
-	00 | 01 | 02 | 03 | 09 | 0c )
-		      soc=BCM2835;;
-	04 )
-		[[ ${hwcode: -4:1} == 1 ]] && soc=BCM2836 || soc=BCM2837;;
-	08 )      soc=BCM2837;;
-	0e | 0d ) soc=BCM2837B0;;
-	11 )      soc=BCM2711;;
+	00 | 01 | 02 | 03 | 09 | 0c ) soc=BCM2835;;
+	04 )                          [[ ${hwcode: -4:1} == 1 ]] && soc=BCM2836 || soc=BCM2837;;
+	08 )                          soc=BCM2837;;
+	0e | 0d )                     soc=BCM2837B0;;
+	11 )                          soc=BCM2711;;
 esac
 lscpu=$( lscpu )
 cpucores=$( awk '/CPU\(s\):/ {print $NF}' <<< "$lscpu" )
