@@ -10,7 +10,7 @@ getinstallzip
 
 sed -i '/IgnorePkg.*linux-raspberrypi/ d' /etc/pacman.conf
 
-[[ ! -e /srv/http/bash/networks.sh ]] && rm -f /srv/http/data/system/{snapclient*,localbrowser*,smb*,mpdscribble*,login*,hostapd*,lcdchar*,soundprofile*,crossfade*,replaygain*,buffer*,bufferoutput*,soxr*,custom*}
+[[ ! -e /srv/http/bash/networks.sh ]] && rm -f /srv/http/data/system/{snapclient*,localbrowser*,smb*,mpdscribble*,login*,hostapd*,lcdchar*,soundprofile*,mpd-*}
 
 file=/etc/systemd/system/dnsmasq.service.d/override.conf
 if [[ ! -e $file ]]; then
