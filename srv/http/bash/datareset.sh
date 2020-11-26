@@ -107,7 +107,7 @@ echo 'bcm2835 Headphones' > $dirsystem/audio-aplayname
 echo 'On-board - Headphone' > $dirsystem/audio-output
 echo RuneAudio > $dirsystem/hostname
 touch $dirsystem/{onboard-audio,onboard-wlan}
-[[ $rpi != 0 || $rpi != 1 ]] && touch $dirsystem/localbrowser
+[[ $rpi < 2 ]] && touch $dirsystem/localbrowser
 rm -f $dirsystem/{lcd,lcdchar,relays,soundprofile}
 hostnamectl set-hostname runeaudio
 sed -i 's/#NTP=.*/NTP=pool.ntp.org/' /etc/systemd/timesyncd.conf
