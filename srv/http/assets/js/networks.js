@@ -51,6 +51,13 @@ function editLAN( data ) {
 		, textrequired : [ 0 ]
 		, preshow      : function() {
 			if ( data.dhcp === 'dhcp' || !data.ip ) $( '#infoButton' ).addClass( 'hide' );
+			if ( data.ip ) {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#infoTextBox, #infoTextBox1' ).keyup( function() {
+					var changed = $( '#infoTextBox' ).val() !== data.ip || $( '#infoTextBox1' ).val() !== data.gateway;
+					$( '#infoOk' ).toggleClass( 'disabled', !changed );
+				} );
+			}
 		}
 		, buttonlabel  : '<i class="fa fa-undo"></i>DHCP'
 		, buttonwidth  : 1
