@@ -132,13 +132,12 @@ $( '.enable' ).click( function() {
 		, replaygain   : 'Replay Gain'
 		, soxr         : 'SoXR Custom Settings'
 	}
-	var checked = $( this ).prop( 'checked' );
 	var id = this.id;
-	if ( G[ id +'set' ] ) {
-		notify( idname[ id ], checked, 'mpd' );
-		checked ? bash( [ id +'set', G[ id +'val' ] ] ) : bash( [ id +'disable' ] );
-	} else {
+	if ( $( this ).prop( 'checked' ) ) {
 		$( '#setting-'+ id ).click();
+	} else {
+		bash( [ id +'disable' ] );
+		notify( idname[ id ], 'Disable ...', 'mpd' );
 	}
 } );
 $( '.enablenoset' ).click( function() {
@@ -264,7 +263,7 @@ $( '#setting-crossfade' ).click( function() {
 		, radio   : { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5 }
 		, checked : G.crossfadeval || 1
 		, preshow       : function() {
-			if ( G.crossfadeset ) {
+			if ( G.crossfade ) {
 				$( '#infoOk' ).addClass( 'disabled' );
 				$( '#infoRadio' ).change( function() {
 					$( '#infoOk' ).toggleClass( 'disabled', +$( this ).find( 'input:checked' ).val() === G.crossfadeval );
@@ -272,12 +271,12 @@ $( '#setting-crossfade' ).click( function() {
 			}
 		}
 		, cancel    : function() {
-			if ( !G.crossfade ) $( '#crossfade' ).prop( 'checked', 0 );
+			$( '#crossfade' ).prop( 'checked', G.crossfade );
 		}
 		, ok      : function() {
 			crossfadeval = $( 'input[name=inforadio]:checked' ).val();
-			notify( 'Crossfade', 'Change ...', 'mpd' );
 			bash( [ 'crossfadeset', crossfadeval ] );
+			notify( 'Crossfade', G.crossfade ? 'Change ...' : 'Enable ...', 'mpd' );
 		}
 	} );
 } );
@@ -288,7 +287,7 @@ $( '#setting-replaygain' ).click( function() {
 		, radio   : { Auto: 'auto', Album: 'album', Track: 'track' }
 		, checked : G.replaygainval || 'auto'
 		, preshow       : function() {
-			if ( G.replaygainset ) {
+			if ( G.replaygain ) {
 				$( '#infoOk' ).addClass( 'disabled' );
 				$( '#infoRadio' ).change( function() {
 					$( '#infoOk' ).toggleClass( 'disabled', $( this ).find( 'input:checked' ).val() === G.replaygainval );
@@ -296,12 +295,12 @@ $( '#setting-replaygain' ).click( function() {
 			}
 		}
 		, cancel  : function() {
-			if ( !G.replaygain ) $( '#replaygain' ).prop( 'checked', 0 );
+			$( '#replaygain' ).prop( 'checked', G.replaygain );
 		}
 		, ok      : function() {
 			replaygainval = $( 'input[name=inforadio]:checked' ).val();
-			notify( 'Replay Gain', 'Change ...', 'mpd' );
 			bash( [ 'replaygainset', replaygainval ] );
+			notify( 'Replay Gain', G.replaygain ? 'Change ...' : 'Enable ...', 'mpd' );
 		}
 	} );
 } );
@@ -316,7 +315,7 @@ $( '#setting-buffer' ).click( function() {
 		, textlabel : 'Size <gr>(kB)</gr>'
 		, textvalue : G.bufferval || 4096
 		, preshow       : function() {
-			if ( G.bufferset ) {
+			if ( G.buffer ) {
 				$( '#infoOk' ).addClass( 'disabled' );
 				$( '#infoTextBox' ).keyup( function() {
 					$( '#infoOk' ).toggleClass( 'disabled', +$( this ).val() === G.bufferval );
@@ -324,12 +323,12 @@ $( '#setting-buffer' ).click( function() {
 			}
 		}
 		, cancel    : function() {
-			if ( !G.buffer ) $( '#buffer' ).prop( 'checked', 0 );
+			$( '#buffer' ).prop( 'checked', G.buffer );
 		}
 		, ok        : function() {
 			var bufferval = $( '#infoTextBox' ).val().replace( /\D/g, '' );
-			notify( 'Audio Buffer', G.bufferset ? 'Change ...' : 'Disable ...', 'mpd' );
 			bash( [ 'bufferset', bufferval ] );
+			notify( 'Custom Audio Buffer', G.buffer ? 'Change ...' : 'Enable ...', 'mpd' );
 		}
 	} );
 } );
@@ -341,7 +340,7 @@ $( '#setting-bufferoutput' ).click( function() {
 		, textlabel : 'Size <gr>(kB)</gr>'
 		, textvalue : G.bufferoutputval || 8192
 		, preshow       : function() {
-			if ( G.bufferoutputset ) {
+			if ( G.bufferoutput ) {
 				$( '#infoOk' ).addClass( 'disabled' );
 				$( '#infoTextBox' ).keyup( function() {
 					$( '#infoOk' ).toggleClass( 'disabled', +$( this ).val() === G.bufferoutputval );
@@ -349,12 +348,12 @@ $( '#setting-bufferoutput' ).click( function() {
 			}
 		}
 		, cancel    : function() {
-			if ( !G.bufferoutput ) $( '#bufferoutput' ).prop( 'checked', 0 );
+			$( '#bufferoutput' ).prop( 'checked', G.bufferoutput );
 		}
 		, ok        : function() {
 			var bufferoutputval = $( '#infoTextBox' ).val().replace( /\D/g, '' );
-			notify( 'Output Buffer', 'Change ...', 'mpd' );
 			bash( [ 'bufferoutputset', bufferoutputval ] );
+			notify( 'Custom Output Buffer', G.bufferoutput ? 'Change ...' : 'Enable ...', 'mpd' );
 		}
 	} );
 } );
@@ -423,7 +422,7 @@ $( '#setting-soxr' ).click( function() {
 				$( '#extra .selectric-items' ).css( 'min-width', '185px' );
 			}, 30 );
 			// verify
-			if ( G.soxrset ) {
+			if ( G.soxr ) {
 				$( '#infoOk' ).addClass( 'disabled' );
 				$( '#infoSelectBox, #infoSelectBox1' ).change( function() {
 					var soxrval = $( '#infoSelectBox' ).val();
@@ -431,24 +430,33 @@ $( '#setting-soxr' ).click( function() {
 					soxrval += ' '+ $( '#infoSelectBox1' ).val();
 					$( '#infoOk' ).toggleClass( 'disabled', soxrval === G.soxrval );
 				} );
-			}
-			$( '.infoinput' ).keyup( function() {
-				var soxrval = $( '#infoSelectBox' ).val();
-				for ( i = 1; i < 5; i++ ) soxrval += ' '+ $( '#infoTextBox'+ i ).val();
-				soxrval += ' '+ $( '#infoSelectBox1' ).val();
-				var v = soxrval.split( ' ' );
-				var errors = false;
-				if (   ( v[ 1 ] < 0 || v[ 1 ] > 100 )
-					|| ( v[ 2 ] < 0 || v[ 2 ] > 100 )
-					|| ( v[ 3 ] < 100 || v[ 3 ] > 150 )
-					|| ( v[ 4 ] < 0 || v[ 4 ] > 30 )
-				) errors = true;
-				if ( G.soxrset ) {
+				$( '.infoinput' ).keyup( function() {
+					var soxrval = $( '#infoSelectBox' ).val();
+					for ( i = 1; i < 5; i++ ) soxrval += ' '+ $( '#infoTextBox'+ i ).val();
+					soxrval += ' '+ $( '#infoSelectBox1' ).val();
+					var v = soxrval.split( ' ' );
+					var errors = false;
+					if (   ( v[ 1 ] < 0 || v[ 1 ] > 100 )
+						|| ( v[ 2 ] < 0 || v[ 2 ] > 100 )
+						|| ( v[ 3 ] < 100 || v[ 3 ] > 150 )
+						|| ( v[ 4 ] < 0 || v[ 4 ] > 30 )
+					) errors = true;
 					$( '#infoOk' ).toggleClass( 'disabled', soxrval === G.soxrval || errors );
-				} else {
+				} );
+			} else {
+				$( '.infoinput' ).keyup( function() {
+					var soxrval = 0;
+					for ( i = 1; i < 5; i++ ) soxrval += ' '+ $( '#infoTextBox'+ i ).val();
+					var v = soxrval.split( ' ' );
+					var errors = false;
+					if (   ( v[ 1 ] < 0 || v[ 1 ] > 100 )
+						|| ( v[ 2 ] < 0 || v[ 2 ] > 100 )
+						|| ( v[ 3 ] < 100 || v[ 3 ] > 150 )
+						|| ( v[ 4 ] < 0 || v[ 4 ] > 30 )
+					) errors = true;
 					$( '#infoOk' ).toggleClass( 'disabled', errors );
-				}
-			} );
+				} );
+			}
 		}
 		, boxwidth      : 70
 		, buttonlabel   : '<i class="fa fa-undo"></i>Default'
@@ -461,14 +469,14 @@ $( '#setting-soxr' ).click( function() {
 		, buttonnoreset : 1
 		, buttonwidth   : 1
 		, cancel        : function() {
-			if ( !G.soxr ) $( '#soxr' ).prop( 'checked', 0 );
+			$( '#soxr' ).prop( 'checked', G.soxr );
 		}
 		, ok            : function() {
 			var soxrval = $( '#infoSelectBox' ).val();
 			for ( i = 1; i < 5; i++ ) soxrval += ' '+ $( '#infoTextBox'+ i ).val();
 			soxrval += ' '+ $( '#infoSelectBox1' ).val();
-			notify( 'SoXR Custom Settings', 'Change ...', 'mpd' );
 			bash( [ 'soxrset', soxrval ] );
+			notify( 'SoXR Custom Settings', G.soxr ? 'Change ...' : 'Enable ...', 'mpd' );
 		}
 	} );
 } );
@@ -522,7 +530,7 @@ $( '#setting-custom' ).click( function() {
 			$( '.msg, #global, #output' ).css( 'font-family', 'Inconsolata' );
 			$( '#output' ).css( 'padding-left', '39px' )
 			// verify
-			if ( G.customset ) {
+			if ( G.custom ) {
 				$( '#infoOk' ).addClass( 'disabled' );
 				$( '#global, #output' ).keyup( function() {
 					var changed = $( '#global' ).val() !== valglobal || $( '#output' ).val() !== valoutput;
@@ -531,13 +539,13 @@ $( '#setting-custom' ).click( function() {
 			}
 		}
 		, cancel   : function() {
-			if ( !G.custom ) $( '#custom' ).prop( 'checked', 0 );
+			$( '#custom' ).prop( 'checked', G.custom );
 		}
 		, ok       : function() {
 			var customglobal = lines2line( $( '#global' ).val() );
 			var customoutput = lines2line( $( '#output' ).val() );
-			notify( "User's Custom Settings", 'Change ...', 'mpd' );
 			bash( [ 'customset', customglobal, customoutput, output ] );
+			notify( "User's Custom Settings", G.custom ? 'Change ...' : 'Enable ...', 'mpd' );
 		}
 	} );
 } );

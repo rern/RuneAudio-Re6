@@ -397,8 +397,7 @@ $( '#setting-lcdchar' ).click( function() {
 			} else {
 				bash( [ 'lcdcharset', lcdcharval ] );
 			}
-			var action = G.lcdchar ? 'Change ...' : 'Enabled ...';
-			notify( 'Character LCD', 'Change ...', 'gear' );
+			notify( 'Character LCD', G.lcdchar ? 'Change ...' : 'Enabled ...', 'gear' );
 		}
 	} );
 } );
