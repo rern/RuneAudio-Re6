@@ -37,7 +37,7 @@ txtcolorpin();
 txtcolordelay();
 txtcolor();
 
-$( '.pin' ).on( 'selectric-change', function() { // 'object' by 'class' must add class '.selectpicker' to suppress twice firing events
+$( '.pin' ).change( function() { // 'object' by 'class' must add class '.selectpicker' to suppress twice firing events
 	var pnew = this.value;
 	var n = this.id.slice( -1 ); // get number
 	var on = $( '.on, .off' ).find( 'select:has(option[value='+ pin[ n ] +']:selected)' ); // get existing .on, .off that has this pin
@@ -79,10 +79,10 @@ $( '.name' ).change( function() {
 	};
 	txtcolor();
 } );
-$( '.timer, .delay' ).on( 'selectric-change', function() {
+$( '.timer, .delay' ).change( function() {
 	txtcolor();
 } );
-$( '.on, .off' ).on( 'selectric-change', function() {
+$( '.on, .off' ).change( function() {
 	var on = this.id.slice( 0, 2 ) == 'on'; // get on/off
 	var pnew = this.value;
 	$( on ? '.on' : '.off' ).each( function() {

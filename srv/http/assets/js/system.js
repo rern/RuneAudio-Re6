@@ -236,7 +236,7 @@ $( '#i2smodulesw' ).click( function() {
 			.find( '.selectric' ).click();
 	}, 200 );
 } );
-$( '#i2smodule' ).on( 'selectric-change', function() {
+$( '#i2smodule' ).change( function() {
 	var audioaplayname = $( this ).val();
 	var audiooutput = $( this ).find( ':selected' ).text();
 	if ( audioaplayname !== 'none' ) {
@@ -423,7 +423,7 @@ $( '#hostname' ).click( function() {
 		}
 	} );
 } );
-$( '#timezone' ).on( 'selectric-change', function( e ) {
+$( '#timezone' ).change( function( e ) {
 	bash( [ 'timezone', $( this ).val() ] );
 } );
 $( '#setting-regional' ).click( function() {

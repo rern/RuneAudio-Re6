@@ -148,7 +148,7 @@ var warning = '<wh><i class="fa fa-warning fa-lg"></i>&ensp;Lower amplifier volu
 			 +'<br>(If current level in MPD is not 100%.)'
 			 +'<br><br>Signal level will be set to full amplitude to 0dB'
 			 +'<br>Too high volume can damage speakers and ears';
-$( '#audiooutput' ).on( 'selectric-change', function() {
+$( '#audiooutput' ).change( function() {
 	var $selected = $( this ).find( ':selected' );
 	var output = $selected.text();
 	var aplayname = $selected.val();
@@ -158,7 +158,7 @@ $( '#audiooutput' ).on( 'selectric-change', function() {
 	aplayname = output !== G.usbdac ? aplayname : '';
 	bash( [ 'audiooutput', aplayname, card, output, hwmixer ] );
 } );
-$( '#mixertype' ).on( 'selectric-change', function() {
+$( '#mixertype' ).change( function() {
 	var mixertype = $( this ).val();
 	if ( mixertype === 'none' ) {
 		info( {
@@ -199,7 +199,7 @@ $( '#setting-mixertype' ).click( function() { // hardware mixer
 			, boxwidth    : 280
 			, preshow     : function() {
 				$( '#infoOk' ).addClass( 'disabled' );
-				$( '#infoSelectBox' ).on( 'selectric-change', function() {
+				$( '#infoSelectBox' ).change( function() {
 					$( '#infoOk' ).toggleClass( 'disabled', $( this ).val() === hwmixer );
 				} );
 			}
