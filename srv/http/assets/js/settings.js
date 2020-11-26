@@ -147,7 +147,7 @@ onVisibilityChange( function( visible ) {
 	if ( page === 'credits' ) return
 	
 	if ( visible ) {
-		refreshData();
+		if( $( '.codepade' ).hasClass( 'hide' ) ) refreshData();
 	} else {
 		if ( page === 'networks' ) {
 			clearInterval( intervalscan );
@@ -201,7 +201,15 @@ $( '#close' ).click( function() {
 	}
 } );
 $( '.page-icon' ).click( function() {
-	location.reload();
+	if( $( '.codepage' ).hasClass( 'hide' ) ) {
+		bash( "/srv/http/bash/cmd.sh pagedata$'\n'"+ page, function( list ) {
+			$( '.container' ).addClass( 'hide' );
+			$( '.codepage' ).html( list ).removeClass( 'hide' );
+		} );
+	} else {
+		$( '.container' ).removeClass( 'hide' );
+		$( '.codepage' ).addClass( 'hide' );
+	}
 } );
 $( '#help' ).click( function() {
 	var eltop = $( 'heading' ).filter( function() {
