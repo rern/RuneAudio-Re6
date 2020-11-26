@@ -92,7 +92,6 @@ function editLAN( data ) {
 	} );
 }
 function editWiFi( ssid, data ) {
-	console.log(data)
 	var data0 = data;
 	var icon = ssid ? 'edit-circle' : 'wifi-3';
 	var title = ssid ? 'Wi-Fi IP' : 'Add Wi-Fi';

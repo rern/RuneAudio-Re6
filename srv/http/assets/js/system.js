@@ -412,6 +412,12 @@ $( '#hostname' ).click( function() {
 		, title     : 'Player Name'
 		, textlabel : 'Name'
 		, textvalue : G.hostname
+		, preshow       : function() {
+			$( '#infoOk' ).addClass( 'disabled' );
+			$( '#infoTextBox' ).keyup( function() {
+				$( '#infoOk' ).toggleClass( 'disabled', $( '#infoTextBox' ).val() === G.hostname );
+			} );
+		}
 		, ok        : function() {
 			var hostname = $( '#infoTextBox' ).val().replace( /[^a-zA-Z0-9-]+/g, '-' ).replace( /(^-*|-*$)/g, '' );
 			if ( hostname !== G.hostname ) {
@@ -434,15 +440,20 @@ $( '#setting-regional' ).click( function() {
 		, textvalue : [ G.ntp, G.regdom || '00' ]
 		, boxwidth  : 200
 		, footer    : '<px70/><px60/>00 - common for all regions'
+		, preshow       : function() {
+			$( '#infoOk' ).addClass( 'disabled' );
+			$( '#infoTextBox, #infoTextBox1' ).keyup( function() {
+				var changed = $( '#infoTextBox' ).val() !== G.ntp || $( '#infoTextBox1' ).val() !== G.regdom;
+				$( '#infoOk' ).toggleClass( 'disabled', !changed );
+			} );
+		}
 		, ok        : function() {
 			var ntp = $( '#infoTextBox' ).val();
 			var regdom = $( '#infoTextBox1' ).val();
-			if ( ntp !== G.ntp || regdom !== G.regdom ) {
-				G.ntp = ntp;
-				G.regdom = regdom;
-				notify( 'Regional Settings', 'Change ...', 'gear' );
-				bash( [ 'regional', ntp, regdom ] );
-			}
+			G.ntp = ntp;
+			G.regdom = regdom;
+			notify( 'Regional Settings', 'Change ...', 'gear' );
+			bash( [ 'regional', ntp, regdom ] );
 		}
 	} );
 } );
