@@ -23,6 +23,15 @@ function setMixerType( mixertype ) {
 }
 refreshData = function() {
 	bash( '/srv/http/bash/mpd-data.sh', function( list ) {
+		if ( list == -1 ) {
+			info( {
+				  icon    : 'mpd'
+				, title   : 'Warning'
+				, message : '<i class="fa fa-warning"></i> No soundcards found.'
+			} );
+			return
+		}
+		
 		var list2G = list2JSON( list );
 		if ( !list2G ) return
 		

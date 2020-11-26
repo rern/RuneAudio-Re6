@@ -4,6 +4,8 @@ dirsystem=/srv/http/data/system
 
 . /srv/http/bash/mpd-devices.sh
 
+[[ -z ${Acard[0]} ]] && echo -1 && exit # no soundcards
+
 for (( i=0; i < cardL; i++ )); do
 	# json inside array needs "escaped double quotes"
 	devices+='{
