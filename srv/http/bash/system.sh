@@ -174,21 +174,26 @@ i2c-bcm2708
 i2c-dev" >> $filemodule
 			echo "$reboot" > $filereboot
 		fi
-		sed -i -e "s/^\(address = '\).*/\1$address'/
-" -e "s/\(chip = '\).*/\1$chip'/
-" -e "s/\(cols = \).*/\1$cols/
-" -e "s/\(rows = \).*/\1$rows/
-" -e '/address = /,/i2c_expander/ s/^#//
-' -e '/RPLCD.gpio/,/numbering_mode/ s/^/#/
-' $filelcdchar
-	else
 		sed -i -e "s/\(cols = \).*/\1$cols/
-" -e "s/\(rows = \).*/\1$rows/
-" -e '/address = /,/i2c_expander/ s/^/#/
-' -e '/RPLCD.gpio/,/numbering_mode/ s/^#//
-' $filelcdchar
+			" -e "s/\(rows = \).*/\1$rows/
+			" -e "s/\(charmap = '\).*/\1$charmap'/
+			" -e "s/^\(address = '\).*/\1$address'/
+			" -e "s/\(chip = '\).*/\1$chip'/
+			" -e '/address = /,/i2c_expander/ s/^#//
+			' -e '/RPLCD.gpio/,/numbering_mode/ s/^/#/
+			' $filelcdchar
+	else
+		if [[ ! -e $dirsystem/lcd ]]; then
+			sed -i '/dtparam=i2c_arm=on/ d' $fileconfig
+			sed -i '/i2c-bcm2708\|i2c-dev/ d' $filemodule
+		fi
+		sed -i -e "s/\(cols = \).*/\1$cols/
+			" -e "s/\(rows = \).*/\1$rows/
+			" -e "s/\(charmap = '\).*/\1$charmap'/
+			" -e '/address = /,/i2c_expander/ s/^/#/
+			' -e '/RPLCD.gpio/,/numbering_mode/ s/^#//
+			' $filelcdchar
 	fi
-	! grep -q 'dtparam=i2c_arm=on' $fileconfig && /srv/http/bash/system.sh lcdchar$'\n'true$'\n'"$reboot"
 	unset args[-1] # remove reboot line
 	printf '%s\n' "${args[@]:1}" > $dirsystem/lcdcharset # array to multiline string
 	touch $dirsystem/lcdchar

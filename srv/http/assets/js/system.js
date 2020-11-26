@@ -282,20 +282,18 @@ $( '#setting-lcd' ).click( function() {
 	} );
 } );
 $( '#lcdchar' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.lcdcharset ) {
-		notify( 'Character LCD', checked, 'gear' );
-		rebootText( checked, 'Character LCD' );
-		checked ? bash( [ 'lcdcharset', G.lcdcharval, G.reboot.join( '\n' ) ] ) : bash( [ 'lcdchardisable' ] );
-	} else {
+	if ( $( this ).prop( 'checked' ) ) {
 		$( '#setting-lcdchar' ).click();
+	} else {
+		bash( [ 'lcdchardisable' ] );
+		notify( 'Character LCD', 'Disable ...', 'gear' );
 	}
 } );
 var infolcdchar = heredoc( function() { /*
 	<div class="infotextlabel">
 		<a class="infolabel">Size</a>
-		<a class="infolabel">Interface</a>
 		<a class="infolabel">&emsp;Character Map</a>
+		<a class="infolabel">Interface</a>
 		<div class="i2c">
 			<a class="infolabel">Address</a>
 			<a class="infolabel">I&#178;C Chip</a>
@@ -307,13 +305,13 @@ var infolcdchar = heredoc( function() { /*
 			<label><input type="radio" name="size" value="20"> 20x4</label>
 			<label><input type="radio" name="size" value="40"> 40x4</label>
 		</div>
-		<div id="inf" class="infocontent infohtml lcd">
-			<label><input type="radio" name="interface" value="i2c"> I&#178;C</label>
-			<label><input type="radio" name="interface" value="gpio"> GPIO</label>
-		</div>
 		<div id="charmap" class="infocontent infohtml lcd">
 			<label><input type="radio" name="charmap" value="A00"> A00</label>
 			<label><input type="radio" name="charmap" value="A02"> A02</label>
+		</div>
+		<div id="inf" class="infocontent infohtml lcd">
+			<label><input type="radio" name="interface" value="i2c"> I&#178;C</label>
+			<label><input type="radio" name="interface" value="gpio"> GPIO</label>
 		</div>
 		<div class="i2c">
 			<div id="address" class="infocontent infohtml lcd">
@@ -334,24 +332,26 @@ $( '#setting-lcdchar' ).click( function() {
 		, boxwidth      : 173
 		, nofocus       : 1
 		, preshow       : function() {
-			var val = G.lcdcharaddr ? G.lcdcharval : '20 A00 0x27 PCF8574'
+			var val = G.lcdcharval
 			var settings = val.split( ' ' );
 			var cols = settings[ 0 ];
 			var charmap = settings[ 1 ];
-			$( '#charmap input[value='+ charmap +']' ).prop( 'checked', 1 );
+			$( '#charmap input' ).val( [ charmap ] );
 			if (  settings.length > 2 ) {
 				var inf = 'i2c';
 				var i2caddress = settings[ 2 ];
 				var i2cchip = settings[ 3 ];
-				$( '#chip input[value='+ i2cchip +']' ).prop( 'checked', 1 );
+				$( '#chip input' ).val( [ i2cchip ] );
 			} else {
 				var inf = 'gpio';
+				var i2caddress = '0x27';
 			}
-			$( '#cols input[value='+ cols +']' ).prop( 'checked', 1 )
-			$( '#inf input[value='+ inf +']' ).prop( 'checked', 1 )
-			$( '#divi2c' ).toggleClass( 'hide', inf === 'gpio' );
+			$( '#cols input' ).val( [ cols ] );
+			$( '#inf input' ).val( [ inf ] )
+			$( '.i2c' ).toggleClass( 'hide', inf === 'gpio' );
 			$( '#inf' ).change( function() {
-				$( '.i2c' ).toggleClass( 'hide', $( '#inf input:checked' ).val() === 'gpio' );
+				var inf = $( '#inf input:checked' ).val();
+				$( '.i2c' ).toggleClass( 'hide', inf === 'gpio' );
 			} );
 			var lcdcharaddr = G.lcdcharaddr || '27 3F';
 			var addr = lcdcharaddr.split( ' ' );
@@ -360,10 +360,10 @@ $( '#setting-lcdchar' ).click( function() {
 				opt += '<label><input type="radio" name="address" value="0x'+ el +'"> 0x'+ el +'</label>';
 			} );
 			$( '#address' ).html( opt );
-			$( '#address input[value='+ i2caddress +']' ).prop( 'checked', 1 );
+			$( '#address input' ).val( [ i2caddress ] );
 			$( '.lcd label' ).width( 80 );
 			// verify
-			if ( G.lcdcharset ) {
+			if ( G.lcdchar ) {
 				$( '#infoOk' ).addClass( 'disabled' );
 				$( '#cols, #inf, #charmap, #address, #chip' ).change( function() {
 					var lcdcharval = $( '#cols input:checked' ).val();
@@ -377,7 +377,7 @@ $( '#setting-lcdchar' ).click( function() {
 			}
 		}
 		, cancel        : function() {
-			if ( !G.lcdchar ) $( '#lcdchar' ).prop( 'checked', 0 );
+			$( '#lcdchar' ).prop( 'checked', G.lcdchar );
 		}
 		, buttonlabel   : [ 'Splash', 'Off' ]
 		, buttoncolor   : [ '#448822',       '#de810e' ]
@@ -392,13 +392,13 @@ $( '#setting-lcdchar' ).click( function() {
 			if ( $( '#inf input:checked' ).val() === 'i2c' ) {
 				lcdcharval += ' '+ $( '#address input:checked' ).val();
 				lcdcharval += ' '+ $( '#chip option:selected' ).val();
-			}
-			if ( inf === 'i2c' ) {
 				rebootText( 1, 'Character LCD' );
+				console.log(lcdcharval);
 				bash( [ 'lcdcharset', lcdcharval, G.reboot.join( '\n' ) ] );
 			} else {
 				bash( [ 'lcdcharset', lcdcharval ] );
 			}
+			var action = G.lcdchar ? 'Change ...' : 'Enabled ...';
 			notify( 'Character LCD', 'Change ...', 'gear' );
 		}
 	} );
@@ -458,12 +458,11 @@ $( '#setting-regional' ).click( function() {
 	} );
 } );
 $( '#soundprofile' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.soundprofileset ) {
-		notify( "Kernel Sound Profile", checked, 'volume' );
-		checked ? bash( [ 'soundprofileset', G.soundprofileval ] ) : bash( [ 'soundprofiledisable' ] );
-	} else {
+	if ( $( this ).prop( 'checked' ) ) {
 		$( '#setting-soundprofile' ).click();
+	} else {
+		bash( [ 'soundprofiledisable' ] );
+		notify( "Kernel Sound Profile", 'Disable ...', 'volume' );
 	}
 } );
 $( '#setting-soundprofile' ).click( function() {
@@ -502,33 +501,36 @@ $( '#setting-soundprofile' ).click( function() {
 		, preshow : function() {
 			$( '#infoRadio input' ).last().prop( 'disabled', 1 );
 			// verify
-			if ( G.soundprofileset ) $( '#infoOk' ).addClass( 'disabled' );
-			$( '#infoRadio' ).change( function() {
-				var soundprofileval = $( '#infoRadio input:checked' ).val();
-				$( '#infoOk' ).toggleClass( 'disabled', soundprofileval === G.soundprofileval );
-				var val = soundprofileval.split( ' ' );
-				for ( i = 0; i < 4; i++ ) $( '.infoinput' ).eq( i ).val( val[ i ] );
-			} );
-			$( '.infoinput' ).keyup( function() {
-				var soundprofileval = $( '#infoTextBox' ).val();
-				for ( i = 1; i < 4; i++ ) soundprofileval += ' '+ $( '#infoTextBox'+ i ).val();
-				if ( G.soundprofileset ) $( '#infoOk' ).toggleClass( 'disabled', G.soundprofileset && soundprofileval === G.soundprofileval );
-				if ( values.indexOf( soundprofileval ) !== -1 ) {
-					$( '#infoRadio input[value="'+ soundprofileval +'"]' ).prop( 'checked', 1 );
-					$( '#infoRadio input' ).last().prop( 'checked', 0 );
-				} else {
-					$( '#infoRadio input' ).last().prop( 'checked', 1 );
-				}
-			} );
+			if ( G.soundprofile ) {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#infoRadio' ).change( function() {
+					var soundprofileval = $( '#infoRadio input:checked' ).val();
+					$( '#infoOk' ).toggleClass( 'disabled', soundprofileval === G.soundprofileval );
+					var val = soundprofileval.split( ' ' );
+					for ( i = 0; i < 4; i++ ) $( '.infoinput' ).eq( i ).val( val[ i ] );
+				} );
+				$( '.infoinput' ).keyup( function() {
+					var soundprofileval = $( '#infoTextBox' ).val();
+					for ( i = 1; i < 4; i++ ) soundprofileval += ' '+ $( '#infoTextBox'+ i ).val();
+					$( '#infoOk' ).toggleClass( 'disabled', G.soundprofileset && soundprofileval === G.soundprofileval );
+					if ( values.indexOf( soundprofileval ) !== -1 ) {
+						$( '#infoRadio input[value="'+ soundprofileval +'"]' ).prop( 'checked', 1 );
+						$( '#infoRadio input' ).last().prop( 'checked', 0 );
+					} else {
+						$( '#infoRadio input' ).last().prop( 'checked', 1 );
+					}
+				} );
+			}
 		}
 		, cancel  : function() {
-			if ( !G.soundprofile ) $( '#soundprofile' ).prop( 'checked', 0 );
+			$( '#soundprofile' ).prop( 'checked', G.soundprofile );
 		}
 		, ok      : function() {
 			var soundprofileval = $( '#infoTextBox' ).val();
 			for ( i = 1; i < 4; i++ ) soundprofileval += ' '+ $( '#infoTextBox'+ i ).val();
 			bash( [ 'soundprofileset', soundprofileval ] );
-			notify( 'Kernel Sound Profile', ( soundprofileval !== defaultval ? 'Change ...' : 'Default ...' ), 'volume' );
+			var action = !G.soundprofile ? 'Enabled ...' : ( soundprofileval !== defaultval ? 'Change ...' : 'Default ...' );
+			notify( 'Kernel Sound Profile', action, 'volume' );
 		}
 	} );
 } );
