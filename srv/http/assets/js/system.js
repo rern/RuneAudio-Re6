@@ -412,7 +412,7 @@ $( '#hostname' ).click( function() {
 		, title     : 'Player Name'
 		, textlabel : 'Name'
 		, textvalue : G.hostname
-		, preshow       : function() {
+		, preshow   : function() {
 			$( '#infoOk' ).addClass( 'disabled' );
 			$( '#infoTextBox' ).keyup( function() {
 				$( '#infoOk' ).toggleClass( 'disabled', $( '#infoTextBox' ).val() === G.hostname );
@@ -440,7 +440,7 @@ $( '#setting-regional' ).click( function() {
 		, textvalue : [ G.ntp, G.regdom || '00' ]
 		, boxwidth  : 200
 		, footer    : '<px70/><px60/>00 - common for all regions'
-		, preshow       : function() {
+		, preshow   : function() {
 			$( '#infoOk' ).addClass( 'disabled' );
 			$( '#infoTextBox, #infoTextBox1' ).keyup( function() {
 				var changed = $( '#infoTextBox' ).val() !== G.ntp || $( '#infoTextBox1' ).val() !== G.regdom;
