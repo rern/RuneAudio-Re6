@@ -11,7 +11,7 @@ function btRender( data ) {
 	$( '#listbtscan' ).html( html );
 }
 function btScan() {
-	bash( '/srv/http/bash/network-scanbt.sh', function( data ) {
+	bash( '/srv/http/bash/networks-scanbt.sh', function( data ) {
 		if ( data.length ) btRender( data );
 		intervalscan = setTimeout( btScan, 12000 );
 	}, 'json' );
@@ -92,6 +92,7 @@ function editLAN( data ) {
 	} );
 }
 function editWiFi( ssid, data ) {
+	console.log(data)
 	var data0 = data;
 	var icon = ssid ? 'edit-circle' : 'wifi-3';
 	var title = ssid ? 'Wi-Fi IP' : 'Add Wi-Fi';
@@ -114,6 +115,11 @@ function editWiFi( ssid, data ) {
 					}, 'json' );
 				}
 			}
+			$( '#infoOk' ).addClass( 'disabled' );
+			$( '#infoTextBox1, #infoTextBox2' ).keyup( function() {
+				var changed = $( '#infoTextBox1' ).val() !== data.Address || $( '#infoTextBox2' ).val() !== data.Gateway;
+				$( '#infoOk' ).toggleClass( 'disabled', !changed );
+			} );
 		}
 		, ok            : function() {
 			var ssid = ssid || $( '#infoTextBox' ).val();
@@ -123,8 +129,6 @@ function editWiFi( ssid, data ) {
 			var dhcp = $( '#infoCheckBox input:eq( 0 )' ).prop( 'checked' ) ? 'static' : 'dhcp';
 			var hidden = $( '#infoCheckBox input:eq( 1 )' ).prop( 'checked' ) ? 'hidden' : '';
 			var security = $( '#infoCheckBox input:eq( 2 )' ).prop( 'checked' ) ? 'wep' : 'wpa';
-			if ( data0 && ip === data0.Address && gw === data0.Gateway ) return
-			
 			// [ wlan, ssid, dhcp, wpa, password, hidden, ip, gw ]
 			var data = [ ssid, dhcp ];
 			if ( password ) {
@@ -223,7 +227,7 @@ function infoConnect( $this ) {
 		, buttonwidth : 1
 		, buttonlabel : [
 			  '<i class="fa fa-minus-circle"></i> Forget'
-			, '<i class="fa fa-save-circle"></i> IP'
+			, '<i class="fa fa-edit-circle"></i> IP'
 		]
 		, buttoncolor : [
 			  '#bb2828'
@@ -264,7 +268,7 @@ function infoConnect( $this ) {
 	} );
 }
 function nicsStatus() {
-	bash( '/srv/http/bash/network-data.sh', function( list ) {
+	bash( '/srv/http/bash/networks-data.sh', function( list ) {
 		var list2G = list2JSON( list );
 		if ( !list2G ) return
 		
@@ -357,7 +361,7 @@ function renderQR() {
 	$( '#boxqr' ).removeClass( 'hide' );
 }
 function wlanScan() {
-	bash( '/srv/http/bash/network-scanwlan.sh '+ G.wlcurrent, function( list ) {
+	bash( '/srv/http/bash/networks-scanwlan.sh '+ G.wlcurrent, function( list ) {
 		var good = -60;
 		var fair = -67;
 		var html = '';
@@ -476,16 +480,12 @@ $( '#listbt' ).on( 'click', 'li', function() {
 		, buttoncolor : '#bb2828'
 		, button      : function() {
 			notify( name, 'Forget ... ', 'bluetooth' );
-			bash( "/srv/http/bash/network.sh btremove$'\n'"+ mac );
+			bash( "/srv/http/bash/networks.sh btremove$'\n'"+ mac );
 		}
 		, oklabel : connected ? 'Disconnect' : 'Connect'
 		, okcolor : connected ? '#de810e' : ''
 		, ok      : function() {
-			if ( connected ) {
-				bash( '/srv/http/bash/network.sh btdisconnect' );
-			} else {
-				bash( '/srv/http/bash/network.sh btpair' );
-			}
+			bash( '/srv/http/bash/networks.sh '+ ( connected ? 'btdisconnect' : 'btpair' ) );
 		}
 	} );
 } );
