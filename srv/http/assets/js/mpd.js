@@ -26,8 +26,11 @@ refreshData = function() {
 		if ( list == -1 ) {
 			info( {
 				  icon    : 'mpd'
-				, title   : 'Warning'
+				, title   : 'MPD Settings'
 				, message : '<i class="fa fa-warning"></i> No soundcards found.'
+				, ok      : function() {
+					location.href = '/';
+				}
 			} );
 			return
 		}
