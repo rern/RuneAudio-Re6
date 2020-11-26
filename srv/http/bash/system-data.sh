@@ -44,9 +44,15 @@ data='
 # for interval refresh
 (( $# > 0 )) && echo {$data} && exit
 
-cpuinfo=$( cat /proc/cpuinfo )
+hwcode=$( awk '/Revision/ {print $NF}' <<< "$( cat /proc/cpuinfo )" )
+case ${hwcode: -3:2} in
+	00 | 01 | 02 | 03 | 09 | 0c ) soc=BCM2835;;
+	04 )                          [[ ${hwcode: -4:1} == 1 ]] && soc=BCM2836 || soc=BCM2837;;
+	08 )                          soc=BCM2837;;
+	0e | 0d )                     soc=BCM2837B0;;
+	11 )                          soc=BCM2711;;
+esac
 lscpu=$( lscpu )
-soc=$( awk '/Hardware/ {print $NF}' <<< "$cpuinfo" )
 cpucores=$( awk '/CPU\(s\):/ {print $NF}' <<< "$lscpu" )
 cpuname=$( awk '/Model name/ {print $NF}' <<< "$lscpu" )
 cpuspeed=$( awk '/CPU max/ {print $NF}' <<< "$lscpu" | cut -d. -f1 )
@@ -54,7 +60,6 @@ cpuspeed=$( awk '/CPU max/ {print $NF}' <<< "$lscpu" | cut -d. -f1 )
 soc="<span class='wide'>$soc$bullet</span>$cores $cpuname @ "
 (( $cpuspeed < 1000 )) && soc+="${cpuspeed}MHz" || soc+="$( awk "BEGIN { printf \"%.1f\n\", $cpuspeed / 1000 }" )GHz"
 soc+=$bullet
-hwcode=$( awk '/Revision/ {print $NF}' <<< "$cpuinfo" )
 case ${hwcode: -6:1} in
 	9 ) soc+='512KB';;
 	a ) soc+='1GB';;
@@ -88,7 +93,7 @@ fi
 data+='
 	, "audioaplayname"  : "'$( cat $dirsystem/audio-aplayname 2> /dev/null )'"
 	, "audiooutput"     : "'$( cat $dirsystem/audio-output )'"
-	, "hardware"        : "'$( awk '/Model/ {$1=$2=""; print}' <<< "$cpuinfo" )'"
+	, "hardware"        : "'$( cat /proc/device-tree/model )'"
 	, "hostname"        : "'$( cat $dirsystem/hostname )'"
 	, "ip"              : "'${iplist:1}'"
 	, "kernel"          : "'$( uname -r )'"
