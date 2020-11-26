@@ -18,8 +18,9 @@ code=$( awk '/Revision/ {print $NF}' /proc/cpuinfo )
 hwcode=${code: -3:2}
 if (( $# == 0 )); then
 	case $hwcode in
-		09 | 0c ) rpi=0;;
-		11 )      rpi=4;;
+		09 | 0c )         rpi=0;;
+		00 | 01 |02 |03 ) rpi=1
+		11 )              rpi=4;;
 	esac
 	config="\
 over_voltage=2
@@ -105,7 +106,8 @@ echo '"mpd":true,"airplay":false,"snapclient":false,"spotify":false,"upnp":false
 echo 'bcm2835 Headphones' > $dirsystem/audio-aplayname
 echo 'On-board - Headphone' > $dirsystem/audio-output
 echo RuneAudio > $dirsystem/hostname
-touch $dirsystem/{localbrowser,onboard-audio,onboard-wlan}
+touch $dirsystem/{onboard-audio,onboard-wlan}
+[[ $rpi != 0 && $rpi != 1 ]] && touch $dirsystem/localbrowser
 rm -f $dirsystem/{lcd,lcdchar,relays,soundprofile}
 hostnamectl set-hostname runeaudio
 sed -i 's/#NTP=.*/NTP=pool.ntp.org/' /etc/systemd/timesyncd.conf
