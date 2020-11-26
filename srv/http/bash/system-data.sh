@@ -75,13 +75,14 @@ snaplatency=$( grep OPTS= /etc/default/snapclient | sed 's/.*latency=\(.*\)"/\1/
 lcdcharset=$( grep '^address\|^chip\|^cols' /srv/http/bash/lcdchar.py | cut -d' ' -f3 | tr -d "'" )
 [[ -z $snaplatency ]] && snaplatency=0
 if grep -q 'dtparam=i2c_arm=on' /boot/config.txt; then
-	lcdcharaddr=$( i2cdetect -y $( ls /dev/i2c* | tail -c 2 ) \
-					| grep -v '^\s' \
-					| cut -d' ' -f2- \
-					| tr -d ' \-' \
-					| grep -v UU
-					| grep . \
-					| sort -u )
+	dev=$( ls /dev/i2c* 2> /dev/null | tail -c 2 )
+	[[ -n $dev ]] && lcdcharaddr=$( i2cdetect -y $dev \
+									| grep -v '^\s' \
+									| cut -d' ' -f2- \
+									| tr -d ' \-' \
+									| grep -v UU \
+									| grep . \
+									| sort -u )
 fi
 
 data+='
