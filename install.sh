@@ -57,7 +57,6 @@ if [[ -e $dirsystem/ntp ]]; then
 	cat $files > $dirsystem/regional
 	rm $files
 fi
-rm -f $dirsystem/soundprofile
 
 # features
 mv $dirsystem/{airplay,shairport-sync} &> /dev/null
@@ -94,13 +93,13 @@ fi
 
 # mpd
 crossfade=$( mpc crossfade | cut -d' ' -f2 )
-[[ ! -e $dirsystem/mpd-crossfadeset && $crossfade != 0 ]] && echo $crossfade > $dirsystem/mpd-crossfadeset
+[[ ! -e $dirsystem/mpd-crossfadeset && $crossfade != 0 ]] && echo $crossfade > $dirsystem/mpd-crossfadeset && touch $dirsystem/mpd-crossfade
 replaygain=$( grep replaygain /etc/mpd.conf | cut -d'"' -f2 )
-[[ ! -e $dirsystem/mpd-replaygainset && $replaygain != off ]] && echo $replaygain > $dirsystem/mpd-replaygainset
+[[ ! -e $dirsystem/mpd-replaygainset && $replaygain != off ]] && echo $replaygain > $dirsystem/mpd-replaygainset && touch $dirsystem/mpd-replaygain
 buffer=$( grep audio_buffer_size /etc/mpd.conf | cut -d'"' -f2 )
-[[ ! -e $dirsystem/mpd-bufferset && -n $buffer ]] && echo $buffer > $dirsystem/mpd-bufferset
+[[ ! -e $dirsystem/mpd-bufferset && -n $buffer ]] && echo $buffer > $dirsystem/mpd-bufferset && $dirsystem/mpd-buffer
 bufferoutput=$( grep max_output_buffer_size /etc/mpd.conf | cut -d'"' -f2 )
-[[ ! -e $dirsystem/mpd-bufferoutputset && -n $bufferoutput ]] && echo $bufferoutput > $dirsystem/mpd-bufferoutputset
+[[ ! -e $dirsystem/mpd-bufferoutputset && -n $bufferoutput ]] && echo $bufferoutput > $dirsystem/mpd-bufferoutputset && $dirsystem/mpd-bufferoutput
 
 if [[ $( upmpdcli -v 2> /dev/null | cut -d' ' -f2 ) == 1.4.14 ]]; then
 	pacman -R --noconfirm libnpupnp libupnpp upmpdcli
