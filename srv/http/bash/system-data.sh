@@ -52,6 +52,7 @@ case ${hwcode: -3:2} in
 	0e | 0d )                     soc=BCM2837B0;;
 	11 )                          soc=BCM2711;;
 esac
+[[ $soc == BCM2835 ]] && rpi01=true || rpi01=false
 lscpu=$( lscpu )
 cpucores=$( awk '/CPU\(s\):/ {print $NF}' <<< "$lscpu" )
 cpuname=$( awk '/Model name/ {print $NF}' <<< "$lscpu" )
@@ -109,18 +110,21 @@ data+='
 	, "reboot"          : "'$( cat /srv/http/data/shm/reboot 2> /dev/null )'"
 	, "regdom"          : "'$( cat /etc/conf.d/wireless-regdom | cut -d'"' -f2 )'"
 	, "relays"          : '$( [[ -e $dirsystem/relays ]] && echo true || echo false )'
-	, "rpi01"           : "'$( [[ $soc == BCM2835 || $soc == BCM2836 ]] && rpi01=true || rpi01=false )'"
+	, "rpi01"           : '$rpi01'
 	, "soc"             : "'$soc'"
 	, "soundprofile"    : '$( [[ -e $dirsystem/soundprofile ]] && echo true || echo false )'
 	, "soundprofileset" : '$( [[ -e $dirsystem/soundprofileset ]] && echo true || echo false )'
 	, "soundlatency"    : '$( sysctl kernel.sched_latency_ns | awk '{print $NF}' )'
-	, "soundmtu"        : '$( ifconfig eth0 | awk '/mtu/ {print $NF}' )'
-	, "soundtxqueuelen" : '$( ifconfig eth0 | awk '/txqueuelen/ {print $4}' )'
 	, "soundswappiness" : '$( sysctl vm.swappiness | awk '{print $NF}' )'
 	, "sources"         : '$( /srv/http/bash/sources-data.sh )'
 	, "timezone"        : "'$timezone'"
 	, "version"         : "'$version'"
 	, "versionui"       : '$( cat /srv/http/data/addons/rr$version 2> /dev/null || echo 0 )
+if ifconfig | grep -q ^eth0; then
+	data+='
+	, "soundmtu"        : '$( ifconfig eth0 | awk '/mtu/ {print $NF}' )'
+	, "soundtxqueuelen" : '$( ifconfig eth0 | awk '/txqueuelen/ {print $4}' )
+fi
 if [[ -e /usr/bin/bluetoothctl  ]]; then
 	bluetooth=$( grep -q dtparam=krnbt=on /boot/config.txt && echo true || echo false )
 	bluetoothon=$( systemctl -q is-active bluetooth && echo true || echo false )

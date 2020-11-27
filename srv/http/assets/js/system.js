@@ -349,18 +349,16 @@ $( '#setting-lcdchar' ).click( function() {
 			$( '#address input' ).val( [ i2caddress ] );
 			$( '.lcd label' ).width( 80 );
 			// verify
-			if ( G.lcdchar ) {
-				$( '#infoOk' ).addClass( 'disabled' );
-				$( '#cols, #inf, #charmap, #address, #chip' ).change( function() {
-					var lcdcharval = $( '#cols input:checked' ).val();
-					lcdcharval += ' '+ $( '#charmap input:checked' ).val();
-					if ( $( '#inf input:checked' ).val() === 'i2c' ) {
-						lcdcharval += ' '+ $( '#address input:checked' ).val();
-						lcdcharval += ' '+ $( '#chip option:selected' ).val();
-					}
-					$( '#infoOk' ).toggleClass( 'disabled', G.lcdcharset && lcdcharval === G.lcdcharval );
-				} );
-			}
+			if ( G.lcdchar ) $( '#infoOk' ).addClass( 'disabled' );
+			$( '#cols, #inf, #charmap, #address, #chip' ).change( function() {
+				var lcdcharval = $( '#cols input:checked' ).val();
+				lcdcharval += ' '+ $( '#charmap input:checked' ).val();
+				if ( $( '#inf input:checked' ).val() === 'i2c' ) {
+					lcdcharval += ' '+ $( '#address input:checked' ).val();
+					lcdcharval += ' '+ $( '#chip option:selected' ).val();
+				}
+				if ( G.lcdchar ) $( '#infoOk' ).toggleClass( 'disabled', lcdcharval === G.lcdcharval );
+			} );
 		}
 		, cancel        : function() {
 			$( '#lcdchar' ).prop( 'checked', G.lcdchar );
@@ -463,60 +461,76 @@ $( '#soundprofile' ).click( function() {
 	}
 } );
 $( '#setting-soundprofile' ).click( function() {
-	var setval = G.soundmtu +' '+ G.soundtxqueuelen +' '+ G.soundswappiness +' '+ G.soundlatency;
-	var defaultval = '1500 1000 60 18000000';
+	var textlabel = [ 'kernel.sched_latency_ns <gr>(ns)</gr>', 'vm.swappiness' ];
+	var textvalue = G.soundlatency +' '+ G.soundswappiness;
 	if ( G.rpi01 ) {
-		var lat = [ 1500000, 850000, 500000, 120000, 500000, 1500000, 145655, 6000000 ];
+		var lat = [ 1500000, 850000, 500000, 120000, 500000, 145655, 6000000, 1500000 ];
 	} else {
-		var lat = [ 4500000, 3500075, 1000000, 2000000, 3700000, 1500000, 145655, 6000000 ];
+		var lat = [ 4500000, 3500075, 1000000, 2000000, 3700000, 145655, 6000000, 1500000 ];
 	}
-	var radio = {
-		  _Default  : defaultval
-		, RuneAudio : '1500 1000 0 '+ lat[ 0 ]
-		, _ACX      : '1500 4000 0 '+ lat[ 1 ]
-		, Orion     : '1000 4000 20 '+ lat[ 2 ]
-		, _OrionV2  : '1000 4000 0 '+ lat[ 3 ]
-		, OrionV3   : '1000 4000 0 '+ lat[ 5 ]
-		, _OrionV4  : '1000 4000 60 '+ lat[ 6 ]
-		, Um3ggh1U  : '1500 1000 0 '+ lat[ 4 ]
-		, _Custom   : 0
+	if ( 'soundmtu' in G ) {
+		textlabel.push( 'eth0 mtu <gr>(byte)</gr>', 'eth0 txqueuelen' );
+		textvalue += ' '+ G.soundmtu +' '+ G.soundtxqueuelen;
+		var defaultval = '18000000 60 1500 1000';
+		var radio = {
+			  _Default  : defaultval
+			, RuneAudio : lat[ 0 ] +' 0 1500 1000'
+			, _ACX      : lat[ 1 ] +' 0 1500 4000'
+			, Orion     : lat[ 2 ] +' 20 1000 4000'
+			, _OrionV2  : lat[ 3 ] +' 0 1000 4000'
+			, OrionV3   : lat[ 4 ] +' 0 1000 4000'
+			, _OrionV4  : lat[ 5 ] +' 60 1000 4000'
+			, Um3ggh1U  : lat[ 6 ] +' 0 1500 1000'
+			, _Custom   : 0
+		}
+	} else {
+		var defaultval = '18000000 60';
+		var radio = {
+			  _Default  : defaultval
+			, RuneAudio : lat[ 0 ] +' 0'
+			, _ACX      : lat[ 1 ] +' 0'
+			, Orion     : lat[ 2 ] +' 20'
+			, _OrionV2  : lat[ 3 ] +' 0 '
+			, OrionV3   : lat[ 4 ] +' 0'
+			, _OrionV4  : lat[ 5 ] +' 60'
+			, Um3ggh1U  : lat[ 6 ] +' 0'
+			, _Custom   : 0
+		}
 	}
 	var values = Object.values( radio );
+	var iL = textlabel.length;
 	info( {
 		  icon      : 'volume'
 		, title     : 'Kernel Sound Profile'
-		, textlabel : [ 'eth0 mtu <gr>(byte)</gr>', 'eth0 txqueuelen', 'vm.swappiness', 'kernel.sched_latency_ns <gr>(ns)</gr>' ]
-		, textvalue : setval.split( ' ' )
+		, textlabel : textlabel
+		, textvalue : textvalue.split( ' ' )
 		, boxwidth  : 110
 		, radio     : radio
-		, checked   : values.indexOf( setval ) !== -1 ? setval : 0
+		, checked   : values.indexOf( textvalue ) !== -1 ? textvalue : 0
 		, preshow   : function() {
 			$( '#infoRadio input' ).last().prop( 'disabled', 1 );
-			// verify
-			if ( G.soundprofile ) {
-				$( '#infoOk' ).addClass( 'disabled' );
-				$( '#infoRadio' ).change( function() {
-					var soundprofileval = $( '#infoRadio input:checked' ).val();
-					var val = soundprofileval.split( ' ' );
-					for ( i = 0; i < 4; i++ ) $( '.infoinput' ).eq( i ).val( val[ i ] );
-					$( '#infoOk' ).toggleClass( 'disabled', soundprofileval === setval );
-					
-				} );
-				$( '.infoinput' ).keyup( function() {
-					var soundprofileval = $( '#infoTextBox' ).val();
-					for ( i = 1; i < 4; i++ ) soundprofileval += ' '+ $( '#infoTextBox'+ i ).val();
-					var checkedval = values.indexOf( soundprofileval ) !== -1 ? soundprofileval : 0;
-					$( '#infoRadio input' ).val( [ checkedval ] );
-					$( '#infoOk' ).toggleClass( 'disabled', soundprofileval === setval );
-				} );
-			}
+			if ( G.soundprofile ) $( '#infoOk' ).addClass( 'disabled' );
+			$( '#infoRadio' ).change( function() {
+				var soundprofileval = $( '#infoRadio input:checked' ).val();
+				var val = soundprofileval.split( ' ' );
+				for ( i = 0; i < iL; i++ ) $( '.infoinput' ).eq( i ).val( val[ i ] );
+				if ( G.soundprofile ) $( '#infoOk' ).toggleClass( 'disabled', soundprofileval === textvalue );
+				
+			} );
+			$( '.infoinput' ).keyup( function() {
+				var soundprofileval = $( '#infoTextBox' ).val();
+				for ( i = 1; i < iL; i++ ) soundprofileval += ' '+ $( '#infoTextBox'+ i ).val();
+				var checkedval = values.indexOf( soundprofileval ) !== -1 ? soundprofileval : 0;
+				$( '#infoRadio input' ).val( [ checkedval ] );
+				if ( G.soundprofile ) $( '#infoOk' ).toggleClass( 'disabled', soundprofileval === textvalue );
+			} );
 		}
 		, cancel    : function() {
 			$( '#soundprofile' ).prop( 'checked', G.soundprofile );
 		}
 		, ok        : function() {
 			var soundprofileval = $( '#infoTextBox' ).val();
-			for ( i = 1; i < 4; i++ ) soundprofileval += ' '+ $( '#infoTextBox'+ i ).val();
+			for ( i = 1; i < iL; i++ ) soundprofileval += ' '+ $( '#infoTextBox'+ i ).val();
 			bash( [ 'soundprofileset', soundprofileval ] );
 			var action = !G.soundprofile ? 'Enabled ...' : ( soundprofileval !== defaultval ? 'Change ...' : 'Default ...' );
 			notify( 'Kernel Sound Profile', action, 'volume' );

@@ -15,14 +15,14 @@ readarray -t args <<< "$1"
 pushRefresh() {
 	curl -s -X POST http://127.0.0.1/pub?id=refresh -d '{ "page": "system" }'
 }
-soundprofile() {
+soundprofile() { # latency swapiness mtu txtqueuelen
 	val=( $1 )
+	sysctl kernel.sched_latency_ns=${val[0]}
+	sysctl vm.swappiness=${val[1]}
 	if ifconfig | grep -q eth0; then
-		ip link set eth0 mtu ${val[0]}
-		ip link set eth0 txqueuelen ${val[1]}
+		ip link set eth0 mtu ${val[2]}
+		ip link set eth0 txqueuelen ${val[3]}
 	fi
-	sysctl vm.swappiness=${val[2]}
-	sysctl kernel.sched_latency_ns=${val[3]}
 }
 
 case ${args[0]} in
@@ -224,21 +224,23 @@ relays )
 	pushRefresh
 	;;
 soundprofiledisable )
-	soundprofile '1500 1000 60 18000000'
+	soundprofile '18000000 60 1500 1000'
 	rm -f $dirsystem/soundprofile
 	pushRefresh
 	;;
 soundprofileget )
-	val=$( ifconfig eth0 | awk '/mtu/ {print "mtu = "$NF}' )$'\n'
-	val+=$( ifconfig eth0 | awk '/txqueuelen/ {print "txqueuelen = "$4}' )$'\n'
+	val+=$( sysctl kernel.sched_latency_ns )$'\n'
 	val+=$( sysctl vm.swappiness )$'\n'
-	val+=$( sysctl kernel.sched_latency_ns )
-	echo "$val"
+	if ifconfig | grep -q eth0; then
+		val+=$( ifconfig eth0 | awk '/mtu/ {print "mtu = "$NF}' )$'\n'
+		val+=$( ifconfig eth0 | awk '/txqueuelen/ {print "txqueuelen = "$4}' )$'\n'
+	fi
+	echo "${val:0:-1}"
 	;;
 soundprofileset )
 	values=${args[@]:1}
 	soundprofile "$values"
-	if [[ $values == '1500 1000 60 18000000' ]]; then
+	if [[ $values == '18000000 60 1500 1000' || $values == '18000000 60' ]]; then
 		rm -f $dirsystem/soundprofile*
 	else
 		printf '%s\n' "${args[@]:1}" > $dirsystem/soundprofileset
