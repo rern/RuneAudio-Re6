@@ -4,21 +4,24 @@ import sys
 
 if len( sys.argv ) == 1: quit()
 
-cols = 20
-rows = 4
-charmap = 'A00'
+file = open( '/srv/http/data/system/lcdcharset' )
+param = file.read().rstrip( '\n' ).split( ' ' )
+file.close()
 
-### i2c
-address = 0x27
-chip = 'PCF8574'
+cols = param[ 0 ]
+rows = cols == 16 and 2 or 4
+charmap = param[ 1 ]
 
-from RPLCD.i2c import CharLCD
-lcd = CharLCD( chip, address )
-lcd = CharLCD( cols=cols, rows=rows, charmap=charmap, address=address, i2c_expander=chip, auto_linebreaks=False )
+if len( param ) > 2: # i2c
+    address = param[ 2 ]
+    chip = param[ 3 ]
 
-### gpio
-#from RPLCD.gpio import CharLCD
-#lcd = CharLCD( cols=cols, rows=rows, charmap=charmap, numbering_mode=GPIO.BOARD, pin_rs=15, pin_rw=18, pin_e=16, pins_data=[21, 22, 23, 24], auto_linebreaks=False )
+    from RPLCD.i2c import CharLCD
+    lcd = CharLCD( chip, address )
+    lcd = CharLCD( cols=cols, rows=rows, charmap=charmap, address=address, i2c_expander=chip, auto_linebreaks=False )
+else:
+    from RPLCD.gpio import CharLCD
+    lcd = CharLCD( cols=cols, rows=rows, charmap=charmap, numbering_mode=GPIO.BOARD, pin_rs=15, pin_rw=18, pin_e=16, pins_data=[21, 22, 23, 24], auto_linebreaks=False )
 
 argv1 = sys.argv[ 1 ] # backlight on/off
 if argv1 == 'on' or argv1 == 'off':
@@ -102,7 +105,7 @@ rn = '\r\n'
 if len( sys.argv ) == 2: # rr - splash or single argument string (^ = linebreak)
     if argv1 == 'rr':
         file = open( '/srv/http/data/system/version' )
-        version = file.read()
+        version = file.read().rstrip( '\n' )
         file.close()
         spaces = '       '
         splash = ''

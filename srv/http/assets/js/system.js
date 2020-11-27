@@ -267,19 +267,6 @@ $( '#i2smodule' ).change( function() {
 	bash( [ 'i2smodule', G.audioaplayname, G.audiooutput, G.reboot.join( '\n' ) ] );
 	$( '#output' ).text( G.audiooutput );
 } );
-$( '#setting-lcd' ).click( function() {
-	info( {
-		  icon        : 'edit'
-		, title       : 'TFT LCD'
-		, message     : 'Calibrate touchscreen?'
-						+'<br>(Get stylus ready.)'
-		, oklabel     : 'Start'
-		, ok          : function() {
-			notify( 'Calibrate Touchscreen', 'Start ...', 'edit' );
-			bash( [ 'lcdcalibrate' ] );
-		}
-	} );
-} );
 $( '#lcdchar' ).click( function() {
 	if ( $( this ).prop( 'checked' ) ) {
 		$( '#setting-lcdchar' ).click();
@@ -397,6 +384,19 @@ $( '#setting-lcdchar' ).click( function() {
 				bash( [ 'lcdcharset', lcdcharval ] );
 			}
 			notify( 'Character LCD', G.lcdchar ? 'Change ...' : 'Enabled ...', 'gear' );
+		}
+	} );
+} );
+$( '#setting-lcd' ).click( function() {
+	info( {
+		  icon        : 'edit'
+		, title       : 'TFT LCD'
+		, message     : 'Calibrate touchscreen?'
+						+'<br>(Get stylus ready.)'
+		, oklabel     : 'Start'
+		, ok          : function() {
+			notify( 'Calibrate Touchscreen', 'Start ...', 'edit' );
+			bash( [ 'lcdcalibrate' ] );
 		}
 	} );
 } );
