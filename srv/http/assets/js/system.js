@@ -348,7 +348,7 @@ $( '#setting-lcdchar' ).click( function() {
 			$( '#address' ).html( opt );
 			$( '#address input' ).val( [ i2caddress ] );
 			$( '.lcd label' ).width( 80 );
-			// verify
+			// verify changes
 			if ( G.lcdchar ) $( '#infoOk' ).addClass( 'disabled' );
 			$( '#cols, #inf, #charmap, #address, #chip' ).change( function() {
 				var lcdcharval = $( '#cols input:checked' ).val();
@@ -509,6 +509,7 @@ $( '#setting-soundprofile' ).click( function() {
 		, checked   : values.indexOf( textvalue ) !== -1 ? textvalue : 0
 		, preshow   : function() {
 			$( '#infoRadio input' ).last().prop( 'disabled', 1 );
+			// verify changes + interactive values
 			if ( G.soundprofile ) $( '#infoOk' ).addClass( 'disabled' );
 			$( '#infoRadio' ).change( function() {
 				var soundprofileval = $( '#infoRadio input:checked' ).val();

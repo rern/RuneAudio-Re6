@@ -263,6 +263,7 @@ $( '#setting-crossfade' ).click( function() {
 		, radio   : { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5 }
 		, checked : G.crossfadeval || 1
 		, preshow       : function() {
+			// verify changes
 			if ( G.crossfade ) {
 				$( '#infoOk' ).addClass( 'disabled' );
 				$( '#infoRadio' ).change( function() {
@@ -287,6 +288,7 @@ $( '#setting-replaygain' ).click( function() {
 		, radio   : { Auto: 'auto', Album: 'album', Track: 'track' }
 		, checked : G.replaygainval || 'auto'
 		, preshow       : function() {
+			// verify changes
 			if ( G.replaygain ) {
 				$( '#infoOk' ).addClass( 'disabled' );
 				$( '#infoRadio' ).change( function() {
@@ -315,6 +317,7 @@ $( '#setting-buffer' ).click( function() {
 		, textlabel : 'Size <gr>(kB)</gr>'
 		, textvalue : G.bufferval || 4096
 		, preshow       : function() {
+			// verify changes
 			if ( G.buffer ) {
 				$( '#infoOk' ).addClass( 'disabled' );
 				$( '#infoTextBox' ).keyup( function() {
@@ -340,6 +343,7 @@ $( '#setting-bufferoutput' ).click( function() {
 		, textlabel : 'Size <gr>(kB)</gr>'
 		, textvalue : G.bufferoutputval || 8192
 		, preshow       : function() {
+			// verify changes
 			if ( G.bufferoutput ) {
 				$( '#infoOk' ).addClass( 'disabled' );
 				$( '#infoTextBox' ).keyup( function() {
@@ -421,7 +425,7 @@ $( '#setting-soxr' ).click( function() {
 				$( '#extra .selectric, #extra .selectric-wrapper' ).css( 'width', '185px' );
 				$( '#extra .selectric-items' ).css( 'min-width', '185px' );
 			}, 30 );
-			// verify
+			// // verify changes + values
 			if ( G.soxr ) {
 				$( '#infoOk' ).addClass( 'disabled' );
 				$( '#infoSelectBox, #infoSelectBox1' ).change( function() {
@@ -443,7 +447,7 @@ $( '#setting-soxr' ).click( function() {
 					) errors = true;
 					$( '#infoOk' ).toggleClass( 'disabled', soxrval === G.soxrval || errors );
 				} );
-			} else {
+			} else { // verify values
 				$( '.infoinput' ).keyup( function() {
 					var soxrval = 0;
 					for ( i = 1; i < 5; i++ ) soxrval += ' '+ $( '#infoTextBox'+ i ).val();
@@ -529,7 +533,7 @@ $( '#setting-custom' ).click( function() {
 			} );
 			$( '.msg, #global, #output' ).css( 'font-family', 'Inconsolata' );
 			$( '#output' ).css( 'padding-left', '39px' )
-			// verify
+			// // verify changes
 			if ( G.custom ) {
 				$( '#infoOk' ).addClass( 'disabled' );
 				$( '#global, #output' ).keyup( function() {

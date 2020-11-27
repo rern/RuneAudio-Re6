@@ -102,6 +102,7 @@ $( '#setting-snapclient' ).click( function() {
 				$( '.infolabel:eq( 1 ), .infoinput:eq( 1 ), #infotextsuffix' ).toggleClass( 'hide', checked );
 				$( '#infoPasswordBox' ).val( checked ? G.snapspassword : '' );
 			} );
+			// verify changes
 			if ( G.snapclient ) {
 				$( '#infoOk' ).addClass( 'disabled' );
 				$( '#infoTextBox, #infoPasswordBox' ).keyup( function() {
@@ -136,12 +137,14 @@ $( '#setting-spotifyd' ).click( function() {
 			, radio   : radio
 			, checked : G.spotifyddevice
 			, footer  : '<br>(Only if default one not working)'
+			, preshow       : function() {
+				// verify changes
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#infoOk' ).toggleClass( 'disabled', $( '#infoSelectBox option:selected' ).text() !== G.spotifyddevice );
+			}
 			, ok      : function() {
-				var spotifyddevice = $( '#infoSelectBox option:selected' ).text();
-				if ( spotifyddevice !== G.spotifyddevice ) {
-					bash( [ 'spotifyset', spotifyddevice ] );
+				bash( [ 'spotifyset', $( '#infoSelectBox option:selected' ).text() ] );
 					notify( 'Spotify Renderer', 'Change ...', 'spotify' );
-				}
 			}
 		} );
 	} );
@@ -193,11 +196,12 @@ $( '#setting-localbrowser' ).click( function() {
 			$( '#infoRadio input' ).val( [ G.rotate ] );
 			$( '#infoCheckBox input' ).prop( 'checked', G.cursor );
 			if ( G.lcd ) $( '#infoRadio' ).after( '<gr>(Rotate GPIO LCD: Reboot required.)</gr>' );
+			// verify changes + values
 			if ( G.localbrowser ) {
 				$( '#infoOk' ).addClass( 'disabled' );
 				$( '#infoTextBox, #infoTextBox1' ).keyup( verify );
 				$( '#infoRadio, #infoCheckBox' ).change( verify );
-			} else {
+			} else { // verify values
 				$( '#infoTextBox' ).keyup( function() {
 					var zoom = +$( '#infoTextBox1' ).val();
 					$( '#infoOk' ).toggleClass( 'disabled', zoom < 0.5 || zoom > 2 );
@@ -247,6 +251,7 @@ $( '#setting-smb' ).click( function() {
 		, preshow  : function() {
 			$( '#infoCheckBox input:eq( 0 )' ).prop( 'checked', G.writesd );
 			$( '#infoCheckBox input:eq( 1 )' ).prop( 'checked', G.writeusb );
+			// verify changes
 			if ( G.smb ) {
 				$( '#infoOk' ).addClass( 'disabled' );
 				$( '#infoCheckBox' ).change( function() {
@@ -278,6 +283,7 @@ $( '#setting-mpdscribble' ).click( function() {
 		, passwordlabel : 'Password'
 		, preshow       : function() {
 			$( '#infoPasswordBox' ).val( pwd );
+			// verify changes
 			if ( G.mpdscribble ) {
 				$( '#infoOk' ).addClass( 'disabled' );
 				$( '#infoTextBox, #infoPasswordBox' ).keyup( function() {
@@ -364,6 +370,7 @@ $( '#setting-hostapd' ).click( function() {
 		, textvalue    : [ G.hostapdpwd, G.hostapdip ]
 		, textrequired : [ 0, 1 ]
 		, preshow       : function() {
+			// verify changes + values
 			if ( G.hostapd ) {
 				$( '#infoOk' ).addClass( 'disabled' );
 				$( '#infoTextBox, #infoTextBox1' ).keyup( function() {
@@ -371,7 +378,7 @@ $( '#setting-hostapd' ).click( function() {
 					var changed = pwd.length > 7 && ( pwd !== G.hostapdpwd || $( '#infoTextBox1' ).val() !== G.hostapdip );
 					$( '#infoOk' ).toggleClass( 'disabled', !changed );
 				} );
-			} else {
+			} else { // verify values
 				$( '#infoTextBox' ).keyup( function() {
 					$( '#infoOk' ).toggleClass( 'disabled', $( '#infoTextBox' ).val().length < 8 );
 				} );
