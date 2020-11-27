@@ -5,7 +5,7 @@ function bash( command, callback, json ) {
 		var args = { cmd: 'sh', sh: [ page +'.sh' ].concat( command ) }
 	}
 	$.post( 
-		  cmdphp
+		  'cmd.php'
 		, args
 		, callback || null
 		, json || null
@@ -66,15 +66,6 @@ function codeToggle( id, target ) {
 function notify( title, message, icon ) {
 	if ( typeof message === 'boolean' || typeof message === 'number' ) var message = message ? 'Enable ...' : 'Disable ...';
 	banner( title, message, icon +' blink', -1 );
-}
-function getReset( callback ) {
-	$.post( cmdphp, {
-		  cmd  : 'exec'
-		, exec : 'cat '+ filereboot
-	}, function( lines ) {
-		G.reboot = lines || [];
-		if ( callback ) callback();
-	}, 'json' );
 }
 function list2JSON( list ) {
 		try {
@@ -183,7 +174,6 @@ var intervalcputime;
 var intervalscan;
 var page = location.href.split( '=' ).pop();
 var reboot = '';
-var cmdphp = 'cmd.php';
 var dirsystem = '/srv/http/data/system';
 var filereboot = '/srv/http/data/shm/reboot';
 
@@ -191,22 +181,20 @@ document.title = 'R+R '+ ( page === 'mpd' ? 'MPD' : page.charAt( 0 ).toUpperCase
 
 $( '#close' ).click( function() {
 	if ( page === 'system' || page === 'features' ) {
-		getReset( function() {
+		bash( 'cat '+ filereboot, function( lines ) {
+			G.reboot = lines;
 			if ( G.reboot.length ) {
 				info( {
 					  icon    : 'sliders'
 					, title   : 'System Setting'
 					, message : 'Reboot required for:'
-							   +'<br><br><w>'+ G.reboot.join( '<br>' ) +'</w>'
+							   +'<br><w>'+ G.reboot.replace( /\n/g, '<br>' ) +'</w>'
 					, cancel  : function() {
 						G.reboot = [];
 						bash( 'rm -f '+ filereboot );
 					}
 					, ok      : function() {
-						$.post( cmdphp, {
-							  cmd : 'sh'
-							, sh  : [ 'cmd.sh', 'power', 'reboot' ]
-						} );
+						bash( "/srv/http/bash/cmd.sh power$'\n'reboot" );
 						notify( 'Power', 'Reboot ...', 'reboot blink', -1 );
 					}
 				} );

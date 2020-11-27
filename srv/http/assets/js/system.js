@@ -641,7 +641,7 @@ $( '#backuprestore' ).click( function( e ) {
 						formData.append( 'cmd', 'datarestore' );
 						formData.append( 'file', file );
 						$.ajax( {
-							  url         : cmdphp
+							  url         : 'cmd.php'
 							, type        : 'POST'
 							, data        : formData
 							, processData : false  // no - process the data

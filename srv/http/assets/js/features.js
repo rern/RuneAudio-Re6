@@ -312,7 +312,7 @@ $( '#setting-login' ).click( function() {
 			var password = $( '#infoPasswordBox' ).val();
 			var pwdnew = $( '#infoPasswordBox1' ).length ? $( '#infoPasswordBox1' ).val() : password;
 			notify( 'Password Login', 'Change ...', 'key' );
-			$.post( cmdphp, {
+			$.post( 'cmd.php', {
 				  cmd      : 'login'
 				, password : password
 				, pwdnew   : pwdnew
