@@ -246,7 +246,7 @@ $( '#i2smodule' ).change( function() {
 		$( '#divi2smodulesw' ).addClass( 'hide' );
 		$( '#divi2smodule, #divonboardaudio' ).removeClass( 'hide' );
 		rebootText( 1, 'Audio I&#178;S Module' );
-		notify( 'I&#178;S Module', 'Enable ...', 'volume' );
+		notify( 'Audio I&#178;S', 'Enable ...', 'volume' );
 	} else {
 		var audioaplayname = G.audioaplayname;
 		var notrpi0 = G.hardware.split( ' ' )[ 2 ] !== 'Zero';
@@ -272,7 +272,7 @@ $( '#lcdchar' ).click( function() {
 		$( '#setting-lcdchar' ).click();
 	} else {
 		bash( [ 'lcdchardisable' ] );
-		notify( 'Character LCD', 'Disable ...', 'gear' );
+		notify( 'Character LCD', 'Disable ...', 'lcdchar' );
 	}
 } );
 var infolcdchar = heredoc( function() { /*
@@ -312,7 +312,7 @@ var infolcdchar = heredoc( function() { /*
 */ } );
 $( '#setting-lcdchar' ).click( function() {
 	info( {
-		  icon          : 'gear'
+		  icon          : 'lcdchar'
 		, title         : 'Character LCD'
 		, content       : infolcdchar
 		, boxwidth      : 173
@@ -381,19 +381,19 @@ $( '#setting-lcdchar' ).click( function() {
 			} else {
 				bash( [ 'lcdcharset', lcdcharval ] );
 			}
-			notify( 'Character LCD', G.lcdchar ? 'Change ...' : 'Enabled ...', 'gear' );
+			notify( 'Character LCD', G.lcdchar ? 'Change ...' : 'Enabled ...', 'lcdchar' );
 		}
 	} );
 } );
 $( '#setting-lcd' ).click( function() {
 	info( {
-		  icon        : 'edit'
+		  icon        : 'lcd'
 		, title       : 'TFT LCD'
 		, message     : 'Calibrate touchscreen?'
 						+'<br>(Get stylus ready.)'
 		, oklabel     : 'Start'
 		, ok          : function() {
-			notify( 'Calibrate Touchscreen', 'Start ...', 'edit' );
+			notify( 'Calibrate Touchscreen', 'Start ...', 'lcd' );
 			bash( [ 'lcdcalibrate' ] );
 		}
 	} );
@@ -418,18 +418,19 @@ $( '#hostname' ).click( function() {
 			if ( hostname !== G.hostname ) {
 				G.hostname = hostname;
 				$( '#hostname' ).val( hostname );
-				notify( 'Name', 'Change ...', 'sliders' );
+				notify( 'Name', 'Change ...', 'plus-r' );
 				bash( [ 'hostname', hostname ] );
 			}
 		}
 	} );
 } );
 $( '#timezone' ).change( function( e ) {
+	notify( 'Timezone', 'Change ...', 'globe' );
 	bash( [ 'timezone', $( this ).val() ] );
 } );
 $( '#setting-regional' ).click( function() {
 	info( {
-		  icon      : 'gear'
+		  icon      : 'globe'
 		, title     : 'Regional Settings'
 		, textlabel : [ 'NTP server', 'Regulatory domain' ]
 		, textvalue : [ G.ntp, G.regdom || '00' ]
@@ -447,7 +448,7 @@ $( '#setting-regional' ).click( function() {
 			var regdom = $( '#infoTextBox1' ).val();
 			G.ntp = ntp;
 			G.regdom = regdom;
-			notify( 'Regional Settings', 'Change ...', 'gear' );
+			notify( 'Regional Settings', 'Change ...', 'globe' );
 			bash( [ 'regional', ntp, regdom ] );
 		}
 	} );
