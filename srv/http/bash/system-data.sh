@@ -38,7 +38,7 @@ hwcode=$( awk '/Revision/ {print $NF}' <<< "$( cat /proc/cpuinfo )" )
 case ${hwcode: -4:1} in
 	0 ) soc=BCM2835;;
 	1 ) soc=BCM2836;;
-	2 ) BB=${hwcode: -3:2}; [[ $BB == 0d || $BB == 0e ]] && soc=BCM2837B0 || soc=BCM2837;;
+	2 ) [[ ${hwcode: -3:2} > 08 ]] && soc=BCM2837B0 || soc=BCM2837;;
 	3 ) soc=BCM2711;;
 esac
 case ${hwcode: -6:1} in
