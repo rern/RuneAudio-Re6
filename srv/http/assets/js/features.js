@@ -252,7 +252,7 @@ $( '#setting-smb' ).click( function() {
 		, ok       : function() {
 			var writesd = $( '#infoCheckBox input:eq( 0 )' ).prop( 'checked' );
 			var writeusb = $( '#infoCheckBox input:eq( 1 )' ).prop( 'checked' );
-			bash( [ 'smbset', G.writesd, G.writeusb ] );
+			bash( [ 'smbset', writesd, writeusb ] );
 			notify( 'Samba - File Sharing', G.smb ? 'Change ...' : 'Enable ...', 'network' );
 		}
 	} );
