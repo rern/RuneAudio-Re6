@@ -214,7 +214,7 @@ $( '.page-icon' ).click( function() {
 	if( $( '.codepage' ).hasClass( 'hide' ) ) {
 		$( '.container' ).addClass( 'hide' );
 		$( '.codepage' )
-			.html( 'Page Data:<hr>'+ JSON.stringify( G, null, 2 ) )
+			.html( 'Data:<hr>'+ JSON.stringify( G, null, 2 ) )
 			.removeClass( 'hide' );
 	} else {
 		$( '.container' ).removeClass( 'hide' );
