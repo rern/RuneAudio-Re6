@@ -18,8 +18,9 @@ code=$( awk '/Revision/ {print $NF}' /proc/cpuinfo )
 hwcode=${code: -3:2}
 if (( $# == 0 )); then
 	case $hwcode in
-		09 | 0c ) rpi=0;;
-		11 )      rpi=4;;
+		09 | 0c )         rpi=0;;
+		00 | 01 |02 |03 ) rpi=1
+		11 )              rpi=4;;
 	esac
 	config="\
 over_voltage=2
@@ -102,19 +103,20 @@ echo '[
 ]' > $dirsystem/order
 echo '"mpd":true,"airplay":false,"snapclient":false,"spotify":false,"upnp":false' > $dirdata/shm/player
 # system
-hostnamectl set-hostname runeaudio
-sed -i 's/#NTP=.*/NTP=pool.ntp.org/' /etc/systemd/timesyncd.conf
-timedatectl set-timezone UTC
-# on-board audio
 echo 'bcm2835 Headphones' > $dirsystem/audio-aplayname
 echo 'On-board - Headphone' > $dirsystem/audio-output
-touch $dirsystem/{localbrowser,onboard-audio,onboard-wlan}
-
-rm -f $dirsystem/soundprofile
-
 echo RuneAudio > $dirsystem/hostname
+touch $dirsystem/{onboard-audio,onboard-wlan}
+[[ $rpi != 0 && $rpi != 1 ]] && touch $dirsystem/localbrowser
+rm -f $dirsystem/{lcd,lcdchar,relays,soundprofile}
+hostnamectl set-hostname runeaudio
+sed -i 's/#NTP=.*/NTP=pool.ntp.org/' /etc/systemd/timesyncd.conf
+sed -i 's/".*"/"00"/' /etc/conf.d/wireless-regdom
+timedatectl set-timezone UTC
 
-echo '$2a$12$rNJSBU0FOJM/jP98tA.J7uzFWAnpbXFYx5q1pmNhPnXnUu3L1Zz6W' > $dirsystem/password
+# character lcd
+echo '20 A00 0x27 PCF8574' > $dirsystem/lcdcharset
+
 # gpio
 echo '{
   "name": {

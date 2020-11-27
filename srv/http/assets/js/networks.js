@@ -11,7 +11,7 @@ function btRender( data ) {
 	$( '#listbtscan' ).html( html );
 }
 function btScan() {
-	bash( '/srv/http/bash/network-scanbt.sh', function( data ) {
+	bash( '/srv/http/bash/networks-scanbt.sh', function( data ) {
 		if ( data.length ) btRender( data );
 		intervalscan = setTimeout( btScan, 12000 );
 	}, 'json' );
@@ -51,6 +51,13 @@ function editLAN( data ) {
 		, textrequired : [ 0 ]
 		, preshow      : function() {
 			if ( data.dhcp === 'dhcp' || !data.ip ) $( '#infoButton' ).addClass( 'hide' );
+			if ( data.ip ) {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#infoTextBox, #infoTextBox1' ).keyup( function() {
+					var changed = $( '#infoTextBox' ).val() !== data.ip || $( '#infoTextBox1' ).val() !== data.gateway;
+					$( '#infoOk' ).toggleClass( 'disabled', !changed );
+				} );
+			}
 		}
 		, buttonlabel  : '<i class="fa fa-undo"></i>DHCP'
 		, buttonwidth  : 1
@@ -107,6 +114,11 @@ function editWiFi( ssid, data ) {
 					}, 'json' );
 				}
 			}
+			$( '#infoOk' ).addClass( 'disabled' );
+			$( '#infoTextBox1, #infoTextBox2' ).keyup( function() {
+				var changed = $( '#infoTextBox1' ).val() !== data.Address || $( '#infoTextBox2' ).val() !== data.Gateway;
+				$( '#infoOk' ).toggleClass( 'disabled', !changed );
+			} );
 		}
 		, ok            : function() {
 			var ssid = ssid || $( '#infoTextBox' ).val();
@@ -116,8 +128,6 @@ function editWiFi( ssid, data ) {
 			var dhcp = $( '#infoCheckBox input:eq( 0 )' ).prop( 'checked' ) ? 'static' : 'dhcp';
 			var hidden = $( '#infoCheckBox input:eq( 1 )' ).prop( 'checked' ) ? 'hidden' : '';
 			var security = $( '#infoCheckBox input:eq( 2 )' ).prop( 'checked' ) ? 'wep' : 'wpa';
-			if ( data0 && ip === data0.Address && gw === data0.Gateway ) return
-			
 			// [ wlan, ssid, dhcp, wpa, password, hidden, ip, gw ]
 			var data = [ ssid, dhcp ];
 			if ( password ) {
@@ -216,7 +226,7 @@ function infoConnect( $this ) {
 		, buttonwidth : 1
 		, buttonlabel : [
 			  '<i class="fa fa-minus-circle"></i> Forget'
-			, '<i class="fa fa-save-circle"></i> IP'
+			, '<i class="fa fa-edit-circle"></i> IP'
 		]
 		, buttoncolor : [
 			  '#bb2828'
@@ -257,13 +267,16 @@ function infoConnect( $this ) {
 	} );
 }
 function nicsStatus() {
-	bash( '/srv/http/bash/network-data.sh', function( list ) {
-		var extra = list.pop();
+	bash( '/srv/http/bash/networks-data.sh', function( list ) {
+		var list2G = list2JSON( list );
+		if ( !list2G ) return
+		
+		var extra = G.pop();
 		if ( extra.hostapd ) {
-			G = extra.hostapd;
-			$( '#ssid' ).text( G.ssid );
-			$( '#passphrase' ).text( G.passphrase )
-			$( '#ipwebuiap' ).text( G.hostapdip );
+			G.hostapd = extra.hostapd;
+			$( '#ssid' ).text( G.hostapd.ssid );
+			$( '#passphrase' ).text( G.hostapd.passphrase )
+			$( '#ipwebuiap' ).text( G.hostapd.hostapdip );
 		}
 		G.reboot = extra.reboot ? extra.reboot.split( '\n' ) : [];
 		if ( 'bluetooth' in extra ) G.bluetooth = extra.bluetooth;
@@ -272,7 +285,7 @@ function nicsStatus() {
 		var htmllan = '';
 		var htmlwl = '';
 		var htmlbt = '';
-		$.each( list, function( i, val ) {
+		$.each( G, function( i, val ) {
 			html = '<li class="'+ val.interface +'"';
 			html += val.ip ? ' data-ip="'+ val.ip +'"' : '';
 			html += val.gateway ? ' data-gateway="'+ val.gateway +'"' : '';
@@ -288,12 +301,12 @@ function nicsStatus() {
 				htmllan += val.gateway ? '<gr>&ensp;&raquo;&ensp;'+ val.gateway +'&ensp;</gr>' : '';
 				htmllan += '</li>';
 			} else if ( val.interface.slice( 0, 4 ) === 'wlan' ) {
-				if ( !val.ip ) return
+				if ( !val.ip && !G.hostapd.hostapdip ) return
 				
 				G.wlcurrent = val.interface;
 				htmlwl = html;
-				if ( G.ssid ) {
-					htmlwl += '<grn>&bull;</grn>&ensp;<gr>RPi access point&ensp;&laquo;&ensp;</gr>'+ G.hostapdip
+				if ( G.hostapd.ssid ) {
+					htmlwl += '<grn>&bull;</grn>&ensp;<gr>RPi access point&ensp;&laquo;&ensp;</gr>'+ G.hostapd.hostapdip
 				} else {
 					G.wlconnected = val.interface;
 					htmlwl += '<grn>&bull;</grn>&ensp;'+ val.ip +'<gr>&ensp;&raquo;&ensp;'+ val.gateway +'&ensp;&bull;&ensp;</gr>'+ val.ssid;
@@ -322,7 +335,7 @@ function nicsStatus() {
 		bannerHide();
 		codeToggle( 'netctl', 'status' );
 		showContent();
-	}, 'json' );
+	} );
 }
 function qr( msg ) {
 	return new QRCode( {
@@ -347,7 +360,7 @@ function renderQR() {
 	$( '#boxqr' ).removeClass( 'hide' );
 }
 function wlanScan() {
-	bash( '/srv/http/bash/network-scanwlan.sh '+ G.wlcurrent, function( list ) {
+	bash( '/srv/http/bash/networks-scanwlan.sh '+ G.wlcurrent, function( list ) {
 		var good = -60;
 		var fair = -67;
 		var html = '';
@@ -466,16 +479,12 @@ $( '#listbt' ).on( 'click', 'li', function() {
 		, buttoncolor : '#bb2828'
 		, button      : function() {
 			notify( name, 'Forget ... ', 'bluetooth' );
-			bash( "/srv/http/bash/network.sh btremove$'\n'"+ mac );
+			bash( "/srv/http/bash/networks.sh btremove$'\n'"+ mac );
 		}
 		, oklabel : connected ? 'Disconnect' : 'Connect'
 		, okcolor : connected ? '#de810e' : ''
 		, ok      : function() {
-			if ( connected ) {
-				bash( '/srv/http/bash/network.sh btdisconnect' );
-			} else {
-				bash( '/srv/http/bash/network.sh btpair' );
-			}
+			bash( '/srv/http/bash/networks.sh '+ ( connected ? 'btdisconnect' : 'btpair' ) );
 		}
 	} );
 } );

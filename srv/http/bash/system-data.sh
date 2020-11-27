@@ -44,9 +44,16 @@ data='
 # for interval refresh
 (( $# > 0 )) && echo {$data} && exit
 
-cpuinfo=$( cat /proc/cpuinfo )
+hwcode=$( awk '/Revision/ {print $NF}' <<< "$( cat /proc/cpuinfo )" )
+case ${hwcode: -3:2} in
+	00 | 01 | 02 | 03 | 09 | 0c ) soc=BCM2835;;
+	04 )                          [[ ${hwcode: -4:1} == 1 ]] && soc=BCM2836 || soc=BCM2837;;
+	08 )                          soc=BCM2837;;
+	0e | 0d )                     soc=BCM2837B0;;
+	11 )                          soc=BCM2711;;
+esac
+[[ $soc == BCM2835 ]] && rpi01=true || rpi01=false
 lscpu=$( lscpu )
-soc=$( awk '/Hardware/ {print $NF}' <<< "$cpuinfo" )
 cpucores=$( awk '/CPU\(s\):/ {print $NF}' <<< "$lscpu" )
 cpuname=$( awk '/Model name/ {print $NF}' <<< "$lscpu" )
 cpuspeed=$( awk '/CPU max/ {print $NF}' <<< "$lscpu" | cut -d. -f1 )
@@ -54,7 +61,6 @@ cpuspeed=$( awk '/CPU max/ {print $NF}' <<< "$lscpu" | cut -d. -f1 )
 soc="<span class='wide'>$soc$bullet</span>$cores $cpuname @ "
 (( $cpuspeed < 1000 )) && soc+="${cpuspeed}MHz" || soc+="$( awk "BEGIN { printf \"%.1f\n\", $cpuspeed / 1000 }" )GHz"
 soc+=$bullet
-hwcode=$( awk '/Revision/ {print $NF}' <<< "$cpuinfo" )
 case ${hwcode: -6:1} in
 	9 ) soc+='512KB';;
 	a ) soc+='1GB';;
@@ -62,7 +68,7 @@ case ${hwcode: -6:1} in
 	c ) soc+='4GB';;
 esac
 
-lines=$( /srv/http/bash/network.sh ifconfig )
+lines=$( /srv/http/bash/networks.sh ifconfig )
 readarray -t lines <<<"$lines"
 for line in "${lines[@]}"; do
     items=( $line )
@@ -75,20 +81,20 @@ snaplatency=$( grep OPTS= /etc/default/snapclient | sed 's/.*latency=\(.*\)"/\1/
 lcdcharset=$( grep '^address\|^chip\|^cols' /srv/http/bash/lcdchar.py | cut -d' ' -f3 | tr -d "'" )
 [[ -z $snaplatency ]] && snaplatency=0
 if grep -q 'dtparam=i2c_arm=on' /boot/config.txt; then
-	lcdcharaddr=$( i2cdetect -y $( ls /dev/i2c* | tail -c 2 ) \
-					| grep -v '^\s' \
-					| cut -d' ' -f2- \
-					| tr -d ' \-' \
-					| grep . \
-					| sort -u )
-else
-	lcdcharaddr='27 3F'
+	dev=$( ls /dev/i2c* 2> /dev/null | tail -c 2 )
+	[[ -n $dev ]] && lcdcharaddr=$( i2cdetect -y $dev \
+									| grep -v '^\s' \
+									| cut -d' ' -f2- \
+									| tr -d ' \-' \
+									| grep -v UU \
+									| grep . \
+									| sort -u )
 fi
 
 data+='
 	, "audioaplayname"  : "'$( cat $dirsystem/audio-aplayname 2> /dev/null )'"
 	, "audiooutput"     : "'$( cat $dirsystem/audio-output )'"
-	, "hardware"        : "'$( awk '/Model/ {$1=$2=""; print}' <<< "$cpuinfo" )'"
+	, "hardware"        : "'$( cat /proc/device-tree/model )'"
 	, "hostname"        : "'$( cat $dirsystem/hostname )'"
 	, "ip"              : "'${iplist:1}'"
 	, "kernel"          : "'$( uname -r )'"
@@ -96,7 +102,7 @@ data+='
 	, "lcdchar"         : '$( [[ -e $dirsystem/lcdchar ]] && echo true || echo false )'
 	, "lcdcharset"      : '$( [[ -e $dirsystem/lcdcharset ]] && echo true || echo false )'
 	, "lcdcharaddr"     : "'$lcdcharaddr'"
-	, "lcdcharval"      : "'$( grep '^cols\|^charmap\|^address\|^chip' /srv/http/bash/lcdchar.py | cut -d' ' -f3 | tr -d "'" )'"
+	, "lcdcharval"      : "'$( cat /srv/http/data/system/lcdcharset )'"
 	, "mpd"             : "'$( pacman -Q mpd 2> /dev/null |  cut -d' ' -f2 )'"
 	, "mpdstats"        : "'$( jq '.song, .album, .artist' /srv/http/data/mpd/counts 2> /dev/null )'"
 	, "ntp"             : "'$( grep '^NTP' /etc/systemd/timesyncd.conf | cut -d= -f2 )'"
@@ -104,15 +110,21 @@ data+='
 	, "reboot"          : "'$( cat /srv/http/data/shm/reboot 2> /dev/null )'"
 	, "regdom"          : "'$( cat /etc/conf.d/wireless-regdom | cut -d'"' -f2 )'"
 	, "relays"          : '$( [[ -e $dirsystem/relays ]] && echo true || echo false )'
-	, "rpi01"           : "'$( [[ $soc == BCM2835 || $soc == BCM2836 ]] && rpi01=true || rpi01=false )'"
+	, "rpi01"           : '$rpi01'
 	, "soc"             : "'$soc'"
 	, "soundprofile"    : '$( [[ -e $dirsystem/soundprofile ]] && echo true || echo false )'
 	, "soundprofileset" : '$( [[ -e $dirsystem/soundprofileset ]] && echo true || echo false )'
-	, "soundprofileval" : "'$( cat $dirsystem/soundprofileset 2> /dev/null )'"
+	, "soundlatency"    : '$( sysctl kernel.sched_latency_ns | awk '{print $NF}' )'
+	, "soundswappiness" : '$( sysctl vm.swappiness | awk '{print $NF}' )'
 	, "sources"         : '$( /srv/http/bash/sources-data.sh )'
 	, "timezone"        : "'$timezone'"
 	, "version"         : "'$version'"
 	, "versionui"       : '$( cat /srv/http/data/addons/rr$version 2> /dev/null || echo 0 )
+if ifconfig | grep -q ^eth0; then
+	data+='
+	, "soundmtu"        : '$( ifconfig eth0 | awk '/mtu/ {print $NF}' )'
+	, "soundtxqueuelen" : '$( ifconfig eth0 | awk '/txqueuelen/ {print $4}' )
+fi
 if [[ -e /usr/bin/bluetoothctl  ]]; then
 	bluetooth=$( grep -q dtparam=krnbt=on /boot/config.txt && echo true || echo false )
 	bluetoothon=$( systemctl -q is-active bluetooth && echo true || echo false )

@@ -7,7 +7,7 @@
 	<br><gr>shairport-sync<?=$code?></gr></a><i class="fa fa-airplay fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="shairport-sync" type="checkbox">
+	<input id="shairport-sync" class="enablenoset" type="checkbox">
 	<div class="switchlabel" for="shairport-sync"></div>
 	<span class="help-block hide">
 		<a href="https://github.com/mikebrady/shairport-sync">Shairport-sync</a> - RuneAudio as AirPlay rendering device.
@@ -22,7 +22,7 @@
 		<br><gr>snapclient<?=$code?></gr></a><i class="fa fa-snapcast fa-lg"></i>
 	</div>
 	<div class="col-r">
-		<input id="snapclient" type="checkbox">
+		<input id="snapclient" class="enable" type="checkbox">
 		<div class="switchlabel" for="snapclient"></div>
 		<i id="setting-snapclient" class="setting fa fa-gear hide"></i>
 		<span class="help-block hide">
@@ -40,7 +40,7 @@
 	<br><gr>spotifyd<?=$code?></gr></a><i class="fa fa-spotify fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="spotifyd" type="checkbox">
+	<input id="spotifyd" class="enablenoset" type="checkbox">
 	<div class="switchlabel" for="spotifyd"></div>
 	<i id="setting-spotifyd" class="setting fa fa-gear hide"></i>
 	<span class="help-block hide">
@@ -56,7 +56,7 @@
 	<br><gr>upmpdcli<?=$code?></gr></a><i class="fa fa-upnp fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="upmpdcli" type="checkbox">
+	<input id="upmpdcli" class="enablenoset" type="checkbox">
 	<div class="switchlabel" for="upmpdcli"></div>
 	<!--<i id="setting-upnp" class="setting fa fa-gear hide"></i>-->
 	<span class="help-block hide">
@@ -74,7 +74,7 @@
 	<br><gr>MPD http</gr></a><i class="fa fa-webradio fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="streaming" type="checkbox">
+	<input id="streaming" class="enablenoset" type="checkbox">
 	<div class="switchlabel" for="streaming"></div>
 	<span class="help-block hide">Asynchronous streaming for browsers via <code id="ip"></code> (Latency - several seconds)</span>
 </div>
@@ -84,7 +84,7 @@
 	<br><gr>snapserver<?=$code?></gr></a><i class="fa fa-snapcast fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="snapserver" type="checkbox">
+	<input id="snapserver" class="enablenoset" type="checkbox">
 	<div class="switchlabel" for="snapserver"></div>
 	<span class="help-block hide">
 		<a href="https://github.com/badaix/snapcast">Snapcast</a> - Multiroom client-server audio player
@@ -104,7 +104,7 @@
 	<br><gr>localbrowser<?=$code?></gr></a><i class="fa fa-chromium fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="localbrowser" type="checkbox">
+	<input id="localbrowser" class="enable" type="checkbox">
 	<div class="switchlabel" for="localbrowser"></div>
 	<i id="setting-localbrowser" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
@@ -119,7 +119,7 @@
 	<br><gr>smb<?=$code?></gr></a><i class="fa fa-networks fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="smb" type="checkbox">
+	<input id="smb" class="enable" type="checkbox">
 	<div class="switchlabel" for="smb"></div>
 	<i id="setting-smb" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
@@ -135,7 +135,7 @@
 	<br><gr>mpdscribble<?=$code?></gr></a><i class="fa fa-lastfm fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="mpdscribble" type="checkbox">
+	<input id="mpdscribble" class="enable" type="checkbox">
 	<div class="switchlabel" for="mpdscribble"></div>
 	<i id="setting-mpdscribble" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
@@ -148,7 +148,7 @@
 	<br><gr>PHP Blowfish</gr></a><i class="fa fa-lock-circle fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="login" type="checkbox"<?=( password_verify( 'rune', file_get_contents( '/srv/http/data/system/password' ) ) ? ' data-default="1"' : '' )?>>
+	<input id="login" class="enable" type="checkbox">
 	<div class="switchlabel" for="password"></div>
 	<i id="setting-login" class="setting fa fa-gear"></i>
 	<span class="help-block hide">Browser interface login. (Default: <code>rune</code>)</span>
@@ -158,7 +158,7 @@
 	<br><gr>System</gr></a><i class="fa fa-refresh-play fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="autoplay" type="checkbox">
+	<input id="autoplay" class="enablenoset" type="checkbox">
 	<div class="switchlabel" for="autoplay"></div>
 	<span class="help-block hide">Start playing automatically after boot.</span>
 </div>
@@ -167,7 +167,8 @@
 	<br><gr>hostapd<?=$code?></gr></a><i class="fa fa-wifi-3 fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="hostapd" type="checkbox">
+	<input id="hostapd" class="enable hidden" type="checkbox">
+	<input id="hostapdchk" type="checkbox">
 	<div class="switchlabel" for="hostapd"></div>
 	<i id="setting-hostapd" class="setting fa fa-gear"></i>
 	<span class="help-block hide">Connect with RuneAudio+R Wi-Fi directly when no routers available.

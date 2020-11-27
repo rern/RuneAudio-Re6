@@ -54,11 +54,14 @@ $help = '<i class="help fa fa-question-circle"></i>';
 	<i class="page-icon fa fa-<?=$icon[ $page ]?>"></i><span class='title'><?=( strtoupper( $page ) )?></span>
 	<i id="close" class="fa fa-times"></i><i id="help" class="fa fa-question-circle"></i>
 </div>
+<pre class="codepage hide"></pre>
 <div class="container hide">
 <?php
 include "settings/$page.php";
 ?>
 </div>
+<div id="bottom-bar"></div>
+
 	<?php if ( $localhost ) { ?>
 <input class="input hide">
 <div id="keyboard" class="hide"><div class="simple-keyboard"></div></div>

@@ -13,8 +13,8 @@ data+='
 	, "mpdscribbleval"  : "'$( grep '^username\|^password' /etc/mpdscribble.conf | cut -d' ' -f3- )'"
 	, "reboot"          : "'$( cat /srv/http/data/shm/reboot 2> /dev/null )'"
 	, "snapserver"      : '$( systemctl -q is-active snapserver && echo true || echo false )'
-	, "snapclient"      : '$( [[ -e $dirsystem/snapclient ]] && echo true || echo false )'
-	, "snapclientset"   : '$( cat $dirsystem/snapclientset 2> /dev/null || echo false )'
+	, "snapclient"      : '$( systemctl -q is-active snapclient && echo true || echo false )'
+	, "snapclientset"   : '$( [[ -e $dirsystem/snapclientset ]] && echo true || echo false )'
 	, "snaplatency"     : '$( grep OPTS= /etc/default/snapclient | sed 's/.*latency=\(.*\)"/\1/' )'
 	, "snappassword"    : "'$( cat $dirsystem/snapclientpw 2> /dev/null )'"
 	, "streaming"       : '$( grep -q 'type.*"httpd"' /etc/mpd.conf && echo true || echo false )

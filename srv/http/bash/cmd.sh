@@ -268,7 +268,7 @@ coversave )
 	jpgThumbnail coverart "$source" "$coverfile"
 	;;
 displayget )
-	output=$( cat $dirsystem/usbdac 2> /dev/null )
+	output=$( cat $dirtmp/usbdac 2> /dev/null )
 	[[ -z $output ]] && output=$( cat $dirsystem/audio-output )
 	volume=$( sed -n "/$output/,/^}/ p" /etc/mpd.conf \
 		| awk -F '\"' '/mixer_type/ {print $2}' )
@@ -304,9 +304,6 @@ ignoredir )
 	pushstream mpdupdate 1
 	mpc update "$mpdpath" #1 get .mpdignore into database
 	mpc update "$mpdpath" #2 after .mpdignore was in database
-	;;
-randomfile )
-	randomfile
 	;;
 librandom )
 	enable=${args[1]}
@@ -578,6 +575,7 @@ plsimilar )
 power )
 	type=${args[1]}
 	mpc stop
+	[[ -e $dirsystem/lcdchar ]] && $dirbash/lcdchar.py rr
 	[[ -e $dirtmp/gpiotimer ]] && $dirbash/gpio.py off && sleep 2
 	if [[ $type == off ]]; then
 		pushstream notify '{"title":"Power","text":"Off ...","icon":"power blink","delay":-1}'
@@ -585,13 +583,17 @@ power )
 		pushstream notify '{"title":"Power","text":"Reboot ...","icon":"reboot blink","delay":-1}'
 	fi
 	$dirbash/ply-image /srv/http/assets/img/splash.png &> /dev/null
-	mount | grep -q /mnt/MPD/NAS && umount -l /mnt/MPD/NAS/* &> /dev/null
-	sleep 3
-	grep -q 'dtparam=i2c_arm=on' /boot/config.txt && $dirbash/lcdchar.py rr
+	if mount | grep -q /mnt/MPD/NAS; then
+		umount -l /mnt/MPD/NAS/* &> /dev/null
+		sleep 3
+	fi
 	[[ $type == off ]] && shutdown -h now || shutdown -r now
 	;;
 pushstatus )
 	pushstreamStatus
+	;;
+randomfile )
+	randomfile
 	;;
 refreshbrowser )
 	pushstream reload 1

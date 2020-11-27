@@ -200,6 +200,12 @@ function playlistRename() {
 		, textvalue    : name
 		, textrequired : 0
 		, boxwidth     : 'max'
+		, preshow      : function() {
+			$( '#infoOk' ).addClass( 'disabled' );
+			$( '#infoTextBox' ).keyup( function() {
+				$( '#infoOk' ).toggleClass( 'disabled', $( '#infoTextBox' ).val() === name );
+			} );
+		}
 		, oklabel      : '<i class="fa fa-flash"></i>Rename'
 		, ok           : function() {
 			var newname = $( '#infoTextBox' ).val();
@@ -212,6 +218,7 @@ function tagEditor() {
 	var file = G.list.path;
 	var cue = file.slice( -4 ) === '.cue';
 	var format = [ 'album', 'albumartist', 'artist', 'composer', 'genre', 'date' ];
+	var fL = format.length;
 	if ( !G.list.licover ) {
 		if ( !cue ) {
 			format.push( 'title', 'track' );
@@ -333,9 +340,20 @@ function tagEditor() {
 			}
 			, nobutton     : G.playlist
 			, nofocus      : 1
+			, preshow      : function() {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '.infoinput' ).keyup( function() {
+					var changed = 0;
+					for ( i = 0; i < fL; i++ ) {
+						if ( $( '.infoinput:eq( '+ i +' )' ).val() !== value[ i ] ) {
+							changed = 1;
+							break;
+						}
+					}
+					$( '#infoOk' ).toggleClass( 'disabled', !changed );
+				} );
+			}
 			, ok           : function() {
-				var diff = 0;
-				var fL = format.length;
 				var tag = [ 'cmd-tageditor.sh', file, G.list.licover, cue ];
 				for ( i = 0; i < fL; i++ ) {
 					var val = $( '.infoinput:eq( '+ i +' )' ).val();
@@ -343,14 +361,11 @@ function tagEditor() {
 						val = '';
 					} else {
 						if ( !val ) val = -1;
-						diff++;
 					}
 					tag.push( val );
 				}
-				if ( diff ) {
-					banner( 'Tag Editor', 'Change ...', 'tag blink', -1 );
-					$.post( 'cmd.php', { cmd: 'sh', sh: tag } );
-				}
+				banner( 'Tag Editor', 'Change ...', 'tag blink', -1 );
+				$.post( 'cmd.php', { cmd: 'sh', sh: tag } );
 			}
 		} );
 		loader( 'hide' );
@@ -425,15 +440,20 @@ function webRadioEdit() {
 		, textvalue    : [ name, url ]
 		, textrequired : [ 0, 1 ]
 		, boxwidth     : 'max'
+		, preshow      : function() {
+			$( '#infoOk' ).addClass( 'disabled' );
+			$( '#infoTextBox, #infoTextBox1' ).keyup( function() {
+				var changed = $( '#infoTextBox' ).val() !== name || $( '#infoTextBox1' ).val() !== url;
+				$( '#infoOk' ).toggleClass( 'disabled', !changed );
+			} );
+		}
 		, oklabel      : '<i class="fa fa-save"></i>Save'
 		, ok           : function() {
 			var newname = $( '#infoTextBox' ).val();
 			var newurl = $( '#infoTextBox1' ).val().toString().replace( /\/\s*$/, '' ); // omit trailling / and space
-			if ( newname !== name || newurl !== url ) {
-				bash( [ 'webradioedit', url, newname, newurl ], function( data ) {
-					data ? webRadioExists( data, url ) : $( '#mode-webradio' ).click();
-				} );
-			}
+			bash( [ 'webradioedit', url, newname, newurl ], function( data ) {
+				data ? webRadioExists( data, url ) : $( '#mode-webradio' ).click();
+			} );
 		}
 	} );
 }

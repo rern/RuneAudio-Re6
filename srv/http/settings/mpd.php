@@ -1,6 +1,4 @@
-<div id="divmain"> <!-- ************************************************* -->
-
-<div>
+<div> <!-- ---------------------------------------------------------- -->
 <heading>Audio Output<?=$help?></heading>
 <div class="col-l control-label">Device</div>
 <div class="col-r">
@@ -11,13 +9,14 @@
 	<select id="mixertype" data-style="btn-default btn-lg"></select>
 	<i id="setting-mixertype" class="settingedit fa fa-gear hwmixer"></i><br>
 	<span class="hwmixer"><span class="help-block hide"><i class="fa fa-gear"></i>&ensp;Manually select hardware mixer only if the current one is not working.</span></span>
-	<span class="help-block hide">Set volume/mixer control for each device.
-		<br>Disable: best sound quality. <span id="hwmixertxt">(DAC hardware volume will be reset to 0dB.)
-		<br>DAC hardware: good and convenient.</span>
-		<br>MPD software: depends on users preferences.
+	<span class="help-block hide">
+			Set volume/mixer control for each device.
+		<br>&bull; Disable: best sound quality. <span id="hwmixertxt">(DAC hardware volume will be reset to 0dB.)
+		<br>&bull; DAC hardware: good and convenient.</span>
+		<br>&bull; MPD software: depends on users preferences.
 	</span>
 </div>
-</div>
+</div> <!-- ---------------------------------------------------------- -->
 
 <div>
 <heading data-status="aplay" class="status">Devices<i class="fa fa-code"></i><?=$help?></heading>
@@ -33,13 +32,18 @@
 
 <div style="clear: both;"></div>
 	
-<div>
+<div> <!-- ---------------------------------------------------------- -->
 <heading>Bit-Perfect<?=$help?></heading>
 <div class="col-l">No Volume</div>
 <div class="col-r">
 	<input id="novolume" type="checkbox">
 	<div class="switchlabel" for="novolume"></div>
-	<span class="help-block hide">Disable all software volume manipulations for bit-perfect stream from MPD to DAC and reset DAC hardware volume to 0dB to preserve full amplitude stream.</span>
+	<span class="help-block hide">
+		Disable all software volume manipulations for bit-perfect stream from MPD to DAC.
+		<br>&bull; Disable Mixer Control.
+		<br>&bull; Reset DAC hardware volume to 0dB to preserve full amplitude stream.
+		<br>&bull; Disable Crossfade, Normalization and Replay Gain.
+	</span>
 </div>
 
 <div id="divdop">
@@ -53,16 +57,16 @@
 			<br>On-board audio and non-DSD devices will always get DSD converted to PCM stream, no bit-perfect</span>
 	</div>
 </div>
-</div>
+</div> <!-- ---------------------------------------------------------- -->
 
-<div>
+<div> <!-- ---------------------------------------------------------- -->
 <heading>Volume<?=$help?></heading>
 <div data-status="crossfade" class="col-l double status">
 	<a>Crossfade
 	<br><gr>mpc<i class="fa fa-code"></i></gr></a>
 </div>
 <div class="col-r">
-	<input id="crossfade" class="switch" type="checkbox">
+	<input id="crossfade" class="enable" type="checkbox">
 	<div class="switchlabel" for="crossfade"></div>
 	<i id="setting-crossfade" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
@@ -76,7 +80,7 @@
 	<br><gr>option</gr></a>
 </div>
 <div class="col-r">
-	<input id="normalization" type="checkbox">
+	<input id="normalization" class="enablenoset" type="checkbox">
 	<div class="switchlabel" for="normalization"></div>
 	<span class="help-block hide">
 			<code>volume_normalization "yes"</code>
@@ -88,7 +92,7 @@
 	<br><gr>option</gr></a>
 </div>
 <div class="col-r">
-	<input id="replaygain" type="checkbox">
+	<input id="replaygain" class="enable" type="checkbox">
 	<div class="switchlabel" for="replaygain"></div>
 	<i id="setting-replaygain" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
@@ -96,16 +100,16 @@
 		<br>Set gain control to setting in replaygain tag. Currently only FLAC, Ogg Vorbis, Musepack, and MP3 (through ID3v2 ReplayGain tags, not APEv2) are supported.
 	</span>
 </div>
-</div>
+</div> <!-- ---------------------------------------------------------- -->
 
-<div>
+<div> <!-- ---------------------------------------------------------- -->
 <heading>Options<?=$help?></heading>
 <div class="col-l double">
 	<a>Auto Update
 	<br><gr>Library</gr></a>
 </div>
 <div class="col-r">
-	<input id="autoupdate" type="checkbox">
+	<input id="autoupdate"  class="enablenoset" type="checkbox">
 	<div class="switchlabel" for="autoupdate"></div>
 	<span class="help-block hide">
 			<code>auto_update "yes"</code>
@@ -117,7 +121,7 @@
 	<br><gr>decoder</gr></a>
 </div>
 <div class="col-r">
-	<input id="ffmpeg" type="checkbox">
+	<input id="ffmpeg"  class="enablenoset" type="checkbox">
 	<div class="switchlabel" for="ffmpeg"></div>
 	<span class="help-block hide">
 			<code>enable "yes"</code>
@@ -131,7 +135,7 @@
 	<br><gr>custom size</gr></a>
 </div>
 <div class="col-r">
-	<input id="buffer" type="checkbox">
+	<input id="buffer" class="enable" type="checkbox">
 	<div class="switchlabel" for="buffer"></div>
 	<i id="setting-buffer" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
@@ -145,7 +149,7 @@
 	<br><gr>custom size</gr></a>
 </div>
 <div class="col-r">
-	<input id="bufferoutput" type="checkbox">
+	<input id="bufferoutput" class="enable" type="checkbox">
 	<div class="switchlabel" for="bufferoutput"></div>
 	<i id="setting-bufferoutput" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
@@ -159,7 +163,7 @@
 	<br><gr>SoXR custom settings</gr></a>
 </div>
 <div class="col-r">
-	<input id="soxr" type="checkbox">
+	<input id="soxr" class="enable" type="checkbox">
 	<div class="switchlabel" for="soxr"></div>
 	<i id="setting-soxr" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
@@ -182,14 +186,13 @@
 </div>
 <div class="col-l">User's Custom Settings</div>
 <div class="col-r">
-	<input id="custom" type="checkbox">
+	<input id="custom" class="enable" type="checkbox">
 	<div class="switchlabel" for="custom"></div>
 	<i id="setting-custom" class="setting fa fa-gear"></i>
 	<span class="help-block hide">Insert settings into <code>/etc/mpd.conf</code>.</span>
 </div>
-</div>
 
-</div> <!-- divmain ****************************************** -->
+</div> <!-- ---------------------------------------------------------- -->
 
 <div>
 <heading data-status="mpdconf" class="status">Configuration<i class="fa fa-code"></i><?=$help?></heading>
@@ -205,20 +208,4 @@
 <pre id="codempd" class="hide"></pre>
 </div>
 
-<!--
-<div class="col-l">Manual Mode</div>
-<div class="col-r">
-	<input id="manualconf" type="checkbox">
-	<div class="switchlabel" for="manualconf"></div>
-	<i id="setting-manualconf" class="setting fa fa-save"></i>
-	<span class="help-block hide">
-			Manually set MPD configuration, <code>mpd.conf</code>. Once enabled, any further changes, options or audio devices, must be reconfigured manually.
-		<br>This will also disable:
-		<br>&emsp; &bull; USB DAC plug and play for MPD, AirPlay and Spotify.
-		<br>&emsp; &bull; Bluetooth auto connect.
-	</span>
-</div>
-<textarea id="codemanualconf" spellcheck="false"></textarea>
-</div>
--->
 <div style="clear: both"></div>

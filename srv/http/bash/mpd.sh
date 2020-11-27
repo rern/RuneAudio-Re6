@@ -15,7 +15,7 @@ restartMPD() {
 case ${args[0]} in
 
 amixer )
-	amixer -c ${args[1]}scontents \
+	amixer -c ${args[1]} scontents \
 		| grep -A2 'Simple mixer control' \
 		| grep -v 'Capabilities' \
 		| tr -d '\n' \
@@ -30,9 +30,12 @@ audiooutput )
 	output=${args[3]}
 	mixer=${args[4]}
 	[[ ${output:0:7} == WM5102 ]] && /srv/http/bash/mpd-wm5102.sh $card ${output/*-} &> /dev/null
-	if [[ $aplayname != $( cat /srv/http/data/shm/usbdac 2> /dev/null ) ]]; then
+	if [[ -n $aplayname ]]; then
 		echo $aplayname > $dirsystem/audio-aplayname
 		echo $output > $dirsystem/audio-output
+		mv /srv/http/data/shm/usbdac{,.backup} &> /dev/null
+	else
+		mv /srv/http/data/shm/usbdac{.backup,} &> /dev/null
 	fi
 	sed -i -e '/output_device = / s/".*"/"hw:'$card'"/
 	' -e '/mixer_control_name = / s/".*"/"'$mixer'"/
@@ -42,46 +45,39 @@ audiooutput )
 	;;
 autoupdate )
 	if [[ ${args[1]} == true ]]; then
-		sed -i '1 i\auto_update          "yes"' /etc/mpd.conf
+		sed -i '1 i\auto_update            "yes"' /etc/mpd.conf
 		touch $dirsystem/mpd-autoupdate
 	else
 		sed -i '/^auto_update/ d' /etc/mpd.conf
 		rm -f $dirsystem/mpd-autoupdate
 	fi
 	restartMPD
-	pushRefresh
 	;;
-buffer )
-	if [[ ${args[1]} == true ]]; then
-		touch $dirsystem/mpd-buffer
-	else
-		sed -i '/^audio_buffer_size/ d' /etc/mpd.conf
-		rm -f $dirsystem/mpd-buffer
-	fi
+bufferdisable )
+	sed -i '/^audio_buffer_size/ d' /etc/mpd.conf
+	rm -f $dirsystem/mpd-buffer
 	restartMPD
-	pushRefresh
 	;;
 bufferset )
 	buffer=${args[1]}
-	sed -i -e '/^audio_buffer_size/ d
-' -e '1 i\audio_buffer_size    "'$buffer'"' /etc/mpd.conf
+	sed -i '/^audio_buffer_size/ d' /etc/mpd.conf
+	sed -i '1 i\audio_buffer_size      "'$buffer'"' /etc/mpd.conf
 	echo $buffer > $dirsystem/mpd-bufferset
-	;;
-bufferoutput )
-	if [[ ${args[1]} == true ]]; then
-		touch $dirsystem/mpd-bufferoutput
-	else
-		sed -i '/^max_output_buffer_size/ d' /etc/mpd.conf
-		rm -f $dirsystem/mpd-bufferoutput
-	fi
+	touch $dirsystem/mpd-buffer
 	restartMPD
-	pushRefresh
+	;;
+bufferoutputdisable )
+	sed -i '/^max_output_buffer_size/ d' /etc/mpd.conf
+	rm -f $dirsystem/mpd-bufferoutput
+	restartMPD
 	;;
 bufferoutputset )
 	buffer=${args[1]}
-	sed -i -e '/^max_output_buffer_size/ d
-' -e '1 i\max_output_buffer_size "'$buffer'"' /etc/mpd.conf
+	sed -i '/^max_output_buffer_size/ d' /etc/mpd.conf
+	sed -i '1 i\max_output_buffer_size "'$buffer'"' /etc/mpd.conf
 	echo $buffer > $dirsystem/mpd-bufferoutputset
+	touch $dirsystem/mpd-bufferoutput
+	restartMPD
 	;;
 count )
 	albumartist=$( mpc list albumartist | awk NF | wc -l )
@@ -106,57 +102,48 @@ count )
 	echo {$data}
 	echo $albumartist $composer $genre > /srv/http/data/system/mpddb
 	;;
-crossfade )
-	if [[ ${args[1]} == true ]]; then
-		touch $dirsystem/mpd-crossfade
-	else
-		mpc crossfade 0
-		rm -f $dirsystem/mpd-crossfade
-	fi
+crossfadedisable )
+	mpc crossfade 0
+	rm -f $dirsystem/mpd-crossfade
 	pushRefresh
 	;;
 crossfadeset )
 	crossfade=${args[1]}
 	mpc crossfade $crossfade
 	echo $crossfade > $dirsystem/mpd-crossfadeset
-	;;
-custom )
-	enable=${args[1]}
-	if [[ $enable == true ]]; then
-		touch $dirsystem/mpd-custom
-	else
-		sed -i '/ #custom$/ d' /etc/mpd.conf
-		rm -f $dirsystem/mpd-custom
-	fi
-	restartMPD
+	touch $dirsystem/mpd-crossfade
 	pushRefresh
+	;;
+customdisable )
+	sed -i '/ #custom$/ d' /etc/mpd.conf
+	rm -f $dirsystem/mpd-custom
+	restartMPD
+	;;
+customgetglobal )
+	cat $dirsystem/mpd-custom-global
+	;;
+customgetoutput )
+	cat "$dirsystem/mpd-custom-output-${args[1]}"
 	;;
 customset )
-	global=${args[1]}
-	output=${args[2]}
 	file=$dirsystem/mpd-custom
+	if [[ ${args[1]} == customset ]]; then
+		global=$( cat $file-global 2> /dev/null )
+		[[ -n $global ]] && touch $file
+	else
+		global=${args[1]}
+		output=${args[2]}
+		outputname=${args[3]}
+		[[ -n $global ]] && echo "$global" > $file-global || rm -f $file-global
+		[[ -n $output ]] && echo "$output" > "$file-output-$outputname" || rm -f "$file-output-$outputname"
+		[[ -n $global || -n $output ]] && touch $file ${file}set
+	fi
 	sed -i '/ #custom$/ d' /etc/mpd.conf
 	if [[ -n $global ]]; then
-		echo "$global" > $file-global
 		global=$( echo "$global" | tr ^ '\n' | sed 's/$/ #custom/' )
 		sed -i "/^user/ a$global" /etc/mpd.conf
-	else
-		rm -f $file-global
-	fi
-	if [[ -n $output ]]; then
-		echo "$output" > $file-output
-	else
-		rm -f $file-output
-	fi
-	if [[ -z $global && -z $output ]]; then
-		rm -f $file
-		rm -f ${file}set
-	else
-		touch $file
-		touch ${file}set
 	fi
 	restartMPD
-	pushRefresh
 	;;
 dop )
 	dop=${args[1]}
@@ -167,7 +154,6 @@ dop )
 		rm -f "$dirsystem/mpd-dop-$output"
 	fi
 	restartMPD
-	pushRefresh
 	;;
 ffmpeg )
 	if [[ ${args[1]} == true ]]; then
@@ -178,7 +164,6 @@ ffmpeg )
 		rm -f $dirsystem/mpd-ffmpeg
 	fi
 	restartMPD
-	pushRefresh
 	;;
 filetype )
 	type=$( mpd -V | grep '\[ffmpeg' | sed 's/.*ffmpeg. //; s/ rtp.*//' | tr ' ' '\n' | sort )
@@ -187,19 +172,6 @@ filetype )
 		[[ -n $line ]] && list+=${line:0:-1}'<br>'
 	done
 	echo "${list:0:-4}"
-	;;
-manualconf )
-	if [[ ${args[1]} == true ]]; then
-		cat /etc/mpd.conf | tee $dirsystem/mpd-manualconf
-	else
-		rm -f $dirsystem/mpd-manualconf
-	fi
-	pushRefresh
-	;;
-manualconfsave )
-	printf '%s\n' "${args[@]:1}" | tee /etc/mpd.conf $dirsystem/mpd-manualconf
-	restartMPD
-	pushRefresh
 	;;
 mixerhw )
 	output=${args[1]}
@@ -215,7 +187,15 @@ mixerhw )
 	fi
 	systemctl try-restart shairport-sync shairport-meta
 	restartMPD
-	pushRefresh
+	;;
+mixerget )
+	readarray -t cards <<< "$( aplay -l | grep ^card )"
+	for card in "${cards[@]}"; do
+		mixer+=$'\n'"$card"
+		mixer+='<hr>'
+		mixer+=$( amixer -c ${card:5:1} )$'\n'
+	done
+	echo "${mixer:1}"
 	;;
 mixerset )
 	mixer=${args[1]}
@@ -233,81 +213,70 @@ mixerset )
 		echo $mixer > "$dirsystem/mpd-mixertype-$output"
 	fi
 	restartMPD
-	pushRefresh
 	curl -s -X POST http://127.0.0.1/pub?id=volumenone -d '{ "pvolumenone": "'$volumenone'" }'
 	;;
 normalization )
 	if [[ ${args[1]} == true ]]; then
-		sed -i '/^user/ a\volume_normalization "yes"' /etc/mpd.conf
+		sed -i '/^user/ a\volume_normalization   "yes"' /etc/mpd.conf
 		touch $dirsystem/mpd-normalization
 	else
 		sed -i '/^volume_normalization/ d' /etc/mpd.conf
 		rm -f $dirsystem/mpd-normalization
 	fi
 	restartMPD
-	pushRefresh
 	;;
 novolume )
+	name=${args[1]}
+	card=${args[2]}
+	hwmixer=${args[3]}
 	sed -i -e '/volume_normalization/ d
 	' -e '/^replaygain/ s/".*"/"off"/
 	' /etc/mpd.conf
-	echo none > "$dirsystem/mpd-mixertype-${args[1]}"
 	mpc crossfade 0
+	amixer -c $card sset $hwmixer 0dB
+	echo none > "$dirsystem/mpd-mixertype-$name"
 	rm -f $dirsystem/{mpd-crossfade,mpd-replaygain,mpd-normalization}
 	restartMPD
-	pushRefresh
 	curl -s -X POST http://127.0.0.1/pub?id=volumenone -d '{ "pvolumenone": "1" }'
 	;;
-replaygain )
-	if [[ ${args[1]} == true ]]; then
-		touch $dirsystem/mpd-replaygain
-	else
-		sed -i '/^replaygain/ s/".*"/"off"/' /etc/mpd.conf
-		rm -f $dirsystem/mpd-replaygain
-	fi
+replaygaindisable )
+	sed -i '/^replaygain/ s/".*"/"off"/' /etc/mpd.conf
+	rm -f $dirsystem/mpd-replaygain
 	restartMPD
-	pushRefresh
 	;;
 replaygainset )
 	replaygain=${args[1]}
 	sed -i '/^replaygain/ s/".*"/"'$replaygain'"/' /etc/mpd.conf
-	echo $replaygain $dirsystem/mpd-replaygainset
+	echo $replaygain > $dirsystem/mpd-replaygainset
+	touch $dirsystem/mpd-replaygain
+	restartMPD
 	;;
 restart )
 	restartMPD
-	pushRefresh
 	;;
-soxr )
-	if [[ ${args[1]} == true ]]; then
-		sed -i -e '/quality/,/}/ d
-' -e "/soxr/ r $dirsystem/mpd-soxrset
-" /etc/mpd.conf
-		touch $dirsystem/mpd-soxr
-	else
-		sed -i -e '/quality/,/}/ d
+soxrdisable )
+	sed -i -e '/quality/,/}/ d
 ' -e '/soxr/ a\
 	quality        "very high"\
 }
 ' /etc/mpd.conf
-		rm -f $dirsystem/mpd-soxr
-	fi
+	rm -f $dirsystem/mpd-soxr
 	restartMPD
-	pushRefresh
 	;;
 soxrset )
+	val=( ${args[1]} )
 	echo '	quality        "custom"
-	precision      "'${args[1]}'"
-	phase_response "'${args[2]}'"
-	passband_end   "'${args[3]}'"
-	stopband_begin "'${args[4]}'"
-	attenuation    "'${args[5]}'"
-	flags          "'${args[6]}'"
+	precision      "'${val[0]}'"
+	phase_response "'${val[1]}'"
+	passband_end   "'${val[2]}'"
+	stopband_begin "'${val[3]}'"
+	attenuation    "'${val[4]}'"
+	flags          "'${val[5]}'"
 }' > $dirsystem/mpd-soxrset
-		sed -i -e '/quality/,/}/ d
+	sed -i -e '/quality/,/}/ d
 ' -e "/soxr/ r $dirsystem/mpd-soxrset
 " /etc/mpd.conf
 	restartMPD
-	pushRefresh
 	;;
 
 esac

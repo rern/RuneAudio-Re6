@@ -13,11 +13,10 @@ pushRefresh() {
 }
 featureSet() {
 	[[ -n $datarestore ]] && exit
-	
 	feature=$1
-	set=$2
+	shift
 	$dirbash/features.sh $feature$'\n'true
-	printf '%s\n' $set > $dirsystem/${feature}set
+	printf '%s\n' $@ > $dirsystem/${feature}set
 	pushRefresh
 }
 rotate() {
@@ -220,7 +219,7 @@ snapclient )
 snapclientset )
 	latency=${args[1]}
 	password=${args[2]}
-	sed -i '/OPTS=/ s/".*"/"--latency="'$latency'"/' /etc/default/snapclient
+	sed -i '/OPTS=/ s/".*"/"--latency='$latency'"/' /etc/default/snapclient
 	[[ -n $password ]] && echo $pwd > $dirsystem/snapclientpw
 	featureSet snapclient "${args[@]:1}"
 	;;
@@ -238,12 +237,12 @@ snapserver )
 	;;
 spotifyd )
 	if [[ ${args[1]} == true ]]; then
-		[[ -e $dirsystem/spotifyset ]] && $dirbash/features.sh spotifyset$'\n'$( cat $dirsystem/spotifyset )
+		[[ -e $dirsystem/spotifydset ]] && $dirbash/features.sh spotifydset$'\n'$( cat $dirsystem/spotifydset )
 		systemctl enable --now spotifyd
-		touch $dirsystem/spotify
+		touch $dirsystem/spotifyd
 	else
 		systemctl disable --now spotifyd
-		rm -f $dirsystem/spotify
+		rm -f $dirsystem/spotifyd
 	fi
 	pushRefresh
 	;;

@@ -270,7 +270,7 @@ function info( O ) {
 				.css( 'background-color', 'cancelcolor' in O ? O.cancelcolor : '' );
 			if ( 'cancelbutton' in O || 'cancellabel' in O ) $( '#infoCancel' ).removeClass( 'hide' );
 		}
-		if ( 'button' in O ) {
+		if ( 'button' in O && O.button ) {
 			var button = 'button' in O ? O.button : '';
 			var buttonlabel = 'buttonlabel' in O ? O.buttonlabel : '';
 			var buttoncolor = 'buttoncolor' in O ? O.buttoncolor : '';
@@ -286,7 +286,11 @@ function info( O ) {
 									.click( button[ i ] );
 			}
 		}
-		$( '.infobtn' ).click( infoReset );
+		if ( 'buttonnoreset' in O ) {
+			$( '#infoOk, #infoCancel' ).click( infoReset );
+		} else {
+			$( '.infobtn' ).click( infoReset );
+		}
 	}
 	$( '#infoX, #infoCancel' ).click( function() {
 		$( '#infoOverlay' ).addClass( 'hide' );
@@ -500,9 +504,10 @@ function info( O ) {
 			if ( thisW > labelW ) labelW = thisW;
 		} );
 		var boxW = O.boxwidth !== 'max' ? O.boxwidth : calcW - 70 - labelW;
-		if ( $( '#infoContent option' ).length ) $( '#infoContent select' ).selectric();
-		$( '.infoinput, #infoOverlay .selectric, #infoOverlay .selectric-wrapper' ).css( 'width', boxW +'px' );
-		$( '.selectric-items' ).css( 'min-width', boxW +'px' );
+		setTimeout( function() {
+			$( '.infoinput, #infoOverlay .selectric, #infoOverlay .selectric-wrapper' ).css( 'width', boxW +'px' );
+			$( '.selectric-items' ).css( 'min-width', boxW +'px' );
+		}, 0 );
 	}
 	if ( 'buttonwidth' in O ) {
 		var widest = 0;
@@ -513,6 +518,7 @@ function info( O ) {
 		} );
 		$( '.infobtn, .filebtn' ).css( 'min-width', widest +'px' );
 	}
+	if ( $( '#infoContent option' ).length ) $( '#infoContent select' ).selectric();
 	/////////////////////////////////////////////////////////////////////////////
 	}, 0 );
 }

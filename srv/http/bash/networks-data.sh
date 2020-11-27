@@ -11,7 +11,7 @@ if systemctl -q is-active hostapd; then
 	, "hostapdip"  : "'$hostapdip'"'
 fi
 
-lines=$( /srv/http/bash/network.sh ifconfig )
+lines=$( /srv/http/bash/networks.sh ifconfig )
 readarray -t lines <<<"$lines"
 for line in "${lines[@]}"; do
 	items=( $line )

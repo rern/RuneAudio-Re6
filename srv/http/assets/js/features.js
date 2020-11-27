@@ -1,11 +1,18 @@
+/* Enable with settings
+- Enable:     always pop-up settings
+- Values:     extracted from actual setting files/data (except gpio.py and lcdchar.py)
+- *set files: for restore
+*/
+
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 refreshData = function() { // system page: use resetLocal() to aviod delay
 	bash( '/srv/http/bash/features-data.sh', function( list ) {
-		G = list;
-		G.reboot = list.reboot ? list.reboot.split( '\n' ) : [];
+		var list2G = list2JSON( list );
+		if ( !list2G ) return
+		
 		$( '#shairport-sync' ).prop( 'checked', G[ 'shairport-sync' ] );
-		$( '#spotifydd' ).prop( 'checked', G.spotifyd );
+		$( '#spotifyd' ).prop( 'checked', G.spotifyd );
 		$( '#setting-spotifyd' ).toggleClass( 'hide', !G.spotifyd );
 		$( '#upmpdcli' ).prop( 'checked', G.upmpdcli );
 //		$( '#setting-upnp' ).toggleClass( 'hide', !G.upnp );
@@ -30,31 +37,52 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		$( '#login' ).prop( 'checked', G.login );
 		$( '#setting-login' ).toggleClass( 'hide', !G.login );
 		$( '#autoplay' ).prop( 'checked', G.autoplay );
-		$( '#hostapd' ).prop( 'checked', G.hostapd );
+		$( '#hostapd, #hostapdchk' ).prop( 'checked', G.hostapd );
 		$( '#setting-hostapd' ).toggleClass( 'hide', !G.hostapd );
 		services.forEach( function( id ) {
 			codeToggle( id, 'status' );
 		} );
 		resetLocal();
 		showContent();
-	}, 'json' );
+	} );
 }
 refreshData();
 //---------------------------------------------------------------------------------------
-$( '#shairport-sync' ).click( function( e ) {
-	var checked = $( this ).prop( 'checked' );
-	notify( 'AirPlay Renderer', checked, 'airplay' );
-	bash( [ 'shairport-sync', checked ] );
-} );
-$( '#snapclient' ).click( function( e ) {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.snapclientset ) {
-		notify( 'SnapClient Renderer', checked, 'snapcast' );
-		bash( [ 'snapclient', checked ] );
+$( '.enable' ).click( function() {
+	var idname = {
+		  hostapd      : [ 'RPi Access Point',     'wifi-3' ]
+		, localbrowser : [ 'Browser on RPi',       'chromium' ]
+		, login        : [ 'Password Login',       'key' ]
+		, mpdscribble  : [ 'Last.fm Scrobbler',    'lastfm' ]
+		, smb          : [ 'Samba - File Sharing', 'network' ]
+		, snapclient   : [ 'SnapClient Renderer',  'snapcast' ]
+	}
+	var id = this.id;
+	if ( $( this ).prop( 'checked' ) ) {
+		$( '#setting-'+ id ).click();
 	} else {
-		$( '#setting-snapclient' ).click();
+		var nameicon = idname[ id ];
+		notify( nameicon[ 0 ], 'Disable ...', nameicon[ 1 ] );
+		bash( [ id, false ] );
 	}
 } );
+$( '.enablenoset' ).click( function() {
+	var idname = {
+		  autoplay         : [ 'Play on Startup',                  'refresh-play' ]
+		, localbrowser     : [ 'Chromium - Browser on RPi',        'chromium' ]
+		, 'shairport-sync' : [ 'AirPlay Renderer',                 'airplay' ]
+		, snapserver       : [ 'Snapcast - Sync Streaming Server', 'snapcast' ]
+		, spotifyd         : [ 'Spotify Connect',                  'spotify' ]
+		, streaming        : [ 'HTTP Streaming',                   'mpd' ]
+		, upmpdcli         : [ 'UPnP Renderer',                    'upnp' ]
+	}
+	var checked = $( this ).prop( 'checked' );
+	var id = this.id;
+	var nameicon = idname[ id ];
+	notify( nameicon[ 0 ], checked, nameicon[ 1 ] );
+	bash( [ id, checked ] );
+} );
+
 $( '#setting-snapclient' ).click( function() {
 	info( {
 		  icon          : 'snapcast'
@@ -72,27 +100,29 @@ $( '#setting-snapclient' ).click( function() {
 			}
 			$( '#infoCheckBox input' ).change( function() {
 				var checked = $( this ).prop( 'checked' );
-				$( '.infolabel:eq( 1 ), .infoinput:eq( 1 ), #infotextsuffix' ).toggle( checked );
+				$( '.infolabel:eq( 1 ), .infoinput:eq( 1 ), #infotextsuffix' ).toggleClass( 'hide', checked );
 				$( '#infoPasswordBox' ).val( checked ? G.snapspassword : '' );
 			} );
+			// verify changes
+			if ( G.snapclient ) {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#infoTextBox, #infoPasswordBox' ).keyup( function() {
+					var changed = $( '#infoTextBox' ).val() !== G.snaplatency;
+					if ( !$( '#infotextsuffix' ).hasClass( 'hide' ) ) changed = changed && $( '#infoPasswordBox' ).val !== G.snapspassword;
+					$( '#infoOk' ).toggleClass( 'disabled', !changed );
+				} );
+			}
 		}
 		, cancel        : function() {
-			if ( !G.snapclientset ) $( '#snapclient' ).prop( 'checked', 0 );
+			$( '#snapclient' ).prop( 'checked', G.snapclient );
 		}
 		, ok            : function() {
 			var snaplatency = Math.abs( $( '#infoTextBox' ).val() );
 			var snapspassword = $( '#infoPasswordBox' ).val();
-			if ( snaplatency !== G.snaplatency || snapspassword !== G.snapspassword ) {
-				notify( 'Snapclient', 'Change ...', 'snapcast' );
-				bash( [ 'snapclientset', snaplatency, snapspassword ] );
-			}
+			bash( [ 'snapclientset', snaplatency, snapspassword ] );
+			notify( 'Snapclient', G.snapclient ? 'Change ...' : 'Enable ...', 'snapcast' );
 		}
 	} );
-} );
-$( '#spotifyd' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	notify( 'Spotify Connect', checked, 'spotify' );
-	bash( [ 'spotifyd', checked ] );
 } );
 $( '#setting-spotifyd' ).click( function() {
 	bash( [ 'aplaydevices' ], function( devices ) {
@@ -108,39 +138,17 @@ $( '#setting-spotifyd' ).click( function() {
 			, radio   : radio
 			, checked : G.spotifyddevice
 			, footer  : '<br>(Only if default one not working)'
+			, preshow       : function() {
+				// verify changes
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#infoOk' ).toggleClass( 'disabled', $( '#infoSelectBox option:selected' ).text() !== G.spotifyddevice );
+			}
 			, ok      : function() {
-				var spotifyddevice = $( '#infoSelectBox option:selected' ).text();
-				if ( spotifyddevice !== G.spotifyddevice ) {
+				bash( [ 'spotifyset', $( '#infoSelectBox option:selected' ).text() ] );
 					notify( 'Spotify Renderer', 'Change ...', 'spotify' );
-					bash( [ 'spotifyset', spotifyddevice ] );
-				}
 			}
 		} );
 	} );
-} );
-$( '#upmpdcli' ).click( function( e ) {
-	var checked = $( this ).prop( 'checked' );
-	notify( 'UPnP Renderer', checked, 'upnp fa-s' );
-	bash( [ 'upmpdcli', checked ] );
-} );
-$( '#snapserver' ).click( function( e ) {
-	var checked = $( this ).prop( 'checked' );
-	notify( 'Snapcast - Sync Streaming Server', checked, 'snapcast' );
-	bash( [ 'snapserver', checked ] );
-} );
-$( '#streaming' ).click( function( e ) {
-	var checked = $( this ).prop( 'checked' );
-	notify( 'HTTP Streaming', checked, 'mpd' );
-	bash( [ 'streaming', checked ] );
-} );
-$( '#localbrowser' ).click( function( e ) {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.localbrowserset ) {
-		notify( 'Chromium - Browser on RPi', checked, 'chromium' );
-		bash( [ 'localbrowser',checked ] );
-	} else {
-		$( '#setting-localbrowser' ).click();
-	}
 } );
 var localbrowserinfo = heredoc( function() { /*
 	<div id="infoText" class="infocontent">
@@ -170,7 +178,15 @@ var localbrowserinfo = heredoc( function() { /*
 		<label><input type="checkbox">&ensp;Mouse pointer</label><br>
 	</div>
 */ } );
-$( '#setting-localbrowser' ).click( function( e ) {
+$( '#setting-localbrowser' ).click( function() {
+	function verify() {
+		var zoom = +$( '#infoTextBox1' ).val();
+		var changed = +$( '#infoTextBox' ).val() !== G.screenoff / 60
+						|| ( zoom !== G.zoom && zoom >= 0.5 && zoom <= 2 )
+						|| $( '#infoRadio input:checked' ).val() !== G.rotate
+						|| $( '#infoCheckBox input' ).prop( 'checked' ) !== G.cursor;
+		$( '#infoOk' ).toggleClass( 'disabled', !changed );
+	}
 	info( {
 		  icon        : 'chromium'
 		, title       : 'Browser on RPi'
@@ -178,9 +194,20 @@ $( '#setting-localbrowser' ).click( function( e ) {
 		, preshow     : function() {
 			$( '#infoTextBox1' ).val( G.zoom );
 			$( '#infoTextBox' ).val( G.screenoff / 60 );
-			$( 'input[name=inforadio]' ).val( [ G.rotate ] );
-			$( '#infoCheckBox input:eq( 0 )' ).prop( 'checked', G.cursor );
+			$( '#infoRadio input' ).val( [ G.rotate ] );
+			$( '#infoCheckBox input' ).prop( 'checked', G.cursor );
 			if ( G.lcd ) $( '#infoRadio' ).after( '<gr>(Rotate GPIO LCD: Reboot required.)</gr>' );
+			// verify changes + values
+			if ( G.localbrowser ) {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#infoTextBox, #infoTextBox1' ).keyup( verify );
+				$( '#infoRadio, #infoCheckBox' ).change( verify );
+			} else { // verify values
+				$( '#infoTextBox' ).keyup( function() {
+					var zoom = +$( '#infoTextBox1' ).val();
+					$( '#infoOk' ).toggleClass( 'disabled', zoom < 0.5 || zoom > 2 );
+				} );
+			}
 		}
 		, buttonlabel : '<i class="fa fa-refresh"></i>Refresh'
 		, buttoncolor : '#de810e'
@@ -189,56 +216,17 @@ $( '#setting-localbrowser' ).click( function( e ) {
 		}
 		, buttonwidth : 1
 		, cancel      : function() {
-			if ( !G.localbrowserset ) $( '#localbrowser' ).prop( 'checked', 0 );
+			$( '#localbrowser' ).prop( 'checked', G.localbrowser );
 		}
 		, ok          : function() {
-			var cursor    = $( '#infoCheckBox input:eq( 0 )' ).prop( 'checked' );
+			var cursor    = $( '#infoCheckBox input' ).prop( 'checked' );
 			var rotate    = $( 'input[name=inforadio]:checked' ).val();
 			var screenoff = $( '#infoTextBox' ).val() * 60;
 			var zoom = parseFloat( $( '#infoTextBox1' ).val() ) || 1;
-			zoom = zoom < 2 ? ( zoom < 0.5 ? 0.5 : zoom ) : 2;
-			if ( rotate !== G.rotate ) {
-				G.rotate = rotate;
-			} else {
-				rotate = ''
-			}
-			if ( screenoff !== G.screenoff ) {
-				G.screenoff = screenoff;
-			} else {
-				screenoff = ''
-			}
-			if ( cursor === G.cursor && rotate === '' && screenoff === '' && zoom === G.zoom ) return
-			
-			notify( 'Chromium - Browser on RPi', 'Change ...', 'chromium' );
-			if ( rotate !== '' && cursor === G.cursor && screenoff === '' && zoom === G.zoom ) { // rotate only
-				if ( G.lcd ) {
-					var degree = { CW: 0, NORMAL: 90, CCW: 180, UD: 270 }
-					bash( [ 'rotatelcd', degree[ rotate ] ] );
-				} else {
-					bash( [ 'rotate', rotate ] );
-				}
-				return
-			}
-			
-			if ( screenoff !== '' && cursor === G.cursor && rotate === '' && zoom === G.zoom ) { // screenoff only
-				bash( [ 'screenoff', screenoff ] );
-				return
-			}
-			
-			G.cursor = cursor;
-			G.zoom = zoom;
 			bash( [ 'localbrowserset', rotate, screenoff, cursor, zoom ] );
+			notify( 'Chromium - Browser on RPi', G.localbrowser ? 'Change ...' : 'Enable ...', 'chromium' );
 		}
 	} );
-} );
-$( '#smb' ).click( function( e ) {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.smbset ) {
-		notify( 'Samba - File Sharing', checked, 'network' );
-		bash( [ 'smb', checked ] );
-	} else {
-		$( '#setting-smb' ).click();
-	}
 } );
 $( '#setting-smb' ).click( function() {
 	info( {
@@ -249,79 +237,76 @@ $( '#setting-smb' ).click( function() {
 		, preshow  : function() {
 			$( '#infoCheckBox input:eq( 0 )' ).prop( 'checked', G.writesd );
 			$( '#infoCheckBox input:eq( 1 )' ).prop( 'checked', G.writeusb );
+			// verify changes
+			if ( G.smb ) {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#infoCheckBox' ).change( function() {
+					var changed = $( '#infoCheckBox input:eq( 0 )' ).prop( 'checked' ) !== G.writesd || $( '#infoCheckBox input:eq( 1 )' ).prop( 'checked' ) !== G.writeusb;
+					$( '#infoOk' ).toggleClass( 'disabled', !changed );
+				} );
+			}
 		}
 		, cancel   : function() {
-			if ( !G.smbset ) $( '#smb' ).prop( 'checked', 0 );
+			$( '#smb' ).prop( 'checked', G.smb );
 		}
 		, ok       : function() {
 			var writesd = $( '#infoCheckBox input:eq( 0 )' ).prop( 'checked' );
 			var writeusb = $( '#infoCheckBox input:eq( 1 )' ).prop( 'checked' );
-			if ( writesd !== G.writesd || writeusb !== G.writeusb || !G.smbset ) {
-				G.writesd = writesd;
-				G.writeusb = writeusb;
-				notify( 'Samba - File Sharing', 'Change ...', 'network' );
-				bash( [ 'smbset', G.writesd, G.writeusb ] );
-				console.log( [ 'smbset', G.writesd, G.writeusb ] );
-			}
+			bash( [ 'smbset', writesd, writeusb ] );
+			notify( 'Samba - File Sharing', G.smb ? 'Change ...' : 'Enable ...', 'network' );
 		}
 	} );
 } );
-$( '#mpdscribble' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.mpdscribbleset ) {
-		notify( 'Scrobbler', checked, 'lastfm' );
-		bash( [ 'mpdscribble', checked ] );
-	} else {
-		$( '#setting-mpdscribble' ).click();
-	}
-} );
 $( '#setting-mpdscribble' ).click( function() {
 	var data = G.mpdscribbleval ? G.mpdscribbleval.split( '\n' ) : [ '', '' ];
+	var user = data[ 0 ];
+	var pwd = data[ 1 ];
 	info( {
 		  icon          : 'lastfm'
 		, title         : 'Last.fm Scrobbler'
-		, textlabel     : 'Username'
-		, textvalue     : data[ 0 ]
+		, textlabel     : 'User'
+		, textvalue     : user
 		, passwordlabel : 'Password'
 		, preshow       : function() {
-			$( '#infoPasswordBox' ).val( data[ 1 ] );
+			$( '#infoPasswordBox' ).val( pwd );
+			// verify changes
+			if ( G.mpdscribble ) {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#infoTextBox, #infoPasswordBox' ).keyup( function() {
+					var changed = $( '#infoTextBox' ).val() !== user || $( '#infoPasswordBox' ).val() !== pwd;
+					$( '#infoOk' ).toggleClass( 'disabled', !changed );
+				} );
+			}
 		}
 		, cancel        : function() {
-			if ( !G.mpdscribbleset ) $( '#mpdscribble' ).prop( 'checked', 0 );
+			$( '#mpdscribble' ).prop( 'checked', G.mpdscribble );
 		}
 		, ok            : function() {
-			G.mpdscribbleset = $( '#infoTextBox' ).val().replace( /(["&()\\])/g, '\$1' );
+			var user = $( '#infoTextBox' ).val().replace( /(["&()\\])/g, '\$1' );
 			var password = $( '#infoPasswordBox' ).val().replace( /(["&()\\])/g, '\$1' );
-			notify( 'Scrobbler', G.mpdscribble ? 'Change ...' : 'Enable ...', 'lastfm' );
-			bash( [ 'mpdscribbleset', G.mpdscribbleset, password ], function( std ) {
+			bash( [ 'mpdscribbleset', user, password ], function( std ) {
 				if ( std == -1 ) {
 					info( {
 						  icon    : 'lastfm'
 						, title   : 'Last.fm Scrobbler'
 						, message : 'Last.fm Login failed.'
 					} );
+					$( '#mpdscribble' ).prop( 'checked', 0 );
 				}
-		} );
+			} );
+			notify( 'Scrobbler', G.mpdscribble ? 'Change ...' : 'Enable ...', 'lastfm' );
 		}
 	} );
-} );
-$( '#login' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.loginset ) {
-		notify( 'Password Login', checked, 'key' );
-		bash( [ 'login', checked ] );
-	} else {
-		$( '#setting-login' ).click();
-	}
 } );
 $( '#setting-login' ).click( function() {
 	info( {
 		  icon          : 'lock'
-		, title         : 'Change Password'
+		, title         : 'Password Login'
+		, message       : 'Change password:'
 		, passwordlabel : ( G.loginset ? [ 'Existing', 'New' ] : 'Password' )
 		, pwdrequired   : 1
 		, cancel        : function() {
-			if ( !G.loginset ) $( '#login' ).prop( 'checked', 0 );
+			$( '#login' ).prop( 'checked', G.login );
 		}
 		, ok            : function() {
 			var password = $( '#infoPasswordBox' ).val();
@@ -334,75 +319,69 @@ $( '#setting-login' ).click( function() {
 			}, function( std ) {
 				info( {
 					  icon    : 'lock'
-					, title   : 'Change Password'
+					, title   : 'Password Login'
 					, nox     : 1
 					, message : ( std ? 'Password changed.' : 'Wrong existing password.' )
 				} );
+				$( '#login' ).prop( 'checked', G.login );
 			} );
 		}
 	} );
 } );
-$( '#autoplay' ).click( function() {
-	G.autoplay = $( this ).prop( 'checked' );
-	notify( 'Play on Startup', G.autoplay, 'refresh-play' );
-	bash( [ 'autoplay', G.autoplay ] );
-} );
-$( '#hostapd' ).click( function() {
+$( '#hostapdchk' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
-	if ( !G.hostapd && G.wlanconnect && ( checked || !G.hostapdset ) ) {
+	if ( !G.hostapd && G.wlanconnect && checked ) {
 		info( {
 			  icon      : 'network'
 			, title     : 'RPi Access Point'
 			, message   : '<wh>Wi-Fi is currently connected.</wh>'
 						 +'<br>Disconnect and continue?'
 			, cancel    : function() {
-				if ( !G.hostapd ) $( '#hostapd' ).prop( 'checked', 0 );
+				$( '#hostapd, #hostapdchk' ).prop( 'checked', 0 );
 			}
 			, ok        : function() {
-				if ( G.hostapdset ) {
-					notify( 'RPi Access Point', checked, 'wifi-3' );
-					bash( [ 'hostapd', checked, G.hostapdip ] );
-				} else {
-					$( '#setting-hostapd' ).click();
-				}
+				$( '#hostapd' ).click();
 			}
 		} );
 	} else {
-		if ( G.hostapdset ) {
-			notify( 'RPi Access Point', checked, 'wifi-3' );
-			bash( [ 'hostapd', checked, G.hostapdip ] );
-		} else {
-			$( '#setting-hostapd' ).click();
-		}
+		$( '#hostapd' ).click();
 	}
 } );
 $( '#setting-hostapd' ).click( function() {
 	info( {
 		  icon         : 'network'
 		, title        : 'RPi Access Point Settings'
-		, message      : 'Password - at least 8 characters'
+		, message      : 'Password - 8 characters or more'
 		, textlabel    : [ 'Password', 'IP' ]
 		, textvalue    : [ G.hostapdpwd, G.hostapdip ]
 		, textrequired : [ 0, 1 ]
+		, preshow       : function() {
+			// verify changes + values
+			if ( G.hostapd ) {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#infoTextBox, #infoTextBox1' ).keyup( function() {
+					var pwd = $( '#infoTextBox' ).val();
+					var changed = pwd.length > 7 && ( pwd !== G.hostapdpwd || $( '#infoTextBox1' ).val() !== G.hostapdip );
+					$( '#infoOk' ).toggleClass( 'disabled', !changed );
+				} );
+			} else { // verify values
+				$( '#infoTextBox' ).keyup( function() {
+					$( '#infoOk' ).toggleClass( 'disabled', $( '#infoTextBox' ).val().length < 8 );
+				} );
+			}
+		}
 		, cancel       : function() {
-			if ( !G.hostapdset ) $( '#hostapd' ).prop( 'checked', 0 );
+			$( '#hostapd' ).prop( 'checked', G.hostapd );
 		}
 		, ok           : function() {
+			var pwd = $( '#infoTextBox' ).val();
 			var ip = $( '#infoTextBox1' ).val();
-			var hostapdpwd = $( '#infoTextBox' ).val();
-			if ( ip === G.hostapdip && hostapdpwd === G.hostapdpwd ) return
-			
-			if ( hostapdpwd.length < 8 ) {
-				info( 'Password must be at least 8 characters.' );
-				return
-			}
-			
 			var ips = ip.split( '.' );
 			var ip3 = ips.pop();
 			var ip012 = ips.join( '.' );
 			var iprange = ip012 +'.'+ ( +ip3 + 1 ) +','+ ip012 +'.254,24h';
-			notify( 'RPi Access Point', 'Change ...', 'wifi-3' );
-			bash( [ 'hostapdset', iprange, ip, hostapdpwd ] );
+			bash( [ 'hostapdset', iprange, ip, pwd ] );
+			notify( 'RPi Access Point', G.hostapd ? 'Change ...' : 'Enable ...', 'wifi-3' );
 		}
 	} );
 } );

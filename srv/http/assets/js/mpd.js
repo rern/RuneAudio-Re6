@@ -11,7 +11,6 @@ function lines2line( lines ) {
 function setMixerType( mixertype ) {
 	var $output = $( '#audiooutput option:selected' );
 	var name = $output.text();
-	var cmd = [];
 	if ( mixertype === 'none' ) {
 		var card = $output.data( 'card' );
 		var hwmixer = $output.data( 'hwmixer' );
@@ -24,33 +23,26 @@ function setMixerType( mixertype ) {
 }
 refreshData = function() {
 	bash( '/srv/http/bash/mpd-data.sh', function( list ) {
-		G = list;
-		G.reboot = list.reboot ? list.reboot.split( '\n' ) : [];
-		if ( G.manualconf ) {
-			bash( 'cat /etc/mpd.conf', function( data ) {
-				$( '.container' ).css( 'padding-bottom', '30px' );
-				$( '#manualconf' ).prop( 'checked', 1 );
-				$( '#divmain, #mpdconf .fa-code' ).addClass( 'hide' );
-				$( '#setting-manualconf, #codemanualconf' ).removeClass( 'hide' );
-				$( '#codemanualconf' ).text( data );
-				codeToggle( 'mpd', 'status' );
-				showContent();
+		if ( list == -1 ) {
+			info( {
+				  icon    : 'mpd'
+				, title   : 'MPD Settings'
+				, message : '<i class="fa fa-warning"></i> No soundcards found.'
+				, ok      : function() {
+					location.href = '/';
+				}
 			} );
 			return
-			
-		} else {
-			$( '.container' ).css( 'padding-bottom', '' );
-			$( '#manualconf' ).prop( 'checked', 0 );
-			$( '#divmain, #mpdconf .fa-code' ).removeClass( 'hide' );
-			$( '#setting-manualconf, #codemanualconf' ).addClass( 'hide' );
-			$( '#codemanualconf' ).empty();
 		}
+		
+		var list2G = list2JSON( list );
+		if ( !list2G ) return
+		
 		var htmldevices = '';
 		$.each( G.devices, function() {
 			htmldevices += '<option '
 				+'value="'+ this.aplayname +'" '
 				+'data-card="'+ this.card +'" '
-				+'data-device="'+ this.device +'" '
 				+'data-device="'+ this.device +'" '
 			if ( this.mixercount ) {
 				htmldevices += 'data-hwmixer="'+ this.hwmixer +'" '
@@ -78,7 +70,8 @@ refreshData = function() {
 				return $this.text() === G.audiooutput && $this.val() === G.audioaplayname;
 			} ).prop( 'selected', true );
 		}
-		if ( $( '#audiooutput option:selected' ).data( 'hwmixer' ) ) {
+		var $selected = $( '#audiooutput option:selected' );
+		if ( $selected.data( 'hwmixer' ) ) {
 			var mixerhtml =  '<option value="none">Disable</option>'
 							+'<option value="hardware">DAC hardware</option>'
 							+'<option value="software">MPD software</option>';
@@ -88,9 +81,8 @@ refreshData = function() {
 							+'<option value="software">MPD software</option>';
 			$( '#hwmixertxt' ).hide();
 		}
-		var $selected = $( '#audiooutput option:selected' );
-		cmd.amixer = 'amixer -c '+ $( '#audiooutput option:selected' ).data( 'card' );
-		$( '#mixertype' ).html( mixerhtml ).val( $selected.data( 'mixertype' ) );
+		var mixertype = $selected.data( 'mixertype' );
+		$( '#mixertype' ).html( mixerhtml ).val( mixertype );
 		$( '#audiooutput, #mixertype' ).selectric( 'refresh' );
 		if ( $( '#mixertype' ).val() === 'hardware' && $selected.data( 'mixercount' ) > 1 ) {
 			$( '.hwmixer' ).removeClass( 'hide' );
@@ -98,12 +90,7 @@ refreshData = function() {
 			$( '.hwmixer' ).addClass( 'hide' );
 		}
 		$( '#divmixer' ).toggleClass( 'hide', $selected.data( 'hwmixer' ) === '' );
-		var $selected = $( '#audiooutput option:selected' );
-		if ( $( '#mixertype' ).val() === 'none'
-			&& G.crossfade === 0
-			&& G.normalization === false
-			&& G.replaygain === 'off'
-		) {
+		if ( mixertype === 'none' && !G.crossfade && !G.normalization && !G.replaygain ) {
 			G.novolume = true;
 		} else {
 			G.novolume = false;
@@ -132,10 +119,39 @@ refreshData = function() {
 		} );
 		resetLocal();
 		showContent();
-	}, 'json' );
+	} );
 }
 refreshData();
 //---------------------------------------------------------------------------------------
+$( '.enable' ).click( function() {
+	var idname = {
+		  buffer       : 'Custom Audio Buffer'
+		, bufferoutput : 'Custom Output Buffer'
+		, crossfade    : 'Crossfade'
+		, custom       : "User's Custom Settings"
+		, replaygain   : 'Replay Gain'
+		, soxr         : 'SoXR Custom Settings'
+	}
+	var id = this.id;
+	if ( $( this ).prop( 'checked' ) ) {
+		$( '#setting-'+ id ).click();
+	} else {
+		bash( [ id +'disable' ] );
+		notify( idname[ id ], 'Disable ...', 'mpd' );
+	}
+} );
+$( '.enablenoset' ).click( function() {
+	var idname = {
+		  autoupdate    : 'Auto Update'
+		, ffmpeg        : 'FFmpeg Decoder'
+		, normalization : 'Normalization'
+	}
+	var checked = $( this ).prop( 'checked' );
+	var id = this.id;
+	notify( idname[ id ], checked, 'mpd' );
+	bash( [ id, checked ] );
+} );
+
 $( '#audiooutput, #mixertype' ).selectric();
 $( '.selectric-input' ).prop( 'readonly', 1 ); // fix - suppress screen keyboard
 var setmpdconf = '/srv/http/bash/mpd-conf.sh';
@@ -143,18 +159,17 @@ var warning = '<wh><i class="fa fa-warning fa-lg"></i>&ensp;Lower amplifier volu
 			 +'<br>(If current level in MPD is not 100%.)'
 			 +'<br><br>Signal level will be set to full amplitude to 0dB'
 			 +'<br>Too high volume can damage speakers and ears';
-$( '#audiooutput' ).on( 'selectric-change', function() {
+$( '#audiooutput' ).change( function() {
 	var $selected = $( this ).find( ':selected' );
-	G.audiooutput = $selected.text();
-	G.audioaplayname = $selected.val();
-	card = $selected.data( 'card' );
-	cmd.amixer = 'amixer -c '+ card;
+	var output = $selected.text();
+	var aplayname = $selected.val();
+	var card = $selected.data( 'card' );
 	var hwmixer = $selected.data( 'hwmixer' );
 	notify( 'Audio Output Device', 'Change ...', 'mpd' );
-	bash( [ 'audiooutput', G.audioaplayname, card, G.audiooutput, hwmixer ] );
-	$( '#divdop' ).toggleClass( 'hide', G.audioaplayname.slice( 0, 7 ) === 'bcm2835' );
+	aplayname = output !== G.usbdac ? aplayname : '';
+	bash( [ 'audiooutput', aplayname, card, output, hwmixer ] );
 } );
-$( '#mixertype' ).on( 'selectric-change', function() {
+$( '#mixertype' ).change( function() {
 	var mixertype = $( this ).val();
 	if ( mixertype === 'none' ) {
 		info( {
@@ -180,7 +195,7 @@ $( '#setting-mixertype' ).click( function() { // hardware mixer
 	var hwmixer = $selectedoutput.data( 'hwmixer' );
 	var select = $selectedoutput.data( 'mixermanual' ) ? { 'Auto select': 'auto' } : {};
 	bash( [ 'amixer', card ], function( data ) {
-		var devices = data.slice( 0, -1 ).split( '\n' );
+		var devices = data.split( '\n' );
 		devices.forEach( function( val ) {
 			select[ val ] = val;
 		} );
@@ -192,9 +207,10 @@ $( '#setting-mixertype' ).click( function() { // hardware mixer
 			, selectlabel : 'Device'
 			, select      : select
 			, checked     : hwmixer
+			, boxwidth    : 280
 			, preshow     : function() {
 				$( '#infoOk' ).addClass( 'disabled' );
-				$( '#infoSelectBox' ).on( 'selectric-change', function() {
+				$( '#infoSelectBox' ).change( function() {
 					$( '#infoOk' ).toggleClass( 'disabled', $( this ).val() === hwmixer );
 				} );
 			}
@@ -207,48 +223,37 @@ $( '#setting-mixertype' ).click( function() { // hardware mixer
 				bash( [ 'mixerhw', name, mixer, mixermanual, card ] );
 			}
 		} );
-	}, 'json' );
+	} );
 } );
 $( '#novolume' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( checked ) {
+		var $output = $( '#audiooutput option:selected' );
 		info( {
 			  icon    : 'volume'
-			, title   : 'Mixer Control'
+			, title   : 'No Volume'
 			, message : warning
 			, ok      : function() {
-				G.crossfade === 0;
-				G.normalization === false;
-				G.replaygain === 'off';
-				var name = $( '#audiooutput option:selected' ).text();
 				notify( 'No Volume', 'Enable ...', 'mpd' );
-				bash( [ 'novolume', name ] );
+				bash( [ 'novolume', $output.text(), $output.data( 'card' ), $output.data( 'hwmixer' ) ] );
 			}
 		} );
 	} else {
 		info( {
 			  icon    : 'volume'
-			, title   : 'Mixer Control'
-			, message : 'Enable any volume features - disable <wh>No volume</wh>.'
+			, title   : 'No Volume'
+			, message : '<wh>No volume</wh> will be disabled on:'
+						+'<br>&emsp; &bull; Select a Mixer Control'
+						+'<br>&emsp; &bull; Enable any Volume options'
+			, msgalign : 'left'
 		} );
 		$( this ).prop( 'checked', 1 );
 	}
 } );
 $( '#dop' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
-	var $selected = $( '#audiooutput option:selected' );
-	var name = $selected.text();
 	notify( 'DSP over PCM', checked, 'mpd' );
-	bash( [ 'dop', checked, name ] );
-} );
-$( '#crossfade' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.crossfadeset ) {
-		notify( 'Crossfade', checked, 'mpd' );
-		checked && bash( [ 'crossfadeset', G.crossfadeset ] ) || bash( [ 'crossfadedisable' ] );
-	} else {
-		$( '#setting-crossfade' ).click();
-	}
+	bash( [ 'dop', checked, $( '#audiooutput option:selected' ).text() ] );
 } );
 $( '#setting-crossfade' ).click( function() {
 	info( {
@@ -256,69 +261,53 @@ $( '#setting-crossfade' ).click( function() {
 		, title   : 'Crossfade'
 		, message : 'Seconds:'
 		, radio   : { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5 }
-		, checked : G.crossfadeset || 1
-		, cancel    : function() {
-			if ( !G.crossfadeset ) $( '#crossfade' ).prop( 'checked', 0 );
-		}
-		, ok      : function() {
-			crossfadeset = $( 'input[name=inforadio]:checked' ).val();
-			if ( crossfadeset !== G.crossfadeset ) {
-				notify( 'Crossfade', 'Change ...', 'mpd' );
-				bash( [ 'crossfadeset', crossfadeset ] );
+		, checked : G.crossfadeval || 1
+		, preshow       : function() {
+			// verify changes
+			if ( G.crossfade ) {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#infoRadio' ).change( function() {
+					$( '#infoOk' ).toggleClass( 'disabled', +$( this ).find( 'input:checked' ).val() === G.crossfadeval );
+				} );
 			}
 		}
+		, cancel    : function() {
+			$( '#crossfade' ).prop( 'checked', G.crossfade );
+		}
+		, ok      : function() {
+			crossfadeval = $( 'input[name=inforadio]:checked' ).val();
+			bash( [ 'crossfadeset', crossfadeval ] );
+			notify( 'Crossfade', G.crossfade ? 'Change ...' : 'Enable ...', 'mpd' );
+		}
 	} );
-} );
-$( '#normalization' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	notify( 'Normalization', checked, 'mpd' );
-	bash( [ 'normalization', checked ] );
-} );
-$( '#replaygain' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.replaygainset ) {
-		notify( 'Replay Gain', checked, 'mpd' );
-		checked && bash( [ 'replaygainset', G.replaygainset ] ) || bash( [ 'replaygaindisable' ] );
-	} else {
-		$( '#setting-replaygain' ).click();
-	}
 } );
 $( '#setting-replaygain' ).click( function() {
 	info( {
 		  icon    : 'mpd'
 		, title   : 'Replay Gain'
 		, radio   : { Auto: 'auto', Album: 'album', Track: 'track' }
-		, checked : G.replaygainset || 'auto'
+		, checked : G.replaygainval || 'auto'
+		, preshow       : function() {
+			// verify changes
+			if ( G.replaygain ) {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#infoRadio' ).change( function() {
+					$( '#infoOk' ).toggleClass( 'disabled', $( this ).find( 'input:checked' ).val() === G.replaygainval );
+				} );
+			}
+		}
 		, cancel  : function() {
-			if ( !G.replaygainset ) $( '#replaygain' ).prop( 'checked', 0 );
+			$( '#replaygain' ).prop( 'checked', G.replaygain );
 		}
 		, ok      : function() {
-			replaygainset = $( 'input[name=inforadio]:checked' ).val();
-			if ( replaygainset !== G.replaygainset ) {
-				notify( 'Replay Gain', 'Change ...', 'mpd' );
-				bash( [ 'replaygainset', replaygainset ] );
-			}
+			replaygainval = $( 'input[name=inforadio]:checked' ).val();
+			bash( [ 'replaygainset', replaygainval ] );
+			notify( 'Replay Gain', G.replaygain ? 'Change ...' : 'Enable ...', 'mpd' );
 		}
 	} );
 } );
-$( '#autoupdate' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	notify( 'Auto Update', checked, 'mpd' );
-	bash( [ 'autoupdate', checked ] );
-} );
-$( '#ffmpeg' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	notify( 'FFmpeg Decoder', checked, 'mpd' );
-	bash( [ 'ffmpeg', checked ] );
-} );
-$( '#buffer' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.bufferset ) {
-		notify( 'Custom Audio Buffer', checked, 'mpd' );
-		checked && bash( [ 'bufferset', G.bufferset ] ) || bash( [ 'bufferdisable' ] );
-	} else {
-		$( '#setting-buffer' ).click();
-	}
+$( '#filetype' ).click( function() {
+	$( '#divfiletype' ).toggleClass( 'hide' );
 } );
 $( '#setting-buffer' ).click( function() {
 	info( {
@@ -327,37 +316,24 @@ $( '#setting-buffer' ).click( function() {
 		, message   : '<code>audio_buffer_size</code> (default: 4096)'
 		, textlabel : 'Size <gr>(kB)</gr>'
 		, textvalue : G.bufferval || 4096
-		, cancel    : function() {
-			if ( !G.bufferset ) $( '#buffer' ).prop( 'checked', 0 );
-		}
-		, ok        : function() {
-			var bufferset = $( '#infoTextBox' ).val().replace( /\D/g, '' );
-			if ( bufferset < 4097 ) {
-				info( {
-					  icon    : 'mpd'
-					, title   : 'Audio Buffer'
-					, message : '<i class="fa fa-warning fa-lg wh"></i> Warning<br>'
-							   +'<br>Audio buffer must be greater than <wh>4096 kB</wh>.'
-					, ok      : function() {
-						$( '#setting-buffer' ).click();
-					}
+		, preshow       : function() {
+			// verify changes
+			if ( G.buffer ) {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#infoTextBox' ).keyup( function() {
+					$( '#infoOk' ).toggleClass( 'disabled', +$( this ).val() === G.bufferval );
 				} );
-				if ( !G.bufferset ) $( '#buffer' ).prop( 'checked', 0 );
-			} else if ( bufferset !== G.bufferset ) {
-				notify( 'Audio Buffer', 'Change ...', 'mpd' );
-				bash( [ 'bufferset', bufferset ] );
 			}
 		}
+		, cancel    : function() {
+			$( '#buffer' ).prop( 'checked', G.buffer );
+		}
+		, ok        : function() {
+			var bufferval = $( '#infoTextBox' ).val().replace( /\D/g, '' );
+			bash( [ 'bufferset', bufferval ] );
+			notify( 'Custom Audio Buffer', G.buffer ? 'Change ...' : 'Enable ...', 'mpd' );
+		}
 	} );
-} );
-$( '#bufferoutput' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.bufferoutputset ) {
-		notify( 'Custom Output Buffer', checked, 'mpd' );
-		checked && bash( [ 'bufferoutputset', G.bufferoutputset ] ) && bash( [ 'bufferoutputdisable' ] );
-	} else {
-		$( '#setting-bufferoutput' ).click();
-	}
 } );
 $( '#setting-bufferoutput' ).click( function() {
 	info( {
@@ -366,40 +342,24 @@ $( '#setting-bufferoutput' ).click( function() {
 		, message   : '<code>max_output_buffer_size</code> (default: 8192)'
 		, textlabel : 'Size <gr>(kB)</gr>'
 		, textvalue : G.bufferoutputval || 8192
-		, cancel    : function() {
-			if ( !G.bufferoutputset ) $( '#bufferoutput' ).prop( 'checked', 0 );
-		}
-		, ok        : function() {
-			var bufferoutputset = $( '#infoTextBox' ).val().replace( /\D/g, '' );
-			if ( bufferoutputset < 8192 ) {
-				info( {
-					  icon    : 'mpd'
-					, title   : 'Custom Output Buffer'
-					, message : '<i class="fa fa-warning fa-lg wh"></i> Warning<br>'
-							   +'<br>Output buffer must be greater than <wh>8192 kB</wh>.'
-					, ok      : function() {
-						$( '#setting-bufferoutput' ).click();
-					}
+		, preshow       : function() {
+			// verify changes
+			if ( G.bufferoutput ) {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#infoTextBox' ).keyup( function() {
+					$( '#infoOk' ).toggleClass( 'disabled', +$( this ).val() === G.bufferoutputval );
 				} );
-				if ( !G.bufferoutputset ) $( '#bufferoutput' ).prop( 'checked', 0 );
-			} else if ( bufferoutputset !== G.bufferoutputset ) {
-				notify( 'Output Buffer', 'Change ...', 'mpd' );
-				bash( [ 'bufferoutputset', bufferoutputset ] );
 			}
 		}
+		, cancel    : function() {
+			$( '#bufferoutput' ).prop( 'checked', G.bufferoutput );
+		}
+		, ok        : function() {
+			var bufferoutputval = $( '#infoTextBox' ).val().replace( /\D/g, '' );
+			bash( [ 'bufferoutputset', bufferoutputval ] );
+			notify( 'Custom Output Buffer', G.bufferoutput ? 'Change ...' : 'Enable ...', 'mpd' );
+		}
 	} );
-} );
-$( '#filetype' ).click( function() {
-	$( '#divfiletype' ).toggleClass( 'hide' );
-} );
-$( '#soxr' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.soxrset ) {
-		notify( 'Custom SoX Resampler', checked, 'mpd' );
-		bash( [ 'soxr', checked ] );
-	} else {
-		$( '#setting-soxr' ).click();
-	}
 } );
 var soxrinfo = heredoc( function() { /*
 	<div id="infoText" class="infocontent">
@@ -450,77 +410,79 @@ var soxrinfo = heredoc( function() { /*
 $( '#setting-soxr' ).click( function() {
 	var defaultval = [ 20, 50, 91.3, 100, 0, 0, ];
 	info( {
-		  icon        : 'mpd'
-		, title       : 'Custom SoX Resampler'
-		, content     : soxrinfo
-		, nofocus     : 1
-		, preshow     : function() {
-			var soxrval = G.soxrval ? G.soxrval.split( ' ' ) : defaultval;
-			$( '#infoSelectBox option[value='+ soxrval[ 0 ] +']' ).prop( 'selected', 1 );
-			$( '#infoSelectBox1 option[value='+ soxrval[ 5 ] +']' ).prop( 'selected', 1 );
+		  icon          : 'mpd'
+		, title         : 'SoXR Custom Settings'
+		, content       : soxrinfo
+		, nofocus       : 1
+		, preshow       : function() {
+			var val = G.soxrval ? G.soxrval.split( ' ' ) : defaultval;
+			$( '#infoSelectBox option[value='+ val[ 0 ] +']' ).prop( 'selected', 1 );
+			$( '#infoSelectBox1 option[value='+ val[ 5 ] +']' ).prop( 'selected', 1 );
 			for ( i = 1; i < 5; i++ ) {
-				$( '#infoTextBox'+ i ).val( soxrval[ i ] );
+				$( '#infoTextBox'+ i ).val( val[ i ] );
 			}
 			setTimeout( function() {
-			$( '#extra .selectric, #extra .selectric-wrapper' ).css( 'width', '185px' );
-			$( '#extra .selectric-items' ).css( 'min-width', '185px' );
-			}, 0 );
-			$( '#infoButton' )
-				.off( 'click' )
-				.click( function() {
-					for ( i = 1; i < 5; i++ ) {
-						$( '#infoTextBox'+ i ).val( defaultval[ i ] );
-					}
+				$( '#extra .selectric, #extra .selectric-wrapper' ).css( 'width', '185px' );
+				$( '#extra .selectric-items' ).css( 'min-width', '185px' );
+			}, 30 );
+			// // verify changes + values
+			if ( G.soxr ) {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#infoSelectBox, #infoSelectBox1' ).change( function() {
+					var soxrval = $( '#infoSelectBox' ).val();
+					for ( i = 1; i < 5; i++ ) soxrval += ' '+ $( '#infoTextBox'+ i ).val();
+					soxrval += ' '+ $( '#infoSelectBox1' ).val();
+					$( '#infoOk' ).toggleClass( 'disabled', soxrval === G.soxrval );
 				} );
+				$( '.infoinput' ).keyup( function() {
+					var soxrval = $( '#infoSelectBox' ).val();
+					for ( i = 1; i < 5; i++ ) soxrval += ' '+ $( '#infoTextBox'+ i ).val();
+					soxrval += ' '+ $( '#infoSelectBox1' ).val();
+					var v = soxrval.split( ' ' );
+					var errors = false;
+					if (   ( v[ 1 ] < 0 || v[ 1 ] > 100 )
+						|| ( v[ 2 ] < 0 || v[ 2 ] > 100 )
+						|| ( v[ 3 ] < 100 || v[ 3 ] > 150 )
+						|| ( v[ 4 ] < 0 || v[ 4 ] > 30 )
+					) errors = true;
+					$( '#infoOk' ).toggleClass( 'disabled', soxrval === G.soxrval || errors );
+				} );
+			} else { // verify values
+				$( '.infoinput' ).keyup( function() {
+					var soxrval = 0;
+					for ( i = 1; i < 5; i++ ) soxrval += ' '+ $( '#infoTextBox'+ i ).val();
+					var v = soxrval.split( ' ' );
+					var errors = false;
+					if (   ( v[ 1 ] < 0 || v[ 1 ] > 100 )
+						|| ( v[ 2 ] < 0 || v[ 2 ] > 100 )
+						|| ( v[ 3 ] < 100 || v[ 3 ] > 150 )
+						|| ( v[ 4 ] < 0 || v[ 4 ] > 30 )
+					) errors = true;
+					$( '#infoOk' ).toggleClass( 'disabled', errors );
+				} );
+			}
 		}
-		, boxwidth    : 70
-		, buttonlabel : '<i class="fa fa-undo"></i>Default'
-		, buttoncolor : '#de810e'
-		, button      : 1
-		, buttonwidth : 1
-		, cancel      : function() {
-			if ( !G.soxrset ) $( '#soxr' ).prop( 'checked', 0 );
-		}
-		, ok          : function() {
-			var args = [ $( '#infoSelectBox' ).val() ];
+		, boxwidth      : 70
+		, buttonlabel   : '<i class="fa fa-undo"></i>Default'
+		, buttoncolor   : '#de810e'
+		, button        : function() {
 			for ( i = 1; i < 5; i++ ) {
-				args.push( Number( $( '#infoTextBox'+ i ).val() ) );
+				$( '#infoTextBox'+ i ).val( defaultval[ i ] );
 			}
-			args.push( $( '#infoSelectBox1' ).val() );
-			if ( args.toString().replace( /,/g, ' ' ) === G.soxrval ) return
-			
-			var errors = '';
-			if ( args[ 1 ] < 0 || args[ 1 ] > 100 ) errors += '<br><w>Phase Response</w> is not 1-100';
-			if ( args[ 2 ] < 0 || args[ 2 ] > 100 ) errors += '<br><w>Passband End</w> is not 1-100<br>';
-			if ( args[ 3 ] < 100 || args[ 3 ] > 150 ) errors += '<br><w>Stopband Begin</w> is not 100-150';
-			if ( args[ 4 ] < 0 || args[ 4 ] > 30 ) errors += '<br><w>Attenuation</w> is not 0-30<br>';
-			if ( errors ) {
-				info( {
-					  icon    : 'mpd'
-					, title   : 'Custom SoX Resampler'
-					, message : '<i class="fa fa-warning fa-lg wh"></i> Warning<br>'
-							   + errors
-					, ok      : function() {
-						$( '#setting-soxr' ).click();
-					}
-				} );
-				return
-			}
-			
-			args.unshift( 'soxrset' );
-			notify( 'Custom SoX Resampler', 'Change ...', 'mpd' );
-			bash( args );
+		}
+		, buttonnoreset : 1
+		, buttonwidth   : 1
+		, cancel        : function() {
+			$( '#soxr' ).prop( 'checked', G.soxr );
+		}
+		, ok            : function() {
+			var soxrval = $( '#infoSelectBox' ).val();
+			for ( i = 1; i < 5; i++ ) soxrval += ' '+ $( '#infoTextBox'+ i ).val();
+			soxrval += ' '+ $( '#infoSelectBox1' ).val();
+			bash( [ 'soxrset', soxrval ] );
+			notify( 'SoXR Custom Settings', G.soxr ? 'Change ...' : 'Enable ...', 'mpd' );
 		}
 	} );
-} );
-$( '#custom' ).click( function() {
-	var checked = $( this ).prop( 'checked' );
-	if ( G.customset ) {
-		notify( "User's Custom Settings", checked, 'mpd' );
-		bash( [ 'custom', checked ] );
-	} else {
-		$( '#setting-custom' ).click();
-	}
 } );
 var custominfo = heredoc( function() { /*
 	<p class="infomessage msg">
@@ -546,6 +508,8 @@ var custominfo = heredoc( function() { /*
 	</p>
 */ } );
 $( '#setting-custom' ).click( function() {
+	var valglobal, valoutput;
+	var output = $( '#audiooutput option:selected' ).text();
 	info( {
 		  icon     : 'mpd'
 		, title    : "User's Custom Settings"
@@ -553,8 +517,14 @@ $( '#setting-custom' ).click( function() {
 		, msgalign : 'left'
 		, boxwidth : 'max'
 		, preshow  : function() {
-			$( '#global' ).val( G.customglobal );
-			$( '#output' ).val( G.customoutput );
+			bash( [ 'customgetglobal' ], function( data ) { // get directly to keep white spaces
+				valglobal = data || '';
+				bash( [ 'customgetoutput', output ], function( data ) {
+					valoutput = data || '';
+					$( '#global' ).val( valglobal );
+					$( '#output' ).val( valoutput );
+				} );
+			} );
 			$( '.msg' ).css( {
 				  width          : '100%'
 				, margin         : 0
@@ -563,24 +533,25 @@ $( '#setting-custom' ).click( function() {
 			} );
 			$( '.msg, #global, #output' ).css( 'font-family', 'Inconsolata' );
 			$( '#output' ).css( 'padding-left', '39px' )
+			// // verify changes
+			if ( G.custom ) {
+				$( '#infoOk' ).addClass( 'disabled' );
+				$( '#global, #output' ).keyup( function() {
+					var changed = $( '#global' ).val() !== valglobal || $( '#output' ).val() !== valoutput;
+					$( '#infoOk' ).toggleClass( 'disabled', !changed );
+				} );
+			}
 		}
 		, cancel   : function() {
-			if ( !G.customset ) $( '#custom' ).prop( 'checked', 0 );
+			$( '#custom' ).prop( 'checked', G.custom );
 		}
 		, ok       : function() {
 			var customglobal = lines2line( $( '#global' ).val() );
 			var customoutput = lines2line( $( '#output' ).val() );
-			if ( customglobal !== G.customglobal || customoutput !== G.customoutput ) {
-				var file = '/srv/http/data/system/mpd-custom';
-				notify( "User's Custom Settings", 'Change ...', 'mpd' );
-				bash( [ 'customset', customglobal, customoutput ] );
-			}
+			bash( [ 'customset', customglobal, customoutput, output ] );
+			notify( "User's Custom Settings", G.custom ? 'Change ...' : 'Enable ...', 'mpd' );
 		}
 	} );
-} );
-$( '#setting-manualconf' ).click( function() {
-	notify( 'Manual Configure', 'Change ...', 'mpd' );
-	bash( [ 'manualconfsave', $( '#codemanualconf' ).val() ] );
 } );
 $( '#mpdrestart' ).click( function() {
 	$this = $( this );
@@ -593,21 +564,6 @@ $( '#mpdrestart' ).click( function() {
 			bash( [ 'restart' ] );
 		}
 	} );
-} );
-$( '#manualconf' ).click( function() {
-	if ( $( this ).prop( 'checked' ) ) {
-		info( {
-			  icon    : 'mpd'
-			, title   : 'Manual Mode'
-			, message : 'Once enabled, any further changes must be reconfigured manually.'
-						+'<br><br>Continue?'
-			, ok      : function() {
-				bash( [ 'manualconf', true ] );
-			}
-		} );
-	} else {
-		bash( [ 'manualconf', false ] );
-	}
 } );
 
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

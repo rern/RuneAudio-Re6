@@ -7,7 +7,7 @@ readarray -t args <<< "$1"
 
 pushRefresh() {
 	sleep 1
-	curl -s -X POST http://127.0.0.1/pub?id=refresh -d '{ "page": "network" }'
+	curl -s -X POST http://127.0.0.1/pub?id=refresh -d '{ "page": "networks" }'
 }
 
 case ${args[0]} in
@@ -71,7 +71,7 @@ Hidden=yes
 Address=$ip/24
 Gateway=$gw
 "
-		echo "$profile" | "/etc/netctl/$ssid" > "$dirsystem/netctl-$ssid"
+		echo "$profile" | tee "/etc/netctl/$ssid" > "$dirsystem/netctl-$ssid"
 	fi
 	
 	ifconfig $wlan down

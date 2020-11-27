@@ -80,21 +80,13 @@ audio_output {
 	auto_format    "no"
 	mixer_type     "'$mixertype'"'
 	
-	if [[ $mixertype != none ]]; then
-		if [[ -n $mixermanual ]]; then # mixer_device must be card index
+	if [[ $mixertype == hardware ]]; then # mixer_device must be card index
+		[[ -n $mixermanual ]] && mixercontrol=$mixermanual || mixercontrol=$hwmixer
 ########
-			mpdconf+='
-	mixer_control  "'$mixermanual'"
+		mpdconf+='
+	mixer_control  "'$mixercontrol'"
 	mixer_device   "hw:'$card'"'
 		
-		elif [[ -n $hwmixer ]]; then
-			device=$( amixer -c $card scontrols | cut -d',' -f2 )
-########
-			mpdconf+='
-	mixer_control  "'$hwmixer'"
-	mixer_device   "hw:'$card'"'
-		
-		fi
 	fi
 	
 	if [[ $dop == 1 ]]; then
@@ -103,11 +95,12 @@ audio_output {
 	dop            "yes"'
 	
 	fi
-	
-	if [[ -e $dirsystem/mpd-custom && -e $dirsystem/mpd-custom-output ]]; then
+	mpdcustom=$dirsystem/mpd-custom
+	customfile="$mpdcustom-output-$name"
+	if [[ -e $mpdcustom && -e "$customfile" ]]; then
 ########
 		mpdconf+="
-$( cat $dirsystem/mpd-custom-output | tr ^ '\n' | sed 's/^/\t/' )"
+$( cat "$customfile" | tr ^ '\n' | sed 's/^/\t/' )"
 	
 	fi
 ########
