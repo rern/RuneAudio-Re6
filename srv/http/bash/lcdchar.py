@@ -8,12 +8,12 @@ file = open( '/srv/http/data/system/lcdcharset' )
 param = file.read().rstrip( '\n' ).split( ' ' )
 file.close()
 
-cols = param[ 0 ]
+cols = int( param[ 0 ] ) # string > integer
 rows = cols == 16 and 2 or 4
 charmap = param[ 1 ]
 
 if len( param ) > 2: # i2c
-    address = param[ 2 ]
+    address = int( param[ 2 ], 16 ) # base 16 string > integer ( can be hex or int )
     chip = param[ 3 ]
 
     from RPLCD.i2c import CharLCD
