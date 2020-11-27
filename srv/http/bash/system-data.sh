@@ -25,7 +25,7 @@ data='
 	, "cputemp"         : '$( /opt/vc/bin/vcgencmd measure_temp | sed 's/[^0-9.]//g' )'
 	, "startup"         : "'$( systemd-analyze | head -1 | cut -d' ' -f4,7 )'"
 	, "time"            : "'$( date +'%T %F' )'"
-	, "timezone"        : "'$( timedatectl | awk '/zone:/ {print $3}' | sed 's|/| · |' )'"
+	, "timezone"        : "'$( timedatectl | awk '/zone:/ {print $3}' )'"
 	, "uptime"          : "'$( uptime -p | tr -d 's,' | sed 's/up //; s/ day/d/; s/ hour/h/; s/ minute/m/' )'"
 	, "uptimesince"     : "'$( uptime -s | cut -d: -f1-2 )'"
 	, "undervoltage"    : '$undervoltage'
