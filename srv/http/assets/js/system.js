@@ -28,7 +28,7 @@ refreshData = function() {
 		if ( !list2G ) return
 		
 		var systemlabel =
-			 'RuneAudio<br>'
+			 'Version<br>'
 			+'Hardware<br>'
 			+'SoC<br>'
 			+'Output Device<br>'

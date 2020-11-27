@@ -51,7 +51,10 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 <div>
 <heading>On-board Devices<?=$help?></heading>
 <div id="divonboardaudio">
-	<div data-status="aplay" class="col-l icon status">Audio <i class="fa fa-code code"></i></div>
+	<div data-status="aplay" class="col-l double status">
+		<a>Audio
+		<br><gr><i class="fa fa-code"></i></gr></a><i class="fa fa-volume fa-lg"></i>
+	</div>
 	<div class="col-r">
 		<input id="onboardaudio" type="checkbox">
 		<div class="switchlabel" for="onboardaudio"></div>
@@ -63,7 +66,10 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 		$hwcode = substr( $code, -3, 2 );
 		if ( in_array( $hwcode, [ '0c', '08', '0e', '0d', '11' ] ) ) { # rpi with wireless
 			if ( file_exists( '/usr/bin/bluetoothctl' ) ) { ?>
-<div data-status="bluetoothctl" class="col-l icon status">Bluetooth <i class="fa fa-code code"></i></div>
+<div data-status="bluetoothctl" class="col-l double status">
+	<a>Bluetooth
+	<br><gr><i class="fa fa-code"></i></gr></a><i class="fa fa-bluetooth fa-lg"></i>
+</div>
 <div class="col-r">
 	<input id="bluetooth" class="enablenoset" type="checkbox">
 	<div class="switchlabel" for="bluetooth"></div>
@@ -77,7 +83,10 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 <pre id="codebluetoothctl" class="hide"></pre>
 		<?php $bluetooth = ', Bluetooth';
 			  } ?>
-<div data-status="ifconfig" class="col-l icon status">Wi-Fi <i class="fa fa-code code"></i></div>
+<div data-status="ifconfig" class="col-l double status">
+	<a>Wi-Fi
+	<br><gr><i class="fa fa-code"></i></gr></a><i class="fa fa-wifi-3 fa-lg"></i>
+</div>
 <div class="col-r">
 	<input id="wlan" type="checkbox">
 	<div class="switchlabel" for="wlan"></div>
@@ -91,7 +100,10 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 
 <div>
 <heading>GPIO Devices<?=$help?></heading>
-<div class="col-l">Audio (I²S)</div>
+<div class="col-l double status">
+	<a>Audio
+	<br><gr>I²S</gr></a><i class="fa fa-volume fa-lg"></i>
+</div>
 <div class="col-r i2s">
 	<div id="divi2smodulesw">
 		<input id="i2smodulesw" type="checkbox">
@@ -104,7 +116,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 </div>
 <div class="col-l double status">
 	<a>LCD - Character
-	<br><gr>HD44780</gr></a>
+	<br><gr>HD44780</gr></a><i class="fa fa-gpiopins fa-lg"></i>
 </div>
 <div class="col-r">
 	<input id="lcdchar" type="checkbox">
@@ -119,7 +131,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 </div>
 <div class="col-l double status">
 	<a>LCD - TFT
-	<br><gr>3.5" 420x320</gr></a>
+	<br><gr>3.5" 420x320</gr></a><i class="fa fa-gpiopins fa-lg"></i>
 </div>
 <div class="col-r">
 	<input id="lcd" class="enablenoset" type="checkbox">
@@ -132,7 +144,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 </div>
 <div class="col-l double status">
 	<a>Relays
-	<br><gr>RPI.GPIO</gr></a>
+	<br><gr>RPI.GPIO</gr></a><i class="fa fa-gpio fa-lg"></i>
 </div>
 <div class="col-r">
 	<input id="relays" class="enablenoset" type="checkbox">
@@ -147,12 +159,18 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 
 <div>
 <heading>Environment<?=$help?></heading>
-<div class="col-l">Name</div>
+<div class="col-l double">
+	<a>Name
+	<br><gr>hostname</gr></a><i class="fa fa-plus-r fa-lg"></i>
+</div>
 <div class="col-r">
 	<input type="text" id="hostname" readonly>
 	<span class="help-block hide">Name for Renderers, Streamers, RPi access point<?=$bluetooth?> and system hostname.</span>
 </div>
-<div class="col-l">Timezone</div>
+<div class="col-l double">
+	<a>Timezone
+	<br><gr>NTP/RegDom</gr></a><i class="fa fa-stopwatch fa-lg"></i>
+</div>
 <div class="col-r">
 	<?=$selecttimezone?>
 	<i id="setting-regional" class="settingedit fa fa-gear"></i>
@@ -166,7 +184,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 </div>
 <div data-status="soundprofile" class="col-l icon double status">
 		<a>Sound Profile
-	<br><gr>kernel <i class="fa fa-code"></i></gr></a>
+	<br><gr>kernel <i class="fa fa-code"></i></gr></a><i class="fa fa-sliders fa-lg"></i>
 </div>
 <div class="col-r">
 	<input id="soundprofile" type="checkbox">
