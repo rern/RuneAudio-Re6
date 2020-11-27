@@ -379,7 +379,8 @@ px100 { width: 100px }
 	input[type=checkbox],
 	input[type=radio],
 	.infocheckbox label,
-	.inforadio label {
+	.inforadio label,
+	.fa-eye {
 		cursor: pointer;
 	}
 	.infobtn-primary:hover {
