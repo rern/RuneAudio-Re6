@@ -510,12 +510,12 @@ $( '#setting-soundprofile' ).click( function() {
 		, preshow   : function() {
 			$( '#infoRadio input' ).last().prop( 'disabled', 1 );
 			// verify changes + interactive values
-			if ( G.soundprofile ) $( '#infoOk' ).addClass( 'disabled' );
+			$( '#infoOk' ).addClass( 'disabled' );
 			$( '#infoRadio' ).change( function() {
 				var soundprofileval = $( '#infoRadio input:checked' ).val();
 				var val = soundprofileval.split( ' ' );
 				for ( i = 0; i < iL; i++ ) $( '.infoinput' ).eq( i ).val( val[ i ] );
-				if ( G.soundprofile ) $( '#infoOk' ).toggleClass( 'disabled', soundprofileval === textvalue );
+				$( '#infoOk' ).toggleClass( 'disabled', soundprofileval === textvalue );
 				
 			} );
 			$( '.infoinput' ).keyup( function() {
@@ -523,7 +523,7 @@ $( '#setting-soundprofile' ).click( function() {
 				for ( i = 1; i < iL; i++ ) soundprofileval += ' '+ $( '#infoTextBox'+ i ).val();
 				var checkedval = values.indexOf( soundprofileval ) !== -1 ? soundprofileval : 0;
 				$( '#infoRadio input' ).val( [ checkedval ] );
-				if ( G.soundprofile ) $( '#infoOk' ).toggleClass( 'disabled', soundprofileval === textvalue );
+				$( '#infoOk' ).toggleClass( 'disabled', soundprofileval === textvalue );
 			} );
 		}
 		, cancel    : function() {
