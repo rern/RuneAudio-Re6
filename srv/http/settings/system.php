@@ -116,7 +116,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 </div>
 <div class="col-l double status">
 	<a>LCD - Character
-	<br><gr>HD44780</gr></a><i class="fa fa-gpiopins fa-lg"></i>
+	<br><gr>HD44780</gr></a><i class="fa fa-lcdchar fa-lg"></i>
 </div>
 <div class="col-r">
 	<input id="lcdchar" type="checkbox">
@@ -131,7 +131,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 </div>
 <div class="col-l double status">
 	<a>LCD - TFT
-	<br><gr>3.5" 420x320</gr></a><i class="fa fa-gpiopins fa-lg"></i>
+	<br><gr>3.5" 420x320</gr></a><i class="fa fa-lcd fa-lg"></i>
 </div>
 <div class="col-r">
 	<input id="lcd" class="enablenoset" type="checkbox">

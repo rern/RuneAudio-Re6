@@ -49,6 +49,8 @@
 .fa-info-circle:before { content: "\f561" }
 .fa-lan:before { content: "\f552" }
 .fa-lastfm:before { content: "\f585" }
+.fa-lcd:before { content: "\f53C" }
+.fa-lcdchar:before { content: "\f53D" }
 .fa-library:before { content: "\f506" }
 .fa-list-ul:before { content: "\f508"; }
 .fa-lock:before { content: "\f573" }
