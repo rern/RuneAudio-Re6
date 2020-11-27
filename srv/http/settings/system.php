@@ -164,23 +164,17 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 		<br>Active regulatory domian may be reassigned by connected router.</p>
 	</span>
 </div>
-<div class="col-l double">
+<div data-status="soundprofile" class="col-l icon double status">
 		<a>Sound Profile
-	<br><gr>kernel</gr></a>
+	<br><gr>kernel <i class="fa fa-code"></i></gr></a>
 </div>
 <div class="col-r">
 	<input id="soundprofile" type="checkbox">
 	<div class="switchlabel" for="soundprofile"></div>
 	<i id="setting-soundprofile" class="setting fa fa-gear"></i>
-	<span class="help-block hide">Tweak system parameters:
-		<br><code>sysctl vm.swappiness=N</code>
-		<br><code>sysctl kernel.sched_latency_ns=NS</code>
-		<div id="eth0help">
-			<code>ip link set eth0 mtu BYTE</code>
-			<br><code>ip link set eth0 txqueuelen N</code>
-		</div>
-	</span>
+	<span class="help-block hide">Tweak kernel parameters for sound profile.</span>
 </div>
+<pre id="codesoundprofile" class="hide"></pre>
 </div>
 
 <div>

@@ -243,9 +243,16 @@ soundprofiledisable )
 	rm -f $dirsystem/soundprofile
 	pushRefresh
 	;;
+soundprofileget )
+	val=$( ifconfig eth0 | awk '/mtu/ {print "mtu = "$NF}' )$'\n'
+	val+=$( ifconfig eth0 | awk '/txqueuelen/ {print "txqueuelen = "$4}' )$'\n'
+	val+=$( sysctl vm.swappiness )$'\n'
+	val+=$( sysctl kernel.sched_latency_ns )
+	echo "$val"
+	;;
 soundprofileset )
 	values=${args[@]:1}
-	soundprofile $value
+	soundprofile "$values"
 	if [[ $values == '1500 1000 60 18000000' ]]; then
 		rm -f $dirsystem/soundprofile*
 	else

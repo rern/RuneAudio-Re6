@@ -1,3 +1,9 @@
+/* Enable with settings
+- Enable:     always pop-up settings.
+- Values:     extracted from actual setting files/data.
+- *set files: for restore
+*/
+
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 refreshData = function() { // system page: use resetLocal() to aviod delay

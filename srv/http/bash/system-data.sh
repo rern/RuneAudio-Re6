@@ -113,7 +113,10 @@ data+='
 	, "soc"             : "'$soc'"
 	, "soundprofile"    : '$( [[ -e $dirsystem/soundprofile ]] && echo true || echo false )'
 	, "soundprofileset" : '$( [[ -e $dirsystem/soundprofileset ]] && echo true || echo false )'
-	, "soundprofileval" : "'$( cat $dirsystem/soundprofileset 2> /dev/null )'"
+	, "soundlatency"    : '$( sysctl kernel.sched_latency_ns | awk '{print $NF}' )'
+	, "soundmtu"        : '$( ifconfig eth0 | awk '/mtu/ {print $NF}' )'
+	, "soundtxqueuelen" : '$( ifconfig eth0 | awk '/txqueuelen/ {print $4}' )'
+	, "soundswappiness" : '$( sysctl vm.swappiness | awk '{print $NF}' )'
 	, "sources"         : '$( /srv/http/bash/sources-data.sh )'
 	, "timezone"        : "'$timezone'"
 	, "version"         : "'$version'"

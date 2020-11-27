@@ -23,6 +23,7 @@ var cmd = {
 	, mpdconf      : 'cat /etc/mpd.conf'
 	, mount        : 'mount | grep " / \\|MPD"'
 	, netctl       : '/srv/http/bash/system.sh statusnetctl'
+	, soundprofile : '/srv/http/bash/system.sh soundprofileget'
 }
 var services = [ 'hostapd', 'localbrowser', 'mpd', 'mpdscribble', 'shairport-sync', 'smb', 'snapclient', 'snapserver', 'spotifyd', 'upmpdcli' ];
 function codeToggle( id, target ) {
