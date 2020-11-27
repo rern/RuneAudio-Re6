@@ -16,9 +16,9 @@ function renderStatus() {
 	}
 	return G.cpuload
 		+'<br>'+ ( G.cputemp < 80 ? G.cputemp +' °C' : '<red>'+ warning + G.cputemp +' °C</red>' )
-		+'<br>'+ G.time
-		+'<br>'+ G.uptime
-		+'<br>'+ G.startup
+		+'<br>'+ G.time.replace( ' ', ' <gr>&bull;</gr> ' ) +'&emsp;<grw>'+ G.timezone +'</grw>'
+		+'<br>'+ G.uptime +'<span class="wide">&emsp;<gr>since '+ G.uptimesince.replace( ' ', ' &bull; ' ) +'</gr></span>'
+		+'<br>'+ G.startup.replace( ' ', ' <gr class="wide">(kernel)</gr> + ' ) +' <gr class="wide">(userspace)</gr>'
 		+ undervoltage
 }
 
@@ -72,10 +72,15 @@ refreshData = function() {
 					  +'&ensp;<i class="fa fa-album gr"></i>&ensp;'+ Number( counts[ 1 ] ).toLocaleString()
 					  +'&ensp;<i class="fa fa-artist gr"></i> '+ Number( counts[ 2 ] ).toLocaleString() +'</span>';
 		}
+		var soc = '<span class="wide">'+ G.soc +' <gr>&bull;</gr> </span>';
+		soc += G.rpi01 ? '' : '4 ';
+		soc += G.soccpu +' <gr>@</gr> ';
+		soc += G.socspeed < 1000 ? G.socspeed +'MHz' : G.socspeed / 1000 +'GHz';
+		soc += ' <gr>&bull;</gr> '+ G.socram;
 		$( '#system' ).html(
 			  '<i class="fa fa-plus-r gr" style="line-height: 20px;"></i> '+ G.version +' <gr>'+ G.versionui +'</gr>'+ bullet + G.hostname +'<br>'
-			+ G.hardware +'<br>'
-			+ G.soc +'<br>'
+			+ G.rpimodel.replace( /(Rev.*)$/, '<gr>$1</gr>' ) +'<br>'
+			+ soc +'<br>'
 			+ '<span id="output">'+ G.audiooutput +'</span><br>'
 			+ G.kernel +'<br>'
 			+ G.mpd + mpdstats
