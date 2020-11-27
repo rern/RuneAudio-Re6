@@ -501,7 +501,7 @@ $( '#setting-soundprofile' ).click( function() {
 	var values = Object.values( radio );
 	var iL = textlabel.length;
 	info( {
-		  icon      : 'volume'
+		  icon      : 'sliders'
 		, title     : 'Kernel Sound Profile'
 		, textlabel : textlabel
 		, textvalue : textvalue.split( ' ' )
