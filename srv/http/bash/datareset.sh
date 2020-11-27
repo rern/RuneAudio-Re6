@@ -114,6 +114,9 @@ sed -i 's/#NTP=.*/NTP=pool.ntp.org/' /etc/systemd/timesyncd.conf
 sed -i 's/".*"/"00"/' /etc/conf.d/wireless-regdom
 timedatectl set-timezone UTC
 
+# character lcd
+echo '20 A00 0x27 PCF8574' > $dirsystem/lcdcharset
+
 # gpio
 echo '{
   "name": {

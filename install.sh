@@ -8,9 +8,25 @@ installstart "$1"
 
 getinstallzip
 
+dirsystem=/srv/http/data/system
+
 sed -i '/IgnorePkg.*linux-raspberrypi/ d' /etc/pacman.conf
 
-[[ ! -e /srv/http/bash/networks.sh ]] && rm -f /srv/http/data/system/{snapclient*,localbrowser*,smb*,mpdscribble*,login*,hostapd*,lcdchar*,soundprofile*,mpd-*}
+if [[ $( cat /srv/http/data/addons/rre6 ) < 20201123 ]]; then
+	rm -f $dirsystem/{lcdchar*,soundprofile*,snapclient*,localbrowser*,smb*,mpdscribble*,login*,hostapd*,mpd-*}
+	grep -q dtoverlay=tft35a /boot/config/txt && touch $dirsystem/lcd
+	grep -q 'dtparam=i2c_arm=on' /boot/config/txt && ! grep -q 'dtoverlay=tft35a' /boot/config/txt && touch $dirsystem/lcdchar
+	if [[ -e $dirsystem/lcdchar ]] ; then
+		grep '^cols\|^charmap\|^address\|^chip' /srv/http/bash/lcdchar.py | cut -d' ' -f3 | tr -d "'" > $dirsystem/lcdcharset
+	else
+		echo '20 A00 0x27 PCF8574' > $dirsystem/lcdcharset
+	fi
+	/srv/http/bash/system.sh soundprofileset$'\n18000000 60 1500 1000'
+	service=( snapclient localbrowser smb mpdscribble hostapd )
+	for service in snapclient localbrowser smb mpdscribble hostapd; do
+		systemctl -q is-active $service && touch $dirsystem/$service
+	done
+fi
 
 file=/etc/systemd/system/dnsmasq.service.d/override.conf
 if [[ ! -e $file ]]; then
@@ -34,10 +50,8 @@ BindsTo=wsdd.service" > $file
 	systemctl try-restart smb
 fi
 
-dirsystem=/srv/http/data/system
-
 # system
-mv /srv/http/data/system/{gpio,relays} &> /dev/null
+mv $dirsystem/{gpio,relays} &> /dev/null
 files=$dirsystem/{ntp,wlanregdom}
 if [[ -e $dirsystem/ntp ]]; then
 	cat $files > $dirsystem/regional
