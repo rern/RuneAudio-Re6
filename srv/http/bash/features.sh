@@ -13,11 +13,10 @@ pushRefresh() {
 }
 featureSet() {
 	[[ -n $datarestore ]] && exit
-	
 	feature=$1
-	set=$2
+	shift
 	$dirbash/features.sh $feature$'\n'true
-	printf '%s\n' $set > $dirsystem/${feature}set
+	printf '%s\n' $@ > $dirsystem/${feature}set
 	pushRefresh
 }
 rotate() {

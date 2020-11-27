@@ -104,7 +104,7 @@
 	<br><gr>localbrowser<?=$code?></gr></a><i class="fa fa-chromium fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="localbrowser" class="enablenoset" type="checkbox">
+	<input id="localbrowser" class="enable" type="checkbox">
 	<div class="switchlabel" for="localbrowser"></div>
 	<i id="setting-localbrowser" class="setting fa fa-gear"></i>
 	<span class="help-block hide">

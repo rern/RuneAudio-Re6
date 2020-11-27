@@ -50,11 +50,12 @@ refreshData();
 //---------------------------------------------------------------------------------------
 $( '.enable' ).click( function() {
 	var idname = {
-		  hostapd     : [ 'RPi Access Point',     'wifi-3' ]
-		, login       : [ 'Password Login',       'key' ]
-		, mpdscribble : [ 'Last.fm Scrobbler',    'lastfm' ]
-		, smb         : [ 'Samba - File Sharing', 'network' ]
-		, snapclient  : [ 'SnapClient Renderer',  'snapcast' ]
+		  hostapd      : [ 'RPi Access Point',     'wifi-3' ]
+		, localbrowser : [ 'Browser on RPi',       'chromium' ]
+		, login        : [ 'Password Login',       'key' ]
+		, mpdscribble  : [ 'Last.fm Scrobbler',    'lastfm' ]
+		, smb          : [ 'Samba - File Sharing', 'network' ]
+		, snapclient   : [ 'SnapClient Renderer',  'snapcast' ]
 	}
 	var id = this.id;
 	if ( $( this ).prop( 'checked' ) ) {
@@ -222,21 +223,6 @@ $( '#setting-localbrowser' ).click( function() {
 			var rotate    = $( 'input[name=inforadio]:checked' ).val();
 			var screenoff = $( '#infoTextBox' ).val() * 60;
 			var zoom = parseFloat( $( '#infoTextBox1' ).val() ) || 1;
-			if ( rotate !== '' && cursor === G.cursor && screenoff === '' && zoom === G.zoom ) { // rotate only
-				if ( G.lcd ) {
-					var degree = { CW: 0, NORMAL: 90, CCW: 180, UD: 270 }
-					bash( [ 'rotatelcd', degree[ rotate ] ] );
-				} else {
-					bash( [ 'rotate', rotate ] );
-				}
-				return
-			}
-			
-			if ( screenoff !== '' && cursor === G.cursor && rotate === '' && zoom === G.zoom ) { // screenoff only
-				bash( [ 'screenoff', screenoff ] );
-				return
-			}
-			
 			bash( [ 'localbrowserset', rotate, screenoff, cursor, zoom ] );
 			notify( 'Chromium - Browser on RPi', G.localbrowser ? 'Change ...' : 'Enable ...', 'chromium' );
 		}
