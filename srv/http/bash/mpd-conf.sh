@@ -138,11 +138,6 @@ fi
 
 echo "$mpdconf" > $mpdfile
 
-# set default card for bluetooth
-echo "\
-defaults.pcm.card $card
-defaults.ctl.card $card" > /etc/asound.conf
-
 systemctl restart mpd  # "restart" while not running = start + stop + start
 
 if [[ -e $dirsystem/updating ]]; then
@@ -166,7 +161,7 @@ if [[ $# -gt 0 && $1 != bt ]]; then
 			| grep -B1 'pvolume' \
 			| head -1 \
 			| cut -d"'" -f2 )
-		rm -f $usbdacfile*
+		rm -f $usbdacfile /etc/asound.conf
 	else
 		name=${Aname[@]: -1} # added usb dac = last one
 		card=${Acard[@]: -1}
@@ -175,6 +170,10 @@ if [[ $# -gt 0 && $1 != bt ]]; then
 		[[ $mixertype == 'none' && -n $hwmixer ]] && amixer -c $card sset "$hwmixer" 0dB
 		echo $aplayname > $usbdacfile # flag - active usb
 	fi
+	# set default card for bluetooth
+	echo "\
+defaults.pcm.card $card
+defaults.ctl.card $card" > /etc/asound.conf
 	
 	pushstream notify '{"title":"Audio Output","text":"'"$name"'","icon": "output"}'
 	
