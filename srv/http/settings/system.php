@@ -187,7 +187,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<br><gr>kernel <i class="fa fa-code"></i></gr></a><i class="fa fa-sliders fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="soundprofile" type="checkbox">
+	<input id="soundprofile" class="enable" type="checkbox">
 	<div class="switchlabel" for="soundprofile"></div>
 	<i id="setting-soundprofile" class="setting fa fa-gear"></i>
 	<span class="help-block hide">Tweak kernel parameters for sound profile.</span>
