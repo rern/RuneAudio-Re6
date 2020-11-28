@@ -71,7 +71,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<br><gr><i class="fa fa-code"></i></gr></a><i class="fa fa-bluetooth fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="bluetooth" class="enablenoset" type="checkbox">
+	<input id="bluetooth" type="checkbox">
 	<div class="switchlabel" for="bluetooth"></div>
 	<i id="setting-bluetooth" class="setting fa fa-gear"></i>
 	<span class="help-block hide">

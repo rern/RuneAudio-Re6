@@ -124,8 +124,7 @@ refreshData();
 //---------------------------------------------------------------------------------------
 $( '.enablenoset' ).click( function() {
 	var idname = {
-		  bluetooth : [ 'On-board Bluetooth', 'bluetooth' ]
-		, lcd       : [ 'TFT LCD',            'gear' ]
+		  lcd       : [ 'TFT LCD',            'gear' ]
 		, relays    : [ 'GPIO Relay',         'gpio' ]
 	}
 	var checked = $( this ).prop( 'checked' );
@@ -192,6 +191,14 @@ $( '#onboardaudio' ).click( function() {
 	} else {
 		rebootText( checked, 'on-board audio' );
 		bash( [ 'onboardaudio', checked, G.reboot.join( '\n' ) ] );
+	}
+} );
+$( '#bluetooth' ).click( function() {
+	if ( $( this ).prop( 'checked' ) ) {
+		$( '#setting-lcdchar' ).click();
+	} else {
+		bash( [ 'lcdchardisable' ] );
+		notify( 'On-board Bluetooth', 'Disable ...', 'bluetooth' );
 	}
 } );
 $( '#setting-bluetooth' ).click( function() {
