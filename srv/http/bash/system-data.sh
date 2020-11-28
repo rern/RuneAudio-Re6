@@ -11,19 +11,20 @@
 #    2nd B = Currently throttled
 #    3rd B = Arm frequency capped
 #    4th B = Under-voltage detected
-throttle=$( /opt/vc/bin/vcgencmd get_throttled )
-if [[ $throttle != 0x0 ]]; then
+undervoltage=false
+undervdetected=false
+throttled=$( /opt/vc/bin/vcgencmd get_throttled | cut -d= -f2 )
+if [[ $throttled != 0x0 ]]; then
 	D2B=( {0..1}{0..1}{0..1}{0..1} )
-	undervoltage=${throttle: -1}
-	[[ $( echo ${D2B[$undervoltage]} | cut -c4 ) == 1 ]] && undervoltage=true || undervoltage=false
-	undervdetected=${throttle: -5:1}
-	[[ $( echo ${D2B[$undervdetected]} | cut -c4 ) == 1 ]] && undervdetected=true || undervdetected=false
+	[[ $( echo ${D2B[${throttled: -1}]} | cut -c4 ) == 1 ]] && undervoltage=true
+	[[ $( echo ${D2B[${throttled: -5:1}]} | cut -c4 ) == 1 ]] && undervdetected=true
 fi
 
 data='
 	  "cpuload"         : "'$( cat /proc/loadavg | cut -d' ' -f1-3 | sed 's/ /, /g' )'"
 	, "cputemp"         : '$( /opt/vc/bin/vcgencmd measure_temp | sed 's/[^0-9.]//g' )'
 	, "startup"         : "'$( systemd-analyze | head -1 | cut -d' ' -f4,7 )'"
+	, "throttled"       : "'$( /opt/vc/bin/vcgencmd get_throttled | cut -d= -f2 )'"
 	, "time"            : "'$( date +'%T %F' )'"
 	, "timezone"        : "'$( timedatectl | awk '/zone:/ {print $3}' )'"
 	, "uptime"          : "'$( uptime -p | tr -d 's,' | sed 's/up //; s/ day/d/; s/ hour/h/; s/ minute/m/' )'"
@@ -90,7 +91,7 @@ data+='
 	, "regdom"          : "'$( cat /etc/conf.d/wireless-regdom | cut -d'"' -f2 )'"
 	, "relays"          : '$( [[ -e $dirsystem/relays ]] && echo true || echo false )'
 	, "rpi01"           : '$( [[ $soc == BCM2835 ]] && echo true || echo false )'
-	, "rpimodel"        : "'$( cat /proc/device-tree/model )'"
+	, "rpimodel"        : "'$( cat /proc/device-tree/model | tr -d '\0' )'"
 	, "soc"             : "'$soc'"
 	, "soccpu"          : "'$( lscpu | awk '/Model name/ {print $NF}' )'"
 	, "socram"          : "'$socram'"

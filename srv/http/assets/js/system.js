@@ -7,19 +7,17 @@ function rebootText( enable, device ) {
 	G.reboot.push( ( enable ? 'Enable' : 'Disable' ) +' '+ device );
 }
 function renderStatus() {
-	var undervoltage = '';
-	var warning = '<i style="width: 20px; text-align: center" class="fa fa-warning blink"></i>';
-	if ( G.undervoltage ) {
-		undervoltage = '<br><red>'+ warning +'</red> Voltage under 4.7V';
-	} else if ( G.undervdetected ) {
-		undervoltage = '<br>'+ warning +' Voltage under 4.7V occured';
-	}
-	return G.cpuload
+	var status = G.cpuload
 		+'<br>'+ ( G.cputemp < 80 ? G.cputemp +' °C' : '<red>'+ warning + G.cputemp +' °C</red>' )
 		+'<br>'+ G.time.replace( ' ', ' <gr>&bull;</gr> ' ) +'&emsp;<grw>'+ G.timezone.replace( '/', ' · ' ) +'</grw>'
 		+'<br>'+ G.uptime +'<span class="wide">&emsp;<gr>since '+ G.uptimesince.replace( ' ', ' &bull; ' ) +'</gr></span>'
-		+'<br>'+ G.startup.replace( ' ', ' <gr class="wide">(kernel)</gr> + ' ) +' <gr class="wide">(userspace)</gr>'
-		+ undervoltage
+		+'<br>'+ G.startup.replace( ' ', ' <gr class="wide">(kernel)</gr> + ' ) +' <gr class="wide">(userspace)</gr>';
+	if ( G.undervdetected || G.undervoltage ) {
+		status += '<br><i style="width: 20px; text-align: center" class="fa fa-warning blink '
+				+ ( G.undervoltage ? red : '' ) +'"></i> Voltage under 4.7V'
+				+ ( G.undervdetected ? ' occured' : '' );
+	}
+	return status
 }
 
 refreshData = function() {
