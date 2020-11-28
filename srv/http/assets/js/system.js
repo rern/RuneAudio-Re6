@@ -14,7 +14,7 @@ function renderStatus() {
 		+'<br>'+ G.startup.replace( ' ', ' <gr class="wide">(kernel)</gr> + ' ) +' <gr class="wide">(userspace)</gr>';
 	if ( G.undervdetected || G.undervoltage ) {
 		status += '<br><i style="width: 20px; text-align: center" class="fa fa-warning blink '
-				+ ( G.undervoltage ? red : '' ) +'"></i> Voltage under 4.7V'
+				+ ( G.undervoltage ? 'red' : '' ) +'"></i> Voltage under 4.7V'
 				+ ( G.undervdetected ? ' occured' : '' );
 	}
 	return status
