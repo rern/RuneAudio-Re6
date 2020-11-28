@@ -118,6 +118,7 @@ if [[ -e /usr/bin/bluetoothctl  ]]; then
 	fi
 	data+='
 	, "bluetooth"       : '$bluetooth'
+	, "bluetoothset"    : '$( [[ -e $dirsystem/bluetoothset ]] && echo true || echo false )'
 	, "bluetoothon"     : '$bluetoothon'
 	, "btdiscoverable"  : '$btdiscoverable
 fi

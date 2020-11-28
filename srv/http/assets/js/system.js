@@ -200,10 +200,17 @@ $( '#setting-bluetooth' ).click( function() {
 		, title    : 'On-board Bluetooth'
 		, checkbox : { Discoverable: 1 }
 		, checked  : ( G.btdiscoverable ? 0 : 1 )
+		, preshow  : function() {
+			if ( G.bluetooth ) 
+				$( '#infoCheckBox' ).change( function() {
+					$( '#infoOk' ).toggleClass( 'disabled', $( '#infoCheckBox input' ).prop( 'checked' ) === G.btdiscoverable );
+				} );
+			}
+		}
 		, ok       : function() {
-			G.btdiscoverable = $( '#infoCheckBox input' ).prop( 'checked' );
-			notify( 'Bluetooth Discoverable', G.btdiscoverable, 'bluetooth' );
-			bash( [ 'btdiscoverable', ( G.btdiscoverable ? 'yes' : 'no' ) ] );
+			btdiscoverable = $( '#infoCheckBox input' ).prop( 'checked' );
+			notify( 'Bluetooth Discoverable', btdiscoverable, 'bluetooth' );
+			bash( [ 'bluetoothset', btdiscoverable ] );
 		}
 	} );
 } );

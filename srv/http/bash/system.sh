@@ -27,28 +27,28 @@ soundprofile() { # latency swapiness mtu txtqueuelen
 
 case ${args[0]} in
 
-btdiscoverable )
-	yesno=${args[1]}
-	bluetoothctl discoverable $yesno
-	if [[ $yesno == yes ]]; then
-		rm -f $dirsystem/btdiscoverno
-	else
-		touch $dirsystem/btdiscoverno
-	fi
-	sleep 3
-	pushRefresh
-	;;
 bluetooth )
 	if [[ ${args[1]} == true ]]; then
-		sed -i '$ a\dtparam=krnbt=on' $fileconfig
-		systemctl enable --now bluetooth
-		echo "${args[2]}" > $filereboot
+		if ! grep -q 'dtparam=krnbt=on' $fileconfig; then
+			sed -i '$ a\dtparam=krnbt=on' $fileconfig
+			echo "${args[2]}" > $filereboot
+			systemctl enable bluetooth
+		else
+			systemctl enable --now bluetooth
+		fi
 		touch $dirsystem/onboard-bluetooth
 	else
 		sed -i '/dtparam=krnbt=on/ d' $fileconfig
 		systemctl disable --now bluetooth
 		rm -f $dirsystem/onboard-bluetooth
 	fi
+	pushRefresh
+	;;
+bluetoothset )
+	[[ ${args[1]} == true ]] && yesno=yes || yesno=no
+	bluetoothctl discoverable $yesno
+	echo $yesno > $dirsystem/bluetoothset
+	sleep 3
 	pushRefresh
 	;;
 databackup )
