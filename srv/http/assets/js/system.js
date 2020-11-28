@@ -122,6 +122,19 @@ refreshData = function() {
 }
 refreshData();
 //---------------------------------------------------------------------------------------
+$( '.enable' ).click( function() {
+	var idname = {
+		  bluetooth : 'On-board Bluetooth'
+		, lcdchar   : 'Character LCD'
+	}
+	var id = this.id;
+	if ( $( this ).prop( 'checked' ) ) {
+		$( '#setting-'+ id ).click();
+	} else {
+		bash( [ id +'disable' ] );
+		notify( idname[ id ], 'Disable ...', id );
+	}
+} );
 $( '.enablenoset' ).click( function() {
 	var idname = {
 		  lcd       : [ 'TFT LCD',            'gear' ]
@@ -193,14 +206,6 @@ $( '#onboardaudio' ).click( function() {
 		bash( [ 'onboardaudio', checked, G.reboot.join( '\n' ) ] );
 	}
 } );
-$( '#bluetooth' ).click( function() {
-	if ( $( this ).prop( 'checked' ) ) {
-		$( '#setting-lcdchar' ).click();
-	} else {
-		bash( [ 'lcdchardisable' ] );
-		notify( 'On-board Bluetooth', 'Disable ...', 'bluetooth' );
-	}
-} );
 $( '#setting-bluetooth' ).click( function() {
 	info( {
 		  icon     : 'bluetooth'
@@ -208,7 +213,7 @@ $( '#setting-bluetooth' ).click( function() {
 		, checkbox : { Discoverable: 1 }
 		, checked  : ( G.btdiscoverable ? 0 : 1 )
 		, preshow  : function() {
-			if ( G.bluetooth ) 
+			if ( G.bluetooth ) {
 				$( '#infoCheckBox' ).change( function() {
 					$( '#infoOk' ).toggleClass( 'disabled', $( '#infoCheckBox input' ).prop( 'checked' ) === G.btdiscoverable );
 				} );
@@ -283,14 +288,6 @@ $( '#i2smodule' ).change( function() {
 	}
 	bash( [ 'i2smodule', G.audioaplayname, G.audiooutput, G.reboot.join( '\n' ) ] );
 	$( '#output' ).text( G.audiooutput );
-} );
-$( '#lcdchar' ).click( function() {
-	if ( $( this ).prop( 'checked' ) ) {
-		$( '#setting-lcdchar' ).click();
-	} else {
-		bash( [ 'lcdchardisable' ] );
-		notify( 'Character LCD', 'Disable ...', 'lcdchar' );
-	}
 } );
 var infolcdchar = heredoc( function() { /*
 	<div class="infotextlabel">

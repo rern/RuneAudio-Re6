@@ -71,7 +71,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<br><gr><i class="fa fa-code"></i></gr></a><i class="fa fa-bluetooth fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="bluetooth" type="checkbox">
+	<input id="bluetooth" class="enable" type="checkbox">
 	<div class="switchlabel" for="bluetooth"></div>
 	<i id="setting-bluetooth" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
@@ -119,7 +119,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<br><gr>HD44780</gr></a><i class="fa fa-lcdchar fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="lcdchar" type="checkbox">
+	<input id="lcdchar" class="enable" type="checkbox">
 	<div class="switchlabel" for="lcdchar"></div>
 	<i id="setting-lcdchar" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
