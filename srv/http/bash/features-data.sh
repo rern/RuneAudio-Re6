@@ -42,8 +42,8 @@ fi
 [[ -e /usr/bin/smbd  ]] && data+='
 	, "smb"             : '$( systemctl -q is-active smb && echo true || echo false )'
 	, "smbset"          : '$( [[ -e $dirsystem/smbset ]] && echo true || echo false )'
-	, "writesd"         : '$( grep -A1 /mnt/MPD/SD /etc/samba/smb.conf | grep -q 'read only = no' && echo true || echo false )'
-	, "writeusb"        : '$( grep -A1 /mnt/MPD/USB /etc/samba/smb.conf | grep -q 'read only = no' && echo true || echo false )
+	, "smbwritesd"      : '$( grep -A1 /mnt/MPD/SD /etc/samba/smb.conf | grep -q 'read only = no' && echo true || echo false )'
+	, "smbwriteusb"     : '$( grep -A1 /mnt/MPD/USB /etc/samba/smb.conf | grep -q 'read only = no' && echo true || echo false )
 xinitrc=/etc/X11/xinit/xinitrc
 if [[ -e $xinitrc ]]; then
 	if [[ $lcd == true ]]; then
@@ -61,10 +61,10 @@ if [[ -e $xinitrc ]]; then
 	data+='
 	, "localbrowser"    : '$( systemctl -q is-enabled localbrowser && echo true || echo false )'
 	, "localbrowserset" : '$( [[ -e $dirsystem/localbrowserset ]] && echo true || echo false )'
-	, "cursor"          : '$( grep -q 'cursor yes' $xinitrc && echo true || echo false )'
-	, "rotate"          : "'$rotate'"
-	, "screenoff"       : '$( grep 'xset dpms .*' $xinitrc | cut -d' ' -f5 )'
-	, "zoom"            : '$( grep factor $xinitrc | cut -d'=' -f3 )
+	, "localcursor"     : '$( grep -q 'cursor yes' $xinitrc && echo true || echo false )'
+	, "localrotate"     : "'$rotate'"
+	, "localscreenoff"  : '$( grep 'xset dpms .*' $xinitrc | cut -d' ' -f5 )'
+	, "localzoom"       : '$( grep factor $xinitrc | cut -d'=' -f3 )
 fi
 
 echo {$data}

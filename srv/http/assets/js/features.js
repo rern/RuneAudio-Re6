@@ -180,11 +180,11 @@ var localbrowserinfo = heredoc( function() { /*
 */ } );
 $( '#setting-localbrowser' ).click( function() {
 	function verify() {
-		var zoom = +$( '#infoTextBox1' ).val();
-		var changed = +$( '#infoTextBox' ).val() !== G.screenoff / 60
-						|| ( zoom !== G.zoom && zoom >= 0.5 && zoom <= 2 )
-						|| $( '#infoRadio input:checked' ).val() !== G.rotate
-						|| $( '#infoCheckBox input' ).prop( 'checked' ) !== G.cursor;
+		var localzoom = +$( '#infoTextBox1' ).val();
+		var changed = +$( '#infoTextBox' ).val() !== G.localscreenoff / 60
+						|| ( localzoom !== G.localzoom && localzoom >= 0.5 && localzoom <= 2 )
+						|| $( '#infoRadio input:checked' ).val() !== G.localrotate
+						|| $( '#infoCheckBox input' ).prop( 'checked' ) !== G.localcursor;
 		$( '#infoOk' ).toggleClass( 'disabled', !changed );
 	}
 	info( {
@@ -192,11 +192,11 @@ $( '#setting-localbrowser' ).click( function() {
 		, title       : 'Browser on RPi'
 		, content     : localbrowserinfo
 		, preshow     : function() {
-			$( '#infoTextBox1' ).val( G.zoom );
-			$( '#infoTextBox' ).val( G.screenoff / 60 );
-			$( '#infoRadio input' ).val( [ G.rotate ] );
-			$( '#infoCheckBox input' ).prop( 'checked', G.cursor );
-			if ( G.lcd ) $( '#infoRadio' ).after( '<gr>(Rotate GPIO LCD: Reboot required.)</gr>' );
+			$( '#infoTextBox1' ).val( G.localzoom );
+			$( '#infoTextBox' ).val( G.localscreenoff / 60 );
+			$( '#infoRadio input' ).val( [ G.localrotate ] );
+			$( '#infoCheckBox input' ).prop( 'checked', G.localcursor );
+			if ( G.lcd ) $( '#infoRadio' ).after( '<gr>(Rotate TFT LCD: Reboot required.)</gr>' );
 			// verify changes + values
 			if ( G.localbrowser ) {
 				$( '#infoOk' ).addClass( 'disabled' );
@@ -204,8 +204,8 @@ $( '#setting-localbrowser' ).click( function() {
 				$( '#infoRadio, #infoCheckBox' ).change( verify );
 			} else { // verify values
 				$( '#infoTextBox' ).keyup( function() {
-					var zoom = +$( '#infoTextBox1' ).val();
-					$( '#infoOk' ).toggleClass( 'disabled', zoom < 0.5 || zoom > 2 );
+					var localzoom = +$( '#infoTextBox1' ).val();
+					$( '#infoOk' ).toggleClass( 'disabled', localzoom < 0.5 || localzoom > 2 );
 				} );
 			}
 		}
@@ -219,11 +219,11 @@ $( '#setting-localbrowser' ).click( function() {
 			$( '#localbrowser' ).prop( 'checked', G.localbrowser );
 		}
 		, ok          : function() {
-			var cursor    = $( '#infoCheckBox input' ).prop( 'checked' );
-			var rotate    = $( 'input[name=inforadio]:checked' ).val();
-			var screenoff = $( '#infoTextBox' ).val() * 60;
-			var zoom = parseFloat( $( '#infoTextBox1' ).val() ) || 1;
-			bash( [ 'localbrowserset', rotate, screenoff, cursor, zoom ] );
+			var localcursor    = $( '#infoCheckBox input' ).prop( 'checked' );
+			var localrotate    = $( 'input[name=inforadio]:checked' ).val();
+			var localscreenoff = $( '#infoTextBox' ).val() * 60;
+			var localzoom = parseFloat( $( '#infoTextBox1' ).val() ) || 1;
+			bash( [ 'localbrowserset', localrotate, localscreenoff, localcursor, localzoom ] );
 			notify( 'Chromium - Browser on RPi', G.localbrowser ? 'Change ...' : 'Enable ...', 'chromium' );
 		}
 	} );
@@ -235,13 +235,13 @@ $( '#setting-smb' ).click( function() {
 		, message  : '<wh>Write</wh> permission:</gr>'
 		, checkbox : { '<gr>/mnt/MPD/</gr>SD': 1, '<gr>/mnt/MPD/</gr>USB': 1 }
 		, preshow  : function() {
-			$( '#infoCheckBox input:eq( 0 )' ).prop( 'checked', G.writesd );
-			$( '#infoCheckBox input:eq( 1 )' ).prop( 'checked', G.writeusb );
+			$( '#infoCheckBox input:eq( 0 )' ).prop( 'checked', G.smbwritesd );
+			$( '#infoCheckBox input:eq( 1 )' ).prop( 'checked', G.smbwriteusb );
 			// verify changes
 			if ( G.smb ) {
 				$( '#infoOk' ).addClass( 'disabled' );
 				$( '#infoCheckBox' ).change( function() {
-					var changed = $( '#infoCheckBox input:eq( 0 )' ).prop( 'checked' ) !== G.writesd || $( '#infoCheckBox input:eq( 1 )' ).prop( 'checked' ) !== G.writeusb;
+					var changed = $( '#infoCheckBox input:eq( 0 )' ).prop( 'checked' ) !== G.smbwritesd || $( '#infoCheckBox input:eq( 1 )' ).prop( 'checked' ) !== G.smbwriteusb;
 					$( '#infoOk' ).toggleClass( 'disabled', !changed );
 				} );
 			}
@@ -250,9 +250,9 @@ $( '#setting-smb' ).click( function() {
 			$( '#smb' ).prop( 'checked', G.smb );
 		}
 		, ok       : function() {
-			var writesd = $( '#infoCheckBox input:eq( 0 )' ).prop( 'checked' );
-			var writeusb = $( '#infoCheckBox input:eq( 1 )' ).prop( 'checked' );
-			bash( [ 'smbset', writesd, writeusb ] );
+			var smbwritesd = $( '#infoCheckBox input:eq( 0 )' ).prop( 'checked' );
+			var smbwriteusb = $( '#infoCheckBox input:eq( 1 )' ).prop( 'checked' );
+			bash( [ 'smbset', smbwritesd, smbwriteusb ] );
 			notify( 'Samba - File Sharing', G.smb ? 'Change ...' : 'Enable ...', 'network' );
 		}
 	} );
