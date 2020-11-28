@@ -211,7 +211,7 @@ $( '#setting-bluetooth' ).click( function() {
 		  icon     : 'bluetooth'
 		, title    : 'On-board Bluetooth'
 		, checkbox : { Discoverable: 1 }
-		, checked  : ( G.btdiscoverable ? 0 : 1 )
+		, checked  : ( !G.bluetooth || G.btdiscoverable ? 0 : 1 )
 		, preshow  : function() {
 			if ( G.bluetooth ) {
 				$( '#infoCheckBox' ).change( function() {
