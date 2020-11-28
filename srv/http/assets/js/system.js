@@ -13,10 +13,10 @@ function renderStatus() {
 		+'<br>'+ G.uptime +'<span class="wide">&emsp;<gr>since '+ G.uptimesince.replace( ' ', ' &bull; ' ) +'</gr></span>'
 		+'<br>'+ G.startup.replace( ' ', ' <gr class="wide">(kernel)</gr> + ' ) +' <gr class="wide">(userspace)</gr>';
 	if ( G.throttled ) { // https://www.raspberrypi.org/documentation/raspbian/applications/vcgencmd.md
-		var bits = parseInt( G.throttled ).toString( 2 ); // bit# 19..0 ( hex > decimal > binary )
-		if ( bits.slice( -1 ) == 1 ) {                    // bit# 0
+		var bits = parseInt( G.throttled ).toString( 2 ); // 20 bits: 19..0 ( hex > decimal > binary )
+		if ( bits.slice( -1 ) == 1 ) {                    // bit# 0  - undervoltage now
 			status += '<br><i class="fa fa-warning blink red"></i>&ensp;Voltage under 4.7V'
-		} else if ( bits.slice( -19, 1 ) == 1 ) {         // bit# 19
+		} else if ( bits.slice( -19, 1 ) == 1 ) {         // bit# 19 - undervoltage occured
 			status += '<br><i class="fa fa-warning blink"></i>&ensp;Voltage under 4.7V occured.';
 		}
 	}
