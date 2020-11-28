@@ -24,43 +24,39 @@ chown -R http:http /srv/http
 chown mpd:audio $dirdata/mpd/mpd* &> /dev/null
 chmod 755 /srv/http/* $dirbash/* /srv/http/settings/*
 
+# datafileset:
+# hostapd, localbrowser, mpdscribble, smb, snapclient
+# bluetooth, lcdchar, soundprofile
+# buffer, bufferoutput, crossfade, custom, replaygain, soxr
+
 # features #################################################################
-# airplay
+# shairport-sync
 [[ -e $dirsystem/shairport-sync ]] && $dirbash/features.sh shairport-sync$'\n'true
 
 # snapclient
-[[ -e $dirsystem/snapclientset ]] && $dirbash/features.sh snapclientset$'\n'"$( cat $dirsystem/snapclientset )"
-[[ -e $dirsystem/snapclient ]] && $dirbash/features.sh snapclient$'\n'true
+[[ -e $dirsystem/snapclient ]] && $dirbash/features.sh snapclientset$'\n'"$( cat $dirsystem/snapclientset )"
 
-# spotify
+# spotifyd
 [[ -e $dirsystem/spotifydset ]] && $dirbash/features.sh spotifydset$'\n'"$( cat $dirsystem/spotifydset )"
 [[ -e $dirsystem/spotifyd ]] && $dirbash/features.sh spotifyd$'\n'true
 
-# upnp
+# upmpdcli
 [[ -e $dirsystem/upmpdcli ]] && $dirbash/features.sh upmpdcli$'\n'true
 
 # snapserver
 [[ -e $dirsystem/snapserver ]] && $dirbash/features.sh snapserver$'\n'true
 
 # localbrowser
-[[ ! -e $dirsystem/localbrowser ]] && $dirbash/features.sh localbrowser$'\n'false
-[[ -e $dirsystem/localbrowserset ]] && $dirbash/features.sh localbrowserset$'\n'"$( cat $dirsystem/localbrowserset )"
+[[ -e $dirsystem/localbrowser ]] && $dirbash/features.sh localbrowserset$'\n'"$( cat $dirsystem/localbrowserset )"
 
 # smb
-[[ -e $dirsystem/smbset ]] && $dirbash/features.sh smbset$'\n'"$( cat $dirsystem/smbset )"
-[[ -e $dirsystem/smb ]] && $dirbash/features.sh smb$'\n'true
+[[ -e $dirsystem/smb ]] && $dirbash/features.sh smbset$'\n'"$( cat $dirsystem/smbset )"
 
 # mpdscribble
-[[ -e $dirsystem/mpdscribbleset ]] && $dirbash/features.sh mpdscribbleset$'\n'"$( cat $dirsystem/mpdscribbleset )"
-[[ -e $dirsystem/mpdscribble ]] && $dirbash/features.sh mpdscribble$'\n'true
+[[ -e $dirsystem/mpdscribble ]] && $dirbash/features.sh mpdscribbleset$'\n'"$( cat $dirsystem/mpdscribbleset )"
 
-# login
-[[ -e $dirsystem/loginset ]] && $dirbash/features.sh loginset$'\n'"$( cat $dirsystem/loginset )"
-[[ -e $dirsystem/login ]] && $dirbash/features.sh login$'\n'true
-
-# accesspoint
-[[ -e $dirsystem/hostapdset ]] && $dirbash/features.sh hostapdset$'\n'"$( cat $dirsystem/hostapdset )"
-[[ -e $dirsystem/hostapd ]] && $dirbash/features.sh hostapd$'\n'true
+# hostapd
+[[ -e $dirsystem/hostapd ]] && $dirbash/features.sh hostapdset$'\n'"$( cat $dirsystem/hostapdset )"
 
 # system #################################################################
 # onboardaudio
@@ -82,8 +78,7 @@ grep -q "$output.*$aplayname" /srv/http/settings/system-i2s.json && $dirbash/sys
 [[ -e $dirsystem/lcd ]] && $dirbash/system.sh lcd$'\n'true
 
 # lcdchar
-[[ -e $dirsystem/lcdcharset ]] && $dirbash/system.sh lcdcharset$'\n'"$( cat $dirsystem/lcdcharset )"
-[[ -e $dirsystem/lcdchar ]] && $dirbash/system.sh lcdchar$'\n'true
+[[ -e $dirsystem/lcdchar ]] && $dirbash/system.sh lcdcharset$'\n'"$( cat $dirsystem/lcdcharset )"
 
 # hostname
 [[ $( cat $dirsystem/hostname ) != RuneAudio ]] && $dirbash/system.sh hostname$'\n'$( cat $dirsystem/hostname )
@@ -95,8 +90,7 @@ grep -q "$output.*$aplayname" /srv/http/settings/system-i2s.json && $dirbash/sys
 [[ -e $dirsystem/regional ]] && $dirbash/features.sh regional$'\n'"$( cat $dirsystem/regional )"
 
 # soundprofile
-[[ -e $dirsystem/soundprofileset ]] && $dirbash/system.sh soundprofileset$'\n'"$( cat $dirsystem/soundprofileset )"
-[[ -e $dirsystem/soundprofile ]] && $dirbash/system.sh soundprofile$'\n'true
+[[ -e $dirsystem/soundprofile ]] && $dirbash/system.sh soundprofileset$'\n'"$( cat $dirsystem/soundprofileset )"
 
 # mpd #################################################################
 # mpd.conf

@@ -1,6 +1,6 @@
 <?php
-$login = file_exists( '/srv/http/data/system/login' );
-if ( $login ) session_start(); // for login
+if ( file_exists( '/srv/http/data/system/login' ) ) session_start();
+
 $time = time();  // for cache busting
 $localhost = in_array( $_SERVER[ 'REMOTE_ADDR' ], ['127.0.0.1', '::1'] );
 $desktop = isset( $_SERVER[ 'HTTP_USER_AGENT' ] )

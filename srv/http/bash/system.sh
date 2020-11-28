@@ -211,15 +211,6 @@ relays )
 	fi
 	pushRefresh
 	;;
-relays )
-	enable=${args[1]}
-	if [[ $enable == true ]]; then
-		touch $dirsystem/relays
-	else
-		rm $dirsystem/relays
-	fi
-	pushRefresh
-	;;
 soundprofiledisable )
 	soundprofile '18000000 60 1500 1000'
 	rm -f $dirsystem/soundprofile
