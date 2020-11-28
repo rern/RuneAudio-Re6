@@ -12,9 +12,10 @@ function renderStatus() {
 		+'<br>'+ G.time.replace( ' ', ' <gr>&bull;</gr> ' ) +'&emsp;<grw>'+ G.timezone.replace( '/', ' · ' ) +'</grw>'
 		+'<br>'+ G.uptime +'<span class="wide">&emsp;<gr>since '+ G.uptimesince.replace( ' ', ' &bull; ' ) +'</gr></span>'
 		+'<br>'+ G.startup.replace( ' ', ' <gr class="wide">(kernel)</gr> + ' ) +' <gr class="wide">(userspace)</gr>';
-	if ( G.undervdetected || G.undervoltage ) {
-		status += '<br><i class="fa fa-warning blink '+ ( G.undervoltage ? 'red' : '' ) +'"></i>&ensp;Voltage under 4.7V'
-				+ ( G.undervdetected && !G.undervoltage ? ' occured.' : '' );
+	if ( G.undervoltage ) {
+		status += '<br><i class="fa fa-warning blink red"></i>&ensp;Voltage under 4.7V'
+	} else if ( G.undervdetected ) {
+		status += '<br><i class="fa fa-warning blink"></i>&ensp;Voltage under 4.7V occured.';
 	}
 	return status
 }
