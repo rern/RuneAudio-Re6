@@ -1,5 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-<g style="fill: hsl(0,0%,90%);">
+<style>
+g { fill: hsl(200,3%,30%); }
+@media ( prefers-color-scheme: dark ) {
+	g { fill: hsl(0,0%,90%); }
+}
+</style>
+<g>
 	<path d="M30,55v20H20V55H0.2c2.5,25.3,23.8,45,49.8,45V55H30z"/>
 	<path d="M20,25h10v20h20V0C24.1,0,2.8,19.7,0.2,45H20V25z"/>
 	<path d="M60,99c8.1-1.6,15.5-5.2,21.6-10.3L60,67.1V99z"/>

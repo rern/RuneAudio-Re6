@@ -23,6 +23,7 @@ $desktop = isset( $_SERVER[ 'HTTP_USER_AGENT' ] )
 <meta name="msapplication-tap-highlight" content="no" />
 <meta name="apple-mobile-web-app-title" content="R+R">
 <meta name="application-name" content="R+R">
+<meta name="theme-color" content="#000000">
 <link rel="icon" href="/assets/img/favicon.<?=$time?>.svg">
 <link rel="mask-icon" href="/assets/img/favicon.<?=$time?>.svg" color="#000000">
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/apple-touch-icon-180x180.<?=$time?>.png">
