@@ -169,11 +169,11 @@ if [[ $# -gt 0 && $1 != bt ]]; then
 		hwmixer=${Amixertype[@]: -1}
 		[[ $mixertype == 'none' && -n $hwmixer ]] && amixer -c $card sset "$hwmixer" 0dB
 		echo $aplayname > $usbdacfile # flag - active usb
-	fi
-	# set default card for bluetooth
-	echo "\
+		# set default card for bluetooth
+		echo "\
 defaults.pcm.card $card
 defaults.ctl.card $card" > /etc/asound.conf
+	fi
 	
 	pushstream notify '{"title":"Audio Output","text":"'"$name"'","icon": "output"}'
 	
