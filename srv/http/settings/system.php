@@ -20,7 +20,16 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 ?>
 <div>
 <heading>System<?=$help?></heading>
-<div id="systemlabel" class="col-l text gr"></div>
+<div id="systemlabel" class="col-l text gr">
+		Version
+	<br>Hardware
+	<br>SoC
+	<br>Output Device
+	<br>Kernel
+	<br><span class="settings" data-setting="mpd">MPD</span>
+	<br><span class="settings" data-setting="networks">Network</span>
+	<br><span class="settings" data-setting="sources">Sources</span>
+</div>
 <div id="system" class="col-r text"></div>
 <div class="col-r">
 	<span class="help-block hide"><br><i class="fa fa-gear"></i>&ensp;Shortcut to each setting</span>
@@ -29,7 +38,13 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 
 <div>
 <heading id="refresh" class="status">Status<i class="fa fa-refresh"></i><?=$help?></heading>
-<div id="statuslabel" class="col-l text gr"></div>
+<div id="statuslabel" class="col-l text gr">
+		CPU Load
+	<br>CPU Temperatue
+	<br>Time
+	<br>Up Time
+	<br>Startup
+</div>
 <div id="status" class="col-r text"></div>
 
 <div class="col-l"></div>

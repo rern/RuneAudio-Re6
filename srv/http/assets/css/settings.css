@@ -564,6 +564,10 @@ input:checked + .switchlabel:after {
 	white-space: nowrap;
 	line-height: 26px;
 }
+.col-r .fa {
+	width: 20px;
+	text-align: center;
+}
 #guide {
 	position: absolute;
 	width: 100%;
@@ -634,7 +638,7 @@ input:checked + .switchlabel:after {
 		text-align: left;
 	}
 	.col-l.text {
-		width: auto;
+		width: 120px;
 	}
 	.col-r.text {
 		float: none;

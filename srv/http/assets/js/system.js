@@ -28,21 +28,6 @@ refreshData = function() {
 		var list2G = list2JSON( list );
 		if ( !list2G ) return
 		
-		var systemlabel =
-			 'Version<br>'
-			+'Hardware<br>'
-			+'SoC<br>'
-			+'Output Device<br>'
-			+'Kernel<br>'
-			+'<span class="settings" data-setting="mpd">MPD<i class="fa fa-gear"></i></span><br>'
-			+'<span class="settings" data-setting="networks">Network<i class="fa fa-gear"></i></span>';
-		var statuslabel =
-			 'CPU Load<br>'
-			+'CPU Temperatue<br>'
-			+'Time<br>'
-			+'Up Time<br>'
-			+'Startup';
-		var bullet = ' <gr>&bull;</gr> ';
 		if ( G.ip ) {
 			var ip = G.ip.split( ',' );
 			var iplist = '';
@@ -62,10 +47,9 @@ refreshData = function() {
 		var sourcelist = '';
 		$.each( G.sources, function( i, val ) {
 			sourcelist += '<i class="fa fa-'+ val.icon +' gr"></i>&ensp;'+ val.mountpoint.replace( '/mnt/MPD/USB/', '' );
-			sourcelist += ( val.size ? bullet + val.size : '' ) +'<br>';
+			sourcelist += ( val.size ? ' <gr>&bull;</gr> ' + val.size : '' ) +'<br>';
 			systemlabel += '<br>';
 		} );
-		$( '#systemlabel' ).html( systemlabel );
 		var mpdstats = '';
 		if ( G.mpdstats ) {
 		var counts = G.mpdstats.split( ' ' );
@@ -79,7 +63,7 @@ refreshData = function() {
 		soc += G.socspeed < 1000 ? G.socspeed +'MHz' : G.socspeed / 1000 +'GHz';
 		soc += ' <gr>&bull;</gr> '+ G.socram;
 		$( '#system' ).html(
-			  '<i class="fa fa-plus-r gr" style="line-height: 20px;"></i> '+ G.version +' <gr>'+ G.versionui +'</gr>'+ bullet + G.hostname +'<br>'
+			  '<i class="fa fa-plus-r gr" style="line-height: 20px;"></i> '+ G.version +' <gr>'+ G.versionui +' &bull;</gr> ' + G.hostname +'<br>'
 			+ G.rpimodel.replace( /(Rev.*)$/, '<gr>$1</gr>' ) +'<br>'
 			+ soc +'<br>'
 			+ '<span id="output">'+ G.audiooutput +'</span><br>'
@@ -89,7 +73,6 @@ refreshData = function() {
 			+ iplist
 			+ sourcelist
 		);
-		$( '#statuslabel' ).html( statuslabel );
 		$( '#status' ).html( renderStatus );
 		$( '#onboardaudio' ).prop( 'checked', G.onboardaudio );
 		$( '#bluetooth' ).prop( 'checked', G.bluetooth );
