@@ -2,13 +2,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
 	<title>R+R GPIO Relays</title>
+	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="msapplication-tap-highlight" content="no">
+	<link rel="icon" href="/assets/img/favicon.<?=$time?>.svg">
+	<link rel="mask-icon" href="/assets/img/favicon.<?=$time?>.svg" color="#000000">
 	<style>
 		@font-face {
 			font-family: enhance;
@@ -21,7 +23,6 @@
 	<link rel="stylesheet" href="/assets/css/selectric.<?=$time?>.css">
 	<link rel="stylesheet" href="/assets/css/info.<?=$time?>.css">
 	<link rel="stylesheet" href="/assets/css/gpiosettings.<?=$time?>.css">
-	<link rel="icon" type="image/png" href="/assets/img/favicon.<?=$time?>.svg" sizes="192x192">
 </head>
 
 <?php

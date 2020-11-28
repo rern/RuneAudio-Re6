@@ -16,6 +16,8 @@ include 'logosvg.php';
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="msapplication-tap-highlight" content="no">
+	<link rel="icon" href="/assets/img/favicon.<?=$time?>.svg">
+	<link rel="mask-icon" href="/assets/img/favicon.<?=$time?>.svg" color="#000000">
 	<style>
 		@font-face {
 			font-family: enhance;
@@ -34,7 +36,6 @@ include 'logosvg.php';
 	<link rel="stylesheet" href="/assets/css/info.<?=$time?>.css">
 	<link rel="stylesheet" href="/assets/css/settings.<?=$time?>.css">
 	<link rel="stylesheet" href="/assets/css/banner.<?=$time?>.css">
-	<link rel="icon" type="image/png" href="/assets/img/favicon.<?=$time?>.svg" sizes="192x192">
 </head>
 <body>
 <?php

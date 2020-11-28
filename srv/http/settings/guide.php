@@ -6,12 +6,14 @@ include 'logosvg.php';
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>User Guide</title>
+	<title>R+R User Guide</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="msapplication-tap-highlight" content="no">
+	<link rel="icon" href="/assets/img/favicon.<?=$time?>.svg">
+	<link rel="mask-icon" href="/assets/img/favicon.<?=$time?>.svg" color="#000000">
 	<style>
 		@font-face {
 			font-family: enhance;
@@ -23,7 +25,6 @@ include 'logosvg.php';
 	</style>
 	<link rel="stylesheet" href="/assets/css/colors.<?=$time?>.css">
 	<link rel="stylesheet" href="/assets/css/settings.<?=$time?>.css">
-	<link rel="icon" type="image/png" href="/assets/img/favicon.<?=$time?>.svg" sizes="192x192">
 </head>
 <body style="height: 100%">
 <div class="head" style="top: 0">
