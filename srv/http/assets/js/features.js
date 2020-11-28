@@ -144,7 +144,7 @@ $( '#setting-spotifyd' ).click( function() {
 				$( '#infoOk' ).toggleClass( 'disabled', $( '#infoSelectBox option:selected' ).text() !== G.spotifyddevice );
 			}
 			, ok      : function() {
-				bash( [ 'spotifyset', $( '#infoSelectBox option:selected' ).text() ] );
+				bash( [ 'spotifydset', $( '#infoSelectBox option:selected' ).text() ] );
 					notify( 'Spotify Renderer', 'Change ...', 'spotify' );
 			}
 		} );
