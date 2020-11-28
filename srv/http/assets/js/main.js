@@ -16,6 +16,7 @@ var G = {
 	, localhost     : [ 'localhost', '127.0.0.1' ].indexOf( location.hostname ) !== -1
 	, mode          : ''
 	, modescrolltop : 0
+	, page          : 'playback'
 	, pladd         : {}
 	, playback      : 1
 	, playlist      : 0
@@ -66,6 +67,11 @@ var stopwatch = '<span class="stopwatch">'
 				+'<i class="fa fa-stopwatch-i"></i>'
 				+'<i class="fa fa-stopwatch-o"></i>'
 				+'</span>';
+var pagenext = {
+	  playback : [ 'library',  'playlist' ]
+	, playlist : [ 'playback', 'library' ]
+	, library  : [ 'playlist', 'playback' ]
+}
 
 displayGet( function( data ) { // get mpd status with passive.js on pushstream connect
 	G.display = data;
@@ -78,14 +84,7 @@ displayGet( function( data ) { // get mpd status with passive.js on pushstream c
 		
 		G.swipe = 1;
 		setTimeout( function() { G.swipe = 0 }, 1000 );
-		var swipeleft = e.type === 'swipeleft';
-		if ( G.library ) {
-			swipeleft ? $( '#tab-playback' ).click() : $( '#tab-playlist' ).click();
-		} else if ( G.playback ) {
-			swipeleft ? $( '#tab-playlist' ).click() : $( '#tab-library' ).click();
-		} else {
-			swipeleft ? $( '#tab-library' ).click()  : $( '#tab-playback' ).click();
-		}
+		$( '#tab-'+ pagenext[ G.page ][ e.type === 'swiperight' ? 0 : 1 ] ).click();
 	} );
 } );
 

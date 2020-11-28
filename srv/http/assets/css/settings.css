@@ -52,6 +52,7 @@
 .fa-lastfm:before { content: "\f585" }
 .fa-lcd:before { content: "\f53C" }
 .fa-lcdchar:before { content: "\f53D" }
+.fa-left:before { content: "\f606" }
 .fa-library:before { content: "\f506" }
 .fa-list-ul:before { content: "\f508"; }
 .fa-lock:before { content: "\f573" }
@@ -75,6 +76,7 @@
 .fa-refresh:before { content: "\f526" }
 .fa-refresh-play:before { content: "\f53B" }
 .fa-reload:before { content: "\f525" }
+.fa-right:before { content: "\f607" }
 .fa-rune:before { content: "\f580" }
 .fa-save:before { content: "\f542"}
 .fa-save-circle:before { content: "\f56B"}
@@ -86,6 +88,7 @@
 .fa-source:before { content: "\f52A" }
 .fa-spotify:before { content: "\f594" }
 .fa-stopwatch:before { content: "\f547" }
+.fa-swipe:before { content: "\f54A" }
 .fa-times:before { content: "\f51A" }
 .fa-tidal:before { content: "\f595" }
 .fa-undo:before { content: "\f523" }
@@ -134,6 +137,7 @@ html {
 }
 body {
 	margin: 0;
+	min-height: 100vh;
 	font-family: "Lato";
 	font-size: 15px;
 	line-height: 1.42857143;
@@ -312,12 +316,24 @@ heading i.fa-question-circle {
 	max-height: 90vh;
 	white-space: pre-wrap;
 }
-#bottom-bar {
+#swipebar {
 	position: fixed;
 	bottom: 0;
 	width: 100%;
 	height: 40px;
 	z-index: 105;
+	font-size: 28px;
+	text-align: center;
+	background: var( --cga );
+	touch-action: manipulation; /* fix: Unable to preventDefault inside passive event listener */
+	opacity: 0.8;
+}
+#swipebar i {
+	width: 80px;
+	cursor: pointer;
+}
+.transparent {
+	opacity: 0 !important;
 }
 .title {
 	margin-left: 15px;
@@ -675,6 +691,11 @@ input:checked + .switchlabel:after {
 		padding: 40px 5px;
 	}
 }
+@media (max-width: 480px) {
+	#swipebar i {
+		width: 70px;
+	}
+}
 @media (max-width: 450px) {
 	#guide .btn {
 		width: 70px;
@@ -684,6 +705,16 @@ input:checked + .switchlabel:after {
 	}
 	#guide .btn span {
 		display: none;
+	}
+}
+@media (max-width: 380px) {
+	#swipebar i {
+		width: 60px;
+	}
+}
+@media (max-width: 350px) {
+	#swipebar i {
+		width: 55px;
 	}
 }
 @media (hover: hover) {

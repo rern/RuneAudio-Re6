@@ -1572,6 +1572,7 @@ function switchPage( page ) {
 	$( '#pl-search-close, #pl-search-close' ).addClass( 'hide' );
 	G.library = G.playback = G.playlist = 0;
 	G[ page ] = 1;
+	G.page = page;
 	// restore page scroll
 	if ( G.playback ) {
 		$timeRS.setValue( 0 );

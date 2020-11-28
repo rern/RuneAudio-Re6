@@ -61,7 +61,13 @@ $help = '<i class="help fa fa-question-circle"></i>';
 include "settings/$page.php";
 ?>
 </div>
-<div id="bottom-bar"></div>
+<div id="swipebar" class="transparent">
+	<i data-page="mpd" class="fa fa-mpd"></i>
+	<i data-page="networks" class="fa fa-network"></i>
+	<i data-page="sources" class="fa fa-folder-cascade"></i>
+	<i data-page="system" class="fa fa-gear"></i>
+	<i data-page="features" class="fa fa-sliders"></i>
+</div>
 
 	<?php if ( $localhost ) { ?>
 <input class="input hide">
@@ -72,7 +78,7 @@ include "settings/$page.php";
 <script src="/assets/js/info.<?=$time?>.js"></script>
 <script src="/assets/js/banner.<?=$time?>.js"></script>
 <script src="/assets/js/settings.<?=$time?>.js"></script>
-	<?php if ( $page !== 'credits' && $page !== 'manual' ) { ?>
+	<?php if ( $page !== 'guide' ) { ?>
 <script src="/assets/js/<?=$page?>.<?=$time?>.js"></script>
 	<?php	if ( in_array( $page, [ 'features', 'mpd', 'system' ] ) ) { ?>
 <script src="/assets/js/plugin/jquery.selectric.min.<?=$time?>.js"></script>

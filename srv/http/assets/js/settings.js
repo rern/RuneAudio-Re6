@@ -226,8 +226,10 @@ $( '#help' ).click( function() {
 		return this.getBoundingClientRect().top > 0
 	} )[ 0 ]; // return 1st element
 	var offset0 = eltop.getBoundingClientRect().top;
+	var show = $( '.help-block:not(.hide)' ).length !== 0;
+	$( '.help-block' ).toggleClass( 'hide', show );
+	$( '#swipebar' ).toggleClass( 'transparent', show );
 	$( this ).toggleClass( 'blue' );
-	$( '.help-block' ).toggleClass( 'hide', $( '.help-block:not(.hide)' ).length !== 0 );
 	$( window ).scrollTop( eltop.offsetTop - offset0 );
 } );
 $( '.help' ).click( function() {
@@ -238,11 +240,15 @@ $( '.status' ).click( function( e ) {
 	codeToggle( $( this ).data( 'status' ), e.target );
 } );
 var timer;
-$( '#bottom-bar' ).on( 'mousedown touchdown', function() {
+$( '#swipebar' ).on( 'mousedown touchdown', function() {
 	timer = setTimeout( function() {
 		location.reload();
 	}, 1000 );
 } ).on( 'mouseup mouseleave touchup touchleave', function() {
 	clearTimeout( timer );
+} ).click( function() {
+	$( '#swipebar' ).toggleClass( 'transparent' )
 } );
-
+$( '#swipebar i' ).click( function() {
+	if ( !$( '#swipebar' ).hasClass( 'transparent' ) ) location.href = 'settings.php?p='+ $( this ).data( 'page' );
+} );
