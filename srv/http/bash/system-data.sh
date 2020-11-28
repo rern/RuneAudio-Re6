@@ -1,25 +1,5 @@
 #!/bin/bash
 
-# vcgencmd get_throttled > 0xDDDDD (decimal)
-#  1st D > binary BBBB - occured
-#    1st B = Soft temperature limit
-#    2nd B = Throttling
-#    3rd B = Arm frequency capping
-#    4th B = Under-voltage
-#  5th D > binary BBBB - current
-#    1st B = Soft temperature limit active
-#    2nd B = Currently throttled
-#    3rd B = Arm frequency capped
-#    4th B = Under-voltage detected
-undervoltage=false
-undervdetected=false
-throttled=$( /opt/vc/bin/vcgencmd get_throttled | cut -d= -f2 )
-if [[ $throttled != 0x0 ]]; then
-	D2B=( {0..1}{0..1}{0..1}{0..1} )
-	[[ $( echo ${D2B[${throttled: -1}]} | cut -c4 ) == 1 ]] && undervoltage=true
-	[[ $( echo ${D2B[${throttled: -5:1}]} | cut -c4 ) == 1 ]] && undervdetected=true
-fi
-
 data='
 	  "cpuload"         : "'$( cat /proc/loadavg | cut -d' ' -f1-3 | sed 's/ /, /g' )'"
 	, "cputemp"         : '$( /opt/vc/bin/vcgencmd measure_temp | sed 's/[^0-9.]//g' )'
@@ -28,9 +8,7 @@ data='
 	, "time"            : "'$( date +'%T %F' )'"
 	, "timezone"        : "'$( timedatectl | awk '/zone:/ {print $3}' )'"
 	, "uptime"          : "'$( uptime -p | tr -d 's,' | sed 's/up //; s/ day/d/; s/ hour/h/; s/ minute/m/' )'"
-	, "uptimesince"     : "'$( uptime -s | cut -d: -f1-2 )'"
-	, "undervoltage"    : '$undervoltage'
-	, "undervdetected"  : '$undervdetected
+	, "uptimesince"     : "'$( uptime -s | cut -d: -f1-2 )'"'
 
 # for interval refresh
 (( $# > 0 )) && echo {$data} && exit
