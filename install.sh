@@ -9,6 +9,7 @@ installstart "$1"
 getinstallzip
 
 sed -i 's/network.sh/networks.sh/' /etc/systemd/system/bluetooth.service.d/override.conf
+systemctl try-restart bluetooth
 
 dirsystem=/srv/http/data/system
 
