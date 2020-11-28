@@ -124,8 +124,9 @@ refreshData();
 //---------------------------------------------------------------------------------------
 $( '.enable' ).click( function() {
 	var idname = {
-		  bluetooth : 'On-board Bluetooth'
-		, lcdchar   : 'Character LCD'
+		  bluetooth    : 'On-board Bluetooth'
+		, lcdchar      : 'Character LCD'
+		, soundprofile : 'Kernel Sound Profile'
 	}
 	var id = this.id;
 	if ( $( this ).prop( 'checked' ) ) {
@@ -466,14 +467,6 @@ $( '#setting-regional' ).click( function() {
 			bash( [ 'regional', ntp, regdom ] );
 		}
 	} );
-} );
-$( '#soundprofile' ).click( function() {
-	if ( $( this ).prop( 'checked' ) ) {
-		$( '#setting-soundprofile' ).click();
-	} else {
-		bash( [ 'soundprofiledisable' ] );
-		notify( "Kernel Sound Profile", 'Disable ...', 'volume' );
-	}
 } );
 $( '#setting-soundprofile' ).click( function() {
 	var textlabel = [ 'kernel.sched_latency_ns <gr>(ns)</gr>', 'vm.swappiness' ];
