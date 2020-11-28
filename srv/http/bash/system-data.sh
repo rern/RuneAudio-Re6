@@ -1,7 +1,7 @@
 #!/bin/bash
 
 data='
-	  "cpuload"         : "'$( cat /proc/loadavg | cut -d' ' -f1-3 | sed 's/ /, /g' )'"
+	  "cpuload"         : "'$( cat /proc/loadavg | cut -d' ' -f1-3 )'"
 	, "cputemp"         : '$( /opt/vc/bin/vcgencmd measure_temp | sed 's/[^0-9.]//g' )'
 	, "startup"         : "'$( systemd-analyze | head -1 | cut -d' ' -f4,7 )'"
 	, "throttled"       : "'$( /opt/vc/bin/vcgencmd get_throttled | cut -d= -f2 )'"
