@@ -20,12 +20,12 @@
 }
 .fa-check:before { content: "\f51B" }
 .fa-chevron-down:before { content: "\f605" }
-.fa-gpio:before { content: "\f522" }
 .fa-gpiopins:before { content: "\f546" }
 .fa-info-circle:before { content: "\f560" }
 .fa-link:before { content: "\f52C" }
 .fa-power:before { content: "\f520" }
 .fa-question-circle:before { content: "\f560" }
+.fa-relays:before { content: "\f522" }
 .fa-stopwatch:before { content: "\f547" }
 .fa-tag:before { content: "\f545" }
 .fa-times:before { content: "\f51A" }
@@ -154,7 +154,7 @@ span.timer {
 span.timer i {
 	vertical-align: -2px;
 }
-#gpioform i {
+#relaysform i {
 	font-size: 18px;
 }
 #gpioimgtxt,

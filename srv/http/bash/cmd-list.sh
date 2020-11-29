@@ -40,8 +40,8 @@ if (( $? != 0 )); then # very large database
 		buffer=8192
 		for (( i=1; i < 9; i++ )); do
 			(( i++ ))
-			sed -i -e '/^max_output_buffer/ d
-			' -e '1 i\max_output_buffer_size "'$(( i * $buffer ))'"' /etc/mpd.conf
+			sed -i '/^max_output_buffer/ d'/etc/mpd.conf
+			sed -i '1 i\max_output_buffer_size "'$(( i * $buffer ))'"' /etc/mpd.conf
 			systemctl restart mpd
 			albums=$( mpc list album )
 			(( $? == 0 )) && break
@@ -49,9 +49,11 @@ if (( $? != 0 )); then # very large database
 	fi
 	if [[ -n $album ]]; then
 		listalbum "$albums"
-		echo $buffer > $dirsystem/mpd-bufferoutput
+		echo $buffer > $dirsystem/bufferoutputset
+		touch $dirsystem/bufferoutput
 	else
 		toolarge=1
+		sed -i '/^max_output_buffer/ d'/etc/mpd.conf
 	fi
 fi
 ##### wav list #############################################

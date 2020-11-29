@@ -62,6 +62,7 @@ fi
 
 # system
 mv $dirsystem/{gpio,relays} &> /dev/null
+mv $dirsystem/{gpio,relays}.json &> /dev/null
 files=$dirsystem/{ntp,wlanregdom}
 if [[ -e $dirsystem/ntp ]]; then
 	cat $files > $dirsystem/regional

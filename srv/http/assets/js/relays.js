@@ -93,7 +93,7 @@ $( '.on, .off' ).change( function() {
 	txtcolordelay();
 	txtcolor();
 } );
-$( '#gpiosave' ).click( function() {
+$( '#relayssave' ).click( function() {
 	var on = [ 
 		  $( '#on1' ).val()
 		, $( '#on2' ).val()
@@ -108,7 +108,7 @@ $( '#gpiosave' ).click( function() {
 	].filter( function( x ) { return x != 0; } ).length;
 	if ( on !== off ) {
 		info( {
-			  icon    : 'gpio'
+			  icon    : 'relays'
 			, title   : 'GPIO Relays'
 			, message : on +' On : '+ off +' Off'
 					   +'<br>Number of equipments not matched !'
@@ -139,9 +139,9 @@ $( '#gpiosave' ).click( function() {
 		}
 		$.post( '../cmd.php', {
 			  cmd : 'sh'
-			, sh  : [ 'cmd.sh', 'gpioset', JSON.stringify( gpiojson ) ]
+			, sh  : [ 'cmd.sh', 'relaysset', JSON.stringify( gpiojson ) ]
 		} );
-		banner( 'GPIO Relays', 'Change ...', 'gpio' );
+		banner( 'GPIO Relays', 'Change ...', 'relays' );
 	}
 } );
 

@@ -17,8 +17,8 @@
 	<heading id="headbt" class="noline">Bluetooth<i id="btscan" class="fa fa-search"></i><?=$help?></heading>
 	<ul id="listbt" class="entries"></ul>
 	<span class="help-block hide">
-			- As sender(source) to send signal to another device.
-		<br>- As receiver(sink) to receive signal from another device
+			- As sender / source - Send signal to another device.
+		<br>- As receiver / sink - Receive signal from another device.
 	</span>
 	</div>
 <?php } ?>

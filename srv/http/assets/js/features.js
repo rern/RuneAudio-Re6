@@ -1,6 +1,6 @@
 /* Enable with settings
 - Enable:     always pop-up settings
-- Values:     extracted from actual setting files/data (except gpio.py and lcdchar.py)
+- Values:     extracted from actual setting files/data (except relays.py and lcdchar.py)
 - *set files: for restore
 */
 

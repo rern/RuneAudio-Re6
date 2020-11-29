@@ -62,7 +62,7 @@ var pushstream = new PushStream( {
 	, timeout                               : 5000
 	, reconnectOnChannelUnavailableInterval : 5000
 } );
-var streams = [ 'airplay', 'bookmark', 'coverart', 'display', 'gpio', 'mpdplayer', 'mpdupdate',
+var streams = [ 'airplay', 'bookmark', 'coverart', 'display', 'relays', 'mpdplayer', 'mpdupdate',
 	'notify', 'option', 'order', 'package', 'playlist', 'reload', 'seek', 'snapcast', 'spotify', 'volume', 'volumenone', 'webradio' ];
 streams.forEach( function( stream ) {
 	pushstream.addChannel( stream );
@@ -81,7 +81,7 @@ pushstream.onmessage = function( data, id, channel ) {
 		case 'bookmark':   psBookmark( data );   break;
 		case 'coverart':   psCoverart( data );   break;
 		case 'display':    psDisplay( data );    break;
-		case 'gpio':       psGPIO( data );       break;
+		case 'relays':     psRelays( data );       break;
 		case 'mpdplayer':  psMpdPlayer( data );  break;
 		case 'mpdupdate' : psMpdUpdate( data );  break;
 		case 'notify':     psNotify( data );     break;
@@ -230,21 +230,21 @@ function psDisplay( data ) {
 	}
 	displayTopBottom();
 }
-function psGPIO( response ) { // on receive broadcast
-	clearInterval( G.gpiotimer );
+function psRelays( response ) { // on receive broadcast
+	clearInterval( G.relaystimer );
 	if ( 'on' in response ) {
 		$( '#device'+ response.on ).removeClass( 'gr' );
 	} else if ( 'off' in response ) {
 		$( '#device'+ response.off ).addClass( 'gr' );
 	} else if ( 'done' in response ) {
-		G.status.gpioon = response.done;
+		G.status.relayson = response.done;
 		setButtonOptions();
 		$( '#infoX' ).click();
 	}
 	if ( !( 'state' in response ) ) return
 		
 	var state = response.state;
-	G.status.gpioon = state;
+	G.status.relayson = state;
 	if ( state === 'RESET' ) {
 		$( '#infoX' ).click();
 	} else if ( state === 'IDLE' ) {
@@ -252,21 +252,21 @@ function psGPIO( response ) { // on receive broadcast
 		
 		var delay = response.delay;
 		info( {
-			  icon        : 'gpio'
-			, title       : 'GPIO Idle Timer'
+			  icon        : 'relays'
+			, title       : 'GPIO Relays Idle'
 			, message     : 'Power Off Countdown:<br><br>'
 						   + stopwatch +'&ensp;<white>'+ delay +'</white>'
 			, oklabel     : 'Reset'
 			, ok          : function() {
-				bash( [ 'gpiotimerreset' ] );
+				bash( [ 'relaystimerreset' ] );
 			}
 		} );
-		G.gpiotimer = setInterval( function() {
+		G.relaystimer = setInterval( function() {
 			if ( delay === 1 ) {
-				G.status.gpioon = false;
+				G.status.relayson = false;
 				setButtonOptions();
 				$( '#infoX' ).click();
-				clearInterval( G.gpiotimer );
+				clearInterval( G.relaystimer );
 			}
 			$( '#infoMessage white' ).text( delay-- );
 		}, 1000 );
@@ -281,8 +281,8 @@ function psGPIO( response ) { // on receive broadcast
 			devices += '<br><a id="device'+ ( i + 1 ) +'" '+ color +'>'+ val +'</a>';
 		} );
 		info( {
-			  icon      : 'gpio'
-			, title     : 'GPIO'
+			  icon      : 'relays'
+			, title     : 'GPIO Relays'
 			, message   : stopwatch +' <wh>Power '+ ( state ? 'ON' : 'OFF' ) +'</wh>'
 			, msghr     : 1
 			, footer    : devices.slice( 4 ) // remove 1st <br>

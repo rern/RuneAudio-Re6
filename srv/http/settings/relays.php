@@ -27,14 +27,14 @@
 </head>
 
 <?php
-$gpio = file_get_contents( '/srv/http/data/system/gpio.json' );
-$gpio = json_decode( $gpio, true );
-$name = $gpio[ 'name' ];
+$relays = file_get_contents( '/srv/http/data/system/relays.json' );
+$relays = json_decode( $relays, true );
+$name = $relays[ 'name' ];
 
 $pin = array_keys( $name );
-$on   = $gpio[ 'on' ];
-$off   = $gpio[ 'off' ];
-$timer = $gpio[ 'timer' ];
+$on   = $relays[ 'on' ];
+$off   = $relays[ 'off' ];
+$timer = $relays[ 'timer' ];
 // omit pins: on-boot-pullup and uart
 $pins = [ 11, 12, 13, 15, 16, 18, 19, 21, 22, 23, 32, 33, 35, 36, 37, 38, 40 ];
 
@@ -90,7 +90,7 @@ function opttime( $n, $minimum = 1 ) {
 
 <body>
 <div class="head">
-	<i class="page-icon fa fa-gpio"></i><span class="title">GPIO Relays</span><a href="/"><i id="close" class="fa fa-times"></i></a><i id="help" class="fa fa-question-circle"></i>
+	<i class="page-icon fa fa-relays"></i><span class="title">GPIO Relays</span><a href="/"><i id="close" class="fa fa-times"></i></a><i id="help" class="fa fa-question-circle"></i>
 </div>
 
 <div class="container">
@@ -101,7 +101,7 @@ function opttime( $n, $minimum = 1 ) {
 	<br>&nbsp
 </span>
 
-<form id="gpioform">
+<form id="relaysform">
 <div class="column section" id="gpio">
 	<div class="gpio-float-l">
 		<div class="column" id="gpio-num">
@@ -126,7 +126,7 @@ function opttime( $n, $minimum = 1 ) {
 		<div class="column">
 			<span class="gpio-text"><i class="fa fa-power red"></i> &nbsp; Off Sequence</span>
 			<?=$htmloff?>
-			<a id="gpiosave" class="btn btn-primary">Save</a>
+			<a id="relayssave" class="btn btn-primary">Save</a>
 		</div>
 	</div>
 </div>

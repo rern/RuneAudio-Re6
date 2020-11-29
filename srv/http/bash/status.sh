@@ -4,8 +4,8 @@ dirsystem=/srv/http/data/system
 dirtmp=/srv/http/data/shm
 playerfile=$dirtmp/player
 
-gpio=$( [[ -e $dirsystem/gpio ]] && echo true || echo false )
-gpioon=$( [[ -e  $dirtmp/gpiotimer ]] && echo true || echo false )
+relays=$( [[ -e $dirsystem/relays ]] && echo true || echo false )
+relayson=$( [[ -e  $dirtmp/relaystimer ]] && echo true || echo false )
 lcd=$( grep -q dtoverlay=tft35a /boot/config.txt && echo true || echo false )
 
 ########
@@ -13,8 +13,8 @@ status=$( cat $playerfile )
 ########
 status+='
 , "webradio" : false
-, "gpio"     : '$gpio'
-, "gpioon"   : '$gpioon'
+, "relays"   : '$relays'
+, "relayson" : '$relayson'
 , "lcd"      : '$lcd
 if [[ -e $playerfile-snapclient ]]; then
 	[[ -e $dirsystem/snapserverpw ]] && snapserverpw=$( cat $dirsystem/snapserverpw ) || snapserverpw=rune

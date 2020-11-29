@@ -17,7 +17,7 @@ function renderStatus() {
 		if ( bits.slice( -1 ) == 1 ) {                    // bit# 0  - undervoltage now
 			status += '<br><i class="fa fa-warning blink red"></i>&ensp;Voltage under 4.7V'
 		} else if ( bits.slice( -19, 1 ) == 1 ) {         // bit# 19 - undervoltage occured
-			status += '<br><i class="fa fa-warning blink"></i>&ensp;Voltage under 4.7V occured.';
+			status += '<br><i class="fa fa-warning blink"></i>&ensp;Voltage under 4.7V occurred.';
 		}
 	}
 	return status
@@ -124,14 +124,13 @@ $( '.enable' ).click( function() {
 } );
 $( '.enablenoset' ).click( function() {
 	var idname = {
-		  lcd       : [ 'TFT LCD',            'gear' ]
-		, relays    : [ 'GPIO Relay',         'gpio' ]
+		  lcd    : 'TFT LCD'
+		, relays : 'GPIO Relay'
 	}
 	var checked = $( this ).prop( 'checked' );
 	var id = this.id;
-	var nameicon = idname[ id ];
-	notify( nameicon[ 0 ], checked, nameicon[ 1 ] );
-	if ( id !== 'relays' ) rebootText( checked, nameicon[ 0 ] );
+	notify( idname[ id ], checked, id );
+	if ( id !== 'relays' ) rebootText( checked, id );
 	bash( [ id, checked, G.reboot.join( '\n' ) ] );
 } );
 

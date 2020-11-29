@@ -212,7 +212,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	<a id="power"><i class="fa fa-power"></i>Power</a>
 <?php }
 	  if ( file_exists( $dirsystem.'relays' ) ) { ?>
-	<a id="gpio"><i class="fa fa-gpio"></i>GPIO</a>
+	<a id="relays"><i class="fa fa-relays"></i>relays</a>
 <?php }
 	  if ( file_exists( '/srv/http/aria2' ) ) {
 		$ariaenable = exec( '/usr/bin/systemctl is-enabled aria2 &> /dev/null && echo true || echo false' );
@@ -267,7 +267,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 				<i id="i-mute" class="fa fa-mute hide"></i>
 				<i id="i-update" class="fa fa-library blink hide"></i>
 				<i id="i-addons" class="fa fa-plus-r hide"></i>
-				<i id="i-gpio" class="fa fa-gpio hide"></i>
+				<i id="i-relays" class="fa fa-relays hide"></i>
 			</span>
 		</div>
 		<div id="sampling"></div>
@@ -284,7 +284,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 				<i id="ti-mute" class="fa fa-mute hide"></i>
 				<i id="ti-update" class="fa fa-library blink hide"></i>
 				<i id="ti-plus-r" class="fa fa-plus-r hide"></i>
-				<i id="ti-gpio" class="fa fa-gpio hide"></i>
+				<i id="ti-relays" class="fa fa-relays hide"></i>
 			</div>
 			<span id="elapsed" class="controls1"></span>
 			<span id="total" class="controls1"></span>

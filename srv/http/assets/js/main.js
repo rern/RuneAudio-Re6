@@ -171,8 +171,8 @@ $( '#power' ).click( function() {
 $( '#screenoff' ).click( function( e ) {
 	$.post( cmdphp, { cmd: 'screenoff' } );
 } );
-$( '#gpio' ).click( function( e ) {
-	bash( [ 'gpio', !G.status.gpioon ] );
+$( '#relays' ).click( function( e ) {
+	bash( [ 'relays', !G.status.relayson ] );
 } );
 $( '#logout' ).click( function( e ) {
 	$.post( cmdphp, { cmd: 'logout' }, function() {
@@ -360,7 +360,7 @@ $( '#displayplayback' ).click( function() {
 					renderPlayback();
 					displayPlayback();
 					setButtonControl();
-					$( '#ti-gpio, #i-gpio' ).toggleClass( 'hide', !G.status.gpioon );
+					$( '#ti-relays, #i-relays' ).toggleClass( 'hide', !G.status.relayson );
 				} else if ( G.library ) {
 					$( '.list p' ).toggleClass( 'bars-on', G.bars );
 					if ( bars !== G.bars && $( '.coverart' ).length ) {
@@ -651,7 +651,7 @@ $( '#volup, #voldn' ).click( function() {
 	} );
 } );
 $( '#coverTL, #timeTL' ).tap( function() {
-	$( '#bar-bottom' ).removeClass( 'opaque60' );
+	$( '#bar-bottom' ).removeClass( 'translucent' );
 	if ( G.status.mpd && !G.status.playlistlength ) return
 	
 	if ( window.innerWidth < 614 ) {
@@ -724,7 +724,7 @@ $( '#coverT, #timeT' ).tap( function() {
 	$( '#volume-text' ).addClass( 'hide' );
 	$( '.timemap' ).toggleClass( 'mapshow', !G.display.cover );
 	$( '.volmap' ).toggleClass( 'mapshow', !G.display.volumenone && G.display.volume );
-	if ( !G.bars ) $( '#bar-bottom' ).addClass( 'opaque60' );
+	if ( !G.bars ) $( '#bar-bottom' ).addClass( 'translucent' );
 	if ( window.innerWidth < 614 && !G.display.volume ) {
 		$( '#coverTL' )
 				.removeClass( 'fa-scale-dn' )
@@ -1026,8 +1026,7 @@ $( '.btn-cmd' ).click( function() {
 		$( '#playback-controls .btn' ).removeClass( 'active' );
 		$( '#'+ cmd ).addClass( 'active' );
 	}
-	// for gpio
-	if ( $( '#gpio' ).hasClass( 'on' ) && command === 'mpc play' ) bash( [ 'gpiotimerreset' ] );
+	if ( $( '#relays' ).hasClass( 'on' ) && command === 'mpc play' ) bash( [ 'relaystimerreset' ] );
 } );
 $( '#biocontent' ).on( 'click', '.biosimilar', function() {
 	getBio( $( this ).text() );

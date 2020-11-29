@@ -11,14 +11,15 @@ $gid = exec( "$sudo/id -g mpd" );
 	<br>USB drive will be found and mounted automatically. Network shares must be manually configured.
 	<br>
 	<br><i class="fa fa-plus-circle"></i>&ensp; Add network share commands used:
-	<br> &emsp; <gr>(If mount failed, try in termenal to see errors.)</gr>
-	<br>#1: <code>mkdir -p "/mnt/MPD/NAS/<bll>NAME</bll>"</code>
-	<br>#2: (in one single line)
-	<br> &emsp; CIFS:
-	<br> &emsp; <code>mount -t cifs "//<bll>IP</bll>/<bll>SHARE</bll>" "/mnt/MPD/NAS/<bll>NAME</bll>" -o noauto,username=<bll>USER</bll>,password=<bll>PASSWORD</bll>,uid=<?=$uid?>,gid=<?=$gid?>,iocharset=utf8</code>
-	<br> &emsp; NFS:
-	<br> &emsp; <code>mount -t nfs "<bll>IP</bll>:/<bll>SHARE</bll>" "/mnt/MPD/NAS/<bll>NAME</bll>" -o defaults,noauto,bg,soft,timeo=5</code>
-	<br>#3: If options required, append #2 with <code>,<bll>OPTIONS</bll></code>
+	<br> &emsp; <gr>(If mount failed, try in SSH terminal.)</gr>
+	<br>#1:
+	<pre>mkdir -p "/mnt/MPD/NAS/<bll>NAME</bll>"</pre>
+	#2:
+	<br>CIFS:
+	<pre>mount -t cifs "//<bll>IP</bll>/<bll>SHARE</bll>" "/mnt/MPD/NAS/<bll>NAME</bll>" -o noauto,username=<bll>USER</bll>,password=<bll>PASSWORD</bll>,uid=<?=$uid?>,gid=<?=$gid?>,iocharset=utf8</pre>
+	NFS:
+	<pre>mount -t nfs "<bll>IP</bll>:/<bll>SHARE</bll>" "/mnt/MPD/NAS/<bll>NAME</bll>" -o defaults,noauto,bg,soft,timeo=5</pre>
+	(Append more options if required.)
 </span>
 </div>
 

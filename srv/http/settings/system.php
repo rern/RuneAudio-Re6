@@ -30,10 +30,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<br>Network
 	<br>Sources
 </div>
-<div id="system" class="col-r text"></div>
-<div class="col-r">
-	<span class="help-block hide"><br><i class="fa fa-gear"></i>&ensp;Shortcut to each setting</span>
-</div>
+<div id="system" class="col-r text"></div> 
 </div>
 
 <div>
@@ -90,8 +87,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<div class="switchlabel" for="bluetooth"></div>
 	<i id="setting-bluetooth" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
-		<i class="fa fa-gear"></i>&ensp;Discoverable: Allow RuneAudio+R to be discovered by other devices.
-		<br>- Should be disabled if not used.
+			- Should be disabled if not used.
 		<br>- Try reboot again if Bluetooth not working.
 	</span>
 </div>
@@ -109,7 +105,6 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 </div>
 <pre id="codeifconfig" class="hide"></pre>
 	<?php } ?>
-<span class="help-block hide"><br><i class="fa fa-code"></i>&ensp;Status of each device</span>
 
 </div>
 
@@ -159,7 +154,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 </div>
 <div class="col-l double status">
 	<a>Relays
-	<br><gr>RPI.GPIO</gr></a><i class="fa fa-gpio fa-lg"></i>
+	<br><gr>RPI.GPIO</gr></a><i class="fa fa-relays fa-lg"></i>
 </div>
 <div class="col-r">
 	<input id="relays" class="enablenoset" type="checkbox">
@@ -167,7 +162,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<i id="setting-relays" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
 		<a href="https://sourceforge.net/projects/raspberry-gpio-python/">RPi.GPIO</a> - Python module to control GPIO.
-		<br><a href="https://github.com/rern/RuneUI_GPIO/blob/master/README.md">RuneUI - GPIO</a> - Control GPIO-connected relay module for power on / off equipments.
+		<br><a href="https://github.com/rern/R_GPIO">+R - GPIO</a> - Control GPIO-connected relay module for power on / off equipments.
 	</span>
 </div>
 </div>
@@ -190,9 +185,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<?=$selecttimezone?>
 	<i id="setting-regional" class="settingedit fa fa-gear"></i>
 	<span class="help-block hide">
-		<i class="fa fa-gear"></i>&ensp;Set:
-		<br>- NTP - Network Time Protocol server
-		<br>- Wi-Fi regulatory domain:
+		Wi-Fi regulatory domain:
 		<p style="margin: 0 0 0 20px">00 = Least common denominator settings, channels and transmit power are permitted in all countries.
 		<br>Active regulatory domian may be reassigned by connected router.</p>
 	</span>
@@ -205,14 +198,14 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<input id="soundprofile" class="enable" type="checkbox">
 	<div class="switchlabel" for="soundprofile"></div>
 	<i id="setting-soundprofile" class="setting fa fa-gear"></i>
-	<span class="help-block hide">Tweak kernel parameters for sound profile.</span>
+	<span class="help-block hide">Tweak kernel parameters for <a htef="https://www.runeaudio.com/forum/sound-signatures-t2849.html">sound profiles</a>.</span>
 </div>
 <pre id="codesoundprofile" class="hide"></pre>
 </div>
 
 <div>
 <heading data-status="journalctl" class="status">Boot Log<i id="journalctlicon" class="fa fa-code"></i><?=$help?></heading>
-<span class="help-block hide"><code>journalctl -b • sed -n '1,/Startup finished/ p'</code></span>
+<span class="help-block hide"><code>journalctl -b</code></span>
 <pre id="codejournalctl" class="hide"></pre>
 </div>
 

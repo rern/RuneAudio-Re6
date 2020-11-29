@@ -60,7 +60,6 @@
 .fa-gear:before { content: "\f509" }
 .fa-gears:before { content: "\f50A" }
 .fa-genre:before { content: "\f55A" }
-.fa-gpio:before { content: "\f522" }
 .fa-guide:before { content: "\f579" }
 .fa-info-circle:before { content: "\f561" }
 .fa-jigsaw:before { content: "\f50E" }
@@ -98,6 +97,7 @@
 .fa-redo:before { content: "\f524" }
 .fa-refresh:before { content: "\f526" }
 .fa-refresh-library:before { content: "\f53A" }
+.fa-relays:before { content: "\f522" }
 .fa-reload:before { content: "\f525" }
 .fa-repeat:before { content: "\f511" }
 .fa-repeat-single:before { content: "\f510" }
@@ -861,8 +861,8 @@ svg path.st1 {
 .transparent {
 	opacity: 0 !important;
 }
-.opaque60 {
-	opacity: 0.6 !important;
+.translucent {
+	opacity: 0.5 !important;
 }
 #divcover {
 	margin: 0 auto;

@@ -538,7 +538,7 @@ function hideGuide() {
 	G.guide = false;
 	$( '#coverTR' ).toggleClass( 'empty', !G.status.playlistlength && !G.bars );
 	$( '.map' ).removeClass( 'mapshow' );
-	$( '#bar-bottom' ).removeClass( 'opaque60' );
+	$( '#bar-bottom' ).removeClass( 'translucent' );
 	if ( !G.bars ) $( '#bar-bottom' ).addClass( 'transparent' );
 	if ( !G.display.progressbar ) $( '#timebar' ).addClass( 'hide' );
 	$( '.band, #volbar' ).addClass( 'transparent' );
@@ -1414,12 +1414,12 @@ function setButtonControl() {
 	setButtonOptions();
 }
 function setButtonOptions() {
-	$( '#gpio .fa-gpio' ).toggleClass( 'on', G.status.gpioon );
+	$( '#relays .fa-replays' ).toggleClass( 'on', G.status.relayson );
 	$( '#snapclient' ).toggleClass( 'on', G.status.snapclient );
 	$( '#modeicon i, #timeicon i' ).addClass( 'hide' );
 	var displaytime = G.display.time && window.innerWidth > 613;
 	var prefix = displaytime ? 'ti' : 'i';
-	$( '#'+ prefix +'-gpio' ).toggleClass( 'hide', !G.status.gpioon );
+	$( '#'+ prefix +'-relays' ).toggleClass( 'hide', !G.status.relayson );
 	if ( !G.status.mpd ) return
 	
 	if ( G.display.buttons ) {
