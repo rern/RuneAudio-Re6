@@ -34,8 +34,8 @@ include 'logosvg.php';
 		<?php } ?>
 	<link rel="stylesheet" href="/assets/css/selectric.<?=$time?>.css">
 	<link rel="stylesheet" href="/assets/css/info.<?=$time?>.css">
-	<link rel="stylesheet" href="/assets/css/settings.<?=$time?>.css">
 	<link rel="stylesheet" href="/assets/css/banner.<?=$time?>.css">
+	<link rel="stylesheet" href="/assets/css/settings.<?=$time?>.css">
 </head>
 <body>
 <?php
