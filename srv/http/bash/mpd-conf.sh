@@ -10,11 +10,6 @@
 
 dirsystem=/srv/http/data/system
 
-if [[ -e $dirsystem/mpd-manualconf ]]; then
-	systemctl -q is-active mpd && systemctl restart mpd || systemctl start mpd
-	exit
-fi
-
 ! systemctl -q is-active nginx && exit 0 # udev rule trigger on startup
 
 pushstream() {
@@ -95,7 +90,7 @@ audio_output {
 	dop            "yes"'
 	
 	fi
-	mpdcustom=$dirsystem/mpd-custom
+	mpdcustom=$dirsystem/custom
 	customfile="$mpdcustom-output-$name"
 	if [[ -e $mpdcustom && -e "$customfile" ]]; then
 ########
