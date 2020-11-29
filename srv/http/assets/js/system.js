@@ -17,7 +17,7 @@ function renderStatus() {
 		if ( bits.slice( -1 ) == 1 ) {                    // bit# 0  - undervoltage now
 			status += '<br><i class="fa fa-warning blink red"></i>&ensp;Voltage under 4.7V'
 		} else if ( bits.slice( -19, 1 ) == 1 ) {         // bit# 19 - undervoltage occured
-			status += '<br><i class="fa fa-warning blink"></i>&ensp;Voltage under 4.7V occured.';
+			status += '<br><i class="fa fa-warning blink"></i>&ensp;Voltage under 4.7V occurred.';
 		}
 	}
 	return status
