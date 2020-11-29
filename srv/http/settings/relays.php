@@ -22,7 +22,8 @@
 	<link rel="stylesheet" href="/assets/css/colors.<?=$time?>.css">
 	<link rel="stylesheet" href="/assets/css/selectric.<?=$time?>.css">
 	<link rel="stylesheet" href="/assets/css/info.<?=$time?>.css">
-	<link rel="stylesheet" href="/assets/css/gpiosettings.<?=$time?>.css">
+	<link rel="stylesheet" href="/assets/css/banner.<?=$time?>.css">
+	<link rel="stylesheet" href="/assets/css/relays.<?=$time?>.css">
 </head>
 
 <?php
@@ -146,7 +147,8 @@ function opttime( $n, $minimum = 1 ) {
 <script src="/assets/js/plugin/jquery-2.2.4.min.<?=$time?>.js"></script>
 <script src="/assets/js/plugin/jquery.selectric.min.<?=$time?>.js"></script>
 <script src="/assets/js/info.<?=$time?>.js"></script>
-<script src="/assets/js/gpio.<?=$time?>.js"></script>
+<script src="/assets/js/banner.<?=$time?>.js"></script>
+<script src="/assets/js/relays.<?=$time?>.js"></script>
 
 </body>
 </html>
