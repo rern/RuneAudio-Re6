@@ -95,7 +95,7 @@ if sys.argv[ 1 ] == 'on':
     time.sleep( 1 )
     pushstream( { 'done': True } )
     
-    timer == 0 and exit
+    if timer == 0: quit()
     
     with open( gpiofile, 'w' ) as file:
         file.write( str( timer ) )
