@@ -651,7 +651,7 @@ $( '#volup, #voldn' ).click( function() {
 	} );
 } );
 $( '#coverTL, #timeTL' ).tap( function() {
-	$( '#bar-bottom' ).removeClass( 'opaque60' );
+	$( '#bar-bottom' ).removeClass( 'translucent' );
 	if ( G.status.mpd && !G.status.playlistlength ) return
 	
 	if ( window.innerWidth < 614 ) {
@@ -724,7 +724,7 @@ $( '#coverT, #timeT' ).tap( function() {
 	$( '#volume-text' ).addClass( 'hide' );
 	$( '.timemap' ).toggleClass( 'mapshow', !G.display.cover );
 	$( '.volmap' ).toggleClass( 'mapshow', !G.display.volumenone && G.display.volume );
-	if ( !G.bars ) $( '#bar-bottom' ).addClass( 'opaque60' );
+	if ( !G.bars ) $( '#bar-bottom' ).addClass( 'translucent' );
 	if ( window.innerWidth < 614 && !G.display.volume ) {
 		$( '#coverTL' )
 				.removeClass( 'fa-scale-dn' )
