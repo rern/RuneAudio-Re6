@@ -239,6 +239,17 @@ $( '.help' ).click( function() {
 $( '.status' ).click( function( e ) {
 	codeToggle( $( this ).data( 'status' ), e.target );
 } );
+$( '.container' ).click( function() {
+	$( '#swipebar' ).addClass( 'transparent' );
+} );
+$( '#swipebar i' ).click( function() {
+	if ( $( '#swipebar' ).hasClass( 'transparent' ) ) {
+		$( '#swipebar' ).removeClass( 'transparent' );
+	} else {
+		location.href = 'settings.php?p='+ $( this ).data( 'page' );
+	}
+} );
+// tap hold
 var timer;
 $( '#swipebar' ).on( 'mousedown touchdown', function() {
 	timer = setTimeout( function() {
@@ -246,12 +257,4 @@ $( '#swipebar' ).on( 'mousedown touchdown', function() {
 	}, 1000 );
 } ).on( 'mouseup mouseleave touchup touchleave', function() {
 	clearTimeout( timer );
-} ).click( function() {
-	$( '#swipebar' ).removeClass( 'transparent' );
-} );
-$( '.container' ).click( function() {
-	$( '#swipebar' ).addClass( 'transparent' );
-} );
-$( '#swipebar i' ).click( function() {
-	if ( !$( '#swipebar' ).hasClass( 'transparent' ) ) location.href = 'settings.php?p='+ $( this ).data( 'page' );
 } );

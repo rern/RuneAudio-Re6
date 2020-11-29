@@ -79,7 +79,7 @@ displayGet( function( data ) { // get mpd status with passive.js on pushstream c
 	$.event.special.tap.emitTapOnTaphold = false; // suppress tap on taphold
 	$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
 	$.event.special.tap.tapholdThreshold = 1000;
-	$( '#swipebar, .page' ).on( 'swipeleft swiperight', function( e ) {
+	$( '.page' ).on( 'swipeleft swiperight', function( e ) {
 		if ( G.bars || !G.status.mpd || G.swipepl || G.drag ) return
 		
 		G.swipe = 1;
@@ -497,20 +497,8 @@ $( '#tab-playlist' ).click( function() {
 		if ( G.color ) $( '#colorcancel' ).click();
 	}
 } );
-$( '#swipebar' ).tap( function( e ) {
-	if ( !G.swipe && e.target.id !== 'swipeL' && e.target.id !== 'swipeR' ) $( '#button-settings' ).click();
-} ).taphold( function() {
-	if ( G.swipe ) return
-	
+$( '#bar-bottom' ).taphold( function() {
 	location.reload();
-} );
-$( '#swipeL' ).click( function() {
-	var page = G.playback ? 'library' : ( G.library ? 'playlist' : 'playback' );
-	$( '#tab-'+ page ).click();
-} );
-$( '#swipeR' ).click( function() {
-	var page = G.playback ? 'playlist' : ( G.library ? 'playback' : 'library' );
-	$( '#tab-'+ page ).click();
 } );
 $( '#page-playback' ).tap( function( e ) {
 	if ( [ 'coverT', 'timeT', 'volume-bar', 'volume-band', 'volume-band-dn', 'volume-band-up' ].indexOf( e.target.id ) !== -1 ) return
@@ -553,9 +541,6 @@ $( '#bar-top, #bar-bottom' ).click( function() {
 } );
 $( '#settings' ).click( function() {
 	$( this ).addClass( 'hide' )
-} );
-$( '#bar-bottom' ).taphold( function() {
-	location.reload();
 } );
 $( '#lib-list, #pl-list, #pl-savedlist' ).on( 'click', 'p', function() {
 	$( '.menu' ).addClass( 'hide' );
@@ -668,6 +653,7 @@ $( '#volup, #voldn' ).click( function() {
 	} );
 } );
 $( '#coverTL, #timeTL' ).tap( function() {
+	$( '#bar-bottom' ).removeClass( 'opaque60' );
 	if ( G.status.mpd && !G.status.playlistlength ) return
 	
 	if ( window.innerWidth < 614 ) {
@@ -714,7 +700,8 @@ $( '#coverTL, #timeTL' ).tap( function() {
 		}
 		G.display.bars = false;
 	}
-	$( '.band, #swipebar' ).addClass( 'transparent' );
+	$( '.band' ).addClass( 'transparent' );
+	if ( !G.bars ) $( '#bar-bottom' ).addClass( 'transparent' );
 	$( '#volume-bar, #volume-text' ).addClass( 'hide' );
 	$( '.volumeband' ).toggleClass( 'hide', G.display.volumenone );
 	renderPlayback();
@@ -727,7 +714,6 @@ $( '#coverT, #timeT' ).tap( function() {
 	G.guide = !$( this ).hasClass( 'mapshow' );
 	if ( $( this ).hasClass( 'mapshow' ) ) {
 		hideGuide();
-		$( '#coverTR' ).toggleClass( 'empty', !G.status.playlistlength && !G.bars );
 		return
 	}
 	
@@ -738,7 +724,7 @@ $( '#coverT, #timeT' ).tap( function() {
 	$( '#volume-text' ).addClass( 'hide' );
 	$( '.timemap' ).toggleClass( 'mapshow', !G.display.cover );
 	$( '.volmap' ).toggleClass( 'mapshow', !G.display.volumenone && G.display.volume );
-	$( '#swipebar' ).toggleClass( 'transparent', G.bars );
+	if ( !G.bars ) $( '#bar-bottom' ).addClass( 'opaque60' );
 	if ( window.innerWidth < 614 && !G.display.volume ) {
 		$( '#coverTL' )
 				.removeClass( 'fa-scale-dn' )
@@ -765,7 +751,6 @@ $( '#coverT, #timeT' ).tap( function() {
 			$( '#volume-bar' ).removeClass( 'hide' );
 		}
 	}
-	$( '#swipebar' ).toggleClass( 'hide', !G.status.mpd );
 	$( '.edit' ).remove();
 	$( '#coverart' ).css( 'opacity', '' );
 	$( '.cover-save' ).css( 'z-index', 100 );
@@ -780,7 +765,8 @@ $( '.covermap' ).taphold( function( e ) {
 $( '#time-band' ).on( 'touchstart mousedown', function( e ) {
 	if ( G.guide ) {
 		$( '.controls, #volume-bar' ).addClass( 'hide' );
-		$( '.band, #swipebar' ).addClass( 'transparent' );
+		$( '.band' ).addClass( 'transparent' );
+		if ( !G.bars ) $( '#bar-bottom' ).addClass( 'transparent' );
 		$( '.map' ).removeClass( 'mapshow' );
 	}
 	if ( !G.status.mpd || G.status.webradio ) return
@@ -813,7 +799,8 @@ $( '#volume-band' ).on( 'touchstart mousedown', function( e ) {
 	}
 	if ( G.guide ) {
 		$( '.controls' ).addClass( 'hide' );
-		$( '.band, #swipebar' ).addClass( 'transparent' );
+		$( '.band' ).addClass( 'transparent' );
+		if ( !G.bars ) $( '#bar-bottom' ).addClass( 'transparent' );
 		$( '.map' ).removeClass( 'mapshow' );
 	}
 	G.drag = 1;
@@ -850,7 +837,8 @@ $( '#volume-band-dn, #volume-band-up' ).click( function() {
 	
 	if ( G.guide ) {
 		$( '.controls' ).addClass( 'hide' );
-		$( '.band, #swipebar' ).addClass( 'transparent' );
+		$( '.band' ).addClass( 'transparent' );
+		if ( !G.bars ) $( '#bar-bottom' ).addClass( 'transparent' );
 		$( '.map' ).removeClass( 'mapshow' );
 	}
 	$( '#volume-bar, #volume-text' ).removeClass( 'hide' );

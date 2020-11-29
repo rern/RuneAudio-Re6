@@ -449,12 +449,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	<textarea id="lyricstextarea" class="lyricstext"></textarea>
 	<div id="lyricsfade"></div>
 </div>
-<div id="swipebar" class="transparent">
-	<i id="swipeL" class="swipe fa fa-left"></i>
-	<i class="fa fa-reload"></i><i class="fa fa-swipe"></i><i class="fa fa-gear"></i>
-	<i id="swipeR" class="swipe fa fa-right"></i>
-</div>
-<div id="bar-bottom" class="hide">
+<div id="bar-bottom">
 	<i id="tab-library" class="fa fa-library"></i>
 	<i id="tab-playback" class="active fa fa-play-circle"></i>
 	<i id="tab-playlist" class="fa fa-list-ul"></i>

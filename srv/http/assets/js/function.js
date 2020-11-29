@@ -325,7 +325,8 @@ function displayTopBottom() {
 	
 	if ( !G.display.bars || ( G.screenS && !G.display.barsalways ) ) {
 		G.bars = false;
-		$( '#bar-top, #bar-bottom' ).addClass( 'hide' );
+		$( '#bar-top' ).addClass( 'hide' );
+		$( '#bar-bottom' ).addClass( 'transparent' );
 		$( '#page-playback' ).addClass ( 'barshidden' );
 		$( '#page-playback, #infoicon' ).removeClass( 'barsalways' );
 		$( '.list, #lib-index, #pl-index' ).addClass( 'bars-off' );
@@ -333,14 +334,15 @@ function displayTopBottom() {
 		$( '.emptyadd' ).css( 'top', '90px' );
 	} else {
 		G.bars = true;
-		$( '#bar-top, #bar-bottom' ).removeClass( 'hide' );
+		$( '#bar-top' ).removeClass( 'hide' );
+		$( '#bar-bottom' ).removeClass( 'transparent' );
 		$( '#page-playback' ).removeClass ( 'barshidden' );
 		$( '#page-playback, #infoicon, .emptyadd' ).addClass( 'barsalways' );
 		$( '.list, #lib-index, #pl-index' ).removeClass( 'bars-off' );
 		$( '.content-top' ).css( 'top', '40px' );
 		$( '.emptyadd' ).css( 'top', '' );
 		if ( G.status.mpd ) {
-			$( '#tab-library, #tab-playlist, #swipeL, #swipeR' ).removeClass( 'hide' );
+			$( '#tab-library, #tab-playlist' ).removeClass( 'hide' );
 			$( '#tab-playback' )
 				.css( 'width', '' )
 				.removeAttr( 'class' )
@@ -357,7 +359,7 @@ function displayTopBottom() {
 				.css( 'width', '100%' )
 				.removeAttr( 'class' )
 				.addClass( 'active fa fa-'+ icon );
-			$( '#tab-library, #tab-playlist, #swipeL, #swipeR' ).addClass( 'hide' );
+			$( '#tab-library, #tab-playlist' ).addClass( 'hide' );
 		}
 	}
 	$( '.menu' ).addClass( 'hide' );
@@ -534,9 +536,12 @@ function getTitleWidth() {
 }
 function hideGuide() {
 	G.guide = false;
+	$( '#coverTR' ).toggleClass( 'empty', !G.status.playlistlength && !G.bars );
 	$( '.map' ).removeClass( 'mapshow' );
-	$( '.band, #volbar, #swipebar' ).addClass( 'transparent' );
+	$( '#bar-bottom' ).removeClass( 'opague60' );
+	if ( !G.bars ) $( '#bar-bottom' ).addClass( 'transparent' );
 	if ( !G.display.progressbar ) $( '#timebar' ).addClass( 'hide' );
+	$( '.band, #volbar' ).addClass( 'transparent' );
 	$( '#volume-bar, #volume-text' ).addClass( 'hide' );
 	$( '.cover-save' ).css( 'z-index', '' );
 }
