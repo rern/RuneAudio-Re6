@@ -2,23 +2,20 @@
 
 dirbash=/srv/http/bash
 dirdata=/srv/http/data
-diraddons=$dirdata/addons
 dirsystem=$dirdata/system
-dirtmp=$dirdata/shm
-dirdatatmp=$dirdata/tmp
 
 # clear default enabled features and updating flags
 rm -f $dirsystem/{localbrowser,onboard-audio,onboard-wlan,updating,listing,wav}
 
-mv $diraddons $dirtmp
+mv $dirdata/addons $dirdata/shm
 
 systemctl stop mpd
 
-backupfile=$dirdatatmp/backup.gz
+backupfile=$dirdata/tmp/backup.gz
 bsdtar -xpf $backupfile -C /srv/http
 rm -f $backupfile
 
-mv $dirtmp/addons $dirdata
+mv $dirdata/shm/addons $dirdata
 
 chown -R http:http /srv/http
 chown mpd:audio $dirdata/mpd/mpd* &> /dev/null
@@ -29,92 +26,46 @@ chmod 755 /srv/http/* $dirbash/* /srv/http/settings/*
 # bluetooth, lcdchar, soundprofile
 # buffer, bufferoutput, crossfade, custom, replaygain, soxr
 
-# features #################################################################
-# shairport-sync
-[[ -e $dirsystem/shairport-sync ]] && $dirbash/features.sh shairport-sync$'\n'true
+serviceEnable() {
+	for service in $2; do
+		[[ $1 != mpd ]] && servicefile=$service || servicefile=mpd-$service
+		[[ -e $dirsystem/$servicefile ]] && $dirbash/$1.sh ${service/-}'\n'true
+	done
+}
+serviceSet() {
+	for service in $2; do
+		[[ $1 != mpd ]] && servicefile=$service || servicefile=mpd-$service
+		[[ -e $dirsystem/$servicefile ]] && $dirbash/$1.sh ${service}set$'\n'"$( cat $dirsystem/${servicefile}set )"
+	done
+}
 
-# snapclient
-[[ -e $dirsystem/snapclient ]] && $dirbash/features.sh snapclientset$'\n'"$( cat $dirsystem/snapclientset )"
-
-# spotifyd
 [[ -e $dirsystem/spotifydset ]] && $dirbash/features.sh spotifydset$'\n'"$( cat $dirsystem/spotifydset )"
-[[ -e $dirsystem/spotifyd ]] && $dirbash/features.sh spotifyd$'\n'true
+[[ -e $dirsystem/calibration ]] && cp -f $dirsystem/calibration /etc/X11/xorg.conf.d/99-calibration.conf
 
-# upmpdcli
-[[ -e $dirsystem/upmpdcli ]] && $dirbash/features.sh upmpdcli$'\n'true
+serviceSet features 'hostapd localbrowser mpdscribble smb snapclient'
+serviceEnable features 'shairport-sync snapserver spotifyd upmpdcli'
+serviceSet system 'bluetooth lcdchar soundprofile'
+serviceEnable system 'lcd onboard-audio onboard-wlan'
 
-# snapserver
-[[ -e $dirsystem/snapserver ]] && $dirbash/features.sh snapserver$'\n'true
-
-# localbrowser
-[[ -e $dirsystem/localbrowser ]] && $dirbash/features.sh localbrowserset$'\n'"$( cat $dirsystem/localbrowserset )"
-
-# smb
-[[ -e $dirsystem/smb ]] && $dirbash/features.sh smbset$'\n'"$( cat $dirsystem/smbset )"
-
-# mpdscribble
-[[ -e $dirsystem/mpdscribble ]] && $dirbash/features.sh mpdscribbleset$'\n'"$( cat $dirsystem/mpdscribbleset )"
-
-# hostapd
-[[ -e $dirsystem/hostapd ]] && $dirbash/features.sh hostapdset$'\n'"$( cat $dirsystem/hostapdset )"
-
-# system #################################################################
-# onboardaudio
-[[ ! -e $dirsystem/onboard-audio ]] && $dirbash/system.sh onboardaudio$'\n'false
-
-# bluetooth
-[[ -e $dirsystem/onboard-bluetooth ]] && $dirbash/system.sh bluetooth$'\n'true
-
-# wlan
-[[ ! -e $dirsystem/onboard-wlan ]] && $dirbash/system.sh wlan$'\n'false
+touch /srv/http/data/shm/datarestore
+serviceSet mpd 'buffer bufferoutput crossfade custom replaygain soxr'
+serviceEnable mpd 'autoupdate ffmpeg normalization'
+rm /srv/http/data/shm/datarestore
+/srv/http/bash/mpd-conf.sh
 
 # audio i2s
 aplayname=$( cat $dirsystem/audio-aplayname 2> /dev/null )
 output=$( cat $dirsystem/audio-output )
 grep -q "$output.*$aplayname" /srv/http/settings/system-i2s.json && $dirbash/system.sh i2smodule$'\n'"$aplayname"$'\n'"$output"
-
-# lcd
-[[ -e $dirsystem/calibration ]] && cp -f $dirsystem/calibration /etc/X11/xorg.conf.d/99-calibration.conf
-[[ -e $dirsystem/lcd ]] && $dirbash/system.sh lcd$'\n'true
-
-# lcdchar
-[[ -e $dirsystem/lcdchar ]] && $dirbash/system.sh lcdcharset$'\n'"$( cat $dirsystem/lcdcharset )"
-
 # hostname
 [[ $( cat $dirsystem/hostname ) != RuneAudio ]] && $dirbash/system.sh hostname$'\n'$( cat $dirsystem/hostname )
-
 # timezone
 [[ -e $dirsystem/timezone ]] && $dirbash/system.sh timezone$'\n'"$( cat $dirsystem/timezone )"
-
 # regional
 [[ -e $dirsystem/regional ]] && $dirbash/features.sh regional$'\n'"$( cat $dirsystem/regional )"
-
-# soundprofile
-[[ -e $dirsystem/soundprofile ]] && $dirbash/system.sh soundprofileset$'\n'"$( cat $dirsystem/soundprofileset )"
-
-# mpd #################################################################
-# mpd.conf
-file=$dirsystem/mpd
-if ls $file-* &> /dev/null; then
-	touch /srv/http/data/shm/datarestore
-	[[ -e $file-crossfade ]] &&     $dirbash/mpd.sh crossfadeset$'\n'$( cat $file-crossfade )
-	[[ -e $file-normalization ]] && $dirbash/mpd.sh normalization$'\n'true
-	[[ -e $file-replaygain ]] &&    $dirbash/mpd.sh replaygainset$'\n'$( cat $file-replaygain )
-	[[ -e $file-autoupdate ]] &&    $dirbash/mpd.sh autoupdate$'\n'true
-	[[ -e $file-ffmpeg ]] &&        $dirbash/mpd.sh ffmpeg$'\n'true
-	[[ -e $file-buffer ]] &&        $dirbash/mpd.sh bufferset$'\n'$( cat $file-buffer )
-	[[ -e $file-bufferoutput ]] &&  $dirbash/mpd.sh bufferoutputset$'\n'$( cat $file-bufferoutput )
-	[[ -e $file-soxr ]] &&          $dirbash/mpd.sh soxrset$'\n'$( cat $file-soxrset )
-	[[ -e $file-custom ]] &&        $dirbash/mpd.sh customset$'\n'$( cat $file-custom-global )
-	rm /srv/http/data/shm/datarestore
-	/srv/http/bash/mpd-conf.sh
-fi
-
-# networks #################################################################
+# netctl
 netctl=$( ls -1 $dirsystem/netctl-* 2> /dev/null | head -1 )
 [[ -n $netctl ]] && cp "$netctl" /boot/wifi
-
-# sources #################################################################
 # fstab
 if ls $dirsystem/fstab-* &> /dev/null; then
 	sed -i '\|/mnt/MPD/NAS| d' /etc/fstab
@@ -126,7 +77,6 @@ if ls $dirsystem/fstab-* &> /dev/null; then
 	done
 	mount -a
 fi
-
 # color
 [[ -e $dirsystem/color ]] && color=1 && $dirbash/cmd.sh color
 

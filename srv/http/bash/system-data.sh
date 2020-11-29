@@ -101,6 +101,6 @@ if [[ -e /usr/bin/bluetoothctl  ]]; then
 	, "btdiscoverable"  : '$btdiscoverable
 fi
 [[ ${hwcode: -3:2} =~ ^(08|0c|0d|0e|11)$ ]] && data+='
-	, "wlan"            : '$( lsmod | grep -q '^brcmfmac ' && echo true || echo false )
+	, "onboardwlan"     : '$( lsmod | grep -q '^brcmfmac ' && echo true || echo false )
 
 echo {$data}

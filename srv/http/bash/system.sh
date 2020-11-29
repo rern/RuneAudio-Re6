@@ -193,6 +193,18 @@ onboardaudio )
 	echo "${args[2]}" > $filereboot
 	pushRefresh
 	;;
+onboardwlan )
+	if [[ ${args[1]} == true ]]; then
+		modprobe brcmfmac
+		systemctl enable --now netctl-auto@wlan0
+		touch $dirsystem/onboard-wlan
+	else
+		systemctl disable --now netctl-auto@wlan0
+		rm -f $dirsystem/onboard-wlan
+		rmmod brcmfmac
+	fi
+	pushRefresh
+	;;
 regional )
 	ntp=${args[1]}
 	regom=${args[2]}
@@ -254,18 +266,6 @@ timezone )
 	timezone=${args[1]}
 	timedatectl set-timezone $timezone
 	echo $timezone > $dirsystem/timezone
-	pushRefresh
-	;;
-wlan )
-	if [[ ${args[1]} == true ]]; then
-		modprobe brcmfmac
-		systemctl enable --now netctl-auto@wlan0
-		touch $dirsystem/onboard-wlan
-	else
-		systemctl disable --now netctl-auto@wlan0
-		rm -f $dirsystem/onboard-wlan
-		rmmod brcmfmac
-	fi
 	pushRefresh
 	;;
 	

@@ -103,8 +103,8 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<br><gr><i class="fa fa-code"></i></gr></a><i class="fa fa-wifi-3 fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="wlan" type="checkbox">
-	<div class="switchlabel" for="wlan"></div>
+	<input id="onboardwlan" type="checkbox">
+	<div class="switchlabel" for="onboardwlan"></div>
 	<span class="help-block hide">Should be disabled if not used.</span>
 </div>
 <pre id="codeifconfig" class="hide"></pre>

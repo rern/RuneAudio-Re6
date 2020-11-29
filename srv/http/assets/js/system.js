@@ -77,7 +77,7 @@ refreshData = function() {
 		$( '#onboardaudio' ).prop( 'checked', G.onboardaudio );
 		$( '#bluetooth' ).prop( 'checked', G.bluetooth );
 		$( '#setting-bluetooth' ).toggleClass( 'hide', !G.bluetooth );
-		$( '#wlan' ).prop( 'checked', G.wlan );
+		$( '#onboardwlan' ).prop( 'checked', G.onboardwlan );
 		$( '#i2smodule' ).val( 'none' );
 		$( '#i2smodule option' ).filter( function() {
 			var $this = $( this );
@@ -213,11 +213,11 @@ $( '#setting-bluetooth' ).click( function() {
 		}
 	} );
 } );
-$( '#wlan' ).click( function() {
+$( '#onboardwlan' ).click( function() {
 	var checked = $( this ).prop( 'checked' );
 	if ( !$( '#system .fa-wifi-3' ).length ) {
 		notify( 'On-board Wi-Fi', checked, 'wifi-3' );
-		bash( [ 'wlan', checked ] );
+		bash( [ 'onboardwlan', checked ] );
 	} else {
 		info( {
 			  icon    : 'wifi-3'
@@ -225,11 +225,11 @@ $( '#wlan' ).click( function() {
 			, message : 'This will disconnect Wi-Fi from router.'
 						+'<br>Continue?'
 			, cancel  : function() {
-				$( '#wlan' ).prop( 'checked', 1 );
+				$( '#onboardwlan' ).prop( 'checked', 1 );
 			}
 			, ok      : function() {
 				notify( 'On-board Wi-Fi', false, 'wifi-3' );
-				bash( [ 'wlan', false ] );
+				bash( [ 'onboardwlan', false ] );
 			}
 		} );
 	}
