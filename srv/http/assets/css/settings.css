@@ -329,7 +329,7 @@ heading i.fa-question-circle {
 	opacity: 0.8;
 }
 #swipebar i {
-	width: 80px;
+	width: calc( 85vw / 5 );
 	cursor: pointer;
 }
 .transparent {
@@ -691,11 +691,6 @@ input:checked + .switchlabel:after {
 		padding: 40px 5px;
 	}
 }
-@media (max-width: 480px) {
-	#swipebar i {
-		width: 70px;
-	}
-}
 @media (max-width: 450px) {
 	#guide .btn {
 		width: 70px;
@@ -705,16 +700,6 @@ input:checked + .switchlabel:after {
 	}
 	#guide .btn span {
 		display: none;
-	}
-}
-@media (max-width: 380px) {
-	#swipebar i {
-		width: 60px;
-	}
-}
-@media (max-width: 350px) {
-	#swipebar i {
-		width: 55px;
 	}
 }
 @media (hover: hover) {
