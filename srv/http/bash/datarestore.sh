@@ -47,7 +47,7 @@ serviceEnable features 'shairport-sync snapserver spotifyd upmpdcli'
 serviceSet system 'bluetooth lcdchar soundprofile'
 serviceEnable system 'lcd onboard-audio onboard-wlan'
 
-touch /srv/http/data/shm/datarestore
+touch /srv/http/data/shm/datarestore # for restart once
 serviceSet mpd 'buffer bufferoutput crossfade custom replaygain soxr'
 serviceEnable mpd 'autoupdate ffmpeg normalization'
 rm /srv/http/data/shm/datarestore
