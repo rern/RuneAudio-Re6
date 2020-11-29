@@ -21,38 +21,8 @@ chown -R http:http /srv/http
 chown mpd:audio $dirdata/mpd/mpd* &> /dev/null
 chmod 755 /srv/http/* $dirbash/* /srv/http/settings/*
 
-# datafileset:
-# hostapd, localbrowser, mpdscribble, smb, snapclient
-# bluetooth, lcdchar, soundprofile
-# buffer, bufferoutput, crossfade, custom, replaygain, soxr
-
-serviceEnable() {
-	for service in $2; do
-		[[ $1 != mpd ]] && servicefile=$service || servicefile=mpd-$service
-		[[ -e $dirsystem/$servicefile ]] && $dirbash/$1.sh ${service/-}'\n'true
-	done
-}
-serviceSet() {
-	for service in $2; do
-		[[ $1 != mpd ]] && servicefile=$service || servicefile=mpd-$service
-		[[ -e $dirsystem/$servicefile ]] && $dirbash/$1.sh ${service}set$'\n'"$( cat $dirsystem/${servicefile}set )"
-	done
-}
-
-[[ -e $dirsystem/spotifydset ]] && $dirbash/features.sh spotifydset$'\n'"$( cat $dirsystem/spotifydset )"
-[[ -e $dirsystem/calibration ]] && cp -f $dirsystem/calibration /etc/X11/xorg.conf.d/99-calibration.conf
-
-serviceSet features 'hostapd localbrowser mpdscribble smb snapclient'
-serviceEnable features 'shairport-sync snapserver spotifyd upmpdcli'
-serviceSet system 'bluetooth lcdchar soundprofile'
-serviceEnable system 'lcd onboard-audio onboard-wlan'
-
-touch /srv/http/data/shm/datarestore # for restart once
-serviceSet mpd 'buffer bufferoutput crossfade custom replaygain soxr'
-serviceEnable mpd 'autoupdate ffmpeg normalization'
-rm /srv/http/data/shm/datarestore
-/srv/http/bash/mpd-conf.sh
-
+# color
+[[ -e $dirsystem/color ]] && color=1 && $dirbash/cmd.sh color
 # audio i2s
 aplayname=$( cat $dirsystem/audio-aplayname 2> /dev/null )
 output=$( cat $dirsystem/audio-output )
@@ -60,9 +30,9 @@ grep -q "$output.*$aplayname" /srv/http/settings/system-i2s.json && $dirbash/sys
 # hostname
 [[ $( cat $dirsystem/hostname ) != RuneAudio ]] && $dirbash/system.sh hostname$'\n'$( cat $dirsystem/hostname )
 # timezone
-[[ -e $dirsystem/timezone ]] && $dirbash/system.sh timezone$'\n'"$( cat $dirsystem/timezone )"
+[[ -e $dirsystem/timezone ]] && $dirbash/system.sh timezone$'\n'$( cat $dirsystem/timezone )
 # regional
-[[ -e $dirsystem/regional ]] && $dirbash/features.sh regional$'\n'"$( cat $dirsystem/regional )"
+[[ -e $dirsystem/regional ]] && $dirbash/features.sh regional$'\n'$( cat $dirsystem/regional )
 # netctl
 netctl=$( ls -1 $dirsystem/netctl-* 2> /dev/null | head -1 )
 [[ -n $netctl ]] && cp "$netctl" /boot/wifi
@@ -77,7 +47,31 @@ if ls $dirsystem/fstab-* &> /dev/null; then
 	done
 	mount -a
 fi
-# color
-[[ -e $dirsystem/color ]] && color=1 && $dirbash/cmd.sh color
+
+serviceEnable() {
+	for service in $2; do
+		[[ -e $dirsystem/$service ]] && $dirbash/$1.sh $service'\n'true
+	done
+}
+serviceSet() {
+	for service in $2; do
+		[[ -e $dirsystem/$service ]] && $dirbash/$1.sh ${service}set$'\n'"$( cat $dirsystem/${service}set )"
+	done
+}
+
+[[ -e $dirsystem/spotifydset ]] && $dirbash/features.sh spotifydset$'\n'"$( cat $dirsystem/spotifydset )"
+[[ -e $dirsystem/calibration ]] && cp -f $dirsystem/calibration /etc/X11/xorg.conf.d/99-calibration.conf
+
+serviceSet features 'hostapd localbrowser mpdscribble smb snapclient'
+serviceEnable features 'shairport-sync snapserver spotifyd upmpdcli'
+
+serviceSet system 'bluetooth lcdchar soundprofile'
+serviceEnable system 'lcd onboard-audio onboard-wlan'
+
+touch /srv/http/data/shm/datarestore # for restart once
+serviceSet mpd 'buffer bufferoutput crossfade custom replaygain soxr'
+serviceEnable mpd 'autoupdate ffmpeg normalization'
+rm /srv/http/data/shm/datarestore
+/srv/http/bash/mpd-conf.sh
 
 curl -s -X POST http://127.0.0.1/pub?id=refresh -d '{ "page": "all" }'
