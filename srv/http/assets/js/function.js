@@ -538,7 +538,7 @@ function hideGuide() {
 	G.guide = false;
 	$( '#coverTR' ).toggleClass( 'empty', !G.status.playlistlength && !G.bars );
 	$( '.map' ).removeClass( 'mapshow' );
-	$( '#bar-bottom' ).removeClass( 'opague60' );
+	$( '#bar-bottom' ).removeClass( 'opaque60' );
 	if ( !G.bars ) $( '#bar-bottom' ).addClass( 'transparent' );
 	if ( !G.display.progressbar ) $( '#timebar' ).addClass( 'hide' );
 	$( '.band, #volbar' ).addClass( 'transparent' );
