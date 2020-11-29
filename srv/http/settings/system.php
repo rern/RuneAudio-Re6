@@ -185,9 +185,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<?=$selecttimezone?>
 	<i id="setting-regional" class="settingedit fa fa-gear"></i>
 	<span class="help-block hide">
-		<i class="fa fa-gear"></i>&ensp;Set:
-		<br>- NTP - Network Time Protocol server
-		<br>- Wi-Fi regulatory domain:
+		Wi-Fi regulatory domain:
 		<p style="margin: 0 0 0 20px">00 = Least common denominator settings, channels and transmit power are permitted in all countries.
 		<br>Active regulatory domian may be reassigned by connected router.</p>
 	</span>
