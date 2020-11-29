@@ -561,8 +561,6 @@ $( '.emptyadd' ).click( function( e ) {
 	}
 } );
 $( '#artist, #guide-bio' ).click( function() {
-	if ( G.status.webradio ) return
-	
 	if ( $( '#bio legend' ).text() != G.status.Artist ) {
 		getBio( $( '#artist' ).text() );
 	} else {
