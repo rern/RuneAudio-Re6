@@ -247,7 +247,10 @@ $( '#swipebar' ).on( 'mousedown touchdown', function() {
 } ).on( 'mouseup mouseleave touchup touchleave', function() {
 	clearTimeout( timer );
 } ).click( function() {
-	$( '#swipebar' ).toggleClass( 'transparent' )
+	$( '#swipebar' ).removeClass( 'transparent' );
+} );
+$( '.container' ).click( function() {
+	$( '#swipebar' ).addClass( 'transparent' );
 } );
 $( '#swipebar i' ).click( function() {
 	if ( !$( '#swipebar' ).hasClass( 'transparent' ) ) location.href = 'settings.php?p='+ $( this ).data( 'page' );
