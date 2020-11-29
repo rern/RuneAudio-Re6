@@ -568,22 +568,25 @@ svg path.st1 {
 	line-height: 15px;
 }
 /* ---------------------- bar-bottom ----------------------*/
+#bar-bottom {
+	font-size: 28px;
+	color: var( --cw );
+}
 #bar-bottom i {
 	display: inline-block;
-	font-size: 28px;
+	width: calc( 100% / 3 );
 	text-align: center;
-	color: var( --cw );
-	width: 33%;
+}
+#tab-library,
+#tab-playlist {
 	background: var( --cg );
 }
-#bar-bottom i.active,
-.content-top i.active,
-#bar-playback {
-	background: var( --cm ) !important;
-}
 #tab-playback {
-	width: 34%;
 	background: var( --cga );
+}
+.content-top i.active,
+#bar-bottom i.active {
+	background: var( --cm );
 }
 /* ---------------------- middle window ----------------------*/
 .page,
