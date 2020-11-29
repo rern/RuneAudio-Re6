@@ -718,7 +718,9 @@ $( '#coverT, #timeT' ).tap( function() {
 	$( '#coverTR' ).removeClass( 'empty' );
 	$( '.covermap, .guide' ).addClass( 'mapshow' );
 	$( '.guide' ).toggleClass( 'hide', !G.status.playlistlength && G.status.mpd );
-	$( '#guide-artist, #guide-bio, #guide-album' ).toggleClass( 'hide', G.status.webradio || !G.status.playlistlength );
+	$( '#guide-bio, #guide-album' ).toggleClass( 'hide', !G.status.playlistlength );
+	$( '#guide-bio, #guide-lyrics' ).toggleClass( 'hide', G.status.webradio && G.status.state === 'stop' );
+	$( '#guide-album' ).toggleClass( 'hide', G.status.webradio );
 	$( '#volume-text' ).addClass( 'hide' );
 	$( '.timemap' ).toggleClass( 'mapshow', !G.display.cover );
 	$( '.volmap' ).toggleClass( 'mapshow', !G.display.volumenone && G.display.volume );
