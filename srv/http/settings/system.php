@@ -198,7 +198,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<input id="soundprofile" class="enable" type="checkbox">
 	<div class="switchlabel" for="soundprofile"></div>
 	<i id="setting-soundprofile" class="setting fa fa-gear"></i>
-	<span class="help-block hide">Tweak kernel parameters for sound profile.</span>
+	<span class="help-block hide">Tweak kernel parameters for <a htef="https://www.runeaudio.com/forum/sound-signatures-t2849.html">sound profiles</a>.</span>
 </div>
 <pre id="codesoundprofile" class="hide"></pre>
 </div>
