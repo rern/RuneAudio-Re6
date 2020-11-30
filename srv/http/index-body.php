@@ -213,20 +213,6 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 <?php }
 	  if ( file_exists( $dirsystem.'relays' ) ) { ?>
 	<a id="relays"><i class="fa fa-relays"></i>Relays</a>
-<?php }
-	  if ( file_exists( '/srv/http/aria2' ) ) {
-		$ariaenable = exec( '/usr/bin/systemctl is-enabled aria2 &> /dev/null && echo true || echo false' );
-		$ariaactive = exec( '/usr/bin/systemctl is-active aria2 &> /dev/null && echo true || echo false' )
-?>
-	<a id="aria2" class="pkg sub" data-enabled="<?=$ariaenable?>" data-active="<?=$ariaactive?>">
-		<img src="/assets/img/addons/thumbaria.<?=$time?>.png" class="iconimg<?=( $ariaactive === 'true' ? ' on' : '' )?>">Aria2</a><i class="fa fa-gear submenu imgicon"></i>
-<?php }
-	  if ( file_exists( '/usr/bin/transmission-cli' ) ) {
-		$tranenable = exec( '/usr/bin/systemctl is-enabled transmission &> /dev/null && echo true || echo false' );
-		$tranactive = exec( '/usr/bin/systemctl is-active transmission &> /dev/null && echo true || echo false' );
-?>
-	<a id="transmission" class="pkg sub" data-enabled="<?=$tranenable?>" data-active="<?=$tranactive?>">
-		<img src="/assets/img/addons/thumbtran.<?=$time?>.png" class="iconimg<?=( $tranactive === 'true' ? ' on' : '' )?>">Transmission</a><i class="fa fa-gear submenu imgicon"></i>
 <?php } ?>
 	<a id="displaylibrary" class="sub"><i class="fa fa-library"></i>Library</a>
 		<i id="displaylibrary2" class="fa fa-gear submenu"></i>

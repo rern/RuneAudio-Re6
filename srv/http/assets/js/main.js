@@ -179,9 +179,6 @@ $( '#logout' ).click( function( e ) {
 		location.reload();
 	} );
 } );
-$( '.pkg' ).click( function( e ) {
-	menuPackage( $( this ), $( e.target ) );
-} );
 var chklibrary = {
 	  sd             : '_<i class="fa fa-microsd"></i>SD'
 	, usb            : '<i class="fa fa-usbdrive"></i>USB'

@@ -645,56 +645,6 @@ function local( delay ) {
 	G.local = 1;
 	setTimeout( function() { G.local = 0 }, delay || 300 );
 }
-function menuPackage( $this, $target ) {
-	var id = $this.prop( 'id' );
-	var title = id.charAt( 0 ).toUpperCase() + id.slice( 1 );
-	var active = $this.data( 'active' );
-	var icon = '<img src="'+ $( '#'+ id +' img' ).attr( 'src' ) +'" class="iconimg">';
-	if ( $target.hasClass( 'submenu' ) ) {
-		info( {
-			  icon        : icon
-			, title       : title
-			, checkbox    : { 'Enable on startup': 1 }
-			, checked     : [ $this.data( 'enabled' ) ? 0 : 1 ]
-			, buttonlabel : '<i class="fa fa-stop"></i>Stop'
-			, buttoncolor : '#bb2828'
-			, button      : function() {
-				var enabled = $( '#infoCheckBox input' ).prop( 'checked' ) ? true : false;
-				menuPackageSet( id, false, enabled );
-				banner( title, 'Stop ...', icon );
-			}
-			, ok          : function() {
-				var active = $this.data( 'active' );
-				var enabled = $( '#infoCheckBox input' ).prop( 'checked' ) ? true : false;
-				menuPackageSet( id, active, enabled );
-			}
-			, preshow     : function() {
-				if ( !active ) $( '#infoButton' ).hide();
-			}
-		} );
-	} else {
-		$( '#settings' ).addClass( 'hide' );
-		var url = {
-			  aria2        : '/aria2/index.html'
-			, transmission : 'http://'+ location.hostname +':9091'
-		}
-		var enable = $this.data( 'enabled' );
-		if ( $this.data( 'active' ) ) {
-			window.open( url[ id ] );
-		} else {
-			bash( [ 'packageenable', id, enable ], window.open( url[ id ] ) );
-		}
-		menuPackageSet( id, true, enable );
-	}
-}
-function menuPackageSet( pkg, active, enable ) {
-	local( 1000 );
-	bash( [ 'packageset', pkg, active, enable ] );
-	$( '#'+ pkg )
-		.data( 'enabled', enable )
-		.data( 'active', active )
-		.find( 'img' ).toggleClass( 'on', active );
-}
 function mpcSeek( seekto ) {
 	var seektime = Math.round( seekto / 1000 * G.status.Time );
 	if ( G.display.time ) {
