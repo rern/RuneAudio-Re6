@@ -47,6 +47,15 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 	} );
 }
 refreshData();
+
+if ( $( '#transmission' ).length ) {
+	var url = location.host +':9091';
+	$( '#urltran' ).html( '<a href="http://'+ url +'">'+ url +'</a>' );
+}
+if ( $( '#aria2' ).length ) {
+	var url = location.host +'/aria2/index.html';
+	$( '#urlaria' ).html( '<a href="http://'+ url +'">'+ url +'</a>' );
+}
 //---------------------------------------------------------------------------------------
 $( '.enable' ).click( function() {
 	var idname = {

@@ -45,7 +45,6 @@
 	<i id="setting-spotifyd" class="setting fa fa-gear hide"></i>
 	<span class="help-block hide">
 		<a href="https://github.com/Spotifyd/spotifyd">Spotifyd</a> - RuneAudio as Spotify Connect device.(For Premium account only)
-		<br><i class="fa fa-gear"></i>&ensp;Manually select audio output (when default not working only)
 	</span>
 </div>
 <pre id="codespotifyd" class="hide"></pre>
@@ -98,7 +97,23 @@
 
 <div>
 <heading>Features<?=$help?></heading>
-	<?php if ( file_exists( '/usr/bin/chromium' ) ) { ?>
+	<?php if ( file_exists( '/usr/bin/transmission-cli' ) ) { ?>
+<div data-status="transmission" class="col-l double status">
+	<a>BitTorrent
+	<br><gr>transmission<?=$code?></gr></a><i class="fa fa-transmission fa-lg"></i>
+</div>
+<div class="col-r">
+	<input id="transmission" class="enable" type="checkbox">
+	<div class="switchlabel" for="transmission"></div>
+	<i id="setting-transmission" class="setting fa fa-gear"></i>
+	<span class="help-block hide">
+		<a href="https://transmissionbt.com/">Transmission</a> - BitTorrent client
+		<br>URL: <span id="urltran"></span>
+	</span>
+</div>
+<pre id="codetransmission" class="hide"></pre>
+	<?php }
+		  if ( file_exists( '/usr/bin/chromium' ) ) { ?>
 <div data-status="localbrowser" class="col-l double status">
 	<a>Browser on RPi
 	<br><gr>localbrowser<?=$code?></gr></a><i class="fa fa-chromium fa-lg"></i>
@@ -113,6 +128,21 @@
 </div>
 <pre id="codelocalbrowser" class="hide"></pre>
 	<?php } 
+		  if ( file_exists( '/usr/bin/aria2' ) ) { ?>
+<div data-status="aria2" class="col-l double status">
+	<a>Downloader
+	<br><gr>aria2<?=$code?></gr></a><i class="fa fa-aria2 fa-lg"></i>
+</div>
+<div class="col-r">
+	<input id="aria2" class="enable" type="checkbox">
+	<div class="switchlabel" for="aria2"></div>
+	<span class="help-block hide">
+		<a href="https://aria2.github.io/">Aria2</a> - Multi-protocol & multi-source command-line download utility.
+		<br>URL: <span id="urlaria"></span>
+	</span>
+</div>
+<pre id="codearia2" class="hide"></pre>
+	<?php }
 		  if ( file_exists( '/usr/bin/smbd' ) ) { ?>
 <div data-status="smb" class="col-l double status">
 	<a>File Sharing
@@ -125,7 +155,6 @@
 	<span class="help-block hide">
 		<a href="https://www.samba.org">Samba</a> - Share files on RuneAudio.
 		<br>Set sources permissions for read+write - directory: <code>0777</code> file: <code>0555</code>
-		<br><i class="fa fa-gear"></i>&ensp;Enable/disable write.
 	</span>
 </div>
 <pre id="codesmb" class="hide"></pre>
