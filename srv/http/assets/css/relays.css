@@ -27,7 +27,7 @@
 .fa-question-circle:before { content: "\f560" }
 .fa-relays:before { content: "\f522" }
 .fa-stopwatch:before { content: "\f547" }
-.fa-tag:before { content: "\f545" }
+.fa-tag:before { content: "\f55B" }
 .fa-times:before { content: "\f51A" }
 
 *,
@@ -119,14 +119,20 @@ select {
 .selectric-wrapper {
 	width: auto;
 }
+.selectric-items {
+	min-width: 70px;
+	width: 100% !important;
+}
 .selectric-on,
 .selectric-off {
 	width: 170px;
+	margin-bottom: 5px;
 }
 .selectric-pin,
 .selectric-timer,
 .selectric-delay {
-	width: 70px;
+	width: 85px;
+	margin-bottom: 5px;
 }
 .selectric-disabled {
 	color: var( --cg60 );
@@ -148,7 +154,7 @@ span.timer,
 }
 span.timer {
 	display: block;
-	margin-top: 58px;
+	margin-top: 50px;
 	margin-left: 0;
 }
 span.timer i {
@@ -196,7 +202,7 @@ span.timer i {
 }
 #gpio-num.column,
 .delay {
-	width: 75px;
+	width: 90px;
 }
 #gpio .column {
 	float: left;
@@ -214,11 +220,11 @@ input {
 }
 #gpio-name {
 	margin: 0 0 5px 0 !important;
-	width: 120px !important;
+	width: 130px !important;
 }
 input {
-	margin-bottom: 10px;
-	height: 41px !important;
+	margin-bottom: 5px;
+	height: 39px !important;
 	padding: 0 10px !important;
 	font-family: Lato;
 	font-size: 15px !important;
@@ -250,6 +256,11 @@ input: focus {
 }
 .btn-primary:hover {
 	background-color: var( --cml )
+}
+.disabled {
+	color: var( --cg60 );
+	background-color: var( --cg );
+	pointer-events: none;
 }
 #gpioimgtxt,
 .blue {

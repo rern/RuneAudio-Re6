@@ -592,10 +592,10 @@ relays )
 	fi
 	;;
 relaysset )
-	echo ${args[1]} | jq . > $dirsystem/relays.json
+	echo ${args[1]} | jq . > $dirsystem/relaysset
 	;;
 relaystimerreset )
-	awk '/timer/ {print $NF}' $dirsystem/relays.json > $dirtmp/relaystimer
+	awk '/timer/ {print $NF}' $dirsystem/relaysset > $dirtmp/relaystimer
 	pushstream relays '{"state":"RESET"}'
 	;;
 thumbgif )

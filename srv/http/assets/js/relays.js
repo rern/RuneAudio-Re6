@@ -1,20 +1,118 @@
 $( function() { //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-$( 'select' ).selectric();
+var newvalues;
 
-var pin = {
-	  1: $( '#pin1' ).val()
-	, 2: $( '#pin2' ).val()
-	, 3: $( '#pin3' ).val()
-	, 4: $( '#pin4' ).val()
-};
-var pname = {
-	  1: $( '#name1' ).val()
-	, 2: $( '#name2' ).val()
-	, 3: $( '#name3' ).val()
-	, 4: $( '#name4' ).val()
-};
-var timer = $( '#timer' ).val();
+function renderOptions( json ) {
+	var r = json;
+	var pins = Object.keys( r.name );
+	var names = Object.values( r.name );
+	var name, pin;
+	var optnamepin = '<option value="0">none</option>';
+	for ( i = 0; i < 4; i++ ) {
+		pin = pins[ i ];
+		namepin = ( names[ i ] || '(no name)' ) +' - '+ pin;
+		optnamepin += '<option value="'+ pin +'">'+ namepin +'</option>';
+	}
+	var htmlon = '';
+	var htmloff = '';
+	var optsec = '<option value="0">none</option>';
+	for ( i = 1; i < 11; i++ ) optsec += '<option value="'+ i +'">'+ i +'</option>';
+	htmlsec = '</select><span class="sec">sec.</span>';
+
+	for ( i = 1; i < 5; i++ ) {
+		htmlon +=  '<select id="on'+ i +'" name="on'+ i +'" class="on">'+ optnamepin +'</select>';
+		htmloff += '<select id="off'+ i +'" name="off'+ i +'" class="off">'+ optnamepin +'</select>';
+		if ( i < 4 ) {
+			if ( !r.on[ 'ond'+ i ] ) break;
+			
+			htmlon += '<select id="ond'+ i +'" name="ond'+ i +'" class="ond delay">'+ optsec + htmlsec;
+			htmloff += '<select id="offd'+ i +'" name="offd'+ i +'" class="offd delay">'+ optsec + htmlsec;
+		}
+	}
+	$( '#on' ).html( htmlon );
+	$( '#off' ).html( htmloff );
+	$( '#timer' ).html( optsec );
+
+	for ( i=1; i < 5; i++ ) {
+		$( '#pin'+ i ).val( pins[ i - 1 ] );
+		$( '#name'+ i ).val( names[ i - 1 ] );
+	}
+	for ( i=1; i < 5; i++ ) {
+		$( '#on'+ i +' option[value='+ r.on[ 'on'+ i ] +']' ).prop( 'selected', 1 );
+		$( '#off'+ i +' option[value='+ r.off[ 'off'+ i ] +']' ).prop( 'selected', 1 );
+		if ( i < 4 ) {
+			if ( !r.on[ 'ond'+ i ] ) break;
+			
+			$( '#ond'+ i +' option[value='+ r.on[ 'ond'+ i ] +']' ).prop( 'selected', 1 );
+			$( '#offd'+ i +' option[value='+ r.off[ 'offd'+ i ] +']' ).prop( 'selected', 1 );
+		}
+	}
+	$( '#timer option[value='+ r.timer +']' ).prop( 'selected', 1 );
+
+	$( 'select' ).selectric();
+}
+function data2json() {
+	var form = document.getElementById( 'relaysform' );
+	var data = Object.fromEntries( new FormData( form ).entries() );
+	for( key in data ) {
+		var name = {}
+		var on = {}
+		var off = {}
+		for ( i = 1; i < 5; i++ ) {
+			name[ data[ 'pin'+ i ] ] = data[ 'name'+ i ];
+			on[ 'on'+ i ] = Number( data[ 'on'+ i ] ) || 0;
+			off[ 'off'+ i ] = Number( data[ 'off'+ i ] ) || 0;
+			if ( i < 4 ) {
+				on[ 'ond'+ i ] = Number( data[ 'ond'+ i ] ) || 0;
+				off[ 'offd'+ i ] = Number( data[ 'offd'+ i ] ) || 0;
+			}
+		}
+	}
+	newvalues = {
+		  name  : name
+		, on    : on
+		, off   : off
+		, timer : Number( data.timer )
+	}
+	return newvalues
+}
+function dataDiff() {
+	var json1 = relaysset;
+	var json2 = data2json();
+	if ( json1.timer !== json2.timer ) {
+		$( '#relayssave' ).removeClass( 'disabled' );
+		return
+	}
+	var on1 = json1.on;
+	var on2 = json2.on;
+	var off1 = json1.off;
+	var off2 = json2.off;
+	for ( i = 1; i < 4; i++ ) {
+		if ( on1[ 'ond' + i ] !== on2[ 'ond' + i ] || on1[ 'offd' + i ] !== on2[ 'offd' + i ] ) {
+			$( '#relayssave' ).removeClass( 'disabled' );
+			return
+		}
+	}
+	for ( i = 1; i < 5; i++ ) {
+		if ( on1[ 'on' + i ] !== on2[ 'on' + i ] || off1[ 'off' + i ] !== off2[ 'off' + i ] ) {
+			$( '#relayssave' ).removeClass( 'disabled' );
+			return
+		}
+	}
+	var pins1 = Object.keys( json1.name );
+	var pins2 = Object.keys( json2.name );
+	var names1 = Object.values( json1.name );
+	var names2 = Object.values( json2.name );
+	for ( i = 0; i < 4; i++ ) {
+		if ( pins1[ i ] !== pins2[ i ] || names1[ i ] !== names2[ i ] ) {
+			$( '#relayssave' ).removeClass( 'disabled' );
+			return
+		}
+	}
+	$( '#relayssave' ).addClass( 'disabled' );
+}
+
+renderOptions( relaysset );
 
 $( '.close-root' ).click( function() {
 	location.href = '/';
@@ -32,151 +130,30 @@ $( '#gpioimgtxt, #close-img' ).click( function() {
 $( '#gpiopin, #gpiopin1' ).click( function() {
 	$( '#gpiopin, #gpiopin1' ).toggle();
 } );
-
-txtcolorpin();
-txtcolordelay();
-txtcolor();
-
-$( '.pin' ).change( function() { // 'object' by 'class' must add class '.selectpicker' to suppress twice firing events
-	var pnew = this.value;
-	var n = this.id.slice( -1 ); // get number
-	var on = $( '.on, .off' ).find( 'select:has(option[value='+ pin[ n ] +']:selected)' ); // get existing .on, .off that has this pin
-	var off = $( '.off' ).find( 'select:has(option[value='+ pin[ n ] +']:selected)' );
-
-	$( '.on, .off' )
-		.find( 'select option:nth-child('+ n +')' )
-		.after( '<option value='+ pnew +'>'+ pname[ n ] +' - '+ pnew +'</option>' ); // insert new item in option list ...
-	on.val( pnew ); // ... select new option list
-	off.val( pnew );
-
-	if ( pin[ n ] != 0 ) $( '.on, .off' ).find( '[value='+ pin[ n ] +']' ).remove(); // remove only not 'none'
-
-	pin = { // update new value
-		  1: $( '#pin1' ).val()
-		, 2: $( '#pin2' ).val()
-		, 3: $( '#pin3' ).val()
-		, 4: $( '#pin4' ).val()
-	};
-	txtcolorpin();
+$( '.name' ).keyup( function() {
+	dataDiff();
+} ).change( function() {
+	renderOptions( data2json() );
 } );
-$( '.name' ).change( function() {
-	var tnew = $( this ).val();
-	var n = this.id.slice( -1 );
-	var on = $( '.on' ).find( 'select:has(option[value='+ pin[ n ] +']:selected)' ); // get 'select' with existing name
-	var off = $( '.off' ).find( 'select:has(option[value='+ pin[ n ] +']:selected)' );
-	
-	$( '.on, .off' ).find( '[value='+ pin[ n ] +']' ).remove(); // remove existing from option list
-	$( '.on, .off' )
-		.find( 'select option:nth-child('+ n +')' )
-		.after( '<option value='+ pin[ n ] +'>'+ tnew +' - '+ pin[ n ] +'</option>' ); // insert new option to list
-	on.val( pin[ n ] ); // select new option
-	off.val( pin[ n ] );
-	pname = { // update new value
-		  1: $( '#name1' ).val()
-		, 2: $( '#name2' ).val()
-		, 3: $( '#name3' ).val()
-		, 4: $( '#name4' ).val()
-	};
-	txtcolor();
+$( '.pin' ).change( function() {
+	renderOptions( data2json() );
+	dataDiff();
 } );
-$( '.timer, .delay' ).change( function() {
-	txtcolor();
-} );
-$( '.on, .off' ).change( function() {
-	var on = this.id.slice( 0, 2 ) == 'on'; // get on/off
-	var pnew = this.value;
-	$( on ? '.on' : '.off' ).each( function() {
-		var el = $( this ).find( 'select:has(option[value='+ pnew +']:selected)' ); // find existing selected ...
-		if ( el.length ) el.val( 0 ); // ... reset existing selected to 'none'
-	});
-	$( this ).val( pnew ); // select 'pnew'
-	txtcolordelay();
-	txtcolor();
+$( '#on, #off, #timer' ).change( function() {
+	dataDiff();
 } );
 $( '#relayssave' ).click( function() {
-	var on = [ 
-		  $( '#on1' ).val()
-		, $( '#on2' ).val()
-		, $( '#on3' ).val()
-		, $( '#on4' ).val()
-	].filter( function( x ) { return x != 0; } ).length;
-	var off = [
-		  $( '#off1' ).val()
-		, $( '#off2' ).val()
-		, $( '#off3' ).val()
-		, $( '#off4' ).val()
-	].filter( function( x ) { return x != 0; } ).length;
-	if ( on !== off ) {
-		info( {
-			  icon    : 'relays'
-			, title   : 'GPIO Relays'
-			, message : on +' On : '+ off +' Off'
-					   +'<br>Number of equipments not matched !'
-		} );
-	} else {
-		var pinname = {}
-		for ( i = 1; i < 5; i++ ) {
-			pinname[ $( '#pin'+ i ).val() ] = $( '#name'+ i ).val() || '';
+	$.post(
+		'/cmd.php'
+		, { cmd : 'sh' , sh  : [ 'cmd.sh', 'relaysset', JSON.stringify( newvalues ) ] }
+		, function() {
+			relaysset = newvalues;
+			$( '#relayssave' ).addClass( 'disabled' );
+			$( '#bannerMessage' ).text( 'Done' );
+			setTimeout( bannerHide, 2000 );
 		}
-		var on = {}
-		for ( i = 1; i < 5; i++ ) {
-			on[ 'on'+ i ] = Number( $( '#on'+ i ).val() ) || 0;
-			if ( i == 4 ) break
-			on[ 'ond'+ i ] = Number( $( '#ond'+ i ).val() ) || 0;
-		}
-		var off = {}
-		for ( i = 1; i < 5; i++ ) {
-			off[ 'off'+ i ] = Number( $( '#off'+ i ).val() ) || 0;
-			if ( i == 4 ) break
-			off[ 'offd'+ i ] = Number( $( '#offd'+ i ).val() ) || 0;
-		}
-		var timer = Number( $( '#timer' ).val() )
-		var gpiojson = {
-			  name  : pinname
-			, on    : on
-			, off   : off
-			, timer : timer
-		}
-		$.post( '../cmd.php', {
-			  cmd : 'sh'
-			, sh  : [ 'cmd.sh', 'relaysset', JSON.stringify( gpiojson ) ]
-		} );
-		banner( 'GPIO Relays', 'Change ...', 'relays' );
-	}
+	);
+	banner( 'GPIO Relays', 'Change ...', 'relays' );
 } );
-
-function txtcolorpin() {
-	$( '.pin, .on, .off' )
-		.find( 'option' )
-		.show(); // default show all
-	$( '.pin' ) // hide used pin in options
-		.find( 'option[value='+ pin[ 1 ] +' ], [value='+ pin[ 2 ] +'], [value='+ pin[ 3 ] +'], [value='+ pin[ 4 ] +']' )
-		.hide();
-}
-function txtcolordelay() {
-	$( '.delay' )
-		.prop( 'disabled', false ); // default enabled
-	$( '.on, .off' ).each( function() { // delay 0 & disabled for 'none' equipment
-		var txt = this.id.slice( 0, -1 );
-		var num = this.id.slice( -1 ) - 1;
-		var sum = 0;
-		for ( var i = num; i > 0; i-- ) { // sum previous pins
-			var pin = $( '#'+ txt + i ).val();
-			sum = sum + pin;
-		}
-		if ( this.value == 0 || sum == 0 ) { // this 'on/off' = none or all previous = none
-			var dly = '#'+ txt +'d'+ num;
-			$( dly ).val( 0 ).prop( 'disabled', true );
-		}
-	} );
-	
-	$( '.delay' ).selectric( 'refresh' );
-}
-function txtcolor() {
-	$( '.timer, .delay, .on, .off' ).each( function() {
-		$this = $( this );
-		if ( !$this.prop( 'disabled' ) ) $this.parent().next().find( '.label' ).toggleClass( 'cg60', $this.val() == 0 );
-	} );
-}
 
 } ); //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

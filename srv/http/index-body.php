@@ -212,7 +212,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	<a id="power"><i class="fa fa-power"></i>Power</a>
 <?php }
 	  if ( file_exists( $dirsystem.'relays' ) ) { ?>
-	<a id="relays"><i class="fa fa-relays"></i>relays</a>
+	<a id="relays"><i class="fa fa-relays"></i>Relays</a>
 <?php }
 	  if ( file_exists( '/srv/http/aria2' ) ) {
 		$ariaenable = exec( '/usr/bin/systemctl is-enabled aria2 &> /dev/null && echo true || echo false' );

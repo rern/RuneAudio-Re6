@@ -10,12 +10,12 @@ from urllib.request import Request
 
 ON = 1
 OFF = 0
-timerfile = '/srv/http/data/shm/relaystimer'
+relaysfile = '/srv/http/data/shm/relaystimer'
 
-with open( '/srv/http/data/system/relays.json' ) as jsonfile:
-    relays = json.load( jsonfile )
+with open( '/srv/http/data/system/relaysset' ) as jsonfile:
+    gpio = json.load( jsonfile )
 
-name = relays[ 'name' ]
+name = gpio[ 'name' ]
 pin = name.keys();
 pin = [ int( n ) for n in pin ]
 
@@ -23,7 +23,7 @@ GPIO.setwarnings( 0 )
 GPIO.setmode( GPIO.BOARD )
 GPIO.setup( pin, GPIO.OUT )
 
-on   = relays[ 'on' ]
+on   = gpio[ 'on' ]
 on1  = on[ 'on1' ]
 ond1 = on[ 'ond1' ]
 on2  = on[ 'on2' ]
@@ -38,7 +38,7 @@ ond = ond1 + ond2 + ond3
 
 state = GPIO.input( onenable[ 0 ] )
 
-off   = relays[ 'off' ]
+off   = gpio[ 'off' ]
 off1  = off[ 'off1' ]
 offd1 = off[ 'offd1' ]
 off2  = off[ 'off2' ]
@@ -51,7 +51,7 @@ offenable = [ n for n in offpins if n != 0 ]
 
 offd = offd1 + offd2 + offd3
 
-timer = relays[ 'timer' ]
+timer = gpio[ 'timer' ]
 
 onorder = []
 on1 != 0 and onorder.append( name[ str( on1 ) ] ) # name[ key ] - keys are strings
@@ -97,14 +97,14 @@ if sys.argv[ 1 ] == 'on':
     
     if timer == 0: quit()
     
-    with open( timerfile, 'w' ) as file:
+    with open( relaysfile, 'w' ) as file:
         file.write( str( timer ) )
-    os.chmod( timerfile, 0o777 )
+    os.chmod( relaysfile, 0o777 )
 
     subprocess.Popen( [ '/srv/http/bash/relaystimer.sh' ] )
 
 elif sys.argv[ 1 ] == 'off':
-    os.path.exists( timerfile ) and os.remove( timerfile )
+    os.path.exists( relaysfile ) and os.remove( relaysfile )
 
     pushstream( { 'state': False, 'order': offorder } )
 

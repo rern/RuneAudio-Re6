@@ -144,7 +144,7 @@ echo '{
     "off4": 11
   },
   "timer": 5
-}' > $dirsystem/relays.json
+}' > $dirsystem/relaysset
 # mpd
 sed -i -e '/^auto_update\|^audio_buffer_size\| #custom$/ d
 ' -e '/quality/,/}/ d
