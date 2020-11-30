@@ -503,6 +503,7 @@ svg path.st1 {
 }
 #bar-bottom {
 	bottom: 0;
+	background: none;
 }
 .content-top,
 .licover,
@@ -513,11 +514,8 @@ svg path.st1 {
 	box-shadow: 0 0 10px 4px #000000;
 }
 #bar-top i {
-	height: 40px;
-	line-height: 40px;
-}
-#bar-top i {
 	width: 40px;
+	height: 40px;
 	line-height: 40px;
 	text-align: center;
 	border: none;
