@@ -67,6 +67,18 @@ case ${args[0]} in
 aplaydevices )
 	aplay -L | grep -v '^\s\|^null' | head -c -1
 	;;
+aria2 | shairport-sync | smb | snapclient | spotifyd | transmission | upmpdcli )
+	service=${args[0]}
+	enable=${args[1]}
+	if [[ $enable == true ]]; then
+		systemctl enable --now $service
+		touch $dirsystem/$service
+	else
+		systemctl disable --now $service
+		rm -f $dirsystem/$service
+	fi
+	pushRefresh
+	;;
 autoplay )
 	[[ ${args[1]} == true ]] && touch $dirsystem/autoplay || rm -f $dirsystem/autoplay
 	pushRefresh
@@ -179,42 +191,12 @@ screenoff )
 	screenoff ${args[1]}
 	pushRefresh
 	;;
-shairport-sync )
-	if [[ ${args[1]} == true ]]; then
-		systemctl enable --now shairport-sync
-		touch $dirsystem/shairport-sync
-	else
-		systemctl disable --now shairport-sync
-		rm -f $dirsystem/shairport-sync
-	fi
-	pushRefresh
-	;;
-smb )
-	if [[ ${args[1]} == true ]]; then
-		systemctl enable --now smb
-		touch $dirsystem/smb
-	else
-		systemctl disable --now smb
-		rm -f $dirsystem/smb
-	fi
-	pushRefresh
-	;;
 smbset )
 	smbconf=/etc/samba/smb.conf
 	sed -i '/read only = no/ d' $smbconf
 	[[ ${args[1]} == true ]] && sed -i '/path = .*SD/ a\	read only = no' $smbconf
 	[[ ${args[2]} == true ]] && sed -i '/path = .*USB/ a\	read only = no' $smbconf
 	featureSet smb "${args[@]:1}"
-	;;
-snapclient )
-	if [[ ${args[1]} == true ]]; then
-		systemctl start snapclient
-		touch $dirsystem/snapclient
-	else
-		systemctl stop snapclient
-		rm -f $dirsystem/snapclient
-	fi
-	pushRefresh
 	;;
 snapclientset )
 	latency=${args[1]}
@@ -235,41 +217,9 @@ snapserver )
 	$dirbash/snapcast.sh serverstop
 	pushRefresh
 	;;
-spotifyd )
-	if [[ ${args[1]} == true ]]; then
-		[[ -e $dirsystem/spotifydset ]] && $dirbash/features.sh spotifydset$'\n'$( cat $dirsystem/spotifydset )
-		systemctl enable --now spotifyd
-		touch $dirsystem/spotifyd
-	else
-		systemctl disable --now spotifyd
-		rm -f $dirsystem/spotifyd
-	fi
-	pushRefresh
-	;;
-spotifydset )
-	device=${args[1]}
-	sed -i "s/^\(device = \)/\1$device/" /etc/spotifyd.conf
-	systemctl try-restart spotifyd
-	if [[ ${device:0:7} == default ]]; then
-		rm -f $dirsystem/spotifydset
-	else
-		echo $device > $dirsystem/spotifydset
-	fi
-	pushRefresh
-	;;
 streaming )
 	[[ ${args[1]} == true ]] && touch $dirsystem/streaming || rm -f $dirsystem/streaming
 	$dirbash/mpd-conf.sh
-	pushRefresh
-	;;
-upmpdcli )
-	if [[ ${args[1]} == true ]]; then
-		systemctl enable --now upmpdcli
-		touch $dirsystem/upmpdcli
-	else
-		systemctl disable --now upmpdcli
-		rm -f $dirsystem/upmpdcli
-	fi
 	pushRefresh
 	;;
 	

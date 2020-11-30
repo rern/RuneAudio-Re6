@@ -31,19 +31,23 @@ if [[ -e /usr/bin/hostapd ]]; then
 	, "wlanconnect"     : '$( ifconfig wlan0 | grep -q inet && echo true || echo false )
 fi
 # renderer
-[[ -e /usr/bin/shairport-sync  ]] && data+='
+[[ -e /usr/bin/shairport-sync ]] && data+='
 	, "shairport-sync"  : '$( systemctl -q is-active shairport-sync && echo true || echo false )
-[[ -e /usr/bin/spotifyd  ]] && data+='
-	, "spotifyd"        : '$( systemctl -q is-active spotifyd && echo true || echo false )'
-	, "spotifyddevice"  : "'$( cat $dirsystem/spotifydset 2> /dev/null )'"'
-[[ -e /usr/bin/upmpdcli  ]] && data+='
+[[ -e /usr/bin/spotifyd ]] && data+='
+	, "spotifyd"        : '$( systemctl -q is-active spotifyd && echo true || echo false )
+[[ -e /usr/bin/upmpdcli ]] && data+='
 	, "upmpdcli"        : '$( systemctl -q is-active upmpdcli && echo true || echo false )
 # features
-[[ -e /usr/bin/smbd  ]] && data+='
+[[ -e /usr/bin/smbd ]] && data+='
 	, "smb"             : '$( systemctl -q is-active smb && echo true || echo false )'
 	, "smbset"          : '$( [[ -e $dirsystem/smbset ]] && echo true || echo false )'
 	, "smbwritesd"      : '$( grep -A1 /mnt/MPD/SD /etc/samba/smb.conf | grep -q 'read only = no' && echo true || echo false )'
 	, "smbwriteusb"     : '$( grep -A1 /mnt/MPD/USB /etc/samba/smb.conf | grep -q 'read only = no' && echo true || echo false )
+[[ -e /usr/bin/aria2 ]] && data+='
+	, "aria2"           : '$( systemctl -q is-active aria2 && echo true || echo false )
+[[ -e /usr/bin/transmission-cli ]] && data+='
+	, "transmission"    : '$( systemctl -q is-active transmission && echo true || echo false )
+	
 xinitrc=/etc/X11/xinit/xinitrc
 if [[ -e $xinitrc ]]; then
 	if [[ $lcd == true ]]; then

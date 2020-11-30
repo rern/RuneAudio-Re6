@@ -13,13 +13,8 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		
 		$( '#shairport-sync' ).prop( 'checked', G[ 'shairport-sync' ] );
 		$( '#spotifyd' ).prop( 'checked', G.spotifyd );
-		$( '#setting-spotifyd' ).toggleClass( 'hide', !G.spotifyd );
 		$( '#upmpdcli' ).prop( 'checked', G.upmpdcli );
 //		$( '#setting-upnp' ).toggleClass( 'hide', !G.upnp );
-		$( '#localbrowser' ).prop( 'checked', G.localbrowser );
-		$( '#setting-localbrowser' ).toggleClass( 'hide', !G.localbrowser );
-		$( '#smb' ).prop( 'checked', G.smb );
-		$( '#setting-smb' ).toggleClass( 'hide', !G.smb );
 		$( '#snapserver' ).prop( 'checked', G.snapserver );
 		if ( G.snapserver ) {
 			$( '#divsnapclient' ).addClass( 'hide' );
@@ -31,7 +26,12 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 			$( '#setting-snapclient' ).toggleClass( 'hide', !G.snapclient );
 		}
 		$( '#streaming' ).prop( 'checked', G.streaming );
-		$( '#ip' ).text( G.streamingip +':8000' );
+		$( '#transmission' ).prop( 'checked', G.transmission );
+		$( '#localbrowser' ).prop( 'checked', G.localbrowser );
+		$( '#setting-localbrowser' ).toggleClass( 'hide', !G.localbrowser );
+		$( '#aria2' ).prop( 'checked', G.aria2 );
+		$( '#smb' ).prop( 'checked', G.smb );
+		$( '#setting-smb' ).toggleClass( 'hide', !G.smb );
 		$( '#mpdscribble' ).prop( 'checked', G.mpdscribble );
 		$( '#setting-mpdscribble' ).toggleClass( 'hide', !G.mpdscribble );
 		$( '#login' ).prop( 'checked', G.login );
@@ -48,6 +48,7 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 }
 refreshData();
 
+$( '#ip' ).html( 'http://'+ location.host +':8000' );
 if ( $( '#transmission' ).length ) {
 	var url = location.host +':9091';
 	$( '#urltran' ).html( '<a href="http://'+ url +'">'+ url +'</a>' );

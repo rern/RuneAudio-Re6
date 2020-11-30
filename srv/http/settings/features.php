@@ -42,7 +42,6 @@
 <div class="col-r">
 	<input id="spotifyd" class="enablenoset" type="checkbox">
 	<div class="switchlabel" for="spotifyd"></div>
-	<i id="setting-spotifyd" class="setting fa fa-gear hide"></i>
 	<span class="help-block hide">
 		<a href="https://github.com/Spotifyd/spotifyd">Spotifyd</a> - RuneAudio as Spotify Connect device.(For Premium account only)
 	</span>
@@ -105,7 +104,6 @@
 <div class="col-r">
 	<input id="transmission" class="enable" type="checkbox">
 	<div class="switchlabel" for="transmission"></div>
-	<i id="setting-transmission" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
 		<a href="https://transmissionbt.com/">Transmission</a> - BitTorrent client
 		<br>URL: <span id="urltran"></span>
