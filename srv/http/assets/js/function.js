@@ -1449,7 +1449,7 @@ function setPlaylistScroll() {
 	$liactive = $( '#pl-list li' ).eq( G.status.song || 0 );
 	$liactive.addClass( 'active' );
 	$( '#menu-plaction' ).addClass( 'hide' );
-	if ( G.status.playlistlength < 5 ) {
+	if ( G.status.playlistlength < 5 || !$( '#infoOverlay' ).hasClass( 'hide' ) ) {
 		$( 'html, body' ).scrollTop( 0 );
 	} else {
 		var scrollpos = $liactive.offset().top - ( G.bars ? 80 : 40 ) - ( 49 * 3 );
