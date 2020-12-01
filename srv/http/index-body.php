@@ -191,8 +191,13 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	</div>
 </div>
 <div id="settings" class="menu hide">
+<?php if ( file_exists( $dirsystem.'relays' ) ) { ?>
+	<a id="features" class="settings sub"><i class="fa fa-sliders"></i>Features</a>
+		<i id="relays" class="fa fa-relays submenu"></i>
+<?php } else { ?>
 	<a id="features" class="settings"><i class="fa fa-sliders"></i>Features</a>
-<?php if ( file_exists( $dirsystem.'snapclient' ) ) { ?>
+<?php }
+	  if ( file_exists( $dirsystem.'snapclient' ) ) { ?>
 	<a id="mpd" class="settings sub"><i class="fa fa-mpd"></i>MPD</a>
 		<i id="snapclient" class="fa fa-snapcast submenu"></i>
 <?php } else { ?>
@@ -208,9 +213,6 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 		<i id="screenoff" class="fa fa-screenoff submenu"></i>
 <?php } else { ?>
 	<a id="power"><i class="fa fa-power"></i>Power</a>
-<?php }
-	  if ( file_exists( $dirsystem.'relays' ) ) { ?>
-	<a id="relays"><i class="fa fa-relays"></i>Relays</a>
 <?php } ?>
 	<a id="displaylibrary" class="sub"><i class="fa fa-library"></i>Library</a>
 		<i id="displaylibrary2" class="fa fa-gear submenu"></i>

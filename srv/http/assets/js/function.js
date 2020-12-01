@@ -1364,7 +1364,7 @@ function setButtonControl() {
 	setButtonOptions();
 }
 function setButtonOptions() {
-	$( '#relays .fa-replays' ).toggleClass( 'on', G.status.relayson );
+	$( '#relays' ).toggleClass( 'on', G.status.relayson );
 	$( '#snapclient' ).toggleClass( 'on', G.status.snapclient );
 	$( '#modeicon i, #timeicon i' ).addClass( 'hide' );
 	var displaytime = G.display.time && window.innerWidth > 613;
