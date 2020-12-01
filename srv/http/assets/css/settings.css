@@ -225,7 +225,7 @@ w, wh, .wh { color: var( --cw ) !important; }
 bl, .bl, .blue { color: var( --cm ) !important; }
 bll { color: var( --cml ) !important; }
 gr, .gr, grl { color: var( --cg60 ) !important; }
-.gra { color: var( --cgl ) }
+.gra { color: var( --cgl ) !important; }
 red, .red { color: #f00; }
 grn, .green { color: #0f0; }
 .clear { clear: both; }
@@ -322,13 +322,27 @@ heading i.fa-question-circle {
 	height: 40px;
 	z-index: 105;
 	font-size: 28px;
+	line-height: 32px;
 	text-align: center;
 	background: var( --cga );
+	cursor: pointer;
 	touch-action: manipulation; /* fix: Unable to preventDefault inside passive event listener */
 }
+#bar-bottom div {
+	display: inline-block;
+	width: calc( 90vw / 5 );
+	height: 40px;
+}
 #bar-bottom i {
-	width: calc( 85vw / 5 );
-	cursor: pointer;
+	width: 30px;
+	vertical-align: -3px;
+	font-size: 26px;
+	color: var( --cw );
+}
+#bar-bottom a {
+	font-size: 16px;
+	font-weight: 300;
+	color: var( --cg60 );
 }
 .transparent {
 	opacity: 0 !important;
@@ -641,6 +655,9 @@ input:checked + .switchlabel:after {
 	}
 }
 @media ( max-width: 580px ) {
+	#bar-bottom a {
+		display: none;
+	}
 	.wide {
 		display: none;
 	}

@@ -62,11 +62,11 @@ include "settings/$page.php";
 ?>
 </div>
 <div id="bar-bottom">
-	<i data-page="features" class="fa fa-sliders"></i>
-	<i data-page="mpd" class="fa fa-mpd"></i>
-	<i data-page="networks" class="fa fa-network"></i>
-	<i data-page="sources" class="fa fa-folder-cascade"></i>
-	<i data-page="system" class="fa fa-gear"></i>
+	<div id="features"><i class="fa fa-sliders"></i><a> Features</a></div>
+	<div id="mpd"><i class="fa fa-mpd"></i><a> MPD</a></div>
+	<div id="networks"><i class="fa fa-network"></i><a> Networks</a></div>
+	<div id="sources"><i class="fa fa-folder-cascade"></i><a> Sources</a></div>
+	<div id="system"><i class="fa fa-gear"></i><a> System</a></div>
 </div>
 
 	<?php if ( $localhost ) { ?>

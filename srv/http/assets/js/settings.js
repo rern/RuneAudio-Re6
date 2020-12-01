@@ -179,7 +179,7 @@ var filereboot = '/srv/http/data/shm/reboot';
 var short = window.innerHeight < 570;
 
 document.title = 'R+R '+ ( page === 'mpd' ? 'MPD' : page.charAt( 0 ).toUpperCase() + page.slice( 1 ) );
-$( '#bar-bottom i[data-page="'+ page +'"]' ).addClass( 'gra' );
+$( '#'+ page +' i' ).addClass( 'gra' );
 
 $( '#close' ).click( function() {
 	if ( page === 'system' || page === 'features' ) {
@@ -253,11 +253,11 @@ if ( short ) {
 		$( '#bar-bottom' ).addClass( 'transparent' );
 	} );
 }
-$( '#bar-bottom i' ).click( function() {
+$( '#bar-bottom div' ).click( function() {
 	if ( $( '#bar-bottom' ).hasClass( 'transparent' ) ) {
 		$( '#bar-bottom' ).removeClass( 'transparent' );
 	} else {
-		location.href = 'settings.php?p='+ $( this ).data( 'page' );
+		location.href = 'settings.php?p='+ this.id;
 	}
 } );
 // tap hold
