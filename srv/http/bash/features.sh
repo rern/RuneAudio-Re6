@@ -180,6 +180,7 @@ screenoff )
 smbdisable )
 	systemctl stop smb
 	rm -f $dirsystem/smb
+	pushRefresh
 	;;
 smbset )
 	smbconf=/etc/samba/smb.conf
@@ -191,6 +192,7 @@ smbset )
 snapclientdisable )
 	systemctl stop snapclient
 	rm -f $dirsystem/snapclient
+	pushRefresh
 	;;
 snapclientset )
 	latency=${args[1]}
