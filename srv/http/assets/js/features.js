@@ -19,6 +19,7 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		if ( G.snapserver ) {
 			$( '#snapclient' ).next().addBack().addClass( 'disabled' );
 		} else {
+			$( '#snapclient' ).next().addBack().removeClass( 'disabled' );
 			$( '#snapclient' ).prop( 'checked', G.snapclient )
 			$( '#setting-snapclient' ).toggleClass( 'hide', !G.snapclient );
 		}
