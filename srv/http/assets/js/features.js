@@ -17,12 +17,9 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 //		$( '#setting-upnp' ).toggleClass( 'hide', !G.upnp );
 		$( '#snapserver' ).prop( 'checked', G.snapserver );
 		if ( G.snapserver ) {
-			$( '#divsnapclient' ).addClass( 'hide' );
+			$( '#snapclient' ).next().addBack().addClass( 'disabled' );
 		} else {
-			$( '#divsnapclient' ).removeClass( 'hide' );
-			$( '#snapclient' )
-				.prop( 'checked', G.snapclient )
-				.data( 'latency', G.snaplatency );
+			$( '#snapclient' ).prop( 'checked', G.snapclient )
 			$( '#setting-snapclient' ).toggleClass( 'hide', !G.snapclient );
 		}
 		$( '#streaming' ).prop( 'checked', G.streaming );
@@ -61,6 +58,11 @@ if ( $( '#aria2' ).length ) {
 }
 //---------------------------------------------------------------------------------------
 $( '.enable' ).click( function() {
+	if ( $( this ).hasClass( 'disabled' ) ) {
+		$( this ).prop( 'checked', 0 );
+		return
+	}
+	
 	var idname = {
 		  hostapd      : [ 'RPi Access Point',     'wifi-3' ]
 		, localbrowser : [ 'Browser on RPi',       'chromium' ]

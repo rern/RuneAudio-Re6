@@ -19,21 +19,19 @@
 <pre id="codeshairport-sync" class="hide"></pre>
 	<?php }
 		  if ( file_exists( '/usr/bin/snapserver' ) ) { ?>
-<div id="divsnapclient">
-	<div data-status="snapclient" class="col-l double status">
-		<a>SnapClient
-		<br><gr>snapclient<?=$code?></gr></a><i class="fa fa-snapcast fa-lg"></i>
-	</div>
-	<div class="col-r">
-		<input id="snapclient" class="enable" type="checkbox">
-		<div class="switchlabel" for="snapclient"></div>
-		<i id="setting-snapclient" class="setting fa fa-gear hide"></i>
-		<span class="help-block hide">
-			<a href="https://github.com/badaix/snapcast">Snapcast</a> - Multiroom client-server audio player
-			<br>SnapClient - Connect: Menu >&ensp;<i class="fa fa-folder-cascade"></i>&ensp;Sources |&ensp;<i class="fa fa-snapcast"></i>
-			<br>(Note: Not available while Snapcast server enabled.)
-		</span>
-	</div>
+<div data-status="snapclient" class="col-l double status">
+	<a>SnapClient
+	<br><gr>snapclient<?=$code?></gr></a><i class="fa fa-snapcast fa-lg"></i>
+</div>
+<div class="col-r">
+	<input id="snapclient" class="enable" type="checkbox">
+	<div class="switchlabel" for="snapclient"></div>
+	<i id="setting-snapclient" class="setting fa fa-gear hide"></i>
+	<span class="help-block hide">
+		<a href="https://github.com/badaix/snapcast">Snapcast</a> - Multiroom client-server audio player
+		<br>SnapClient - Connect: Menu >&ensp;<i class="fa fa-folder-cascade"></i>&ensp;Sources |&ensp;<i class="fa fa-snapcast"></i>
+		<br>(Note: Not available while Snapcast server enabled.)
+	</span>
 </div>
 <pre id="codesnapclient" class="hide"></pre>
 	<?php }

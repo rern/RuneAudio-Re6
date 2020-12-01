@@ -493,6 +493,12 @@ input:checked + .switchlabel:after {
 .switchlabel:active:after {
 	width: 40px;
 }
+.switchlabel.disabled {
+	background-color: var( --cga );
+}
+.switchlabel.disabled:after {
+	background-color: var( --cgd );
+}
 .setting,
 .settingedit,
 .code {
