@@ -27,8 +27,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<br>Output Device
 	<br>Kernel
 	<br>MPD
-	<br>Network
-	<br>Sources
+	<br>Networks
 </div>
 <div id="system" class="col-r text"></div> 
 </div>

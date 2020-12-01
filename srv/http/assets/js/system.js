@@ -29,6 +29,7 @@ refreshData = function() {
 		if ( !list2G ) return
 		
 		if ( G.ip ) {
+			var pad = '';
 			var ip = G.ip.split( ',' );
 			var iplist = '';
 			ip.forEach( function( el ) {
@@ -38,9 +39,11 @@ refreshData = function() {
 					iplist += val[ 1 ] +'<span class="wide">&emsp;<gr>'+ val[ 2 ] +'</gr></span><br>';
 					systemlabel += '<br>';
 					if ( !G.streamingip ) G.streamingip = val[ 1 ];
+					pad += '<br>';
 				}
-			} )
+			} );
 		}
+		$( '#systemlabel' ).append( pad +'Sources' );
 		G.sources.pop(); // remove autoupdate
 		G.sources.pop(); // remove reboot
 		systemlabel += '<span class="settings" data-setting="sources">Sources<i class="fa fa-gear"></i></span>';
