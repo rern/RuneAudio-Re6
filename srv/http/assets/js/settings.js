@@ -179,6 +179,7 @@ var filereboot = '/srv/http/data/shm/reboot';
 var short = window.innerHeight < 570;
 
 document.title = 'R+R '+ ( page === 'mpd' ? 'MPD' : page.charAt( 0 ).toUpperCase() + page.slice( 1 ) );
+$( '#bar-bottom i[data-page="'+ page +'"]' ).addClass( 'gra' );
 
 $( '#close' ).click( function() {
 	if ( page === 'system' || page === 'features' ) {
