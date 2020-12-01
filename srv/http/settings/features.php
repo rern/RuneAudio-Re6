@@ -1,5 +1,8 @@
 <?php $code = '<i class="fa fa-code"></i>'; ?>
 <div>
+<script>
+	var set = <?=( '"'.$_GET[ 'set' ].'"' ?: 'false' )?>;
+</script>
 <heading>Renderers<?=$help?></heading>
 	<?php if ( file_exists( '/usr/bin/shairport-sync' ) ) { ?>
 <div data-status="shairport-sync" class="col-l double status">

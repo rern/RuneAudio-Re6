@@ -76,7 +76,8 @@ for ( $i = 1; $i < 5; $i++ ) {
 		<div class="column">
 			<span class="gpio-text"><i class="fa fa-power red"></i> &nbsp; Off Sequence</span>
 			<div id="off"></div>
-			<a id="relayssave" class="btn btn-primary disabled">Save</a>
+			<a id="undo" class="btn btn disabled"><i class="fa fa-undo"></i> Undo</a>
+			<a id="save" class="btn btn-primary disabled">Save</a>
 		</div>
 	</div>
 </div>

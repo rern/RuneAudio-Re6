@@ -47,6 +47,8 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 	} );
 }
 refreshData();
+// login | hostapd
+if ( set ) setTimeout( function() { $( '#'+ set ).click() }, set === 'login' ? 0 : 900 );
 
 $( '#ip' ).html( 'http://'+ location.host +':8000' );
 if ( $( '#transmission' ).length ) {
@@ -312,11 +314,16 @@ $( '#setting-login' ).click( function() {
 	info( {
 		  icon          : 'lock'
 		, title         : 'Password Login'
-		, message       : 'Change password:'
+		, message       : ( G.login ? 'Change password:' : 'New setup:' )
 		, passwordlabel : ( G.loginset ? [ 'Existing', 'New' ] : 'Password' )
 		, pwdrequired   : 1
 		, cancel        : function() {
-			$( '#login' ).prop( 'checked', G.login );
+			if ( set ) {
+				$( '#loader' ).removeClass( 'hide' );
+				location.href = '/';
+			} else {
+				$( '#login' ).prop( 'checked', G.login );
+			}
 		}
 		, ok            : function() {
 			var password = $( '#infoPasswordBox' ).val();
@@ -347,7 +354,12 @@ $( '#hostapdchk' ).click( function() {
 			, message   : '<wh>Wi-Fi is currently connected.</wh>'
 						 +'<br>Disconnect and continue?'
 			, cancel    : function() {
-				$( '#hostapd, #hostapdchk' ).prop( 'checked', 0 );
+				if ( set ) {
+					$( '#loader' ).removeClass( 'hide' );
+					location.href = '/settings.php?p=networks';
+				} else {
+					$( '#hostapd, #hostapdchk' ).prop( 'checked', 0 );
+				}
 			}
 			, ok        : function() {
 				$( '#hostapd' ).click();
@@ -381,7 +393,12 @@ $( '#setting-hostapd' ).click( function() {
 			}
 		}
 		, cancel       : function() {
-			$( '#hostapd' ).prop( 'checked', G.hostapd );
+			if ( set ) {
+				$( '#loader' ).removeClass( 'hide' );
+				location.href = '/settings.php?p=networks';
+			} else {
+				$( '#hostapd, #hostapdchk' ).prop( 'checked', 0 );
+			}
 		}
 		, ok           : function() {
 			var pwd = $( '#infoTextBox' ).val();

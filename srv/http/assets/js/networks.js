@@ -514,7 +514,7 @@ $( '#listbtscan' ).on( 'click', 'li', function( e ) {
 	}
 } );
 $( '#setting-accesspoint' ).click( function() {
-	location.href = 'settings.php?p=features';
+	location.href = 'settings.php?p=features&set=setting-hostapd';
 } );
 
 } );

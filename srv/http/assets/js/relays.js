@@ -1,56 +1,7 @@
 $( function() { //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-var newvalues;
+var newvalues, pinprev;
 
-function renderOptions( json ) {
-	var r = json;
-	var pins = Object.keys( r.name );
-	var names = Object.values( r.name );
-	var name, pin;
-	var optnamepin = '<option value="0">none</option>';
-	for ( i = 0; i < 4; i++ ) {
-		pin = pins[ i ];
-		namepin = ( names[ i ] || '(no name)' ) +' - '+ pin;
-		optnamepin += '<option value="'+ pin +'">'+ namepin +'</option>';
-	}
-	var htmlon = '';
-	var htmloff = '';
-	var optsec = '<option value="0">none</option>';
-	for ( i = 1; i < 11; i++ ) optsec += '<option value="'+ i +'">'+ i +'</option>';
-	htmlsec = '</select><span class="sec">sec.</span>';
-
-	for ( i = 1; i < 5; i++ ) {
-		htmlon +=  '<select id="on'+ i +'" name="on'+ i +'" class="on">'+ optnamepin +'</select>';
-		htmloff += '<select id="off'+ i +'" name="off'+ i +'" class="off">'+ optnamepin +'</select>';
-		if ( i < 4 ) {
-			if ( !r.on[ 'ond'+ i ] ) break;
-			
-			htmlon += '<select id="ond'+ i +'" name="ond'+ i +'" class="ond delay">'+ optsec + htmlsec;
-			htmloff += '<select id="offd'+ i +'" name="offd'+ i +'" class="offd delay">'+ optsec + htmlsec;
-		}
-	}
-	$( '#on' ).html( htmlon );
-	$( '#off' ).html( htmloff );
-	$( '#timer' ).html( optsec );
-
-	for ( i=1; i < 5; i++ ) {
-		$( '#pin'+ i ).val( pins[ i - 1 ] );
-		$( '#name'+ i ).val( names[ i - 1 ] );
-	}
-	for ( i=1; i < 5; i++ ) {
-		$( '#on'+ i +' option[value='+ r.on[ 'on'+ i ] +']' ).prop( 'selected', 1 );
-		$( '#off'+ i +' option[value='+ r.off[ 'off'+ i ] +']' ).prop( 'selected', 1 );
-		if ( i < 4 ) {
-			if ( !r.on[ 'ond'+ i ] ) break;
-			
-			$( '#ond'+ i +' option[value='+ r.on[ 'ond'+ i ] +']' ).prop( 'selected', 1 );
-			$( '#offd'+ i +' option[value='+ r.off[ 'offd'+ i ] +']' ).prop( 'selected', 1 );
-		}
-	}
-	$( '#timer option[value='+ r.timer +']' ).prop( 'selected', 1 );
-
-	$( 'select' ).selectric();
-}
 function data2json() {
 	var form = document.getElementById( 'relaysform' );
 	var data = Object.fromEntries( new FormData( form ).entries() );
@@ -80,7 +31,7 @@ function dataDiff() {
 	var json1 = relaysset;
 	var json2 = data2json();
 	if ( json1.timer !== json2.timer ) {
-		$( '#relayssave' ).removeClass( 'disabled' );
+		$( '.btn' ).removeClass( 'disabled' );
 		return
 	}
 	var on1 = json1.on;
@@ -89,13 +40,13 @@ function dataDiff() {
 	var off2 = json2.off;
 	for ( i = 1; i < 4; i++ ) {
 		if ( on1[ 'ond' + i ] !== on2[ 'ond' + i ] || on1[ 'offd' + i ] !== on2[ 'offd' + i ] ) {
-			$( '#relayssave' ).removeClass( 'disabled' );
+			$( '.btn' ).removeClass( 'disabled' );
 			return
 		}
 	}
 	for ( i = 1; i < 5; i++ ) {
 		if ( on1[ 'on' + i ] !== on2[ 'on' + i ] || off1[ 'off' + i ] !== off2[ 'off' + i ] ) {
-			$( '#relayssave' ).removeClass( 'disabled' );
+			$( '.btn' ).removeClass( 'disabled' );
 			return
 		}
 	}
@@ -105,11 +56,55 @@ function dataDiff() {
 	var names2 = Object.values( json2.name );
 	for ( i = 0; i < 4; i++ ) {
 		if ( pins1[ i ] !== pins2[ i ] || names1[ i ] !== names2[ i ] ) {
-			$( '#relayssave' ).removeClass( 'disabled' );
+			$( '.btn' ).removeClass( 'disabled' );
 			return
 		}
 	}
-	$( '#relayssave' ).addClass( 'disabled' );
+	$( '.btn' ).addClass( 'disabled' );
+}
+function renderOptions( json ) {
+	var r = json;
+	var pins = Object.keys( r.name );
+	var names = Object.values( r.name );
+	var name, pin;
+	var optnamepin = '<option value="0">none</option>';
+	for ( i = 0; i < 4; i++ ) {
+		pin = pins[ i ];
+		namepin = ( names[ i ] || '(no name)' ) +' - '+ pin;
+		optnamepin += '<option value="'+ pin +'">'+ namepin +'</option>';
+	}
+	var htmlon = '';
+	var htmloff = '';
+	var optsec = '<option value="0">none</option>';
+	for ( i = 1; i < 11; i++ ) optsec += '<option value="'+ i +'">'+ i +'</option>';
+	htmlsec = '</select><span class="sec">sec.</span>';
+	for ( i = 1; i < 5; i++ ) {
+		htmlon +=  '<select id="on'+ i +'" name="on'+ i +'" class="on">'+ optnamepin +'</select>';
+		htmloff += '<select id="off'+ i +'" name="off'+ i +'" class="off">'+ optnamepin +'</select>';
+		if ( i < 4 && r.on[ 'ond'+ i ] ) {
+			htmlon += '<select id="ond'+ i +'" name="ond'+ i +'" class="ond delay">'+ optsec + htmlsec;
+			htmloff += '<select id="offd'+ i +'" name="offd'+ i +'" class="offd delay">'+ optsec + htmlsec;
+		}
+	}
+	$( '#timer' )
+		.html( optsec )
+		.find( 'option[value='+ r.timer +']' ).prop( 'selected', 1 );
+	$( '#on' ).html( htmlon );
+	$( '#off' ).html( htmloff );
+	for ( i=1; i < 5; i++ ) {
+		$( '#pin'+ i ).val( pins[ i - 1 ] );
+		var ex = pins.slice( 0 ); // clone
+		ex.splice( i - 1, 1 );
+		for ( x = 0; x < 3; x++ ) $( '#pin'+ i +' option[value='+ ex[ x ] +']' ).toggleClass( 'hide' );
+		$( '#name'+ i ).val( names[ i - 1 ] );
+		$( '#on'+ i +' option[value='+ r.on[ 'on'+ i ] +']' ).prop( 'selected', 1 );
+		$( '#off'+ i +' option[value='+ r.off[ 'off'+ i ] +']' ).prop( 'selected', 1 );
+		if ( i < 4 && r.on[ 'ond'+ i ] ) {
+			$( '#ond'+ i +' option[value='+ r.on[ 'ond'+ i ] +']' ).prop( 'selected', 1 );
+			$( '#offd'+ i +' option[value='+ r.off[ 'offd'+ i ] +']' ).prop( 'selected', 1 );
+		}
+	}
+	$( 'select' ).selectric();
 }
 
 renderOptions( relaysset );
@@ -135,20 +130,35 @@ $( '.name' ).keyup( function() {
 } ).change( function() {
 	renderOptions( data2json() );
 } );
+$( '#gpio-num' ).on( 'mousedown touchdown', function( e ) {
+	pinprev = Number( $( e.target ).parent().prev().find( 'option:selected' ).val() );
+} );
 $( '.pin' ).change( function() {
-	renderOptions( data2json() );
+	var pinnew = Number( $( this ).find( 'option:selected' ).val() );
+	var r = data2json();
+	[ r.on, r.off ].forEach( function( json ) {
+		$.each( json, function( k, v ) {
+			if ( v === pinprev ) json[ k ] = pinnew;
+		} );
+	} );
+	$( 'select' ).selectric( 'refresh' );
+	renderOptions( r );
 	dataDiff();
 } );
 $( '#on, #off, #timer' ).change( function() {
 	dataDiff();
 } );
-$( '#relayssave' ).click( function() {
+$( '#undo' ).click( function() {
+	renderOptions( relaysset );
+	$( '.btn' ).addClass( 'disabled' );
+} );
+$( '#save' ).click( function() {
 	$.post(
 		'/cmd.php'
 		, { cmd : 'sh' , sh  : [ 'cmd.sh', 'relaysset', JSON.stringify( newvalues ) ] }
 		, function() {
 			relaysset = newvalues;
-			$( '#relayssave' ).addClass( 'disabled' );
+			$( '.btn' ).addClass( 'disabled' );
 			$( '#bannerMessage' ).text( 'Done' );
 			setTimeout( bannerHide, 2000 );
 		}

@@ -62,11 +62,11 @@ include "settings/$page.php";
 ?>
 </div>
 <div id="swipebar" class="transparent">
+	<i data-page="features" class="fa fa-sliders"></i>
 	<i data-page="mpd" class="fa fa-mpd"></i>
 	<i data-page="networks" class="fa fa-network"></i>
 	<i data-page="sources" class="fa fa-folder-cascade"></i>
 	<i data-page="system" class="fa fa-gear"></i>
-	<i data-page="features" class="fa fa-sliders"></i>
 </div>
 
 	<?php if ( $localhost ) { ?>

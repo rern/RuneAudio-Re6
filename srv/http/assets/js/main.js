@@ -175,9 +175,13 @@ $( '#relays' ).click( function( e ) {
 	bash( [ 'relays', !G.status.relayson ] );
 } );
 $( '#logout' ).click( function( e ) {
-	$.post( cmdphp, { cmd: 'logout' }, function() {
-		location.reload();
-	} );
+	if ( G.status.login ) {
+		$.post( cmdphp, { cmd: 'logout' }, function() {
+			location.reload();
+		} );
+	} else {
+		location.href = 'settings.php?p=features&set=login';
+	}
 } );
 var chklibrary = {
 	  sd             : '_<i class="fa fa-microsd"></i>SD'

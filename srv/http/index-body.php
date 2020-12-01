@@ -191,7 +191,8 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	</div>
 </div>
 <div id="settings" class="menu hide">
-<?php if ( file_exists( $dirsystem.'snapclient' ) ) { ?>
+	<a id="features" class="settings"><i class="fa fa-sliders"></i>Features</a>
+<?php if ( !file_exists( $dirsystem.'snapclient' ) ) { ?>
 	<a id="mpd" class="settings sub"><i class="fa fa-mpd"></i>MPD</a>
 		<i id="snapclient" class="fa fa-snapcast submenu"></i>
 <?php } else { ?>
@@ -201,11 +202,8 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	<a id="sources" class="settings sub"><i class="fa fa-folder-cascade"></i>Sources</a>
 		<i id="update" class="fa fa-refresh-library submenu"></i>
 	<a id="system" class="settings sub"><i class="fa fa-plus-r"></i>System</a>
-		<i id="features" class="fa fa-sliders settings submenu"></i>
-<?php if ( $login ) { ?>
-	<a id="logout"><i class="fa fa-lock"></i>Logout</a>
-<?php }
-	  if ( in_array( $_SERVER[ 'REMOTE_ADDR' ], [ '127.0.0.1', '::1' ] ) ) { ?>
+		<i id="logout" class="fa fa-lock submenu"></i>
+<?php if ( in_array( $_SERVER[ 'REMOTE_ADDR' ], [ '127.0.0.1', '::1' ] ) ) { ?>
 	<a id="power" class="sub"><i class="fa fa-power"></i>Power</a>
 		<i id="screenoff" class="fa fa-screenoff submenu"></i>
 <?php } else { ?>
