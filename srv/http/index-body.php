@@ -192,7 +192,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 </div>
 <div id="settings" class="menu hide">
 	<a id="features" class="settings"><i class="fa fa-sliders"></i>Features</a>
-<?php if ( !file_exists( $dirsystem.'snapclient' ) ) { ?>
+<?php if ( file_exists( $dirsystem.'snapclient' ) ) { ?>
 	<a id="mpd" class="settings sub"><i class="fa fa-mpd"></i>MPD</a>
 		<i id="snapclient" class="fa fa-snapcast submenu"></i>
 <?php } else { ?>
