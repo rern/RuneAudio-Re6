@@ -314,7 +314,7 @@ heading i.fa-question-circle {
 	max-height: 90vh;
 	white-space: pre-wrap;
 }
-#swipebar {
+#bar-bottom {
 	position: fixed;
 	bottom: 0;
 	width: 100%;
@@ -324,9 +324,8 @@ heading i.fa-question-circle {
 	text-align: center;
 	background: var( --cga );
 	touch-action: manipulation; /* fix: Unable to preventDefault inside passive event listener */
-	opacity: 0.8;
 }
-#swipebar i {
+#bar-bottom i {
 	width: calc( 85vw / 5 );
 	cursor: pointer;
 }
@@ -629,6 +628,11 @@ input:checked + .switchlabel:after {
 	float: right;
 	font-size: 24px;
 	color: var( --cm );
+}
+@media (max-height: 570px) {
+	#bar-bottom {
+		opacity: 0.8;
+	}
 }
 @media (min-width: 768px) {
 	.container {

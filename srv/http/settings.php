@@ -61,7 +61,7 @@ $help = '<i class="help fa fa-question-circle"></i>';
 include "settings/$page.php";
 ?>
 </div>
-<div id="swipebar" class="transparent">
+<div id="bar-bottom">
 	<i data-page="features" class="fa fa-sliders"></i>
 	<i data-page="mpd" class="fa fa-mpd"></i>
 	<i data-page="networks" class="fa fa-network"></i>

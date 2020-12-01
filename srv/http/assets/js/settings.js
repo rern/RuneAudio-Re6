@@ -176,6 +176,7 @@ var page = location.href.split( '=' ).pop();
 var reboot = '';
 var dirsystem = '/srv/http/data/system';
 var filereboot = '/srv/http/data/shm/reboot';
+var short = window.innerHeight < 570;
 
 document.title = 'R+R '+ ( page === 'mpd' ? 'MPD' : page.charAt( 0 ).toUpperCase() + page.slice( 1 ) );
 
@@ -226,10 +227,15 @@ $( '#help' ).click( function() {
 		return this.getBoundingClientRect().top > 0
 	} )[ 0 ]; // return 1st element
 	var offset0 = eltop.getBoundingClientRect().top;
-	var show = $( '.help-block:not(.hide)' ).length !== 0;
-	$( '.help-block' ).toggleClass( 'hide', show );
-	$( '#swipebar' ).toggleClass( 'transparent', show );
-	$( this ).toggleClass( 'blue' );
+	if ( $( '.help-block:not(.hide)' ).length > 0 ) {
+		$( this ).removeClass( 'blue' );
+		$( '.help-block' ).addClass( 'hide' );
+		if ( short ) $( '#bar-bottom' ).addClass( 'transparent' );
+	} else {
+		$( this ).addClass( 'blue' );
+		$( '.help-block' ).removeClass( 'hide' );
+		if ( short ) $( '#bar-bottom' ).removeClass( 'transparent' );
+	}
 	$( window ).scrollTop( eltop.offsetTop - offset0 );
 } );
 $( '.help' ).click( function() {
@@ -239,19 +245,23 @@ $( '.help' ).click( function() {
 $( '.status' ).click( function( e ) {
 	codeToggle( $( this ).data( 'status' ), e.target );
 } );
-$( '.container' ).click( function() {
-	$( '#swipebar' ).addClass( 'transparent' );
-} );
-$( '#swipebar i' ).click( function() {
-	if ( $( '#swipebar' ).hasClass( 'transparent' ) ) {
-		$( '#swipebar' ).removeClass( 'transparent' );
+// bar-bottom
+if ( short ) {
+	$( '#bar-bottom' ).addClass( 'transparent' );
+	$( '.container' ).click( function() {
+		$( '#bar-bottom' ).addClass( 'transparent' );
+	} );
+}
+$( '#bar-bottom i' ).click( function() {
+	if ( $( '#bar-bottom' ).hasClass( 'transparent' ) ) {
+		$( '#bar-bottom' ).removeClass( 'transparent' );
 	} else {
 		location.href = 'settings.php?p='+ $( this ).data( 'page' );
 	}
 } );
 // tap hold
 var timer;
-$( '#swipebar' ).on( 'mousedown touchdown', function() {
+$( '#bar-bottom' ).on( 'mousedown touchdown', function() {
 	timer = setTimeout( function() {
 		location.reload();
 	}, 1000 );
