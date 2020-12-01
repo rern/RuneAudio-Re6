@@ -1027,7 +1027,7 @@ $( '.btn-cmd' ).click( function() {
 		$( '#playback-controls .btn' ).removeClass( 'active' );
 		$( '#'+ cmd ).addClass( 'active' );
 	}
-	if ( $( '#relays' ).hasClass( 'on' ) && command === 'mpc play' ) bash( [ 'relaystimerreset' ] );
+	if ( $( '#relays' ).hasClass( 'on' ) && cmd === 'play' ) bash( [ 'relaystimerreset' ] );
 } );
 $( '#biocontent' ).on( 'click', '.biosimilar', function() {
 	getBio( $( this ).text() );
