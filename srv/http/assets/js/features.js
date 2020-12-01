@@ -13,17 +13,13 @@ refreshData = function() { // system page: use resetLocal() to aviod delay
 		
 		$( '#shairport-sync' ).prop( 'checked', G[ 'shairport-sync' ] );
 		$( '#spotifyd' ).prop( 'checked', G.spotifyd );
+		$( '#snapclient' ).next().addBack().toggleClass( 'disabled', G.snapserver );
+		$( '#snapclient' ).prop( 'checked', G.snapclient )
+		$( '#setting-snapclient' ).toggleClass( 'hide', !G.snapclient );
 		$( '#upmpdcli' ).prop( 'checked', G.upmpdcli );
 //		$( '#setting-upnp' ).toggleClass( 'hide', !G.upnp );
-		$( '#snapserver' ).prop( 'checked', G.snapserver );
-		if ( G.snapserver ) {
-			$( '#snapclient' ).next().addBack().addClass( 'disabled' );
-		} else {
-			$( '#snapclient' ).next().addBack().removeClass( 'disabled' );
-			$( '#snapclient' ).prop( 'checked', G.snapclient )
-			$( '#setting-snapclient' ).toggleClass( 'hide', !G.snapclient );
-		}
 		$( '#streaming' ).prop( 'checked', G.streaming );
+		$( '#snapserver' ).prop( 'checked', G.snapserver );
 		$( '#transmission' ).prop( 'checked', G.transmission );
 		$( '#localbrowser' ).prop( 'checked', G.localbrowser );
 		$( '#setting-localbrowser' ).toggleClass( 'hide', !G.localbrowser );
