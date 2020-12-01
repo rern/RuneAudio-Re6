@@ -727,8 +727,9 @@ input:checked + .switchlabel:after {
 	a:hover {
 		text-decoration: none;
 	}
-	.entries li:hover {
-		background: hsl(0,0%,15%)/*bh*/;
+	.entries li:hover,
+	#bar-bottom div:hover {
+		background: var( --cgd );
 	}
 	heading i,
 	.back,
