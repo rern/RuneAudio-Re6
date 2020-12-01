@@ -280,21 +280,6 @@ displayget )
 }'
 echo "$data"
 	;;
-gpio )
-	onoff=${args[1]}
-	if [[ $onoff == true ]]; then
-		$dirbash/gpio.py on
-	else
-		$dirbash/gpio.py off
-	fi
-	;;
-gpioset )
-	echo ${args[1]} | jq . > $dirsystem/gpio.json
-	;;
-gpiotimerreset )
-	awk '/timer/ {print $NF}' $dirsystem/gpio.json > $dirtmp/gpiotimer
-	pushstream gpio '{"state":"RESET"}'
-	;;
 ignoredir )
 	touch $dirsystem/updating
 	path=${args[1]}
@@ -576,7 +561,7 @@ power )
 	type=${args[1]}
 	mpc stop
 	[[ -e $dirsystem/lcdchar ]] && $dirbash/lcdchar.py rr
-	[[ -e $dirtmp/gpiotimer ]] && $dirbash/gpio.py off && sleep 2
+	[[ -e $dirtmp/relaystimer ]] && $dirbash/relays.py off && sleep 2
 	if [[ $type == off ]]; then
 		pushstream notify '{"title":"Power","text":"Off ...","icon":"power blink","delay":-1}'
 	else
@@ -597,6 +582,21 @@ randomfile )
 	;;
 refreshbrowser )
 	pushstream reload 1
+	;;
+relays )
+	onoff=${args[1]}
+	if [[ $onoff == true ]]; then
+		$dirbash/relays.py on
+	else
+		$dirbash/relays.py off
+	fi
+	;;
+relaysset )
+	echo ${args[1]} | jq . > $dirsystem/relaysset
+	;;
+relaystimerreset )
+	awk '/timer/ {print $NF}' $dirsystem/relaysset > $dirtmp/relaystimer
+	pushstream relays '{"state":"RESET"}'
 	;;
 thumbgif )
 	type=${args[1]}

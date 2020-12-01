@@ -191,7 +191,13 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	</div>
 </div>
 <div id="settings" class="menu hide">
-<?php if ( file_exists( $dirsystem.'snapclient' ) ) { ?>
+<?php if ( file_exists( $dirsystem.'relays' ) ) { ?>
+	<a id="features" class="settings sub"><i class="fa fa-sliders"></i>Features</a>
+		<i id="relays" class="fa fa-relays submenu"></i>
+<?php } else { ?>
+	<a id="features" class="settings"><i class="fa fa-sliders"></i>Features</a>
+<?php }
+	  if ( file_exists( $dirsystem.'snapclient' ) ) { ?>
 	<a id="mpd" class="settings sub"><i class="fa fa-mpd"></i>MPD</a>
 		<i id="snapclient" class="fa fa-snapcast submenu"></i>
 <?php } else { ?>
@@ -201,32 +207,12 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	<a id="sources" class="settings sub"><i class="fa fa-folder-cascade"></i>Sources</a>
 		<i id="update" class="fa fa-refresh-library submenu"></i>
 	<a id="system" class="settings sub"><i class="fa fa-plus-r"></i>System</a>
-		<i id="features" class="fa fa-sliders settings submenu"></i>
-<?php if ( $login ) { ?>
-	<a id="logout"><i class="fa fa-lock"></i>Logout</a>
-<?php }
-	  if ( in_array( $_SERVER[ 'REMOTE_ADDR' ], [ '127.0.0.1', '::1' ] ) ) { ?>
+		<i id="logout" class="fa fa-lock submenu"></i>
+<?php if ( in_array( $_SERVER[ 'REMOTE_ADDR' ], [ '127.0.0.1', '::1' ] ) ) { ?>
 	<a id="power" class="sub"><i class="fa fa-power"></i>Power</a>
 		<i id="screenoff" class="fa fa-screenoff submenu"></i>
 <?php } else { ?>
 	<a id="power"><i class="fa fa-power"></i>Power</a>
-<?php }
-	  if ( file_exists( $dirsystem.'relays' ) ) { ?>
-	<a id="gpio"><i class="fa fa-gpio"></i>GPIO</a>
-<?php }
-	  if ( file_exists( '/srv/http/aria2' ) ) {
-		$ariaenable = exec( '/usr/bin/systemctl is-enabled aria2 &> /dev/null && echo true || echo false' );
-		$ariaactive = exec( '/usr/bin/systemctl is-active aria2 &> /dev/null && echo true || echo false' )
-?>
-	<a id="aria2" class="pkg sub" data-enabled="<?=$ariaenable?>" data-active="<?=$ariaactive?>">
-		<img src="/assets/img/addons/thumbaria.<?=$time?>.png" class="iconimg<?=( $ariaactive === 'true' ? ' on' : '' )?>">Aria2</a><i class="fa fa-gear submenu imgicon"></i>
-<?php }
-	  if ( file_exists( '/usr/bin/transmission-cli' ) ) {
-		$tranenable = exec( '/usr/bin/systemctl is-enabled transmission &> /dev/null && echo true || echo false' );
-		$tranactive = exec( '/usr/bin/systemctl is-active transmission &> /dev/null && echo true || echo false' );
-?>
-	<a id="transmission" class="pkg sub" data-enabled="<?=$tranenable?>" data-active="<?=$tranactive?>">
-		<img src="/assets/img/addons/thumbtran.<?=$time?>.png" class="iconimg<?=( $tranactive === 'true' ? ' on' : '' )?>">Transmission</a><i class="fa fa-gear submenu imgicon"></i>
 <?php } ?>
 	<a id="displaylibrary" class="sub"><i class="fa fa-library"></i>Library</a>
 		<i id="displaylibrary2" class="fa fa-gear submenu"></i>
@@ -267,7 +253,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 				<i id="i-mute" class="fa fa-mute hide"></i>
 				<i id="i-update" class="fa fa-library blink hide"></i>
 				<i id="i-addons" class="fa fa-plus-r hide"></i>
-				<i id="i-gpio" class="fa fa-gpio hide"></i>
+				<i id="i-relays" class="fa fa-relays hide"></i>
 			</span>
 		</div>
 		<div id="sampling"></div>
@@ -284,7 +270,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 				<i id="ti-mute" class="fa fa-mute hide"></i>
 				<i id="ti-update" class="fa fa-library blink hide"></i>
 				<i id="ti-plus-r" class="fa fa-plus-r hide"></i>
-				<i id="ti-gpio" class="fa fa-gpio hide"></i>
+				<i id="ti-relays" class="fa fa-relays hide"></i>
 			</div>
 			<span id="elapsed" class="controls1"></span>
 			<span id="total" class="controls1"></span>
@@ -449,15 +435,8 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	<textarea id="lyricstextarea" class="lyricstext"></textarea>
 	<div id="lyricsfade"></div>
 </div>
-<div id="swipebar" class="transparent">
-	<i id="swipeL" class="swipe fa fa-left"></i>
-	<i class="fa fa-reload"></i><i class="fa fa-swipe"></i><i class="fa fa-gear"></i>
-	<i id="swipeR" class="swipe fa fa-right"></i>
-</div>
-<div id="bar-bottom" class="hide">
-	<i id="tab-library" class="fa fa-library"></i>
-	<i id="tab-playback" class="active fa fa-play-circle"></i>
-	<i id="tab-playlist" class="fa fa-list-ul"></i>
+<div id="bar-bottom"> <!-- keep single line to suppress spaces -->
+	<i id="tab-library" class="fa fa-library"></i><i id="tab-playback" class="fa fa-play-circle"></i><i id="tab-playlist" class="fa fa-list-ul"></i>
 </div>
 
 <?php if ( $localhost ) { ?>

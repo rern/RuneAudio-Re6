@@ -20,16 +20,27 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 ?>
 <div>
 <heading>System<?=$help?></heading>
-<div id="systemlabel" class="col-l text gr"></div>
-<div id="system" class="col-r text"></div>
-<div class="col-r">
-	<span class="help-block hide"><br><i class="fa fa-gear"></i>&ensp;Shortcut to each setting</span>
+<div id="systemlabel" class="col-l text gr">
+		Version
+	<br>Hardware
+	<br>SoC
+	<br>Output Device
+	<br>Kernel
+	<br>MPD
+	<br>Networks
 </div>
+<div id="system" class="col-r text"></div> 
 </div>
 
 <div>
 <heading id="refresh" class="status">Status<i class="fa fa-refresh"></i><?=$help?></heading>
-<div id="statuslabel" class="col-l text gr"></div>
+<div id="statuslabel" class="col-l text gr">
+		CPU Load
+	<br>CPU Temperatue
+	<br>Time
+	<br>Up Time
+	<br>Startup
+</div>
 <div id="status" class="col-r text"></div>
 
 <div class="col-l"></div>
@@ -50,18 +61,16 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 
 <div>
 <heading>On-board Devices<?=$help?></heading>
-<div id="divonboardaudio">
-	<div data-status="aplay" class="col-l double status">
-		<a>Audio
-		<br><gr><i class="fa fa-code"></i></gr></a><i class="fa fa-volume fa-lg"></i>
-	</div>
-	<div class="col-r">
-		<input id="onboardaudio" type="checkbox">
-		<div class="switchlabel" for="onboardaudio"></div>
-		<span class="help-block hide">Should be disabled if use I²S audio output module.</span>
-	</div>
-	<pre id="codeaplay" class="hide"></pre>
+<div data-status="aplay" class="col-l double status">
+	<a>Audio
+	<br><gr><i class="fa fa-code"></i></gr></a><i class="fa fa-volume fa-lg"></i>
 </div>
+<div class="col-r">
+	<input id="onboardaudio" type="checkbox">
+	<div class="switchlabel" for="onboardaudio"></div>
+	<span class="help-block hide">Should be disabled if use I²S audio output module.</span>
+</div>
+<pre id="codeaplay" class="hide"></pre>
 	<?php $code = exec( "awk '/Revision/ {print \$NF}' /proc/cpuinfo" );
 		$hwcode = substr( $code, -3, 2 );
 		if ( in_array( $hwcode, [ '0c', '08', '0e', '0d', '11' ] ) ) { # rpi with wireless
@@ -71,12 +80,11 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<br><gr><i class="fa fa-code"></i></gr></a><i class="fa fa-bluetooth fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="bluetooth" class="enablenoset" type="checkbox">
+	<input id="bluetooth" class="enable" type="checkbox">
 	<div class="switchlabel" for="bluetooth"></div>
 	<i id="setting-bluetooth" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
-		<i class="fa fa-gear"></i>&ensp;Discoverable: Allow RuneAudio+R to be discovered by other devices.
-		<br>- Should be disabled if not used.
+			- Should be disabled if not used.
 		<br>- Try reboot again if Bluetooth not working.
 	</span>
 </div>
@@ -88,13 +96,12 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<br><gr><i class="fa fa-code"></i></gr></a><i class="fa fa-wifi-3 fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="wlan" type="checkbox">
-	<div class="switchlabel" for="wlan"></div>
+	<input id="onboardwlan" type="checkbox">
+	<div class="switchlabel" for="onboardwlan"></div>
 	<span class="help-block hide">Should be disabled if not used.</span>
 </div>
 <pre id="codeifconfig" class="hide"></pre>
 	<?php } ?>
-<span class="help-block hide"><br><i class="fa fa-code"></i>&ensp;Status of each device</span>
 
 </div>
 
@@ -119,7 +126,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<br><gr>HD44780</gr></a><i class="fa fa-lcdchar fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="lcdchar" type="checkbox">
+	<input id="lcdchar" class="enable" type="checkbox">
 	<div class="switchlabel" for="lcdchar"></div>
 	<i id="setting-lcdchar" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
@@ -144,7 +151,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 </div>
 <div class="col-l double status">
 	<a>Relays
-	<br><gr>RPI.GPIO</gr></a><i class="fa fa-gpio fa-lg"></i>
+	<br><gr>RPI.GPIO</gr></a><i class="fa fa-relays fa-lg"></i>
 </div>
 <div class="col-r">
 	<input id="relays" class="enablenoset" type="checkbox">
@@ -152,7 +159,7 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<i id="setting-relays" class="setting fa fa-gear"></i>
 	<span class="help-block hide">
 		<a href="https://sourceforge.net/projects/raspberry-gpio-python/">RPi.GPIO</a> - Python module to control GPIO.
-		<br><a href="https://github.com/rern/RuneUI_GPIO/blob/master/README.md">RuneUI - GPIO</a> - Control GPIO-connected relay module for power on / off equipments.
+		<br><a href="https://github.com/rern/R_GPIO">+R - GPIO</a> - Control GPIO-connected relay module for power on / off equipments.
 	</span>
 </div>
 </div>
@@ -169,15 +176,13 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 </div>
 <div class="col-l double">
 	<a>Timezone
-	<br><gr>NTP/RegDom</gr></a><i class="fa fa-globe fa-lg"></i>
+	<br><gr>NTP, RegDom</gr></a><i class="fa fa-globe fa-lg"></i>
 </div>
 <div class="col-r">
 	<?=$selecttimezone?>
 	<i id="setting-regional" class="settingedit fa fa-gear"></i>
 	<span class="help-block hide">
-		<i class="fa fa-gear"></i>&ensp;Set:
-		<br>- NTP - Network Time Protocol server
-		<br>- Wi-Fi regulatory domain:
+		Wi-Fi regulatory domain:
 		<p style="margin: 0 0 0 20px">00 = Least common denominator settings, channels and transmit power are permitted in all countries.
 		<br>Active regulatory domian may be reassigned by connected router.</p>
 	</span>
@@ -187,17 +192,17 @@ $helpstatus = '<i class="fa fa-code w2x"></i>Tap label: <code>systemctl status S
 	<br><gr>kernel <i class="fa fa-code"></i></gr></a><i class="fa fa-sliders fa-lg"></i>
 </div>
 <div class="col-r">
-	<input id="soundprofile" type="checkbox">
+	<input id="soundprofile" class="enable" type="checkbox">
 	<div class="switchlabel" for="soundprofile"></div>
 	<i id="setting-soundprofile" class="setting fa fa-gear"></i>
-	<span class="help-block hide">Tweak kernel parameters for sound profile.</span>
+	<span class="help-block hide">Tweak kernel parameters for <a htef="https://www.runeaudio.com/forum/sound-signatures-t2849.html">sound profiles</a>.</span>
 </div>
 <pre id="codesoundprofile" class="hide"></pre>
 </div>
 
 <div>
 <heading data-status="journalctl" class="status">Boot Log<i id="journalctlicon" class="fa fa-code"></i><?=$help?></heading>
-<span class="help-block hide"><code>journalctl -b • sed -n '1,/Startup finished/ p'</code></span>
+<span class="help-block hide"><code>journalctl -b</code></span>
 <pre id="codejournalctl" class="hide"></pre>
 </div>
 

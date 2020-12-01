@@ -35,7 +35,7 @@ for line in "${lines[@]}"; do
 		* )                    (( $device == 0 )) && name=$aplayname || name="$aplayname $device";;
 	esac
 	# user selected
-	hwmixerfile=$dirsystem/mpd-hwmixer-$card
+	hwmixerfile=$dirsystem/hwmixer-$card
 	if [[ -e $hwmixerfile ]]; then
 		hwmixer=$( cat $hwmixerfile )
 		mixermanual=$hwmixer
@@ -60,7 +60,7 @@ for line in "${lines[@]}"; do
 		fi
 	fi
 	
-	mixertypefile="$dirsystem/mpd-mixertype-$name"
+	mixertypefile="$dirsystem/mixertype-$name"
 	if [[ -e $mixertypefile ]]; then
 		mixertype=$( cat "$mixertypefile" )
 	elif [[ -n $hwmixer ]]; then
@@ -69,7 +69,7 @@ for line in "${lines[@]}"; do
 		mixertype=software
 	fi
 	
-	[[ -e "$dirsystem/mpd-dop-$name" ]] && dop=1 || dop=0
+	[[ -e "$dirsystem/dop-$name" ]] && dop=1 || dop=0
 	
 	Aaplayname+=( "$aplayname" )
 	Acard+=( "$card" )

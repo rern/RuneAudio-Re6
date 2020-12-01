@@ -127,7 +127,7 @@ case 'login':
 	if ( isset( $_POST[ 'pwdnew' ] ) ) {
 		$hash = password_hash( $_POST[ 'pwdnew' ], PASSWORD_BCRYPT, [ 'cost' => 12 ] );
 		echo file_put_contents( $passwordfile, $hash );
-		touch( $dirsystem.'login' );
+		exec( $sudo.'/srv/http/bash/features.sh loginset' );
 	} else {
 		echo 1;
 		session_start();

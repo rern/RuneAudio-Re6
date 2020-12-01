@@ -10,11 +10,6 @@
 
 dirsystem=/srv/http/data/system
 
-if [[ -e $dirsystem/mpd-manualconf ]]; then
-	systemctl -q is-active mpd && systemctl restart mpd || systemctl start mpd
-	exit
-fi
-
 ! systemctl -q is-active nginx && exit 0 # udev rule trigger on startup
 
 pushstream() {
@@ -95,7 +90,7 @@ audio_output {
 	dop            "yes"'
 	
 	fi
-	mpdcustom=$dirsystem/mpd-custom
+	mpdcustom=$dirsystem/custom
 	customfile="$mpdcustom-output-$name"
 	if [[ -e $mpdcustom && -e "$customfile" ]]; then
 ########
@@ -169,11 +164,11 @@ if [[ $# -gt 0 && $1 != bt ]]; then
 		hwmixer=${Amixertype[@]: -1}
 		[[ $mixertype == 'none' && -n $hwmixer ]] && amixer -c $card sset "$hwmixer" 0dB
 		echo $aplayname > $usbdacfile # flag - active usb
-	fi
-	# set default card for bluetooth
-	echo "\
+		# set default card for bluetooth
+		echo "\
 defaults.pcm.card $card
 defaults.ctl.card $card" > /etc/asound.conf
+	fi
 	
 	pushstream notify '{"title":"Audio Output","text":"'"$name"'","icon": "output"}'
 	

@@ -5,7 +5,7 @@ function bash( command, callback, json ) {
 		var args = { cmd: 'sh', sh: [ page +'.sh' ].concat( command ) }
 	}
 	$.post( 
-		  cmdphp
+		  'cmd.php'
 		, args
 		, callback || null
 		, json || null
@@ -66,15 +66,6 @@ function codeToggle( id, target ) {
 function notify( title, message, icon ) {
 	if ( typeof message === 'boolean' || typeof message === 'number' ) var message = message ? 'Enable ...' : 'Disable ...';
 	banner( title, message, icon +' blink', -1 );
-}
-function getReset( callback ) {
-	$.post( cmdphp, {
-		  cmd  : 'exec'
-		, exec : 'cat '+ filereboot
-	}, function( lines ) {
-		G.reboot = lines || [];
-		if ( callback ) callback();
-	}, 'json' );
 }
 function list2JSON( list ) {
 		try {
@@ -183,30 +174,29 @@ var intervalcputime;
 var intervalscan;
 var page = location.href.split( '=' ).pop();
 var reboot = '';
-var cmdphp = 'cmd.php';
 var dirsystem = '/srv/http/data/system';
 var filereboot = '/srv/http/data/shm/reboot';
+var short = window.innerHeight < 570;
 
 document.title = 'R+R '+ ( page === 'mpd' ? 'MPD' : page.charAt( 0 ).toUpperCase() + page.slice( 1 ) );
+$( '#'+ page +' i' ).addClass( 'gra' );
 
 $( '#close' ).click( function() {
 	if ( page === 'system' || page === 'features' ) {
-		getReset( function() {
+		bash( 'cat '+ filereboot, function( lines ) {
+			G.reboot = lines;
 			if ( G.reboot.length ) {
 				info( {
 					  icon    : 'sliders'
 					, title   : 'System Setting'
 					, message : 'Reboot required for:'
-							   +'<br><br><w>'+ G.reboot.join( '<br>' ) +'</w>'
+							   +'<br><w>'+ G.reboot.replace( /\n/g, '<br>' ) +'</w>'
 					, cancel  : function() {
 						G.reboot = [];
 						bash( 'rm -f '+ filereboot );
 					}
 					, ok      : function() {
-						$.post( cmdphp, {
-							  cmd : 'sh'
-							, sh  : [ 'cmd.sh', 'power', 'reboot' ]
-						} );
+						bash( "/srv/http/bash/cmd.sh power$'\n'reboot" );
 						notify( 'Power', 'Reboot ...', 'reboot blink', -1 );
 					}
 				} );
@@ -226,7 +216,7 @@ $( '.page-icon' ).click( function() {
 	if( $( '.codepage' ).hasClass( 'hide' ) ) {
 		$( '.container' ).addClass( 'hide' );
 		$( '.codepage' )
-			.html( 'Page Data:<hr>'+ JSON.stringify( G, null, 2 ) )
+			.html( 'Data:<hr>'+ JSON.stringify( G, null, 2 ) )
 			.removeClass( 'hide' );
 	} else {
 		$( '.container' ).removeClass( 'hide' );
@@ -238,8 +228,15 @@ $( '#help' ).click( function() {
 		return this.getBoundingClientRect().top > 0
 	} )[ 0 ]; // return 1st element
 	var offset0 = eltop.getBoundingClientRect().top;
-	$( this ).toggleClass( 'blue' );
-	$( '.help-block' ).toggleClass( 'hide', $( '.help-block:not(.hide)' ).length !== 0 );
+	if ( $( '.help-block:not(.hide)' ).length > 0 ) {
+		$( this ).removeClass( 'blue' );
+		$( '.help-block' ).addClass( 'hide' );
+		if ( short ) $( '#bar-bottom' ).addClass( 'transparent' );
+	} else {
+		$( this ).addClass( 'blue' );
+		$( '.help-block' ).removeClass( 'hide' );
+		if ( short ) $( '#bar-bottom' ).removeClass( 'transparent' );
+	}
 	$( window ).scrollTop( eltop.offsetTop - offset0 );
 } );
 $( '.help' ).click( function() {
@@ -249,12 +246,26 @@ $( '.help' ).click( function() {
 $( '.status' ).click( function( e ) {
 	codeToggle( $( this ).data( 'status' ), e.target );
 } );
+// bar-bottom
+if ( short ) {
+	$( '#bar-bottom' ).addClass( 'transparent' );
+	$( '.container' ).click( function() {
+		$( '#bar-bottom' ).addClass( 'transparent' );
+	} );
+}
+$( '#bar-bottom div' ).click( function() {
+	if ( $( '#bar-bottom' ).hasClass( 'transparent' ) ) {
+		$( '#bar-bottom' ).removeClass( 'transparent' );
+	} else {
+		location.href = 'settings.php?p='+ this.id;
+	}
+} );
+// tap hold
 var timer;
-$( '#bottom-bar' ).on( 'mousedown touchdown', function() {
+$( '#bar-bottom' ).on( 'mousedown touchdown', function() {
 	timer = setTimeout( function() {
 		location.reload();
 	}, 1000 );
 } ).on( 'mouseup mouseleave touchup touchleave', function() {
 	clearTimeout( timer );
 } );
-

@@ -1,6 +1,6 @@
 <?php
-$login = file_exists( '/srv/http/data/system/login' );
-if ( $login ) session_start(); // for login
+if ( file_exists( '/srv/http/data/system/login' ) ) session_start();
+
 $time = time();  // for cache busting
 $localhost = in_array( $_SERVER[ 'REMOTE_ADDR' ], ['127.0.0.1', '::1'] );
 $desktop = isset( $_SERVER[ 'HTTP_USER_AGENT' ] )
@@ -14,21 +14,19 @@ $desktop = isset( $_SERVER[ 'HTTP_USER_AGENT' ] )
 <html lang="en">
 <head>
 
+<title>R+R</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="msapplication-tap-highlight" content="no" />
-<title>R+R</title>
-<link rel="apple-touch-icon" sizes="152x152" href="/assets/img/apple-touch-icon-152x152.<?=$time?>.png">
-<link rel="apple-touch-icon" sizes="167x167" href="/assets/img/apple-touch-icon-167x167.<?=$time?>.png">
+<meta name="apple-mobile-web-app-title" content="R+R">
+<meta name="application-name" content="R+R">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="/assets/img/favicon.<?=$time?>.svg">
+<link rel="mask-icon" href="/assets/img/favicon.<?=$time?>.svg" color="#000000">
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/apple-touch-icon-180x180.<?=$time?>.png">
-<link rel="icon" type="image/png" href="/assets/img/favicon.<?=$time?>.svg" sizes="192x192">
-<meta name="apple-mobile-web-app-title" content="RuneAudio">
-<meta name="msapplication-TileColor" content="#000000">
-<meta name="msapplication-TileImage" content="/assets/img/mstile-144x144.<?=$time?>.png">
-<meta name="application-name" content="RuneAudio">
 <style>
 	@font-face {
 		font-family: enhance;

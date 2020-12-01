@@ -10,9 +10,9 @@ from urllib.request import Request
 
 ON = 1
 OFF = 0
-gpiofile = '/srv/http/data/shm/gpiotimer'
+relaysfile = '/srv/http/data/shm/relaystimer'
 
-with open( '/srv/http/data/system/gpio.json' ) as jsonfile:
+with open( '/srv/http/data/system/relaysset' ) as jsonfile:
     gpio = json.load( jsonfile )
 
 name = gpio[ 'name' ]
@@ -68,7 +68,7 @@ off4 != 0 and offorder.append( name[ str( off4 ) ] )
 # broadcast pushstream
 def pushstream( data ):
     req = Request(
-        'http://127.0.0.1/pub?id=gpio',
+        'http://127.0.0.1/pub?id=relays',
         json.dumps( data ).encode( 'utf-8' ),
         { 'Content-type': 'application/json' }
     )
@@ -97,14 +97,14 @@ if sys.argv[ 1 ] == 'on':
     
     if timer == 0: quit()
     
-    with open( gpiofile, 'w' ) as file:
+    with open( relaysfile, 'w' ) as file:
         file.write( str( timer ) )
-    os.chmod( gpiofile, 0o777 )
+    os.chmod( relaysfile, 0o777 )
 
-    subprocess.Popen( [ '/srv/http/bash/gpiotimer.sh' ] )
+    subprocess.Popen( [ '/srv/http/bash/relaystimer.sh' ] )
 
 elif sys.argv[ 1 ] == 'off':
-    os.path.exists( gpiofile ) and os.remove( gpiofile )
+    os.path.exists( relaysfile ) and os.remove( relaysfile )
 
     pushstream( { 'state': False, 'order': offorder } )
 

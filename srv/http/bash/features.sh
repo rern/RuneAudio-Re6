@@ -14,8 +14,10 @@ pushRefresh() {
 featureSet() {
 	[[ -n $datarestore ]] && exit
 	feature=$1
-	shift
-	$dirbash/features.sh $feature$'\n'true
+	systemctl restart $feature
+	systemctl enable $feature
+	touch $dirsystem/$feature
+	shift # remove $1
 	printf '%s\n' $@ > $dirsystem/${feature}set
 	pushRefresh
 }
@@ -64,6 +66,18 @@ xset dpms $sec $sec $sec
 
 case ${args[0]} in
 
+aria2 | shairport-sync | spotifyd | transmission | upmpdcli )
+	service=${args[0]}
+	enable=${args[1]}
+	if [[ $enable == true ]]; then
+		systemctl enable --now $service
+		touch $dirsystem/$service
+	else
+		systemctl disable --now $service
+		rm -f $dirsystem/$service
+	fi
+	pushRefresh
+	;;
 aplaydevices )
 	aplay -L | grep -v '^\s\|^null' | head -c -1
 	;;
@@ -71,17 +85,10 @@ autoplay )
 	[[ ${args[1]} == true ]] && touch $dirsystem/autoplay || rm -f $dirsystem/autoplay
 	pushRefresh
 	;;
-hostapd )
-	if [[ ${args[1]} == true ]]; then
-		netctl stop-all
-		ifconfig wlan0 ${args[2]}
-		systemctl enable --now hostapd
-		touch $dirsystem/hostapd
-	else
-		systemctl disable --now hostapd
-		rm -f $dirsystem/hostapd
-		ifconfig wlan0 0.0.0.0
-	fi
+hostapddisable )
+	systemctl disable --now hostapd
+	rm -f $dirsystem/hostapd
+	ifconfig wlan0 0.0.0.0
 	pushRefresh
 	;;
 hostapdset )
@@ -95,21 +102,16 @@ hostapdset )
 	sed -i -e '/wpa\|rsn_pairwise/ s/^#\+//
 ' -e "s/\(wpa_passphrase=\).*/\1$password/
 " /etc/hostapd/hostapd.conf
+	netctl stop-all
+	ifconfig wlan0 ${args[2]}
 	featureSet hostapd "${args[@]:1}"
 	;;
-localbrowser )
-	if [[ ${args[1]} == true ]]; then
-		systemctl enable --now localbrowser
-		systemctl disable --now getty@tty1
-		sed -i 's/tty1/tty3/' /boot/cmdline.txt
-		touch $dirsystem/localbrowser
-	else
-		systemctl disable --now localbrowser
-		systemctl enable --now getty@tty1
-		sed -i 's/tty3/tty1/' /boot/cmdline.txt
-		$dirbash/ply-image /srv/http/assets/img/splash.png
-		rm -f $dirsystem/localbrowser
-	fi
+localbrowserdisable )
+	systemctl disable --now localbrowser
+	systemctl enable --now getty@tty1
+	sed -i 's/tty3/tty1/' /boot/cmdline.txt
+	$dirbash/ply-image /srv/http/assets/img/splash.png
+	rm -f $dirsystem/localbrowser
 	pushRefresh
 	;;
 localbrowserset )
@@ -125,29 +127,25 @@ localbrowserset )
 	sed -i -e 's/\(-use_cursor \).*/\1'$cursor' \&/
 ' -e 's/\(factor=\).*/\1'$zoom'/
 ' /etc/X11/xinit/xinitrc
+	systemctl disable --now getty@tty1
+	sed -i 's/tty1/tty3/' /boot/cmdline.txt
 	featureSet localbrowser "${args[@]:1}"
 	;;
-login )
-	if [[ ${args[1]} == true ]]; then
-		touch $dirsystem/login
-		ip=127.0.0.1
-	else
-		rm -f $dirsystem/login
-		ip=0.0.0.0
-	fi
-	sed -i '/^bind_to_address/ s/".*"/"'$ip'"/' /etc/mpd.conf
+logindisable )
+	rm -f $dirsystem/login
+	sed -i '/^bind_to_address/ s/".*"/"0.0.0.0"/' /etc/mpd.conf
 	systemctl restart mpd
 	pushRefresh
 	;;
-mpdscribble )
-	enable=${args[1]}
-	if [[ $enable == true ]]; then
-		systemctl enable --now mpdscribble@mpd
-		touch $dirsystem/mpdscribble
-	else
-		systemctl disable --now mpdscribble@mpd
-		rm -f $dirsystem/mpdscribble
-	fi
+loginset )
+	touch $dirsystem/login
+	sed -i '/^bind_to_address/ s/".*"/"127.0.0.1"/' /etc/mpd.conf
+	systemctl restart mpd
+	pushRefresh
+	;;
+mpdscribbledisable )
+	systemctl disable --now mpdscribble@mpd
+	rm -f $dirsystem/mpdscribble
 	pushRefresh
 	;;
 mpdscribbleset )
@@ -179,24 +177,9 @@ screenoff )
 	screenoff ${args[1]}
 	pushRefresh
 	;;
-shairport-sync )
-	if [[ ${args[1]} == true ]]; then
-		systemctl enable --now shairport-sync
-		touch $dirsystem/shairport-sync
-	else
-		systemctl disable --now shairport-sync
-		rm -f $dirsystem/shairport-sync
-	fi
-	pushRefresh
-	;;
-smb )
-	if [[ ${args[1]} == true ]]; then
-		systemctl enable --now smb
-		touch $dirsystem/smb
-	else
-		systemctl disable --now smb
-		rm -f $dirsystem/smb
-	fi
+smbdisable )
+	systemctl stop smb
+	rm -f $dirsystem/smb
 	pushRefresh
 	;;
 smbset )
@@ -206,14 +189,9 @@ smbset )
 	[[ ${args[2]} == true ]] && sed -i '/path = .*USB/ a\	read only = no' $smbconf
 	featureSet smb "${args[@]:1}"
 	;;
-snapclient )
-	if [[ ${args[1]} == true ]]; then
-		systemctl start snapclient
-		touch $dirsystem/snapclient
-	else
-		systemctl stop snapclient
-		rm -f $dirsystem/snapclient
-	fi
+snapclientdisable )
+	systemctl stop snapclient
+	rm -f $dirsystem/snapclient
 	pushRefresh
 	;;
 snapclientset )
@@ -235,41 +213,9 @@ snapserver )
 	$dirbash/snapcast.sh serverstop
 	pushRefresh
 	;;
-spotifyd )
-	if [[ ${args[1]} == true ]]; then
-		[[ -e $dirsystem/spotifydset ]] && $dirbash/features.sh spotifydset$'\n'$( cat $dirsystem/spotifydset )
-		systemctl enable --now spotifyd
-		touch $dirsystem/spotifyd
-	else
-		systemctl disable --now spotifyd
-		rm -f $dirsystem/spotifyd
-	fi
-	pushRefresh
-	;;
-spotifydset )
-	device=${args[1]}
-	sed -i "s/^\(device = \)/\1$device/" /etc/spotifyd.conf
-	systemctl try-restart spotifyd
-	if [[ ${device:0:7} == default ]]; then
-		rm -f $dirsystem/spotifydset
-	else
-		echo $device > $dirsystem/spotifydset
-	fi
-	pushRefresh
-	;;
 streaming )
 	[[ ${args[1]} == true ]] && touch $dirsystem/streaming || rm -f $dirsystem/streaming
 	$dirbash/mpd-conf.sh
-	pushRefresh
-	;;
-upmpdcli )
-	if [[ ${args[1]} == true ]]; then
-		systemctl enable --now upmpdcli
-		touch $dirsystem/upmpdcli
-	else
-		systemctl disable --now upmpdcli
-		rm -f $dirsystem/upmpdcli
-	fi
 	pushRefresh
 	;;
 	
