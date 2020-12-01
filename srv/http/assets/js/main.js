@@ -16,6 +16,7 @@ var G = {
 	, localhost     : [ 'localhost', '127.0.0.1' ].indexOf( location.hostname ) !== -1
 	, mode          : ''
 	, modescrolltop : 0
+	, page          : 'playback'
 	, pladd         : {}
 	, playback      : 1
 	, playlist      : 0
@@ -66,6 +67,11 @@ var stopwatch = '<span class="stopwatch">'
 				+'<i class="fa fa-stopwatch-i"></i>'
 				+'<i class="fa fa-stopwatch-o"></i>'
 				+'</span>';
+var pagenext = {
+	  playback : [ 'library',  'playlist' ]
+	, playlist : [ 'playback', 'library' ]
+	, library  : [ 'playlist', 'playback' ]
+}
 
 displayGet( function( data ) { // get mpd status with passive.js on pushstream connect
 	G.display = data;
@@ -73,19 +79,12 @@ displayGet( function( data ) { // get mpd status with passive.js on pushstream c
 	$.event.special.tap.emitTapOnTaphold = false; // suppress tap on taphold
 	$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
 	$.event.special.tap.tapholdThreshold = 1000;
-	$( '#swipebar, .page' ).on( 'swipeleft swiperight', function( e ) {
+	$( '.page' ).on( 'swipeleft swiperight', function( e ) {
 		if ( G.bars || !G.status.mpd || G.swipepl || G.drag ) return
 		
 		G.swipe = 1;
 		setTimeout( function() { G.swipe = 0 }, 1000 );
-		var swipeleft = e.type === 'swipeleft';
-		if ( G.library ) {
-			swipeleft ? $( '#tab-playback' ).click() : $( '#tab-playlist' ).click();
-		} else if ( G.playback ) {
-			swipeleft ? $( '#tab-playlist' ).click() : $( '#tab-library' ).click();
-		} else {
-			swipeleft ? $( '#tab-library' ).click()  : $( '#tab-playback' ).click();
-		}
+		$( '#tab-'+ pagenext[ G.page ][ e.type === 'swiperight' ? 0 : 1 ] ).click();
 	} );
 } );
 
@@ -172,16 +171,17 @@ $( '#power' ).click( function() {
 $( '#screenoff' ).click( function( e ) {
 	$.post( cmdphp, { cmd: 'screenoff' } );
 } );
-$( '#gpio' ).click( function( e ) {
-	bash( [ 'gpio', !G.status.gpioon ] );
+$( '#relays' ).click( function( e ) {
+	bash( [ 'relays', !G.status.relayson ] );
 } );
 $( '#logout' ).click( function( e ) {
-	$.post( cmdphp, { cmd: 'logout' }, function() {
-		location.reload();
-	} );
-} );
-$( '.pkg' ).click( function( e ) {
-	menuPackage( $( this ), $( e.target ) );
+	if ( G.status.login ) {
+		$.post( cmdphp, { cmd: 'logout' }, function() {
+			location.reload();
+		} );
+	} else {
+		location.href = 'settings.php?p=features&set=login';
+	}
 } );
 var chklibrary = {
 	  sd             : '_<i class="fa fa-microsd"></i>SD'
@@ -361,7 +361,7 @@ $( '#displayplayback' ).click( function() {
 					renderPlayback();
 					displayPlayback();
 					setButtonControl();
-					$( '#ti-gpio, #i-gpio' ).toggleClass( 'hide', !G.status.gpioon );
+					$( '#ti-relays, #i-relays' ).toggleClass( 'hide', !G.status.relayson );
 				} else if ( G.library ) {
 					$( '.list p' ).toggleClass( 'bars-on', G.bars );
 					if ( bars !== G.bars && $( '.coverart' ).length ) {
@@ -498,20 +498,8 @@ $( '#tab-playlist' ).click( function() {
 		if ( G.color ) $( '#colorcancel' ).click();
 	}
 } );
-$( '#swipebar' ).tap( function( e ) {
-	if ( !G.swipe && e.target.id !== 'swipeL' && e.target.id !== 'swipeR' ) $( '#button-settings' ).click();
-} ).taphold( function() {
-	if ( G.swipe ) return
-	
+$( '#bar-bottom' ).taphold( function() {
 	location.reload();
-} );
-$( '#swipeL' ).click( function() {
-	var page = G.playback ? 'library' : ( G.library ? 'playlist' : 'playback' );
-	$( '#tab-'+ page ).click();
-} );
-$( '#swipeR' ).click( function() {
-	var page = G.playback ? 'playlist' : ( G.library ? 'playback' : 'library' );
-	$( '#tab-'+ page ).click();
 } );
 $( '#page-playback' ).tap( function( e ) {
 	if ( [ 'coverT', 'timeT', 'volume-bar', 'volume-band', 'volume-band-dn', 'volume-band-up' ].indexOf( e.target.id ) !== -1 ) return
@@ -555,9 +543,6 @@ $( '#bar-top, #bar-bottom' ).click( function() {
 $( '#settings' ).click( function() {
 	$( this ).addClass( 'hide' )
 } );
-$( '#bar-bottom' ).taphold( function() {
-	location.reload();
-} );
 $( '#lib-list, #pl-list, #pl-savedlist' ).on( 'click', 'p', function() {
 	$( '.menu' ).addClass( 'hide' );
 	$( '#lib-list li, #pl-savedlist li' ).removeClass( 'active' );
@@ -577,8 +562,6 @@ $( '.emptyadd' ).click( function( e ) {
 	}
 } );
 $( '#artist, #guide-bio' ).click( function() {
-	if ( G.status.webradio ) return
-	
 	if ( $( '#bio legend' ).text() != G.status.Artist ) {
 		getBio( $( '#artist' ).text() );
 	} else {
@@ -669,6 +652,7 @@ $( '#volup, #voldn' ).click( function() {
 	} );
 } );
 $( '#coverTL, #timeTL' ).tap( function() {
+	$( '#bar-bottom' ).removeClass( 'translucent' );
 	if ( G.status.mpd && !G.status.playlistlength ) return
 	
 	if ( window.innerWidth < 614 ) {
@@ -715,7 +699,8 @@ $( '#coverTL, #timeTL' ).tap( function() {
 		}
 		G.display.bars = false;
 	}
-	$( '.band, #swipebar' ).addClass( 'transparent' );
+	$( '.band' ).addClass( 'transparent' );
+	if ( !G.bars ) $( '#bar-bottom' ).addClass( 'transparent' );
 	$( '#volume-bar, #volume-text' ).addClass( 'hide' );
 	$( '.volumeband' ).toggleClass( 'hide', G.display.volumenone );
 	renderPlayback();
@@ -728,18 +713,19 @@ $( '#coverT, #timeT' ).tap( function() {
 	G.guide = !$( this ).hasClass( 'mapshow' );
 	if ( $( this ).hasClass( 'mapshow' ) ) {
 		hideGuide();
-		$( '#coverTR' ).toggleClass( 'empty', !G.status.playlistlength && !G.bars );
 		return
 	}
 	
 	$( '#coverTR' ).removeClass( 'empty' );
 	$( '.covermap, .guide' ).addClass( 'mapshow' );
 	$( '.guide' ).toggleClass( 'hide', !G.status.playlistlength && G.status.mpd );
-	$( '#guide-artist, #guide-bio, #guide-album' ).toggleClass( 'hide', G.status.webradio || !G.status.playlistlength );
+	$( '#guide-bio, #guide-album' ).toggleClass( 'hide', !G.status.playlistlength );
+	$( '#guide-bio, #guide-lyrics' ).toggleClass( 'hide', G.status.webradio && G.status.state === 'stop' );
+	$( '#guide-album' ).toggleClass( 'hide', G.status.webradio );
 	$( '#volume-text' ).addClass( 'hide' );
 	$( '.timemap' ).toggleClass( 'mapshow', !G.display.cover );
 	$( '.volmap' ).toggleClass( 'mapshow', !G.display.volumenone && G.display.volume );
-	$( '#swipebar' ).toggleClass( 'transparent', G.bars );
+	if ( !G.bars ) $( '#bar-bottom' ).addClass( 'translucent' );
 	if ( window.innerWidth < 614 && !G.display.volume ) {
 		$( '#coverTL' )
 				.removeClass( 'fa-scale-dn' )
@@ -766,7 +752,6 @@ $( '#coverT, #timeT' ).tap( function() {
 			$( '#volume-bar' ).removeClass( 'hide' );
 		}
 	}
-	$( '#swipebar' ).toggleClass( 'hide', !G.status.mpd );
 	$( '.edit' ).remove();
 	$( '#coverart' ).css( 'opacity', '' );
 	$( '.cover-save' ).css( 'z-index', 100 );
@@ -781,7 +766,8 @@ $( '.covermap' ).taphold( function( e ) {
 $( '#time-band' ).on( 'touchstart mousedown', function( e ) {
 	if ( G.guide ) {
 		$( '.controls, #volume-bar' ).addClass( 'hide' );
-		$( '.band, #swipebar' ).addClass( 'transparent' );
+		$( '.band' ).addClass( 'transparent' );
+		if ( !G.bars ) $( '#bar-bottom' ).addClass( 'transparent' );
 		$( '.map' ).removeClass( 'mapshow' );
 	}
 	if ( !G.status.mpd || G.status.webradio ) return
@@ -814,7 +800,8 @@ $( '#volume-band' ).on( 'touchstart mousedown', function( e ) {
 	}
 	if ( G.guide ) {
 		$( '.controls' ).addClass( 'hide' );
-		$( '.band, #swipebar' ).addClass( 'transparent' );
+		$( '.band' ).addClass( 'transparent' );
+		if ( !G.bars ) $( '#bar-bottom' ).addClass( 'transparent' );
 		$( '.map' ).removeClass( 'mapshow' );
 	}
 	G.drag = 1;
@@ -851,7 +838,8 @@ $( '#volume-band-dn, #volume-band-up' ).click( function() {
 	
 	if ( G.guide ) {
 		$( '.controls' ).addClass( 'hide' );
-		$( '.band, #swipebar' ).addClass( 'transparent' );
+		$( '.band' ).addClass( 'transparent' );
+		if ( !G.bars ) $( '#bar-bottom' ).addClass( 'transparent' );
 		$( '.map' ).removeClass( 'mapshow' );
 	}
 	$( '#volume-bar, #volume-text' ).removeClass( 'hide' );
@@ -1039,8 +1027,7 @@ $( '.btn-cmd' ).click( function() {
 		$( '#playback-controls .btn' ).removeClass( 'active' );
 		$( '#'+ cmd ).addClass( 'active' );
 	}
-	// for gpio
-	if ( $( '#gpio' ).hasClass( 'on' ) && command === 'mpc play' ) bash( [ 'gpiotimerreset' ] );
+	if ( $( '#relays' ).hasClass( 'on' ) && cmd === 'play' ) bash( [ 'relaystimerreset' ] );
 } );
 $( '#biocontent' ).on( 'click', '.biosimilar', function() {
 	getBio( $( this ).text() );

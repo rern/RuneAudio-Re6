@@ -10,9 +10,23 @@ getinstallzip
 
 dirsystem=/srv/http/data/system
 
+sed -i 's/network.sh/networks.sh/' /etc/systemd/system/bluetooth.service.d/override.conf
+systemctl try-restart bluetooth
+
 sed -i '/IgnorePkg.*linux-raspberrypi/ d' /etc/pacman.conf
 
-if [[ $( cat /srv/http/data/addons/rre6 ) < 20201123 ]]; then
+if [[ $( cat /srv/http/data/addons/rre6 ) > 20201122 ]]; then
+	if (( $( ls -1 $dirsystem/mpd-* | wc -l ) > 0 )); then
+		readarray -t files <<< "$( ls -1 $dirsystem/mpd-* )"
+		for file in "${files[@]}"; do
+			mv "$file" "${file/mpd-}"
+		done
+	fi
+	services='hostapd localbrowser mpdscribble smb snapclient shairport-sync snapserver spotifyd upmpdcli'
+	for service in $services; do
+		systemctl -q is-active $service && touch $dirsystem/$service
+	done
+else
 	rm -f $dirsystem/{lcdchar*,soundprofile*,snapclient*,localbrowser*,smb*,mpdscribble*,login*,hostapd*,mpd-*}
 	grep -q dtoverlay=tft35a /boot/config.txt && touch $dirsystem/lcd
 	grep -q 'dtparam=i2c_arm=on' /boot/config.txt && ! grep -q 'dtoverlay=tft35a' /boot/config.txt && touch $dirsystem/lcdchar
@@ -22,10 +36,6 @@ if [[ $( cat /srv/http/data/addons/rre6 ) < 20201123 ]]; then
 		echo '20 A00 0x27 PCF8574' > $dirsystem/lcdcharset
 	fi
 	/srv/http/bash/system.sh soundprofileset$'\n18000000 60 1500 1000'
-	service=( snapclient localbrowser smb mpdscribble hostapd )
-	for service in snapclient localbrowser smb mpdscribble hostapd; do
-		systemctl -q is-active $service && touch $dirsystem/$service
-	done
 fi
 
 file=/etc/systemd/system/dnsmasq.service.d/override.conf
@@ -52,6 +62,8 @@ fi
 
 # system
 mv $dirsystem/{gpio,relays} &> /dev/null
+mv $dirsystem/{gpio.json,relaysset} &> /dev/null
+
 files=$dirsystem/{ntp,wlanregdom}
 if [[ -e $dirsystem/ntp ]]; then
 	cat $files > $dirsystem/regional
@@ -84,22 +96,13 @@ if [[ -e $dirsystem/samba-readonlysd ]]; then
 	rm $files
 fi
 mv $dirsystem/mpdscribble{-login,set} &> /dev/null
+
 mv $dirsystem/{accesspoint,hostapd} &> /dev/null
 files=$dirsystem/{accesspoint-ip,accesspoint-iprange,accesspoint-passphrase}
 if [[ -e $dirsystem/accesspoint-ip ]]; then
 	cat $files > $dirsystem/hostapdset
 	rm $files
 fi
-
-# mpd
-crossfade=$( mpc crossfade | cut -d' ' -f2 )
-[[ ! -e $dirsystem/mpd-crossfadeset && $crossfade != 0 ]] && echo $crossfade > $dirsystem/mpd-crossfadeset && touch $dirsystem/mpd-crossfade
-replaygain=$( grep replaygain /etc/mpd.conf | cut -d'"' -f2 )
-[[ ! -e $dirsystem/mpd-replaygainset && $replaygain != off ]] && echo $replaygain > $dirsystem/mpd-replaygainset && touch $dirsystem/mpd-replaygain
-buffer=$( grep audio_buffer_size /etc/mpd.conf | cut -d'"' -f2 )
-[[ ! -e $dirsystem/mpd-bufferset && -n $buffer ]] && echo $buffer > $dirsystem/mpd-bufferset && $dirsystem/mpd-buffer
-bufferoutput=$( grep max_output_buffer_size /etc/mpd.conf | cut -d'"' -f2 )
-[[ ! -e $dirsystem/mpd-bufferoutputset && -n $bufferoutput ]] && echo $bufferoutput > $dirsystem/mpd-bufferoutputset && $dirsystem/mpd-bufferoutput
 
 if [[ $( upmpdcli -v 2> /dev/null | cut -d' ' -f2 ) == 1.4.14 ]]; then
 	pacman -R --noconfirm libnpupnp libupnpp upmpdcli

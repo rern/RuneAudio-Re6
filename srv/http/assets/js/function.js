@@ -325,7 +325,8 @@ function displayTopBottom() {
 	
 	if ( !G.display.bars || ( G.screenS && !G.display.barsalways ) ) {
 		G.bars = false;
-		$( '#bar-top, #bar-bottom' ).addClass( 'hide' );
+		$( '#bar-top' ).addClass( 'hide' );
+		$( '#bar-bottom' ).addClass( 'transparent' );
 		$( '#page-playback' ).addClass ( 'barshidden' );
 		$( '#page-playback, #infoicon' ).removeClass( 'barsalways' );
 		$( '.list, #lib-index, #pl-index' ).addClass( 'bars-off' );
@@ -333,14 +334,15 @@ function displayTopBottom() {
 		$( '.emptyadd' ).css( 'top', '90px' );
 	} else {
 		G.bars = true;
-		$( '#bar-top, #bar-bottom' ).removeClass( 'hide' );
+		$( '#bar-top' ).removeClass( 'hide' );
+		$( '#bar-bottom' ).removeClass( 'transparent' );
 		$( '#page-playback' ).removeClass ( 'barshidden' );
 		$( '#page-playback, #infoicon, .emptyadd' ).addClass( 'barsalways' );
 		$( '.list, #lib-index, #pl-index' ).removeClass( 'bars-off' );
 		$( '.content-top' ).css( 'top', '40px' );
 		$( '.emptyadd' ).css( 'top', '' );
 		if ( G.status.mpd ) {
-			$( '#tab-library, #tab-playlist, #swipeL, #swipeR' ).removeClass( 'hide' );
+			$( '#tab-library, #tab-playlist' ).removeClass( 'hide' );
 			$( '#tab-playback' )
 				.css( 'width', '' )
 				.removeAttr( 'class' )
@@ -357,7 +359,7 @@ function displayTopBottom() {
 				.css( 'width', '100%' )
 				.removeAttr( 'class' )
 				.addClass( 'active fa fa-'+ icon );
-			$( '#tab-library, #tab-playlist, #swipeL, #swipeR' ).addClass( 'hide' );
+			$( '#tab-library, #tab-playlist' ).addClass( 'hide' );
 		}
 	}
 	$( '.menu' ).addClass( 'hide' );
@@ -534,9 +536,12 @@ function getTitleWidth() {
 }
 function hideGuide() {
 	G.guide = false;
+	$( '#coverTR' ).toggleClass( 'empty', !G.status.playlistlength && !G.bars );
 	$( '.map' ).removeClass( 'mapshow' );
-	$( '.band, #volbar, #swipebar' ).addClass( 'transparent' );
+	$( '#bar-bottom' ).removeClass( 'translucent' );
+	if ( !G.bars ) $( '#bar-bottom' ).addClass( 'transparent' );
 	if ( !G.display.progressbar ) $( '#timebar' ).addClass( 'hide' );
+	$( '.band, #volbar' ).addClass( 'transparent' );
 	$( '#volume-bar, #volume-text' ).addClass( 'hide' );
 	$( '.cover-save' ).css( 'z-index', '' );
 }
@@ -639,56 +644,6 @@ function loader( toggle, splash ) {
 function local( delay ) {
 	G.local = 1;
 	setTimeout( function() { G.local = 0 }, delay || 300 );
-}
-function menuPackage( $this, $target ) {
-	var id = $this.prop( 'id' );
-	var title = id.charAt( 0 ).toUpperCase() + id.slice( 1 );
-	var active = $this.data( 'active' );
-	var icon = '<img src="'+ $( '#'+ id +' img' ).attr( 'src' ) +'" class="iconimg">';
-	if ( $target.hasClass( 'submenu' ) ) {
-		info( {
-			  icon        : icon
-			, title       : title
-			, checkbox    : { 'Enable on startup': 1 }
-			, checked     : [ $this.data( 'enabled' ) ? 0 : 1 ]
-			, buttonlabel : '<i class="fa fa-stop"></i>Stop'
-			, buttoncolor : '#bb2828'
-			, button      : function() {
-				var enabled = $( '#infoCheckBox input' ).prop( 'checked' ) ? true : false;
-				menuPackageSet( id, false, enabled );
-				banner( title, 'Stop ...', icon );
-			}
-			, ok          : function() {
-				var active = $this.data( 'active' );
-				var enabled = $( '#infoCheckBox input' ).prop( 'checked' ) ? true : false;
-				menuPackageSet( id, active, enabled );
-			}
-			, preshow     : function() {
-				if ( !active ) $( '#infoButton' ).hide();
-			}
-		} );
-	} else {
-		$( '#settings' ).addClass( 'hide' );
-		var url = {
-			  aria2        : '/aria2/index.html'
-			, transmission : 'http://'+ location.hostname +':9091'
-		}
-		var enable = $this.data( 'enabled' );
-		if ( $this.data( 'active' ) ) {
-			window.open( url[ id ] );
-		} else {
-			bash( [ 'packageenable', id, enable ], window.open( url[ id ] ) );
-		}
-		menuPackageSet( id, true, enable );
-	}
-}
-function menuPackageSet( pkg, active, enable ) {
-	local( 1000 );
-	bash( [ 'packageset', pkg, active, enable ] );
-	$( '#'+ pkg )
-		.data( 'enabled', enable )
-		.data( 'active', active )
-		.find( 'img' ).toggleClass( 'on', active );
 }
 function mpcSeek( seekto ) {
 	var seektime = Math.round( seekto / 1000 * G.status.Time );
@@ -842,6 +797,7 @@ function playlistProgress() {
 		} else {
 			$name.removeClass( 'hide' );
 			$song.empty();
+			$( '.elapsed' ).empty();
 		}
 		getTitleWidth();
 		var time = $this.find( '.time' ).data( 'time' );
@@ -1409,12 +1365,12 @@ function setButtonControl() {
 	setButtonOptions();
 }
 function setButtonOptions() {
-	$( '#gpio .fa-gpio' ).toggleClass( 'on', G.status.gpioon );
+	$( '#relays' ).toggleClass( 'on', G.status.relayson );
 	$( '#snapclient' ).toggleClass( 'on', G.status.snapclient );
 	$( '#modeicon i, #timeicon i' ).addClass( 'hide' );
 	var displaytime = G.display.time && window.innerWidth > 613;
 	var prefix = displaytime ? 'ti' : 'i';
-	$( '#'+ prefix +'-gpio' ).toggleClass( 'hide', !G.status.gpioon );
+	$( '#'+ prefix +'-relays' ).toggleClass( 'hide', !G.status.relayson );
 	if ( !G.status.mpd ) return
 	
 	if ( G.display.buttons ) {
@@ -1493,7 +1449,7 @@ function setPlaylistScroll() {
 	$liactive = $( '#pl-list li' ).eq( G.status.song || 0 );
 	$liactive.addClass( 'active' );
 	$( '#menu-plaction' ).addClass( 'hide' );
-	if ( G.status.playlistlength < 5 ) {
+	if ( G.status.playlistlength < 5 || !$( '#infoOverlay' ).hasClass( 'hide' ) ) {
 		$( 'html, body' ).scrollTop( 0 );
 	} else {
 		var scrollpos = $liactive.offset().top - ( G.bars ? 80 : 40 ) - ( 49 * 3 );
@@ -1572,6 +1528,7 @@ function switchPage( page ) {
 	$( '#pl-search-close, #pl-search-close' ).addClass( 'hide' );
 	G.library = G.playback = G.playlist = 0;
 	G[ page ] = 1;
+	G.page = page;
 	// restore page scroll
 	if ( G.playback ) {
 		$timeRS.setValue( 0 );

@@ -27,28 +27,25 @@ soundprofile() { # latency swapiness mtu txtqueuelen
 
 case ${args[0]} in
 
-btdiscoverable )
-	yesno=${args[1]}
-	bluetoothctl discoverable $yesno
-	if [[ $yesno == yes ]]; then
-		rm -f $dirsystem/btdiscoverno
-	else
-		touch $dirsystem/btdiscoverno
-	fi
-	sleep 3
+bluetoothdisable )
+	sed -i '/dtparam=krnbt=on/ d' $fileconfig
+	systemctl disable --now bluetooth
+	rm -f $dirsystem/onboard-bluetooth
 	pushRefresh
 	;;
-bluetooth )
-	if [[ ${args[1]} == true ]]; then
+bluetoothset )
+	[[ ${args[1]} == true ]] && yesno=yes || yesno=no
+	if ! grep -q 'dtparam=krnbt=on' $fileconfig; then
 		sed -i '$ a\dtparam=krnbt=on' $fileconfig
-		systemctl enable --now bluetooth
 		echo "${args[2]}" > $filereboot
-		touch $dirsystem/onboard-bluetooth
+		systemctl enable bluetooth
 	else
-		sed -i '/dtparam=krnbt=on/ d' $fileconfig
-		systemctl disable --now bluetooth
-		rm -f $dirsystem/onboard-bluetooth
+		systemctl enable --now bluetooth
+		bluetoothctl discoverable $yesno
 	fi
+	touch $dirsystem/onboard-bluetooth
+	echo $yesno > $dirsystem/bluetoothset
+	sleep 3
 	pushRefresh
 	;;
 databackup )
@@ -196,6 +193,18 @@ onboardaudio )
 	echo "${args[2]}" > $filereboot
 	pushRefresh
 	;;
+onboardwlan )
+	if [[ ${args[1]} == true ]]; then
+		modprobe brcmfmac
+		systemctl enable --now netctl-auto@wlan0
+		touch $dirsystem/onboard-wlan
+	else
+		systemctl disable --now netctl-auto@wlan0
+		rm -f $dirsystem/onboard-wlan
+		rmmod brcmfmac
+	fi
+	pushRefresh
+	;;
 regional )
 	ntp=${args[1]}
 	regom=${args[2]}
@@ -211,15 +220,6 @@ relays )
 		touch $dirsystem/relays
 	else
 		rm -f $dirsystem/relays
-	fi
-	pushRefresh
-	;;
-relays )
-	enable=${args[1]}
-	if [[ $enable == true ]]; then
-		touch $dirsystem/relays
-	else
-		rm $dirsystem/relays
 	fi
 	pushRefresh
 	;;
@@ -266,18 +266,6 @@ timezone )
 	timezone=${args[1]}
 	timedatectl set-timezone $timezone
 	echo $timezone > $dirsystem/timezone
-	pushRefresh
-	;;
-wlan )
-	if [[ ${args[1]} == true ]]; then
-		modprobe brcmfmac
-		systemctl enable --now netctl-auto@wlan0
-		touch $dirsystem/onboard-wlan
-	else
-		systemctl disable --now netctl-auto@wlan0
-		rm -f $dirsystem/onboard-wlan
-		rmmod brcmfmac
-	fi
 	pushRefresh
 	;;
 	

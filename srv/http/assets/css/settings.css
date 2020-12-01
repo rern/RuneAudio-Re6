@@ -45,13 +45,12 @@
 .fa-gears:before { content: "\f50A" }
 .fa-globe:before { content: "\f56D" }
 .fa-gmusic:before { content: "\f592" }
-.fa-gpio:before { content: "\f522" }
-.fa-gpiopins:before { content: "\f546" }
 .fa-info-circle:before { content: "\f561" }
 .fa-lan:before { content: "\f552" }
 .fa-lastfm:before { content: "\f585" }
 .fa-lcd:before { content: "\f53C" }
 .fa-lcdchar:before { content: "\f53D" }
+.fa-left:before { content: "\f606" }
 .fa-library:before { content: "\f506" }
 .fa-list-ul:before { content: "\f508"; }
 .fa-lock:before { content: "\f573" }
@@ -74,7 +73,9 @@
 .fa-redo:before { content: "\f524" }
 .fa-refresh:before { content: "\f526" }
 .fa-refresh-play:before { content: "\f53B" }
+.fa-relays:before { content: "\f522" }
 .fa-reload:before { content: "\f525" }
+.fa-right:before { content: "\f607" }
 .fa-rune:before { content: "\f580" }
 .fa-save:before { content: "\f542"}
 .fa-save-circle:before { content: "\f56B"}
@@ -82,9 +83,11 @@
 .fa-search:before { content: "\f56A" }
 .fa-sliders:before { content: "\f50B" }
 .fa-snapcast:before { content: "\f59A" }
+.fa-soundprofile:before { content: "\f50B" }
 .fa-source:before { content: "\f52A" }
 .fa-spotify:before { content: "\f594" }
 .fa-stopwatch:before { content: "\f547" }
+.fa-swipe:before { content: "\f54A" }
 .fa-times:before { content: "\f51A" }
 .fa-tidal:before { content: "\f595" }
 .fa-undo:before { content: "\f523" }
@@ -222,6 +225,7 @@ w, wh, .wh { color: var( --cw ) !important; }
 bl, .bl, .blue { color: var( --cm ) !important; }
 bll { color: var( --cml ) !important; }
 gr, .gr, grl { color: var( --cg60 ) !important; }
+.gra { color: var( --cgl ) !important; }
 red, .red { color: #f00; }
 grn, .green { color: #0f0; }
 .clear { clear: both; }
@@ -311,12 +315,37 @@ heading i.fa-question-circle {
 	max-height: 90vh;
 	white-space: pre-wrap;
 }
-#bottom-bar {
+#bar-bottom {
 	position: fixed;
 	bottom: 0;
 	width: 100%;
 	height: 40px;
 	z-index: 105;
+	font-size: 28px;
+	line-height: 32px;
+	text-align: center;
+	background: var( --cga );
+	cursor: pointer;
+	touch-action: manipulation; /* fix: Unable to preventDefault inside passive event listener */
+}
+#bar-bottom div {
+	display: inline-block;
+	width: calc( 90vw / 5 );
+	height: 40px;
+}
+#bar-bottom i {
+	width: 30px;
+	vertical-align: -3px;
+	font-size: 26px;
+	color: var( --cw );
+}
+#bar-bottom a {
+	font-size: 16px;
+	font-weight: 300;
+	color: var( --cg60 );
+}
+.transparent {
+	opacity: 0 !important;
 }
 .title {
 	margin-left: 15px;
@@ -456,13 +485,20 @@ input:checked + .switchlabel:after {
 	transition: 0.3s;
 }
 input:checked + .switchlabel:after {
-	background-color: var( --cm );
-}
-input:checked + .switchlabel:after {
 	left: 50%;
+	background-color: var( --cm );
 }
 .switchlabel:active:after {
 	width: 40px;
+}
+input:checked + .switchlabel.disabled:after {
+	background-color: var( --cmd );
+}
+.switchlabel.disabled {
+	background-color: var( --cga );
+}
+.switchlabel.disabled:after {
+	background-color: var( --cgd );
 }
 .setting,
 .settingedit,
@@ -498,6 +534,7 @@ input:checked + .switchlabel:after {
 }
 .container {
 	max-width: 768px;
+	min-height: 100vh;
 	padding: 40px 55px 100px 55px;
 }
 .col-l,
@@ -563,6 +600,10 @@ input:checked + .switchlabel:after {
 	white-space: nowrap;
 	line-height: 26px;
 }
+.col-r .fa {
+	width: 20px;
+	text-align: center;
+}
 #guide {
 	position: absolute;
 	width: 100%;
@@ -610,12 +651,20 @@ input:checked + .switchlabel:after {
 	font-size: 24px;
 	color: var( --cm );
 }
+@media (max-height: 570px) {
+	#bar-bottom {
+		opacity: 0.8;
+	}
+}
 @media (min-width: 768px) {
 	.container {
 		margin: 0 auto;
 	}
 }
 @media ( max-width: 580px ) {
+	#bar-bottom a {
+		display: none;
+	}
 	.wide {
 		display: none;
 	}
@@ -633,7 +682,7 @@ input:checked + .switchlabel:after {
 		text-align: left;
 	}
 	.col-l.text {
-		width: auto;
+		width: 120px;
 	}
 	.col-r.text {
 		float: none;
@@ -685,8 +734,9 @@ input:checked + .switchlabel:after {
 	a:hover {
 		text-decoration: none;
 	}
-	.entries li:hover {
-		background: hsl(0,0%,15%)/*bh*/;
+	.entries li:hover,
+	#bar-bottom div:hover {
+		background: var( --cgd );
 	}
 	heading i,
 	.back,

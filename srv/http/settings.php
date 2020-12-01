@@ -16,6 +16,8 @@ include 'logosvg.php';
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="msapplication-tap-highlight" content="no">
+	<link rel="icon" href="/assets/img/favicon.<?=$time?>.svg">
+	<link rel="mask-icon" href="/assets/img/favicon.<?=$time?>.svg" color="#000000">
 	<style>
 		@font-face {
 			font-family: enhance;
@@ -32,9 +34,8 @@ include 'logosvg.php';
 		<?php } ?>
 	<link rel="stylesheet" href="/assets/css/selectric.<?=$time?>.css">
 	<link rel="stylesheet" href="/assets/css/info.<?=$time?>.css">
-	<link rel="stylesheet" href="/assets/css/settings.<?=$time?>.css">
 	<link rel="stylesheet" href="/assets/css/banner.<?=$time?>.css">
-	<link rel="icon" type="image/png" href="/assets/img/favicon.<?=$time?>.svg" sizes="192x192">
+	<link rel="stylesheet" href="/assets/css/settings.<?=$time?>.css">
 </head>
 <body>
 <?php
@@ -60,7 +61,13 @@ $help = '<i class="help fa fa-question-circle"></i>';
 include "settings/$page.php";
 ?>
 </div>
-<div id="bottom-bar"></div>
+<div id="bar-bottom">
+	<div id="features"><i class="fa fa-sliders"></i><a> Features</a></div>
+	<div id="mpd"><i class="fa fa-mpd"></i><a> MPD</a></div>
+	<div id="networks"><i class="fa fa-network"></i><a> Networks</a></div>
+	<div id="sources"><i class="fa fa-folder-cascade"></i><a> Sources</a></div>
+	<div id="system"><i class="fa fa-gear"></i><a> System</a></div>
+</div>
 
 	<?php if ( $localhost ) { ?>
 <input class="input hide">
@@ -71,7 +78,7 @@ include "settings/$page.php";
 <script src="/assets/js/info.<?=$time?>.js"></script>
 <script src="/assets/js/banner.<?=$time?>.js"></script>
 <script src="/assets/js/settings.<?=$time?>.js"></script>
-	<?php if ( $page !== 'credits' && $page !== 'manual' ) { ?>
+	<?php if ( $page !== 'guide' ) { ?>
 <script src="/assets/js/<?=$page?>.<?=$time?>.js"></script>
 	<?php	if ( in_array( $page, [ 'features', 'mpd', 'system' ] ) ) { ?>
 <script src="/assets/js/plugin/jquery.selectric.min.<?=$time?>.js"></script>

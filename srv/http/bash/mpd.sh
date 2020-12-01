@@ -46,37 +46,37 @@ audiooutput )
 autoupdate )
 	if [[ ${args[1]} == true ]]; then
 		sed -i '1 i\auto_update            "yes"' /etc/mpd.conf
-		touch $dirsystem/mpd-autoupdate
+		touch $dirsystem/autoupdate
 	else
 		sed -i '/^auto_update/ d' /etc/mpd.conf
-		rm -f $dirsystem/mpd-autoupdate
+		rm -f $dirsystem/autoupdate
 	fi
 	restartMPD
 	;;
 bufferdisable )
 	sed -i '/^audio_buffer_size/ d' /etc/mpd.conf
-	rm -f $dirsystem/mpd-buffer
+	rm -f $dirsystem/buffer
 	restartMPD
 	;;
 bufferset )
 	buffer=${args[1]}
 	sed -i '/^audio_buffer_size/ d' /etc/mpd.conf
 	sed -i '1 i\audio_buffer_size      "'$buffer'"' /etc/mpd.conf
-	echo $buffer > $dirsystem/mpd-bufferset
-	touch $dirsystem/mpd-buffer
+	echo $buffer > $dirsystem/bufferset
+	touch $dirsystem/buffer
 	restartMPD
 	;;
 bufferoutputdisable )
 	sed -i '/^max_output_buffer_size/ d' /etc/mpd.conf
-	rm -f $dirsystem/mpd-bufferoutput
+	rm -f $dirsystem/bufferoutput
 	restartMPD
 	;;
 bufferoutputset )
 	buffer=${args[1]}
 	sed -i '/^max_output_buffer_size/ d' /etc/mpd.conf
 	sed -i '1 i\max_output_buffer_size "'$buffer'"' /etc/mpd.conf
-	echo $buffer > $dirsystem/mpd-bufferoutputset
-	touch $dirsystem/mpd-bufferoutput
+	echo $buffer > $dirsystem/bufferoutputset
+	touch $dirsystem/bufferoutput
 	restartMPD
 	;;
 count )
@@ -104,29 +104,29 @@ count )
 	;;
 crossfadedisable )
 	mpc crossfade 0
-	rm -f $dirsystem/mpd-crossfade
+	rm -f $dirsystem/crossfade
 	pushRefresh
 	;;
 crossfadeset )
 	crossfade=${args[1]}
 	mpc crossfade $crossfade
-	echo $crossfade > $dirsystem/mpd-crossfadeset
-	touch $dirsystem/mpd-crossfade
+	echo $crossfade > $dirsystem/crossfadeset
+	touch $dirsystem/crossfade
 	pushRefresh
 	;;
 customdisable )
 	sed -i '/ #custom$/ d' /etc/mpd.conf
-	rm -f $dirsystem/mpd-custom
+	rm -f $dirsystem/custom
 	restartMPD
 	;;
 customgetglobal )
-	cat $dirsystem/mpd-custom-global
+	cat $dirsystem/custom-global
 	;;
 customgetoutput )
-	cat "$dirsystem/mpd-custom-output-${args[1]}"
+	cat "$dirsystem/custom-output-${args[1]}"
 	;;
 customset )
-	file=$dirsystem/mpd-custom
+	file=$dirsystem/custom
 	if [[ ${args[1]} == customset ]]; then
 		global=$( cat $file-global 2> /dev/null )
 		[[ -n $global ]] && touch $file
@@ -149,19 +149,19 @@ dop )
 	dop=${args[1]}
 	output=${args[2]}
 	if [[ $dop == true ]]; then
-		touch "$dirsystem/mpd-dop-$output"
+		touch "$dirsystem/dop-$output"
 	else
-		rm -f "$dirsystem/mpd-dop-$output"
+		rm -f "$dirsystem/dop-$output"
 	fi
 	restartMPD
 	;;
 ffmpeg )
 	if [[ ${args[1]} == true ]]; then
 		sed -i '/ffmpeg/ {n; s/".*"/"yes"/}' /etc/mpd.conf
-		touch $dirsystem/mpd-ffmpeg
+		touch $dirsystem/ffmpeg
 	else
 		sed -i '/ffmpeg/ {n; s/".*"/"no"/}' /etc/mpd.conf
-		rm -f $dirsystem/mpd-ffmpeg
+		rm -f $dirsystem/ffmpeg
 	fi
 	restartMPD
 	;;
@@ -181,9 +181,9 @@ mixerhw )
 	sed -i '/'$output'/,/}/ s/\(mixer_control \+"\).*/\1"'$mixer'"/' /etc/mpd.conf
 	sed -i '/mixer_control_name = / s/".*"/"'$mixer'"/' /etc/shairport-sync.conf
 	if [[ $hwmixer == auto ]]; then
-		rm -f "/srv/http/data/system/mpd-hwmixer-$aplayname"
+		rm -f "/srv/http/data/system/hwmixer-$aplayname"
 	else
-		echo $hwmixer > "/srv/http/data/system/mpd-hwmixer-$aplayname"
+		echo $hwmixer > "/srv/http/data/system/hwmixer-$aplayname"
 	fi
 	systemctl try-restart shairport-sync shairport-meta
 	restartMPD
@@ -208,9 +208,9 @@ mixerset )
 		volumenone=1
 	fi
 	if [[ $mixer == hardware ]]; then
-		rm -f "$dirsystem/mpd-mixertype-$output"
+		rm -f "$dirsystem/mixertype-$output"
 	else
-		echo $mixer > "$dirsystem/mpd-mixertype-$output"
+		echo $mixer > "$dirsystem/mixertype-$output"
 	fi
 	restartMPD
 	curl -s -X POST http://127.0.0.1/pub?id=volumenone -d '{ "pvolumenone": "'$volumenone'" }'
@@ -218,10 +218,10 @@ mixerset )
 normalization )
 	if [[ ${args[1]} == true ]]; then
 		sed -i '/^user/ a\volume_normalization   "yes"' /etc/mpd.conf
-		touch $dirsystem/mpd-normalization
+		touch $dirsystem/normalization
 	else
 		sed -i '/^volume_normalization/ d' /etc/mpd.conf
-		rm -f $dirsystem/mpd-normalization
+		rm -f $dirsystem/normalization
 	fi
 	restartMPD
 	;;
@@ -234,21 +234,21 @@ novolume )
 	' /etc/mpd.conf
 	mpc crossfade 0
 	amixer -c $card sset $hwmixer 0dB
-	echo none > "$dirsystem/mpd-mixertype-$name"
-	rm -f $dirsystem/{mpd-crossfade,mpd-replaygain,mpd-normalization}
+	echo none > "$dirsystem/mixertype-$name"
+	rm -f $dirsystem/{crossfade,replaygain,normalization}
 	restartMPD
 	curl -s -X POST http://127.0.0.1/pub?id=volumenone -d '{ "pvolumenone": "1" }'
 	;;
 replaygaindisable )
 	sed -i '/^replaygain/ s/".*"/"off"/' /etc/mpd.conf
-	rm -f $dirsystem/mpd-replaygain
+	rm -f $dirsystem/replaygain
 	restartMPD
 	;;
 replaygainset )
 	replaygain=${args[1]}
 	sed -i '/^replaygain/ s/".*"/"'$replaygain'"/' /etc/mpd.conf
-	echo $replaygain > $dirsystem/mpd-replaygainset
-	touch $dirsystem/mpd-replaygain
+	echo $replaygain > $dirsystem/replaygainset
+	touch $dirsystem/replaygain
 	restartMPD
 	;;
 restart )
@@ -260,7 +260,7 @@ soxrdisable )
 	quality        "very high"\
 }
 ' /etc/mpd.conf
-	rm -f $dirsystem/mpd-soxr
+	rm -f $dirsystem/soxr
 	restartMPD
 	;;
 soxrset )
@@ -272,9 +272,9 @@ soxrset )
 	stopband_begin "'${val[3]}'"
 	attenuation    "'${val[4]}'"
 	flags          "'${val[5]}'"
-}' > $dirsystem/mpd-soxrset
+}' > $dirsystem/soxrset
 	sed -i -e '/quality/,/}/ d
-' -e "/soxr/ r $dirsystem/mpd-soxrset
+' -e "/soxr/ r $dirsystem/soxrset
 " /etc/mpd.conf
 	restartMPD
 	;;

@@ -117,7 +117,7 @@ timedatectl set-timezone UTC
 # character lcd
 echo '20 A00 0x27 PCF8574' > $dirsystem/lcdcharset
 
-# gpio
+# relays
 echo '{
   "name": {
     "11": "DAC",
@@ -144,7 +144,7 @@ echo '{
     "off4": 11
   },
   "timer": 5
-}' > $dirsystem/gpio.json
+}' > $dirsystem/relaysset
 # mpd
 sed -i -e '/^auto_update\|^audio_buffer_size\| #custom$/ d
 ' -e '/quality/,/}/ d
