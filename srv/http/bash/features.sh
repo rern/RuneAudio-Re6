@@ -14,8 +14,10 @@ pushRefresh() {
 featureSet() {
 	[[ -n $datarestore ]] && exit
 	feature=$1
-	shift
-	$dirbash/features.sh $feature$'\n'true
+	systemctl restart $feature
+	systemctl enable $feature
+	touch $dirsystem/$feature
+	shift # remove $1
 	printf '%s\n' $@ > $dirsystem/${feature}set
 	pushRefresh
 }
@@ -64,10 +66,7 @@ xset dpms $sec $sec $sec
 
 case ${args[0]} in
 
-aplaydevices )
-	aplay -L | grep -v '^\s\|^null' | head -c -1
-	;;
-aria2 | shairport-sync | smb | snapclient | spotifyd | transmission | upmpdcli )
+aria2 | shairport-sync | spotifyd | transmission | upmpdcli )
 	service=${args[0]}
 	enable=${args[1]}
 	if [[ $enable == true ]]; then
@@ -79,21 +78,17 @@ aria2 | shairport-sync | smb | snapclient | spotifyd | transmission | upmpdcli )
 	fi
 	pushRefresh
 	;;
+aplaydevices )
+	aplay -L | grep -v '^\s\|^null' | head -c -1
+	;;
 autoplay )
 	[[ ${args[1]} == true ]] && touch $dirsystem/autoplay || rm -f $dirsystem/autoplay
 	pushRefresh
 	;;
-hostapd )
-	if [[ ${args[1]} == true ]]; then
-		netctl stop-all
-		ifconfig wlan0 ${args[2]}
-		systemctl enable --now hostapd
-		touch $dirsystem/hostapd
-	else
-		systemctl disable --now hostapd
-		rm -f $dirsystem/hostapd
-		ifconfig wlan0 0.0.0.0
-	fi
+hostapddisable )
+	systemctl disable --now hostapd
+	rm -f $dirsystem/hostapd
+	ifconfig wlan0 0.0.0.0
 	pushRefresh
 	;;
 hostapdset )
@@ -107,21 +102,16 @@ hostapdset )
 	sed -i -e '/wpa\|rsn_pairwise/ s/^#\+//
 ' -e "s/\(wpa_passphrase=\).*/\1$password/
 " /etc/hostapd/hostapd.conf
+	netctl stop-all
+	ifconfig wlan0 ${args[2]}
 	featureSet hostapd "${args[@]:1}"
 	;;
-localbrowser )
-	if [[ ${args[1]} == true ]]; then
-		systemctl enable --now localbrowser
-		systemctl disable --now getty@tty1
-		sed -i 's/tty1/tty3/' /boot/cmdline.txt
-		touch $dirsystem/localbrowser
-	else
-		systemctl disable --now localbrowser
-		systemctl enable --now getty@tty1
-		sed -i 's/tty3/tty1/' /boot/cmdline.txt
-		$dirbash/ply-image /srv/http/assets/img/splash.png
-		rm -f $dirsystem/localbrowser
-	fi
+localbrowserdisable )
+	systemctl disable --now localbrowser
+	systemctl enable --now getty@tty1
+	sed -i 's/tty3/tty1/' /boot/cmdline.txt
+	$dirbash/ply-image /srv/http/assets/img/splash.png
+	rm -f $dirsystem/localbrowser
 	pushRefresh
 	;;
 localbrowserset )
@@ -137,29 +127,25 @@ localbrowserset )
 	sed -i -e 's/\(-use_cursor \).*/\1'$cursor' \&/
 ' -e 's/\(factor=\).*/\1'$zoom'/
 ' /etc/X11/xinit/xinitrc
+	systemctl disable --now getty@tty1
+	sed -i 's/tty1/tty3/' /boot/cmdline.txt
 	featureSet localbrowser "${args[@]:1}"
 	;;
-login )
-	if [[ ${args[1]} == true ]]; then
-		touch $dirsystem/login
-		ip=127.0.0.1
-	else
-		rm -f $dirsystem/login
-		ip=0.0.0.0
-	fi
-	sed -i '/^bind_to_address/ s/".*"/"'$ip'"/' /etc/mpd.conf
+logindisable )
+	rm -f $dirsystem/login
+	sed -i '/^bind_to_address/ s/".*"/"0.0.0.0"/' /etc/mpd.conf
 	systemctl restart mpd
 	pushRefresh
 	;;
-mpdscribble )
-	enable=${args[1]}
-	if [[ $enable == true ]]; then
-		systemctl enable --now mpdscribble@mpd
-		touch $dirsystem/mpdscribble
-	else
-		systemctl disable --now mpdscribble@mpd
-		rm -f $dirsystem/mpdscribble
-	fi
+loginset )
+	touch $dirsystem/login
+	sed -i '/^bind_to_address/ s/".*"/"127.0.0.1"/' /etc/mpd.conf
+	systemctl restart mpd
+	pushRefresh
+	;;
+mpdscribbledisable )
+	systemctl disable --now mpdscribble@mpd
+	rm -f $dirsystem/mpdscribble
 	pushRefresh
 	;;
 mpdscribbleset )
@@ -191,12 +177,20 @@ screenoff )
 	screenoff ${args[1]}
 	pushRefresh
 	;;
+smbdisable )
+	systemctl stop smb
+	rm -f $dirsystem/smb
+	;;
 smbset )
 	smbconf=/etc/samba/smb.conf
 	sed -i '/read only = no/ d' $smbconf
 	[[ ${args[1]} == true ]] && sed -i '/path = .*SD/ a\	read only = no' $smbconf
 	[[ ${args[2]} == true ]] && sed -i '/path = .*USB/ a\	read only = no' $smbconf
 	featureSet smb "${args[@]:1}"
+	;;
+snapclientdisable )
+	systemctl stop snapclient
+	rm -f $dirsystem/snapclient
 	;;
 snapclientset )
 	latency=${args[1]}

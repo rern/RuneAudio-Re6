@@ -75,7 +75,7 @@ $( '.enable' ).click( function() {
 	} else {
 		var nameicon = idname[ id ];
 		notify( nameicon[ 0 ], 'Disable ...', nameicon[ 1 ] );
-		bash( [ id, false ] );
+		bash( [ id +'disable' ] );
 	}
 } );
 $( '.enablenoset' ).click( function() {
