@@ -171,6 +171,7 @@ hr {
 	width: fit-content;
 	max-height: 800px;
 	margin: 0 auto 5px;
+	padding: 0 15px;
 	word-wrap: break-word;
 	overflow: hidden;
 	color: var( --cg60 );
