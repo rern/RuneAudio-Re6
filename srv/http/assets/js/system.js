@@ -88,6 +88,7 @@ refreshData = function() {
 		} ).prop( 'selected', true );
 		$( '#i2smodule' ).selectric( 'refresh' );
 		var i2senabled = $( '#i2smodule' ).val() === 'none' ? false : true;
+		$( '#onboardaudio' ).next().addBack().toggleClass( 'disabled', !i2senabled );
 		$( '#divi2smodulesw' ).toggleClass( 'hide', i2senabled );
 		$( '#divi2smodule' ).toggleClass( 'hide', !i2senabled );
 		$( '#lcdchar' ).prop( 'checked', G.lcdchar );
@@ -171,14 +172,8 @@ $( '#refresh' ).click( function( e ) {
 	}
 } );
 $( '#onboardaudio' ).click( function() {
-	if ( $( '#i2smodule' ).val() === 'none' ) {
-		info( {
-			  icon    : 'volume'
-			, title   : 'On-board Audio'
-			, message : 'No I²S Module installed.'
-						+'<br>On-board audio cannot be disabled.'
-		} );
-		$( this ).prop( 'checked', true )
+	if ( $( this ).hasClass( 'disabled' ) ) {
+		$( this ).prop( 'checked', 1 );
 		return
 	}
 	
@@ -255,7 +250,8 @@ $( '#i2smodule' ).change( function() {
 		G.onboardaudio = false;
 		$( '#onboardaudio' ).prop( 'checked', 0 );
 		$( '#divi2smodulesw' ).addClass( 'hide' );
-		$( '#divi2smodule, #divonboardaudio' ).removeClass( 'hide' );
+		$( '#divi2smodule' ).removeClass( 'hide' );
+		$( '#onboardaudio' ).next().addBack().removeClass( 'disabled' );
 		rebootText( 1, 'Audio I&#178;S Module' );
 		notify( 'Audio I&#178;S', 'Enable ...', 'volume' );
 	} else {
@@ -271,7 +267,8 @@ $( '#i2smodule' ).change( function() {
 		G.onboardaudio = true;
 		$( '#onboardaudio' ).prop( 'checked', 1 );
 		$( '#divi2smodulesw' ).removeClass( 'hide' );
-		$( '#divi2smodule, #divonboardaudio' ).addClass( 'hide' );
+		$( '#divi2smodule' ).addClass( 'hide' );
+		$( '#onboardaudio' ).next().addBack().addClass( 'disabled' );
 		rebootText( 0, 'Audio I&#178;S Module' );
 		notify( 'I&#178;S Module', 'Disable ...', 'volume' );
 	}

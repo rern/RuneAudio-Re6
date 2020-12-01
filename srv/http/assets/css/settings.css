@@ -485,13 +485,14 @@ input:checked + .switchlabel:after {
 	transition: 0.3s;
 }
 input:checked + .switchlabel:after {
-	background-color: var( --cm );
-}
-input:checked + .switchlabel:after {
 	left: 50%;
+	background-color: var( --cm );
 }
 .switchlabel:active:after {
 	width: 40px;
+}
+input:checked + .switchlabel.disabled:after {
+	background-color: var( --cmd );
 }
 .switchlabel.disabled {
 	background-color: var( --cga );
