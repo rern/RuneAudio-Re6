@@ -13,7 +13,7 @@ dirsystem=/srv/http/data/system
 sed -i '/IgnorePkg.*linux-raspberrypi/ d' /etc/pacman.conf
 
 if [[ $( cat /srv/http/data/addons/rre6 ) < 20201123 ]]; then
-	rm -f $dirsystem/{lcdchar*,soundprofile*,snapclient*,localbrowser*,smb*,mpdscribble*,login*,hostapd*,mpd-*} &> /dev/null
+	rm -f $dirsystem/{lcdchar*,soundprofile*,snapclient*,localbrowser*,smb*,mpdscribble*,login*,hostapd*,mpd-*}
 	grep -q dtoverlay=tft35a /boot/config.txt && touch $dirsystem/lcd
 	grep -q 'dtparam=i2c_arm=on' /boot/config.txt && ! grep -q 'dtoverlay=tft35a' /boot/config.txt && touch $dirsystem/lcdchar
 	if [[ -e $dirsystem/lcdchar ]] ; then
