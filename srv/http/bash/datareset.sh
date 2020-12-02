@@ -19,7 +19,7 @@ hwcode=${code: -3:2}
 if (( $# == 0 )); then
 	case $hwcode in
 		09 | 0c )         rpi=0;;
-		00 | 01 |02 |03 ) rpi=1
+		00 | 01 |02 |03 ) rpi=1;;
 		11 )              rpi=4;;
 	esac
 	config="\
