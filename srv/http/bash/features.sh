@@ -12,28 +12,24 @@ pushRefresh() {
 	curl -s -X POST http://127.0.0.1/pub?id=refresh -d '{ "page": "features" }'
 }
 featureSet() {
-	[[ -n $datarestore ]] && exit
-	feature=$1
-	systemctl restart $feature
-	systemctl enable $feature
-	touch $dirsystem/$feature
-	shift # remove $1
-	printf '%s\n' $@ > $dirsystem/${feature}set
+	systemctl restart $1
+	systemctl enable $1
 	pushRefresh
 }
 rotate() {
 	rotate=$1
 	rotateconf=/etc/X11/xorg.conf.d/99-raspi-rotate.conf
 	if [[ $rotate == NORMAL ]]; then
-		rm -f $rotateconf $dirsystem/rotatefile
+		rm -f $rotateconf
 	else
+		cp -f /etc/X11/xinit/rotateconf $rotateconf
 		case $rotate in
 			CW )  matrix='0 1 0 -1 0 1 0 0 1';;
 			CCW ) matrix='0 -1 1 1 0 0 0 0 1';;
 			UD )  matrix='-1 0 1 0 -1 1 0 0 1';;
 		esac
 		sed -e "s/ROTATION_SETTING/$rotate/
-		" -e "s/MATRIX_SETTING/$matrix/" $rotateconf | tee $rotateconf $dirsystem/rotatefile
+		" -e "s/MATRIX_SETTING/$matrix/" $rotateconf
 	fi
 	ln -sf /srv/http/assets/img/{$rotate,splash}.png
 }
@@ -41,27 +37,7 @@ rotatelcd() {
 	degree=$1
 	sed -i "s/\(tft35a\).*/\1:rotate=$degree/" /boot/config.txt
 	cp -f /etc/X11/{lcd$degree,xorg.conf.d/99-calibration.conf}
-	(( $degree != 0 )) && cp -f /etc/X11/xorg.conf.d/99-calibration.conf $dirsystem/calibration
 	echo Rotate GPIO LCD screen > /srv/http/data/shm/reboot
-}
-screenoff() {
-	sec=$1
-	if [[ $sec == 0 ]]; then
-		sed -i -e '/xset/ d
-' -e '/export DISPLAY/ a\
-xset dpms 0 0 0\
-xset s off\
-xset -dpms
-' /etc/X11/xinit/xinitrc
-		DISPLAY=:0 xset dpms 0 0 0
-	else
-		sed -i -e '/xset/ d
-' -e "/export DISPLAY/ a\
-xset dpms $sec $sec $sec
-" /etc/X11/xinit/xinitrc
-		DISPLAY=:0 xset dpms $sec $sec $sec
-	fi
-	cp /etc/X11/xinit/xinitrc $dirsystem/xinitrc
 }
 
 case ${args[0]} in
@@ -69,13 +45,8 @@ case ${args[0]} in
 aria2 | shairport-sync | spotifyd | transmission | upmpdcli )
 	service=${args[0]}
 	enable=${args[1]}
-	if [[ $enable == true ]]; then
-		systemctl enable --now $service
-		touch $dirsystem/$service
-	else
-		systemctl disable --now $service
-		rm -f $dirsystem/$service
-	fi
+	[[ $enable == true ]] && enable=enable || enable=disable
+	systemctl $enable --now $service
 	pushRefresh
 	;;
 aplaydevices )
@@ -87,7 +58,6 @@ autoplay )
 	;;
 hostapddisable )
 	systemctl disable --now hostapd
-	rm -f $dirsystem/hostapd
 	ifconfig wlan0 0.0.0.0
 	pushRefresh
 	;;
@@ -104,14 +74,13 @@ hostapdset )
 " /etc/hostapd/hostapd.conf
 	netctl stop-all
 	ifconfig wlan0 ${args[2]}
-	featureSet hostapd "${args[@]:1}"
+	featureSet hostapd
 	;;
 localbrowserdisable )
 	systemctl disable --now localbrowser
 	systemctl enable --now getty@tty1
 	sed -i 's/tty3/tty1/' /boot/cmdline.txt
 	$dirbash/ply-image /srv/http/assets/img/splash.png
-	rm -f $dirsystem/localbrowser
 	pushRefresh
 	;;
 localbrowserset )
@@ -119,17 +88,22 @@ localbrowserset )
 	screenoff=${args[2]}
 	cursor=${args[3]}
 	zoom=${args[4]}
-	if [[ -n $rotate ]]; then
+	rotateset=${args[5]}
+	screenoffset=${args[6]}
+	cursorset=${args[7]}
+	zoomset=${args[8]}
+	if [[ $rotate != $rotateset ]]; then
 		[[ $rotate =~ ^(0|90|180|270)$ ]] && rotatelcd $rotate || rotate $rotate
 	fi
-	[[ -n $screenoff ]] && screenoff $screenoff
-	[[ $cursor == true ]] && cursor=yes || cursor=no
-	sed -i -e 's/\(-use_cursor \).*/\1'$cursor' \&/
-' -e 's/\(factor=\).*/\1'$zoom'/
-' /etc/X11/xinit/xinitrc
+	[[ $screenoff != $screenoffset ]] && DISPLAY=:0 xset dpms $screenoff $screenoff $screenoff
+	if ! systemctl is-active localbrowser || [[ $cursor != $cursorset || $zoom != $zoomset ]]; then
+		systemctl restart localbrowser
+		systemctl enable localbrowser
+	fi
 	systemctl disable --now getty@tty1
 	sed -i 's/tty1/tty3/' /boot/cmdline.txt
-	featureSet localbrowser "${args[@]:1}"
+	printf '%s\n' ${args[@]:6} > $dirsystem/localbrowserset
+	pushRefresh
 	;;
 logindisable )
 	rm -f $dirsystem/login
@@ -145,7 +119,6 @@ loginset )
 	;;
 mpdscribbledisable )
 	systemctl disable --now mpdscribble@mpd
-	rm -f $dirsystem/mpdscribble
 	pushRefresh
 	;;
 mpdscribbleset )
@@ -156,11 +129,8 @@ mpdscribbleset )
 	" /etc/mpdscribble.conf
 	if systemctl restart mpdscribble@mpd; then
 		systemctl enable mpdscribble@mpd
-		printf '%s\n' "${args[@]:1}" > $dirsystem/mpdscribbleset
-		touch $dirsystem/mpdscribble
 	else
 		systemctl disable mpdscribble@mpd
-		rm -f $dirsystem/mpdscribble
 		echo -1
 	fi
 	pushRefresh
@@ -173,13 +143,8 @@ rotatelcd )
 	rotatelcd ${args[1]}
 	pushRefresh
 	;;
-screenoff )
-	screenoff ${args[1]}
-	pushRefresh
-	;;
 smbdisable )
 	systemctl stop smb
-	rm -f $dirsystem/smb
 	pushRefresh
 	;;
 smbset )
@@ -187,11 +152,10 @@ smbset )
 	sed -i '/read only = no/ d' $smbconf
 	[[ ${args[1]} == true ]] && sed -i '/path = .*SD/ a\	read only = no' $smbconf
 	[[ ${args[2]} == true ]] && sed -i '/path = .*USB/ a\	read only = no' $smbconf
-	featureSet smb "${args[@]:1}"
+	featureSet smb
 	;;
 snapclientdisable )
 	systemctl stop snapclient
-	rm -f $dirsystem/snapclient
 	pushRefresh
 	;;
 snapclientset )
@@ -199,15 +163,13 @@ snapclientset )
 	password=${args[2]}
 	sed -i '/OPTS=/ s/".*"/"--latency='$latency'"/' /etc/default/snapclient
 	[[ -n $password ]] && echo $pwd > $dirsystem/snapclientpw
-	featureSet snapclient "${args[@]:1}"
+	featureSet snapclient
 	;;
 snapserver )
 	if [[ ${args[1]} == true ]]; then
 		systemctl enable --now snapserver
-		touch $dirsystem/snapcast
 	else
 		systemctl disable --now snapserver
-		rm -f $dirsystem/snapcast
 	fi
 	$dirbash/mpd-conf.sh
 	$dirbash/snapcast.sh serverstop
