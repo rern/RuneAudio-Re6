@@ -39,8 +39,9 @@ dtparam=audio=on
 	echo -n "$config" > /boot/config.txt
 fi
 # addons - new/backup
-if [[ -n $1 ]]; then # from createrune.sh
+if [[ -n $1 ]]; then # from create-rune.sh
 	version=$1
+	revision=$2
 else
 	mv $diraddons $dirtmp
 	rm -rf $dirdata
@@ -49,11 +50,9 @@ fi
 mkdir -p $dirdata/{addons,bookmarks,embedded,lyrics,mpd,playlists,system,tmp,webradios,webradiosimg} /mnt/MPD/{NAS,SD,USB}
 ln -sf /dev/shm $dirdata
 # addons - new/restore
-if [[ -n $version ]]; then # from createrune.sh
+if [[ -n $version ]]; then # from create-rune.sh
 	echo $version > $dirsystem/version
-	wget -qO - https://github.com/rern/RuneAudio_Addons/raw/master/addons-list.json \
-		| jq -r .rr$version.version \
-		> $diraddons/rr$version
+	echo $revision > $diraddons/rr$version
 else
 	mv $dirtmp/addons $dirdata
 fi
@@ -101,21 +100,17 @@ echo '[
 	"Genre",
 	"Date"
 ]' > $dirsystem/order
-echo '"mpd":true,"airplay":false,"snapclient":false,"spotify":false,"upnp":false' > $dirdata/shm/player
+mv $dirdata/shm/player-{*,mpd}
 # system
 echo 'bcm2835 Headphones' > $dirsystem/audio-aplayname
 echo 'On-board - Headphone' > $dirsystem/audio-output
-echo RuneAudio > $dirsystem/hostname
-touch $dirsystem/{onboard-audio,onboard-wlan}
-[[ $rpi != 0 && $rpi != 1 ]] && touch $dirsystem/localbrowser
-rm -f $dirsystem/{lcd,lcdchar,relays,soundprofile}
-hostnamectl set-hostname runeaudio
+echo R$version > $dirsystem/hostname
+hostnamectl set-hostname R$version
 sed -i 's/#NTP=.*/NTP=pool.ntp.org/' /etc/systemd/timesyncd.conf
 sed -i 's/".*"/"00"/' /etc/conf.d/wireless-regdom
 timedatectl set-timezone UTC
-
-# character lcd
-echo '20 A00 0x27 PCF8574' > $dirsystem/lcdcharset
+touch $dirsystem/onboard-wlan
+rm -f $dirsystem/{buffer,bufferoutput,crossfade,custom,relays,replaygain,soundprofile,soxr}
 
 # relays
 echo '{
@@ -145,6 +140,7 @@ echo '{
   },
   "timer": 5
 }' > $dirsystem/relaysset
+
 # mpd
 sed -i -e '/^auto_update\|^audio_buffer_size\| #custom$/ d
 ' -e '/quality/,/}/ d
