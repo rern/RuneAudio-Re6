@@ -65,6 +65,16 @@ txqueuelen=${val[3]}
 		rm $dirsystem/soundprofileset
 	fi
 
+	if [[ ! -e $dirsystem/crossfadeset ]]; then
+		val=$( mpc crossfade | cut -d' ' -f2 )
+		if (( $val > 0 )); then
+			echo $val > $dirsystem/crossfadeset
+			touch $dirsystem/crossfade
+		fi
+	fi
+	if [[ ! -e $dirsystem/ffmpeg ]]; then
+		grep -A1 'plugin.*ffmpeg' /etc/mpd.conf | grep -q yes && touch $dirsystem/ffmpeg
+	fi
 	if [[ ! -e $dirsystem/bufferset ]]; then
 		val=$( grep '^audio_buffer_size' /etc/mpd.conf | cut -d'"' -f2 )
 		[[ -n $val ]] && echo $val > $dirsystem/bufferset
