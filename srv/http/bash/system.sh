@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 dirdata=/srv/http/data
 dirsystem=$dirdata/system
 dirtmp=$dirdata/shm
@@ -15,22 +14,12 @@ readarray -t args <<< "$1"
 pushRefresh() {
 	curl -s -X POST http://127.0.0.1/pub?id=refresh -d '{ "page": "system" }'
 }
-soundprofile() { # latency swapiness mtu txtqueuelen
-	val=( $1 )
-	sysctl kernel.sched_latency_ns=${val[0]}
-	sysctl vm.swappiness=${val[1]}
-	if ifconfig | grep -q eth0; then
-		ip link set eth0 mtu ${val[2]}
-		ip link set eth0 txqueuelen ${val[3]}
-	fi
-}
 
 case ${args[0]} in
 
 bluetoothdisable )
 	sed -i '/dtparam=krnbt=on/ d' $fileconfig
 	systemctl disable --now bluetooth
-	rm -f $dirsystem/onboard-bluetooth
 	pushRefresh
 	;;
 bluetoothset )
@@ -43,16 +32,46 @@ bluetoothset )
 		systemctl enable --now bluetooth
 		bluetoothctl discoverable $yesno
 	fi
-	touch $dirsystem/onboard-bluetooth
-	echo $yesno > $dirsystem/bluetoothset
 	sleep 3
 	pushRefresh
 	;;
 databackup )
+	netctl=${args[1]}
+	dirconfig=$dirdata/config
 	backupfile=$dirdata/tmp/backup.gz
 	rm -f $backupfile
-	cp {/etc/X11/xorg.conf.d,$dirdata/system}/99-calibration.conf
-	cp {/etc/X11/xinit,$dirdata/system}/xinitrc
+	files=(
+/boot/cmdline.txt
+/boot/config.txt
+/etc/conf.d/wireless-regdom
+/etc/default/snapclient
+/etc/fstab
+/etc/hostapd/hostapd.conf
+/etc/lcdchar.conf
+/etc/localbrowser.conf
+/etc/mpd.conf
+/etc/mpdscribble.conf
+/etc/netctl/*
+/etc/samba/smb.conf
+/etc/soundprofile.conf
+/etc/spotifyd.conf
+/etc/systemd/network/eth0.network
+/etc/systemd/timesyncd.conf
+/etc/X11/xorg.conf.d/99-calibration.conf
+/etc/X11/xorg.conf.d/99-raspi-rotate.conf
+)
+	for file in ${files[@]}; do
+		mkdir -p $dirconfig/$( dirname $file )
+		cp {,$dirconfig}$file 2> /dev/null
+	done
+	[[ -n $netctl ]] && cp "/etc/netctl/$netctl" $dirconfig/boot/wifi
+	
+	services='bluetooth hostapd localbrowser mpdscribble shairport-sync smb snapclient snapserver spotifyd upmpdcli'
+	for service in $services; do
+		systemctl -q is-active $service && enable+=" $service"
+	done
+	[[ -n $enable ]] && echo $enable > $dirsystem/enable
+	
 	bsdtar \
 		--exclude './addons' \
 		--exclude './embedded' \
@@ -63,6 +82,8 @@ databackup )
 		-C /srv/http \
 		data \
 		2> /dev/null && echo 1
+	
+	rm -rf $dirdata/{config,enable}
 	;;
 hostname )
 	hostname=${args[1]}
@@ -91,10 +112,8 @@ dtparam=audio=off
 dtparam=i2s=on
 dtoverlay=${args[1]}"
 		sed -i '$ r /dev/stdin' $fileconfig <<< "$lines"
-		rm -f $dirsystem/onboard-audio
 	else
 		sed -i '$ a\dtparam=audio=on' $fileconfig
-		touch $dirsystem/onboard-audio
 	fi
 	echo $aplayname > $dirsystem/audio-aplayname
 	echo $output > $dirsystem/audio-output
@@ -119,13 +138,11 @@ i2c-dev
 " >> $filemodule
 		cp -f /etc/X11/{lcd0,xorg.conf.d/99-calibration.conf}
 		sed -i 's/fb0/fb1/' /etc/X11/xorg.conf.d/99-fbturbo.conf
-		touch $dirsystem/lcd
 	else
 		sed -i '1 s/ fbcon=map:10 fbcon=font:ProFont6x11//' /boot/cmdline.txt
 		sed -i '/hdmi_force_hotplug\|i2c_arm=on\|spi=on\|tft35a/ d' $fileconfig
 		sed -i '/i2c-bcm2708\|i2c-dev/ d' $filemodule
 		sed -i 's/fb1/fb0/' /etc/X11/xorg.conf.d/99-fbturbo.conf
-		rm -f $dirsystem/lcd
 	fi
 	echo "$reboot" > $filereboot
 	pushRefresh
@@ -138,7 +155,6 @@ lcdcalibrate )
 	if [[ -n $value ]]; then
 		sed -i "s/\(Calibration\"  \"\).*/\1$value\"/" /etc/X11/xorg.conf.d/99-calibration.conf
 		systemctl start localbrowser
-		cp /etc/X11/xorg.conf.d/99-calibration.conf /srv/http/data/system/calibration
 	fi
 	;;
 lcdchardisable )
@@ -146,24 +162,12 @@ lcdchardisable )
 		sed -i '/dtparam=i2c_arm=on/ d' $fileconfig
 		sed -i '/i2c-bcm2708\|i2c-dev/ d' $filemodule
 	fi
-	rm -f $dirsystem/lcdchar
 	pushRefresh
 	;;
 lcdcharset )
 	val=( ${args[1]} )
 	reboot=${args[2]}
-	
-	cols=${val[0]}
-	charmap=${val[1]}
-	address=${val[2]}
-	chip=${val[3]}
-	[[ $cols == 16 ]] && rows=2 || rows=4
-	filelcdchar=/srv/http/bash/lcdchar.py
-
-	sed -i -e '/address = /,/i2c_expander/ s/^#//
-' -e '/RPLCD.gpio/,/numbering_mode/ s/^#//
-' $filelcdchar
-	if [[ -n $chip ]]; then
+	if (( ${#val[@]} > 2 )); then
 		if ! grep -q 'dtparam=i2c_arm=on' $fileconfig; then
 			sed -i '$ a\dtparam=i2c_arm=on' $fileconfig
 			echo "\
@@ -172,23 +176,22 @@ i2c-dev" >> $filemodule
 			echo "$reboot" > $filereboot
 		fi
 	else
-		if [[ ! -e $dirsystem/lcd ]]; then
+		if ! grep -q tft35a $fileconfig; then
 			sed -i '/dtparam=i2c_arm=on/ d' $fileconfig
 			sed -i '/i2c-bcm2708\|i2c-dev/ d' $filemodule
 		fi
 	fi
-	echo ${args[1]} > $dirsystem/lcdcharset # array to multiline string
-	touch $dirsystem/lcdchar
+	echo -n "\
+[var]
+cols=${val[0]}
+charmap=${val[1]}
+address=${val[2]}
+chip=${val[3]}
+" > /etc/lcdchar.conf
 	pushRefresh
 	;;
 onboardaudio )
-	if [[ ${args[1]} == true ]]; then
-		onoff=on
-		touch $dirsystem/onboard-audio
-	else
-		onoff=off
-		rm -f $dirsystem/onboard-audio
-	fi
+	[[ ${args[1]} == true ]] && onoff=on || onoff=off
 	sed -i "s/\(dtparam=audio=\).*/\1$onoff/" $fileconfig
 	echo "${args[2]}" > $filereboot
 	pushRefresh
@@ -197,10 +200,8 @@ onboardwlan )
 	if [[ ${args[1]} == true ]]; then
 		modprobe brcmfmac
 		systemctl enable --now netctl-auto@wlan0
-		touch $dirsystem/onboard-wlan
 	else
 		systemctl disable --now netctl-auto@wlan0
-		rm -f $dirsystem/onboard-wlan
 		rmmod brcmfmac
 	fi
 	pushRefresh
@@ -211,21 +212,14 @@ regional )
 	sed -i "s/^\(NTP=\).*/\1$ntp/" /etc/systemd/timesyncd.conf
 	sed -i 's/".*"/"'$regdom'"/' /etc/conf.d/wireless-regdom
 	iw reg set $regdom
-	printf '%s\n' "${args[@]:1}" > $dirsystem/regional
 	pushRefresh
 	;;
 relays )
-	enable=${args[1]}
-	if [[ $enable == true ]]; then
-		touch $dirsystem/relays
-	else
-		rm -f $dirsystem/relays
-	fi
+	[[ ${args[1]} == true ]] && touch $dirsystem/relays || rm -f $dirsystem/relays
 	pushRefresh
 	;;
 soundprofiledisable )
-	soundprofile '18000000 60 1500 1000'
-	rm -f $dirsystem/soundprofile
+	/srv/http/soundprofile.sh reset
 	pushRefresh
 	;;
 soundprofileget )
@@ -238,13 +232,18 @@ soundprofileget )
 	echo "${val:0:-1}"
 	;;
 soundprofileset )
-	values=${args[@]:1}
-	soundprofile "$values"
+	values=${args[1]}
 	if [[ $values == '18000000 60 1500 1000' || $values == '18000000 60' ]]; then
-		rm -f $dirsystem/soundprofile*
+		/srv/http/soundprofile.sh reset
 	else
-		printf '%s\n' "${args[@]:1}" > $dirsystem/soundprofileset
-		touch $dirsystem/soundprofile
+		val=( echo $values )
+		echo -n "\
+latency=${val[0]}
+swappiness=${val[1]}
+mtu=${val[2]}
+txqueuelen=${val[3]}
+" > /etc/soundprofile.conf
+		/srv/http/soundprofile.sh
 	fi
 	pushRefresh
 	;;
