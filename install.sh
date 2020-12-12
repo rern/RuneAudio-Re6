@@ -23,11 +23,11 @@ if [[ ! -e /etc/systemd/system/bluezdbus.service ]]; then
 	dirset=/srv/http/data/shm/set
 
 	mv $dirsystem/{gpio,relays} &> /dev/null
-	mv $dirsystem/{gpio.json,relaysset} &> /dev/null
+	mv $dirsystem/gpio.json /etc/relays.conf &> /dev/null
 
 	mkdir -p $dirset
 	cp $dirsystem/{audio*,display,hostname,onboard-wlan,order,relays*,version} $dirset 2> /dev/null
-	cp $dirsystem/{bufferset,bufferoutputset,crossfadeset,custom*,lcdcharset,localbrowserset,replaygainset,soundprofile*,soxr*} $dirset 2> /dev/null
+	cp $dirsystem/{bufferset,bufferoutputset,custom*,lcdcharset,localbrowserset,soundprofile*,soxr*} $dirset 2> /dev/null
 	rm -f $dirsystem/*
 	cp $dirset/* $dirsystem
 	chown http:http $dirsystem/*
@@ -65,16 +65,12 @@ txqueuelen=${val[3]}
 		rm $dirsystem/soundprofileset
 	fi
 
-	if [[ ! -e $dirsystem/crossfadeset ]]; then
-		val=$( mpc crossfade | cut -d' ' -f2 )
-		if (( $val > 0 )); then
-			echo $val > $dirsystem/crossfadeset
-			touch $dirsystem/crossfade
-		fi
+	val=$( mpc crossfade | cut -d' ' -f2 )
+	if (( $val > 0 )); then
+		echo $val > $dirsystem/crossfadeset
+		touch $dirsystem/crossfade
 	fi
-	if [[ ! -e $dirsystem/ffmpeg ]]; then
-		grep -A1 'plugin.*ffmpeg' /etc/mpd.conf | grep -q yes && touch $dirsystem/ffmpeg
-	fi
+	grep -A1 'plugin.*ffmpeg' /etc/mpd.conf | grep -q yes && touch $dirsystem/ffmpeg
 	if [[ ! -e $dirsystem/bufferset ]]; then
 		val=$( grep '^audio_buffer_size' /etc/mpd.conf | cut -d'"' -f2 )
 		[[ -n $val ]] && echo $val > $dirsystem/bufferset
@@ -83,15 +79,6 @@ txqueuelen=${val[3]}
 		val=$( grep '^max_output_buffer_size' /etc/mpd.conf | cut -d'"' -f2 )
 		[[ -n $val ]] && echo $val > $dirsystem/bufferoutputset
 	fi
-	if [[ ! -e $dirsystem/replaygainset ]]; then
-		val=$( grep '^replaygain' /etc/mpd.conf | cut -d'"' -f2 )
-		[[ $val != off ]] && echo $val > $dirsystem/replaygainset
-	fi
-	if [[ ! -e $dirsystem/crossfadeset ]]; then
-		val=$( mpc crossfade | cut -d' ' -f2 )
-		(( $val > 0 )) && echo $val > $dirsystem/crossfadeset
-	fi
-
 fi
 
 file=/etc/systemd/system/bluetooth.service.d/override.conf
