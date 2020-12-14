@@ -66,7 +66,7 @@ databackup )
 	done
 	[[ -n $netctl ]] && cp "/etc/netctl/$netctl" $dirconfig/boot/wifi
 	
-	services='bluetooth hostapd localbrowser mpdscribble shairport-sync smb snapclient snapserver spotifyd upmpdcli'
+	services='bluetooth hostapd localbrowser mpdscribble@mpd shairport-sync smb snapclient snapserver spotifyd upmpdcli'
 	for service in $services; do
 		systemctl -q is-active $service && enable+=" $service" || disable+=" $service"
 	done
