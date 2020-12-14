@@ -73,7 +73,8 @@ databackup )
 	[[ -n $enable ]] && echo $enable > $dirsystem/enable
 	[[ -n $disable ]] && echo $disable > $dirsystem/disable
 	timedatectl | awk '/zone:/ {print $3}' > $dirsystem/timezone
-	
+	crossfade=$( mpc crossfade | cut -d' ' -f2 )
+	[[ $crossfade != 0 ]] && echo $crossfade > $dirsystem/crossfade
 	bsdtar \
 		--exclude './addons' \
 		--exclude './embedded' \
