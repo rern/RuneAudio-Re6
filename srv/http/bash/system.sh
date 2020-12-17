@@ -44,19 +44,22 @@ databackup )
 /boot/config.txt
 /etc/conf.d/wireless-regdom
 /etc/default/snapclient
-/etc/fstab
 /etc/hostapd/hostapd.conf
-/etc/lcdchar.conf
-/etc/localbrowser.conf
-/etc/mpd.conf
-/etc/mpdscribble.conf
 /etc/samba/smb.conf
-/etc/soundprofile.conf
-/etc/spotifyd.conf
 /etc/systemd/network/eth0.network
 /etc/systemd/timesyncd.conf
 /etc/X11/xorg.conf.d/99-calibration.conf
 /etc/X11/xorg.conf.d/99-raspi-rotate.conf
+/etc/fstab
+/etc/lcdchar.conf
+/etc/localbrowser.conf
+/etc/mpd.conf
+/etc/mpdscribble.conf
+/etc/relays.conf
+/etc/shairport-sync.conf
+/etc/soundprofile.conf
+/etc/spotifyd.conf
+/etc/upmpdcli.conf
 /srv/http/assets/css/colors.css
 )
 	for file in ${files[@]}; do
@@ -76,7 +79,9 @@ databackup )
 	done
 	[[ -n $enable ]] && echo $enable > $dirsystem/enable
 	[[ -n $disable ]] && echo $disable > $dirsystem/disable
-	[[ $( cat $dirsystem/hostname ) == RuneAudio ]] && echo rAudio > $dirsystem/hostname
+	hostname=$( hostname )
+	[[ $hostname == RuneAudio ]] && hostname=rAudio
+	echo $hostname > $dirsystem/hostname
 	timedatectl | awk '/zone:/ {print $3}' > $dirsystem/timezone
 	crossfade=$( mpc crossfade | cut -d' ' -f2 )
 	[[ $crossfade != 0 ]] && echo $crossfade > $dirsystem/crossfade
@@ -102,9 +107,7 @@ hostname )
 	sed -i "s/^\(friendlyname = \).*/\1${args[1]}/" /etc/upmpdcli.conf
 	rm -f /root/.config/chromium/SingletonLock
 	systemctl daemon-reload
-	systemctl try-restart avahi-daemon hostapd mpd smb shairport-sync shairport-meta upmpdcli
-	systemctl -q is-active bluetooth && bluetoothctl system-alias $hostname
-	echo $hostname > $dirsystem/hostname
+	systemctl try-restart avahi-daemon bluetooth hostapd mpd smb shairport-sync shairport-meta upmpdcli
 	pushRefresh
 	;;
 i2smodule )
@@ -272,7 +275,6 @@ statusonboard )
 timezone )
 	timezone=${args[1]}
 	timedatectl set-timezone $timezone
-	echo $timezone > $dirsystem/timezone
 	pushRefresh
 	;;
 	
