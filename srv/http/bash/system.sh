@@ -36,7 +36,6 @@ bluetoothset )
 	pushRefresh
 	;;
 databackup )
-	netctl=${args[1]}
 	dirconfig=$dirdata/config
 	backupfile=$dirdata/tmp/backup.gz
 	rm -f $backupfile
