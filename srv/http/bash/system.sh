@@ -66,6 +66,8 @@ databackup )
 			cp {,$dirconfig}$file
 		fi
 	done
+	profile=$( ls -p /etc/netctl | grep -v / | head -1 )
+	[[ -n $profile ]] && cp "/etc/netctl/$profile" $dirconfig/boot/wifi
 	mkdir -p $dirconfig/var/lib
 	cp -r /var/lib/bluetooth $dirconfig/var/lib
 	
