@@ -8,7 +8,7 @@ installstart "$1"
 
 getinstallzip
 
-if [[ ! -e /etc/systemd/system/bluezdbus.service ]]; then
+if [[ $( cat /srv/http/data/addons/rre6 ) < 20201202 ]]; then
 	mv /etc/systemd/system/bluez{-authorize,dbus}.service &> /dev/null
 	sed -i 's/-authorize/dbus/' /etc/systemd/system/bluezdbus.service
 	sed -i 's/-authorize/dbus/' /etc/systemd/system/bluetooth.service.d/override.conf
