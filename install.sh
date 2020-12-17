@@ -24,12 +24,13 @@ if [[ ! -e /etc/systemd/system/bluezdbus.service ]]; then
 
 	mv $dirsystem/{gpio,relays} &> /dev/null
 	mv $dirsystem/gpio.json /etc/relays.conf &> /dev/null
+	mv $dirsystem/{onboard-,}wlan &> /dev/null
 
 	mkdir -p $dirset
-	cp $dirsystem/{audio*,display,hostname,onboard-wlan,order,relays*,version} $dirset 2> /dev/null
-	cp $dirsystem/{bufferset,bufferoutputset,custom*,lcdcharset,localbrowserset,soundprofile*,soxr*} $dirset 2> /dev/null
+	cp -f $dirsystem/{audio*,display,hostname,wlan,order,relays*,version} $dirset 2> /dev/null
+	cp -f $dirsystem/{bufferset,bufferoutputset,custom*,lcdcharset,localbrowserset,soundprofile*,soxr*} $dirset 2> /dev/null
 	rm -f $dirsystem/*
-	cp $dirset/* $dirsystem
+	cp -f $dirset/* $dirsystem
 	chown http:http $dirsystem/*
 	rm -rf $dirset
 
