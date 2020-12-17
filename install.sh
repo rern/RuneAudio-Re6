@@ -27,7 +27,7 @@ if [[ $( cat /srv/http/data/addons/rre6 ) < 20201202 ]]; then
 	mv $dirsystem/{onboard-,}wlan &> /dev/null
 
 	mkdir -p $dirset
-	cp -f $dirsystem/{audio*,display,hostname,wlan,order,relays*,version} $dirset 2> /dev/null
+	cp -f $dirsystem/{audio*,color,display,hostname,wlan,order,relays*,version} $dirset 2> /dev/null
 	cp -f $dirsystem/{bufferset,bufferoutputset,custom*,lcdcharset,localbrowserset,soundprofile*,soxr*} $dirset 2> /dev/null
 	rm -f $dirsystem/*
 	cp -f $dirset/* $dirsystem
