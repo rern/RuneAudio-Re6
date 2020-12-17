@@ -51,7 +51,6 @@ databackup )
 /etc/localbrowser.conf
 /etc/mpd.conf
 /etc/mpdscribble.conf
-/etc/netctl/*
 /etc/samba/smb.conf
 /etc/soundprofile.conf
 /etc/spotifyd.conf
@@ -64,7 +63,6 @@ databackup )
 		mkdir -p $dirconfig/$( dirname $file )
 		cp {,$dirconfig}$file 2> /dev/null
 	done
-	[[ -n $netctl ]] && cp "/etc/netctl/$netctl" $dirconfig/boot/wifi
 	mkdir -p $dirconfig/var/lib
 	cp -r /var/lib/bluetooth $dirconfig/var/lib
 	
