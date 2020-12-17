@@ -58,10 +58,13 @@ databackup )
 /etc/systemd/timesyncd.conf
 /etc/X11/xorg.conf.d/99-calibration.conf
 /etc/X11/xorg.conf.d/99-raspi-rotate.conf
+/srv/http/assets/css/colors.css
 )
 	for file in ${files[@]}; do
-		mkdir -p $dirconfig/$( dirname $file )
-		cp {,$dirconfig}$file 2> /dev/null
+		if [[ -e $file ]]; then
+			mkdir -p $dirconfig/$( dirname $file )
+			cp {,$dirconfig}$file
+		fi
 	done
 	mkdir -p $dirconfig/var/lib
 	cp -r /var/lib/bluetooth $dirconfig/var/lib
