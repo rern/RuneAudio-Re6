@@ -206,8 +206,7 @@ $addonsupdate = @file_get_contents( $dirdata.'addons/update' ) ?: false;
 	<a id="networks" class="settings"><i class="fa fa-networks"></i>Networks</a>
 	<a id="sources" class="settings sub"><i class="fa fa-folder-cascade"></i>Sources</a>
 		<i id="update" class="fa fa-refresh-library submenu"></i>
-	<a id="system" class="settings sub"><i class="fa fa-plus-r"></i>System</a>
-		<i id="logout" class="fa fa-lock submenu"></i>
+	<a id="system" class="settings"><i class="fa fa-plus-r"></i>System</a>
 <?php if ( in_array( $_SERVER[ 'REMOTE_ADDR' ], [ '127.0.0.1', '::1' ] ) ) { ?>
 	<a id="power" class="sub"><i class="fa fa-power"></i>Power</a>
 		<i id="screenoff" class="fa fa-screenoff submenu"></i>

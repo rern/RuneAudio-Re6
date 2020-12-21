@@ -8,35 +8,87 @@ installstart "$1"
 
 getinstallzip
 
-dirsystem=/srv/http/data/system
+if [[ $( cat /srv/http/data/addons/rre6 ) < 20201202 ]]; then
+	mv /etc/systemd/system/bluez{-authorize,dbus}.service &> /dev/null
+	sed -i 's/-authorize/dbus/' /etc/systemd/system/bluezdbus.service
+	sed -i 's/-authorize/dbus/' /etc/systemd/system/bluetooth.service.d/override.conf
+	systemctl daemon-reload
+	systemctl try-restart bluetooth
 
-sed -i 's/network.sh/networks.sh/' /etc/systemd/system/bluetooth.service.d/override.conf
-systemctl try-restart bluetooth
+	dirsystem=/srv/http/data/system
+
+	ln -sf /srv/http/bash/motd.sh /etc/profile.d
+	ln -sf /srv/http/bash/xinitrc /etc/X11/xinit
+
+	dirset=/srv/http/data/shm/set
+
+	mv $dirsystem/{gpio,relays} &> /dev/null
+	mv $dirsystem/gpio.json /etc/relays.conf &> /dev/null
+	mv $dirsystem/{onboard-,}wlan &> /dev/null
+
+	mkdir -p $dirset
+	cp -f $dirsystem/{audio*,color,display,hostname,wlan,order,relays*,version} $dirset 2> /dev/null
+	cp -f $dirsystem/{bufferset,bufferoutputset,custom*,lcdcharset,localbrowserset,soundprofile*,soxr*} $dirset 2> /dev/null
+	rm -f $dirsystem/*
+	cp -f $dirset/* $dirsystem
+	chown http:http $dirsystem/*
+	rm -rf $dirset
+
+	if [[ -e $dirsystem/lcdcharset ]]; then
+		val=( $( cat $dirsystem/lcdcharset ) )
+		echo -n "\
+[var]
+cols=${val[0]}
+charmap=${val[1]}
+address=${val[2]}
+chip=${val[3]}
+" > /etc/lcdchar.conf
+		rm $dirsystem/lcdcharset
+	fi
+	if [[ -e $dirsystem/localbrowserset ]]; then
+		val=( $( cat $dirsystem/localbrowserset ) )
+		echo -n "\
+rotate=${val[0]}
+screenoff=${val[1]}
+cursor=${val[2]}
+zoom=${val[3]}
+" > /etc/localbrowser.conf
+		rm $dirsystem/localbrowserset
+	fi
+	if [[ -e $dirsystem/soundprofileset ]]; then
+		val=( $( cat $dirsystem/soundprofileset ) )
+		echo -n "\
+latency=${val[0]}
+swappiness=${val[1]}
+mtu=${val[2]}
+txqueuelen=${val[3]}
+" > /etc/soundprofile.conf
+		rm $dirsystem/soundprofileset
+	fi
+
+	val=$( mpc crossfade | cut -d' ' -f2 )
+	if (( $val > 0 )); then
+		echo $val > $dirsystem/crossfadeset
+		touch $dirsystem/crossfade
+	fi
+	grep -A1 'plugin.*ffmpeg' /etc/mpd.conf | grep -q yes && touch $dirsystem/ffmpeg
+	if [[ ! -e $dirsystem/bufferset ]]; then
+		val=$( grep '^audio_buffer_size' /etc/mpd.conf | cut -d'"' -f2 )
+		[[ -n $val ]] && echo $val > $dirsystem/bufferset
+	fi
+	if [[ ! -e $dirsystem/bufferoutputset ]]; then
+		val=$( grep '^max_output_buffer_size' /etc/mpd.conf | cut -d'"' -f2 )
+		[[ -n $val ]] && echo $val > $dirsystem/bufferoutputset
+	fi
+fi
+
+file=/etc/systemd/system/bluetooth.service.d/override.conf
+if grep -q network.sh $file; then
+	sed -i 's/network.sh/networks.sh/' $file
+	systemctl try-restart bluetooth
+fi
 
 sed -i '/IgnorePkg.*linux-raspberrypi/ d' /etc/pacman.conf
-
-if [[ $( cat /srv/http/data/addons/rre6 ) > 20201122 ]]; then
-	if (( $( ls -1 $dirsystem/mpd-* 2> /dev/null | wc -l ) > 0 )); then
-		readarray -t files <<< "$( ls -1 $dirsystem/mpd-* )"
-		for file in "${files[@]}"; do
-			mv "$file" "${file/mpd-}"
-		done
-	fi
-	services='hostapd localbrowser mpdscribble smb snapclient shairport-sync snapserver spotifyd upmpdcli'
-	for service in $services; do
-		systemctl -q is-active $service && touch $dirsystem/$service
-	done
-else
-	rm -f $dirsystem/{lcdchar*,soundprofile*,snapclient*,localbrowser*,smb*,mpdscribble*,login*,hostapd*,mpd-*}
-	grep -q dtoverlay=tft35a /boot/config.txt && touch $dirsystem/lcd
-	grep -q 'dtparam=i2c_arm=on' /boot/config.txt && ! grep -q 'dtoverlay=tft35a' /boot/config.txt && touch $dirsystem/lcdchar
-	if [[ -e $dirsystem/lcdchar ]] ; then
-		grep '^cols\|^charmap\|^address\|^chip' /srv/http/bash/lcdchar.py | cut -d' ' -f3 | tr -d "'" > $dirsystem/lcdcharset
-	else
-		echo '20 A00 0x27 PCF8574' > $dirsystem/lcdcharset
-	fi
-	/srv/http/bash/system.sh soundprofileset$'\n18000000 60 1500 1000'
-fi
 
 file=/etc/systemd/system/dnsmasq.service.d/override.conf
 if [[ ! -e $file ]]; then
@@ -58,50 +110,6 @@ BindsTo=wsdd.service" > $file
 ' -e '/Wants=/ a\Requires=smb.service
 ' /etc/systemd/system/wsdd.service
 	systemctl try-restart smb
-fi
-
-# system
-mv $dirsystem/{gpio,relays} &> /dev/null
-mv $dirsystem/{gpio.json,relaysset} &> /dev/null
-
-files=$dirsystem/{ntp,wlanregdom}
-if [[ -e $dirsystem/ntp ]]; then
-	cat $files > $dirsystem/regional
-	rm $files
-fi
-
-# features
-mv $dirsystem/{airplay,shairport-sync} &> /dev/null
-files=$dirsystem/{snapcast-latency,snapserverpw}
-if [[ -e $dirsystem/snapcast-latency ]]; then
-	cat $files > $dirsystem/snapclientset
-	rm $files
-fi
-mv $dirsystem/{snapcast,snapserver} &> /dev/null
-mv $dirsystem/spotify{,d} &> /dev/null
-mv $dirsystem/spotify{-device,dset} &> /dev/null
-mv $dirsystem/{upnp,upmpdcli} &> /dev/null
-if [[ -e /usr/bin/chromium && -e $dirsystem/localbrowser && ! -e $dirsystem/localbrowserset ]]; then
-	file=/etc/X11/xorg.conf.d/99-raspi-rotate.conf
-	[[ -e $file ]] && rotate=$( grep rotate $file 2> /dev/null | cut -d'"' -f4 ) || rotate=NORMAL
-	xinitrc=/etc/X11/xinit/xinitrc
-	screenoff=$( grep 'xset dpms .*' $xinitrc | cut -d' ' -f5 )
-	cursor=$( grep -q 'cursor yes' $xinitrc && echo true || echo false )
-	zoom=$( grep factor $xinitrc | cut -d'=' -f3 )
-	printf '%s\n' $rotate $screenoff $cursor $zoom > $dirsystem/localbrowserset
-fi
-files=$dirsystem/{samba-readonlysd,samba-readonlyusb}
-if [[ -e $dirsystem/samba-readonlysd ]]; then
-	cat $files > $dirsystem/smbset
-	rm $files
-fi
-mv $dirsystem/mpdscribble{-login,set} &> /dev/null
-
-mv $dirsystem/{accesspoint,hostapd} &> /dev/null
-files=$dirsystem/{accesspoint-ip,accesspoint-iprange,accesspoint-passphrase}
-if [[ -e $dirsystem/accesspoint-ip ]]; then
-	cat $files > $dirsystem/hostapdset
-	rm $files
 fi
 
 if [[ $( upmpdcli -v 2> /dev/null | cut -d' ' -f2 ) == 1.4.14 ]]; then
